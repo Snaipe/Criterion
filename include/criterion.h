@@ -39,8 +39,8 @@ struct criterion_test {
     const struct criterion_test_extra_data *data;
 };
 
-extern void (*criterion_pre_tests)(void);
-extern void (*criterion_post_tests)(void);
+extern __attribute__ ((weak)) void criterion_init(void);
+extern __attribute__ ((weak)) void criterion_fini(void);
 
 # define SECTION_(Name) __attribute__((section(Name)))
 # define IDENTIFIER_(Category, Name, Suffix) \
@@ -48,7 +48,7 @@ extern void (*criterion_post_tests)(void);
 # define TEST_PROTOTYPE_(Category, Name) \
     void IDENTIFIER_(Category, Name, impl)(void)
 
-# define test(Category, Name, Args...)                                         \
+# define Test(Category, Name, Args...)                                         \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
         .sentinel_ = 0,                                                        \

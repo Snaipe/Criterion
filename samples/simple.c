@@ -1,9 +1,18 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "criterion.h"
 
-test(misc, simple) {
+Test(misc, simple) {
 }
 
-test(misc, failing) {
+Test(misc, failing) {
     exit(1);
+}
+
+/*void criterion_init(void) {
+    puts("criterion_init");
+}*/
+
+void criterion_fini(void) {
+    puts("criterion_fini");
 }

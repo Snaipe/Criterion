@@ -61,11 +61,8 @@ void run_all(void) {
     map_tests(run_test);
 }
 
-void (*criterion_pre_tests)(void) = NULL;
-void (*criterion_post_tests)(void) = NULL;
-
 int main(void) {
-    (criterion_pre_tests  ?: nothing)();
+    (criterion_init ?: nothing)();
     run_all();
-    (criterion_post_tests ?: nothing)();
+    (criterion_fini ?: nothing)();
 }
