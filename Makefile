@@ -1,14 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=gnu99 -Isrc/ -Iinclude/ -g
 
-SRCS = runner.c
+SRCS = runner.c report.c
 OBJS = $(addprefix src/,$(subst .c,.o,$(SRCS)))
 
 sample: samples/simple.o libcriterion.a
-	$(LINK.o) -o $@ $^
+	$(LINK.o) -o $@ $< -L. -lcriterion
 
 libcriterion.a: $(OBJS)
-	$(AR) rcs $@ $^
+	$(AR) cru $@ $^
 
 clean:
 	$(RM) $(OBJS) samples/simple.o

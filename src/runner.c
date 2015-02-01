@@ -25,11 +25,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdio.h>
-#include "criterion.h"
 #include "runner.h"
+#include "report.h"
 
-struct criterion_test * const g_section_start = &__start_criterion_tests;
-struct criterion_test * const g_section_end   = &__stop_criterion_tests;
+static struct criterion_test * const g_section_start = &__start_criterion_tests;
+static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
 
 static void map_tests(void (*fun)(struct criterion_test *)) {
     for (struct criterion_test *test = g_section_start; test < g_section_end; ++test) {
@@ -40,20 +40,23 @@ static void map_tests(void (*fun)(struct criterion_test *)) {
 __attribute__ ((always_inline))
 static inline void nothing(void) {}
 
+static void run_test_nofork(struct criterion_test *test) {
+    report(PRE_INIT, test);
+    (test->data->init ?: nothing)();
+    report(PRE_TEST, test);
+    (test->test       ?: nothing)();
+    report(POST_TEST, test);
+    (test->data->fini ?: nothing)();
+    report(POST_FINI, test);
+}
+
 static void run_test(struct criterion_test *test) {
-    printf("%s::%s: ", test->category, test->name);
-    fflush(stdout);
     pid_t pid;
     if (!(pid = fork())) {
-        (test->data->init ?: nothing)();
-        (test->test       ?: nothing)();
-        (test->data->fini ?: nothing)();
+        run_test_nofork(test);
         exit(0);
     } else {
-        int status;
-        waitpid(pid, &status, 0);
-        int success = WIFEXITED(status) && WEXITSTATUS(status) == 0;
-        printf("%s\n", success ? "SUCCESS" : "FAILURE");
+        waitpid(pid, NULL, 0);
     }
 }
 

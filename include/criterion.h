@@ -25,6 +25,7 @@
 # define CRITERION_H_
 
 #include <stddef.h>
+#include "common.h"
 
 struct criterion_test_extra_data {
     size_t sentinel_;
@@ -39,10 +40,6 @@ struct criterion_test {
     const struct criterion_test_extra_data *data;
 };
 
-extern __attribute__ ((weak)) void criterion_init(void);
-extern __attribute__ ((weak)) void criterion_fini(void);
-
-# define SECTION_(Name) __attribute__((section(Name)))
 # define IDENTIFIER_(Category, Name, Suffix) \
     Category ## _ ## Name ## _ ## Suffix
 # define TEST_PROTOTYPE_(Category, Name) \

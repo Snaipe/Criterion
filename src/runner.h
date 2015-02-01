@@ -24,6 +24,8 @@
 #ifndef CRITERION_RUNNER_H_
 # define CRITERION_RUNNER_H_
 
+# include "criterion.h"
+
 extern struct criterion_test __start_criterion_tests;
 extern struct criterion_test __stop_criterion_tests;
 
