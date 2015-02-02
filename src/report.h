@@ -10,9 +10,11 @@
     extern f_report_hook __stop_criterion_hooks_##Kind;     \
     void call_report_hooks_##Kind(void *data)
 
+DECL_CALL_REPORT_HOOKS(PRE_EVERYTHING);
 DECL_CALL_REPORT_HOOKS(PRE_INIT);
 DECL_CALL_REPORT_HOOKS(PRE_TEST);
 DECL_CALL_REPORT_HOOKS(POST_TEST);
 DECL_CALL_REPORT_HOOKS(POST_FINI);
+DECL_CALL_REPORT_HOOKS(POST_EVERYTHING);
 
 #endif /* !REPORT_H_ */

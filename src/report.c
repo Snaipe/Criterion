@@ -15,16 +15,17 @@
         }                                                   \
     }
 
+IMPL_CALL_REPORT_HOOKS(PRE_EVERYTHING);
 IMPL_CALL_REPORT_HOOKS(PRE_INIT);
 IMPL_CALL_REPORT_HOOKS(PRE_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_FINI);
+IMPL_CALL_REPORT_HOOKS(POST_EVERYTHING);
 
 ReportHook(PRE_INIT) {
     struct criterion_test *test = data;
 
-    printf("%s::%s: ", test->category, test->name);
-    fflush(stdout);
+    fprintf(stderr, "%s::%s: RUNNING\n", test->category, test->name);
 }
 
 ReportHook(POST_TEST) {
@@ -32,8 +33,11 @@ ReportHook(POST_TEST) {
 
     int success = stats->failed == 0;
 
-    printf("%s\n", success ? "SUCCESS" : "FAILURE");
+    fprintf(stderr, "%s::%s: %s\n", stats->test->category, stats->test->name, success ? "SUCCESS" : "FAILURE");
 }
 
 ReportHook(PRE_TEST) {}
 ReportHook(POST_FINI) {}
+
+ReportHook(PRE_EVERYTHING) {}
+ReportHook(POST_EVERYTHING) {}

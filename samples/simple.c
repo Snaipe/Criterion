@@ -19,10 +19,17 @@ ReportHook(PRE_INIT) {
     printf("testing %s in category %s\n", test->name, test->category);
 }
 
-void criterion_init(void) {
+ReportHook(POST_TEST) {
+    struct criterion_test_stats *stats = data;
+
+    printf("Asserts: [%d passed, %d failed, %d total]\n",
+            stats->passed, stats->failed, stats->passed + stats->failed);
+}
+
+ReportHook(PRE_EVERYTHING) {
     puts("criterion_init");
 }
 
-void criterion_fini(void) {
+ReportHook(POST_EVERYTHING) {
     puts("criterion_fini");
 }

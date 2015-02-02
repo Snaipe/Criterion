@@ -4,10 +4,12 @@
 #include "common.h"
 
 typedef enum {
+    PRE_EVERYTHING,
     PRE_INIT,
     PRE_TEST,
     POST_TEST,
     POST_FINI,
+    POST_EVERYTHING,
 } e_report_status;
 
 typedef void (*f_report_hook)(void *);

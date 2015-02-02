@@ -67,11 +67,11 @@ static void run_test(struct criterion_test *test) {
 }
 
 void run_all(void) {
+    report(PRE_EVERYTHING, NULL);
     map_tests(run_test);
+    report(POST_EVERYTHING, NULL);
 }
 
 int main(void) {
-    (criterion_init ?: nothing)();
     run_all();
-    (criterion_fini ?: nothing)();
 }
