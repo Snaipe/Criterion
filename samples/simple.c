@@ -2,12 +2,15 @@
 #include <stdlib.h>
 #include "criterion.h"
 #include "report.h"
-
-Test(misc, simple) {
-}
+#include "assert.h"
 
 Test(misc, failing) {
-    exit(1);
+    assert(1);
+    assert(0);
+}
+
+Test(misc, simple) {
+    expect(1);
 }
 
 ReportHook(PRE_INIT) {

@@ -28,7 +28,11 @@ ReportHook(PRE_INIT) {
 }
 
 ReportHook(POST_TEST) {
+    struct criterion_test_stats *stats = data;
 
+    int success = stats->failed == 0;
+
+    printf("%s\n", success ? "SUCCESS" : "FAILURE");
 }
 
 ReportHook(PRE_TEST) {}

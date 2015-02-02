@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "runner.h"
 #include "report.h"
+#include "assert.h"
 
 static struct criterion_test * const g_section_start = &__start_criterion_tests;
 static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
@@ -38,14 +39,19 @@ static void map_tests(void (*fun)(struct criterion_test *)) {
 }
 
 __attribute__ ((always_inline))
-static inline void nothing(void) {}
+static inline void nothing() {}
+
+struct criterion_test_stats g_current_test_stats;
 
 static void run_test_nofork(struct criterion_test *test) {
     report(PRE_INIT, test);
     (test->data->init ?: nothing)();
     report(PRE_TEST, test);
+
+    g_current_test_stats = (struct criterion_test_stats) { .test = test };
     (test->test       ?: nothing)();
-    report(POST_TEST, test);
+
+    report(POST_TEST, &g_current_test_stats);
     (test->data->fini ?: nothing)();
     report(POST_FINI, test);
 }

@@ -24,8 +24,10 @@
 #ifndef CRITERION_H_
 # define CRITERION_H_
 
-#include <stddef.h>
-#include "common.h"
+# include <stdbool.h>
+# include <stddef.h>
+# include "common.h"
+# include "assert.h"
 
 struct criterion_test_extra_data {
     size_t sentinel_;
