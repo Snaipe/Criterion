@@ -13,23 +13,19 @@ Test(misc, simple) {
     expect(1);
 }
 
-ReportHook(PRE_INIT) {
-    struct criterion_test *test = data;
-
+ReportHook(PRE_INIT)(struct criterion_test *test) {
     printf("testing %s in category %s\n", test->name, test->category);
 }
 
-ReportHook(POST_TEST) {
-    struct criterion_test_stats *stats = data;
-
+ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
     printf("Asserts: [%d passed, %d failed, %d total]\n",
             stats->passed, stats->failed, stats->passed + stats->failed);
 }
 
-ReportHook(PRE_EVERYTHING) {
+ReportHook(PRE_EVERYTHING)() {
     puts("criterion_init");
 }
 
-ReportHook(POST_EVERYTHING) {
+ReportHook(POST_EVERYTHING)() {
     puts("criterion_fini");
 }

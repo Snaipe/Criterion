@@ -45,22 +45,18 @@ IMPL_CALL_REPORT_HOOKS(POST_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_EVERYTHING);
 
-ReportHook(PRE_INIT) {
-    struct criterion_test *test = data;
-
+ReportHook(PRE_INIT)(struct criterion_test *test) {
     fprintf(stderr, "%s::%s: RUNNING\n", test->category, test->name);
 }
 
-ReportHook(POST_TEST) {
-    struct criterion_test_stats *stats = data;
-
+ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
     int success = stats->failed == 0;
 
     fprintf(stderr, "%s::%s: %s\n", stats->test->category, stats->test->name, success ? "SUCCESS" : "FAILURE");
 }
 
-ReportHook(PRE_TEST) {}
-ReportHook(POST_FINI) {}
+ReportHook(PRE_TEST)() {}
+ReportHook(POST_FINI)() {}
 
-ReportHook(PRE_EVERYTHING) {}
-ReportHook(POST_EVERYTHING) {}
+ReportHook(PRE_EVERYTHING)() {}
+ReportHook(POST_EVERYTHING)() {}

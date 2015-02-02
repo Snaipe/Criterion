@@ -35,19 +35,19 @@ typedef enum {
     POST_EVERYTHING,
 } e_report_status;
 
-typedef void (*f_report_hook)(void *);
+typedef void (*f_report_hook)();
 
 # define HOOK_IDENTIFIER_(Suffix) HOOK_IDENTIFIER__(__LINE__, Suffix)
 # define HOOK_IDENTIFIER__(Line, Suffix) HOOK_IDENTIFIER___(Line, Suffix)
 # define HOOK_IDENTIFIER___(Line, Suffix) hook_l ## Line ## _ ## Suffix
 
 # define HOOK_PROTOTYPE_                                                       \
-    void HOOK_IDENTIFIER_(impl)(UNUSED void *data)
+    void HOOK_IDENTIFIER_(impl)
 
 # define ReportHook(Kind)                                                      \
-    HOOK_PROTOTYPE_;                                                           \
+    HOOK_PROTOTYPE_();                                                         \
     SECTION_("criterion_hooks_" #Kind)                                         \
-    const f_report_hook HOOK_IDENTIFIER_(func) = HOOK_IDENTIFIER_(impl);      \
+    const f_report_hook HOOK_IDENTIFIER_(func) = HOOK_IDENTIFIER_(impl);       \
     HOOK_PROTOTYPE_
 
 #endif /* !CRITERION_HOOKS_H_ */
