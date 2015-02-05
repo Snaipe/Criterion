@@ -125,7 +125,7 @@ static void run_test(struct criterion_test *test) {
         setup_child(&fds);
 
         run_test_child(test);
-        exit(0);
+        _exit(0);
     } else {
         struct criterion_test_stats stats = { .test = test };
         close(fds.out);
