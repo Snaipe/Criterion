@@ -37,7 +37,7 @@ enum criterion_assert_kind {
 # define assertImpl(Kind, Condition, ...)                       \
     do {                                                        \
         int passed = !!(Condition);                             \
-        struct criterion_assert_stat stat = {                   \
+        struct criterion_assert_stats stat = {                  \
             .kind = Kind,                                       \
             .condition = #Condition,                            \
             .message = "" __VA_ARGS__,                          \

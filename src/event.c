@@ -48,7 +48,7 @@ struct event *read_event(int fd) {
     if (kind != ASSERT)
         return unique_ptr(struct event, ({ .kind = kind, .data = NULL }));
 
-    const size_t assert_size = sizeof (struct criterion_assert_stat);
+    const size_t assert_size = sizeof (struct criterion_assert_stats);
     unsigned char *buf = malloc(assert_size);
     if (read(fd, buf, assert_size) < (ssize_t) assert_size)
         return NULL;
@@ -60,5 +60,5 @@ void send_event(int kind, void *data, size_t size) {
     unsigned char buf[sizeof (int) + size];
     memcpy(buf, &kind, sizeof (int));
     memcpy(buf + sizeof (int), data, size);
-    write(EVENT_PIPE, buf, sizeof (buf));
+    write(EVENT_PIPE, buf, sizeof (int) + size);
 }

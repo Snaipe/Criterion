@@ -21,39 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_STATS_H_
-# define CRITERION_STATS_H_
+#ifndef STATS_H_
+# define STATS_H_
 
-# include "criterion.h"
+# include "criterion/stats.h"
+# include "event.h"
 
-struct criterion_assert_stats {
-    int kind;
-    const char *condition;
-    const char *message;
-    bool passed;
-    unsigned line;
+struct criterion_global_stats *stats_init(void);
+struct criterion_test_stats *test_stats_init(struct criterion_test *t);
+void stat_push_event(struct criterion_global_stats *stats,
+                     struct criterion_test_stats *test,
+                     struct event *data);
 
-    struct criterion_assert_stats *next;
-};
-
-struct criterion_test_stats {
-    struct criterion_test *test;
-    struct criterion_assert_stats *asserts;
-    int passed;
-    int failed;
-
-    struct criterion_test_stats *next;
-};
-
-struct criterion_global_stats {
-    struct criterion_test_stats *tests;
-    size_t nb_tests;
-    size_t nb_asserts;
-    size_t tests_failed;
-    size_t tests_crashed;
-    size_t tests_passed;
-    size_t asserts_failed;
-    size_t asserts_passed;
-};
-
-#endif /* !CRITERION_STATS_H_ */
+#endif /* !STATS_H_ */

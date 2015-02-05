@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=gnu99 -Isrc/ -Iinclude/ -g
 
-SRCS = runner.c report.c event.c
+SRCS = runner.c report.c event.c stats.c
 OBJS = $(addprefix src/,$(subst .c,.o,$(SRCS)))
 
 sample: samples/simple.o libcriterion.a

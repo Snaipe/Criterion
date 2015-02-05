@@ -27,7 +27,7 @@
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
 #include "criterion/assert.h"
-#include "criterion/stats.h"
+#include "stats.h"
 #include "runner.h"
 #include "report.h"
 #include "event.h"
@@ -85,10 +85,10 @@ static struct test_set *read_all_tests(void) {
             }), destroy_test_set);
 }
 
-static void map_tests(struct test_set *set, void (*fun)(struct criterion_test *)) {
+static void map_tests(struct test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
     size_t i = 0;
     for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t)
-        fun(*t);
+        fun(stats, *t);
 }
 
 __attribute__ ((always_inline))
@@ -115,7 +115,9 @@ static void setup_child(struct pipefds *fds) {
     close(fds->out);
 }
 
-static void run_test(struct criterion_test *test) {
+static void run_test(struct criterion_global_stats *stats, struct criterion_test *test) {
+    smart struct criterion_test_stats *test_stats = test_stats_init(test);
+
     struct pipefds fds;
     if (pipe((int*) &fds) == -1)
         abort();
@@ -127,15 +129,15 @@ static void run_test(struct criterion_test *test) {
         run_test_child(test);
         _exit(0);
     } else {
-        struct criterion_test_stats stats = { .test = test };
         close(fds.out);
         struct event *ev;
         while ((ev = read_event(fds.in)) != NULL) {
+            stat_push_event(stats, test_stats, ev);
             switch (ev->kind) {
                 case PRE_INIT:  report(PRE_INIT, test); break;
                 case PRE_TEST:  report(PRE_TEST, test); break;
                 case ASSERT:    report(PRE_TEST, ev->data); break;
-                case POST_TEST: report(POST_TEST, &stats); break;
+                case POST_TEST: report(POST_TEST, test_stats); break;
                 case POST_FINI: report(POST_FINI, test); break;
             }
             sfree(ev);
@@ -148,9 +150,10 @@ static void run_test(struct criterion_test *test) {
 void run_all(void) {
     report(PRE_EVERYTHING, NULL);
     smart struct test_set *set = read_all_tests();
+    smart struct criterion_global_stats *stats = stats_init();
     if (!set)
         abort();
-    map_tests(set, run_test);
+    map_tests(set, stats, run_test);
     report(POST_EVERYTHING, NULL);
 }
 
