@@ -21,12 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#include "criterion/assert.h"
+#undef assert
 
-# include "criterion/criterion.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <assert.h>
+#include <csptr/smart_ptr.h>
+#include "criterion/criterion.h"
+#include "criterion/stats.h"
+#include "criterion/hooks.h"
+#include "event.h"
 
-extern struct criterion_test __start_criterion_tests;
-extern struct criterion_test __stop_criterion_tests;
+const int EVENT_PIPE = 3;
 
-#endif /* !CRITERION_RUNNER_H_ */
+void destroy_event(void *ptr, UNUSED void *meta) {
+    struct event *ev = ptr;
+    free(ev->data);
+}
+
+struct event *read_event(int fd) {
+    unsigned kind;
+    if (read(fd, &kind, sizeof (unsigned)) < (ssize_t) sizeof (unsigned))
+        return NULL;
+
+    if (kind != ASSERT)
+        return unique_ptr(struct event, ({ .kind = kind, .data = NULL }));
+
+    const size_t assert_size = sizeof (struct criterion_assert_stat);
+    unsigned char *buf = malloc(assert_size);
+    if (read(fd, buf, assert_size) < (ssize_t) assert_size)
+        return NULL;
+
+    return unique_ptr(struct event, ({ .kind = kind, .data = buf }), destroy_event);
+}
+
+void send_event(int kind, void *data, size_t size) {
+    unsigned char buf[sizeof (int) + size];
+    memcpy(buf, &kind, sizeof (int));
+    memcpy(buf + sizeof (int), data, size);
+    write(EVENT_PIPE, buf, sizeof (buf));
+}

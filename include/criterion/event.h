@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef CRITERION_EVENT_H_
+# define CRITERION_EVENT_H_
 
-# include "criterion/criterion.h"
+extern const int EVENT_PIPE;
 
-extern struct criterion_test __start_criterion_tests;
-extern struct criterion_test __stop_criterion_tests;
+void send_event(int kind, void *data, size_t size);
 
-#endif /* !CRITERION_RUNNER_H_ */
+#endif /* !CRITERION_EVENT_H_ */

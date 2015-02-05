@@ -22,7 +22,8 @@
  * THE SOFTWARE.
  */
 #include <stdio.h>
-#include "criterion.h"
+#include "criterion/criterion.h"
+#include "criterion/stats.h"
 #include "report.h"
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                        \
@@ -60,3 +61,5 @@ ReportHook(POST_FINI)() {}
 
 ReportHook(PRE_EVERYTHING)() {}
 ReportHook(POST_EVERYTHING)() {}
+
+

@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "criterion.h"
-#include "report.h"
-#include "assert.h"
+#include <criterion/criterion.h>
+#include <criterion/assert.h>
+#include <criterion/hooks.h>
+#include <criterion/stats.h>
 
 Test(misc, failing) {
     assert(1);
@@ -10,6 +11,19 @@ Test(misc, failing) {
 }
 
 Test(misc, simple) {
+    expect(1);
+}
+
+Test(aziezdcjn, simple) {
+    expect(1);
+}
+Test(aziezdcjn, abcd) {
+    expect(1);
+}
+Test(aziezdcjn, simplez) {
+    expect(1);
+}
+Test(aziezdcjn, simpl) {
     expect(1);
 }
 

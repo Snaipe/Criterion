@@ -30,6 +30,8 @@ typedef enum {
     PRE_EVERYTHING,
     PRE_INIT,
     PRE_TEST,
+    ASSERT,
+    TEST_CRASH,
     POST_TEST,
     POST_FINI,
     POST_EVERYTHING,

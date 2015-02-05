@@ -24,7 +24,7 @@
 #ifndef REPORT_H_
 # define REPORT_H_
 
-# include "hooks.h"
+# include "criterion/hooks.h"
 
 # define report(Kind, Data) call_report_hooks_##Kind(Data)
 

@@ -22,13 +22,15 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <stdio.h>
 #include <csptr/smart_ptr.h>
+#include "criterion/assert.h"
+#include "criterion/stats.h"
 #include "runner.h"
 #include "report.h"
-#include "assert.h"
+#include "event.h"
 
 static struct criterion_test * const g_section_start = &__start_criterion_tests;
 static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
@@ -92,31 +94,57 @@ static void map_tests(struct test_set *set, void (*fun)(struct criterion_test *)
 __attribute__ ((always_inline))
 static inline void nothing() {}
 
-struct criterion_test_stats g_current_test_stats;
-
-static void run_test_nofork(struct criterion_test *test) {
-    report(PRE_INIT, test);
+static void run_test_child(struct criterion_test *test) {
+    send_event(PRE_INIT, NULL, 0);
     (test->data->init ?: nothing)();
-    report(PRE_TEST, test);
-
-    g_current_test_stats = (struct criterion_test_stats) { .test = test };
+    send_event(PRE_TEST, NULL, 0);
     (test->test       ?: nothing)();
-
-    report(POST_TEST, &g_current_test_stats);
+    send_event(POST_TEST, NULL, 0);
     (test->data->fini ?: nothing)();
-    report(POST_FINI, test);
+    send_event(POST_FINI, NULL, 0);
+}
+
+struct pipefds {
+    int in, out;
+} __attribute__ ((packed));
+
+static void setup_child(struct pipefds *fds) {
+    close(STDIN_FILENO);
+    close(fds->in);
+    dup2(fds->out, EVENT_PIPE);
+    close(fds->out);
 }
 
 static void run_test(struct criterion_test *test) {
+    struct pipefds fds;
+    if (pipe((int*) &fds) == -1)
+        abort();
+
     pid_t pid;
     if (!(pid = fork())) {
-        run_test_nofork(test);
+        setup_child(&fds);
+
+        run_test_child(test);
         exit(0);
     } else {
+        struct criterion_test_stats stats = { .test = test };
+        close(fds.out);
+        struct event *ev;
+        while ((ev = read_event(fds.in)) != NULL) {
+            switch (ev->kind) {
+                case PRE_INIT:  report(PRE_INIT, test); break;
+                case PRE_TEST:  report(PRE_TEST, test); break;
+                case ASSERT:    report(PRE_TEST, ev->data); break;
+                case POST_TEST: report(POST_TEST, &stats); break;
+                case POST_FINI: report(POST_FINI, test); break;
+            }
+            sfree(ev);
+        }
         waitpid(pid, NULL, 0);
     }
 }
 
+// TODO: disable & change tests at runtime
 void run_all(void) {
     report(PRE_EVERYTHING, NULL);
     smart struct test_set *set = read_all_tests();

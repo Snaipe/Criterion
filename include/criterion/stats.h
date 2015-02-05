@@ -21,12 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef CRITERION_STATS_H_
+# define CRITERION_STATS_H_
 
-# include "criterion/criterion.h"
+# include "criterion.h"
 
-extern struct criterion_test __start_criterion_tests;
-extern struct criterion_test __stop_criterion_tests;
+struct criterion_assert_stat {
+    int kind;
+    const char *condition;
+    const char *message;
+    bool passed;
+    unsigned line;
+};
 
-#endif /* !CRITERION_RUNNER_H_ */
+struct criterion_test_stats {
+    struct criterion_test *test;
+    int passed;
+    int failed;
+};
+
+#endif /* !CRITERION_STATS_H_ */
