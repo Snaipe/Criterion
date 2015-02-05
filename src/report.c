@@ -42,6 +42,8 @@
 IMPL_CALL_REPORT_HOOKS(PRE_EVERYTHING);
 IMPL_CALL_REPORT_HOOKS(PRE_INIT);
 IMPL_CALL_REPORT_HOOKS(PRE_TEST);
+IMPL_CALL_REPORT_HOOKS(ASSERT);
+IMPL_CALL_REPORT_HOOKS(TEST_CRASH);
 IMPL_CALL_REPORT_HOOKS(POST_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_EVERYTHING);
@@ -62,4 +64,19 @@ ReportHook(POST_FINI)() {}
 ReportHook(PRE_EVERYTHING)() {}
 ReportHook(POST_EVERYTHING)() {}
 
+ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
+    if (!stats->passed) {
+        fprintf(stderr, "\t%s:%d: Assertion failed: %s\n",
+                stats->file,
+                stats->line,
+                *stats->message ? stats->message : stats->condition);
+    }
+}
 
+ReportHook(TEST_CRASH)(struct criterion_test_stats *stats) {
+    fprintf(stderr, "\tUnexpected signal after %s:%u!\n%s::%s: FAILURE (CRASH!)\n",
+            stats->file,
+            stats->progress,
+            stats->test->category,
+            stats->test->name);
+}

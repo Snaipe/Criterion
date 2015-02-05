@@ -33,7 +33,7 @@
 #include "criterion/hooks.h"
 #include "event.h"
 
-const int EVENT_PIPE = 3;
+int EVENT_PIPE = -1;
 
 void destroy_event(void *ptr, UNUSED void *meta) {
     struct event *ev = ptr;

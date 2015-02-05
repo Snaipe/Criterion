@@ -14,17 +14,9 @@ Test(misc, simple) {
     expect(1);
 }
 
-Test(aziezdcjn, simple) {
-    expect(1);
-}
-Test(aziezdcjn, abcd) {
-    expect(1);
-}
-Test(aziezdcjn, simplez) {
-    expect(1);
-}
-Test(aziezdcjn, simpl) {
-    expect(1);
+Test(abcd, crash) {
+    int *i = NULL;
+    *i = 42;
 }
 
 ReportHook(PRE_INIT)(struct criterion_test *test) {

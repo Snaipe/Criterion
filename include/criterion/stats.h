@@ -32,6 +32,7 @@ struct criterion_assert_stats {
     const char *message;
     bool passed;
     unsigned line;
+    const char *file;
 
     struct criterion_assert_stats *next;
 };
@@ -41,6 +42,8 @@ struct criterion_test_stats {
     struct criterion_assert_stats *asserts;
     int passed;
     int failed;
+    unsigned progress;
+    const char *file;
 
     struct criterion_test_stats *next;
 };

@@ -53,7 +53,11 @@ static void destroy_test_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_test_stats *test_stats_init(struct criterion_test *t) {
-    return shared_ptr(s_test_stats, ({ .test = t }), destroy_test_stats);
+    return shared_ptr(s_test_stats, ({
+                .test = t,
+                .progress = t->data->line_,
+                .file = t->data->file_
+            }), destroy_test_stats);
 }
 
 void stat_push_event(s_glob_stats *stats,
@@ -103,6 +107,9 @@ static void push_assert(s_glob_stats *stats,
         ++stats->asserts_failed;
         ++test->failed;
     }
+
+    test->progress = dup->line;
+    test->file = dup->file;
 }
 
 static void push_post_test(s_glob_stats *stats,

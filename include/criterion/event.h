@@ -24,7 +24,7 @@
 #ifndef CRITERION_EVENT_H_
 # define CRITERION_EVENT_H_
 
-extern const int EVENT_PIPE;
+extern int EVENT_PIPE;
 
 void send_event(int kind, void *data, size_t size);
 

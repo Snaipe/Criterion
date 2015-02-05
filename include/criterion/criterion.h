@@ -30,7 +30,8 @@
 # include "assert.h"
 
 struct criterion_test_extra_data {
-    size_t sentinel_;
+    const char *file_;
+    unsigned line_;
     void (*init)(void);
     void (*fini)(void);
 };
@@ -50,7 +51,8 @@ struct criterion_test {
 # define Test(Category, Name, Args...)                                         \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
-        .sentinel_ = 0,                                                        \
+        .file_ = __FILE__,                                                     \
+        .line_ = __LINE__,                                                     \
         Args                                                                   \
     };                                                                         \
     SECTION_("criterion_tests")                                                \

@@ -111,8 +111,7 @@ struct pipefds {
 static void setup_child(struct pipefds *fds) {
     close(STDIN_FILENO);
     close(fds->in);
-    dup2(fds->out, EVENT_PIPE);
-    close(fds->out);
+    EVENT_PIPE = fds->out;
 }
 
 static void run_test(struct criterion_global_stats *stats, struct criterion_test *test) {
@@ -136,13 +135,16 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
             switch (ev->kind) {
                 case PRE_INIT:  report(PRE_INIT, test); break;
                 case PRE_TEST:  report(PRE_TEST, test); break;
-                case ASSERT:    report(PRE_TEST, ev->data); break;
+                case ASSERT:    report(ASSERT, ev->data); break;
                 case POST_TEST: report(POST_TEST, test_stats); break;
-                case POST_FINI: report(POST_FINI, test); break;
+                case POST_FINI: report(POST_FINI, test_stats); break;
             }
             sfree(ev);
         }
-        waitpid(pid, NULL, 0);
+        int status;
+        waitpid(pid, &status, 0);
+        if (WIFSIGNALED(status))
+            report(TEST_CRASH, test_stats);
     }
 }
 
@@ -154,7 +156,7 @@ void run_all(void) {
     if (!set)
         abort();
     map_tests(set, stats, run_test);
-    report(POST_EVERYTHING, NULL);
+    report(POST_EVERYTHING, stats);
 }
 
 int main(void) {

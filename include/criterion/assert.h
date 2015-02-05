@@ -42,6 +42,7 @@ enum criterion_assert_kind {
             .condition = #Condition,                            \
             .message = "" __VA_ARGS__,                          \
             .passed = passed,                                   \
+            .file = __FILE__,                                   \
             .line = __LINE__,                                   \
         };                                                      \
         send_event(ASSERT, &stat, sizeof (stat));               \
