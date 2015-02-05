@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <csptr/smart_ptr.h>
 #include "runner.h"
 #include "report.h"
 #include "assert.h"
@@ -32,10 +33,60 @@
 static struct criterion_test * const g_section_start = &__start_criterion_tests;
 static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
 
-static void map_tests(void (*fun)(struct criterion_test *)) {
-    for (struct criterion_test *test = g_section_start; test < g_section_end; ++test) {
-        fun(test);
+struct test_set {
+    struct criterion_test **tests;
+    size_t nb_tests;
+};
+
+static int compare_test_by_name(const struct criterion_test *first,
+                                const struct criterion_test *second) {
+    // likely to happen
+    if (first->name == second->name)
+        return 0;
+    return strcmp(first->name, second->name);
+}
+
+static int compare_test(const void *a, const void *b) {
+    struct criterion_test *first = *(struct criterion_test **) a;
+    struct criterion_test *second = *(struct criterion_test **) b;
+
+    // likely to happen
+    if (first->category == second->category) {
+        return compare_test_by_name(first, second);
+    } else {
+        return strcmp(first->category, second->category)
+            ?: compare_test_by_name(first, second);
     }
+}
+
+static void destroy_test_set(void *ptr, UNUSED void *meta) {
+    struct test_set *set = ptr;
+    free(set->tests);
+}
+
+static struct test_set *read_all_tests(void) {
+    size_t nb_tests = g_section_end - g_section_start;
+
+    struct criterion_test **tests = malloc(nb_tests * sizeof (void *));
+    if (tests == NULL)
+        return NULL;
+
+    size_t i = 0;
+    for (struct criterion_test *test = g_section_start; test < g_section_end; ++test)
+        tests[i++] = test;
+
+    qsort(tests, nb_tests, sizeof (void *), compare_test);
+
+    return unique_ptr(struct test_set, ({
+                .tests = tests,
+                .nb_tests = nb_tests
+            }), destroy_test_set);
+}
+
+static void map_tests(struct test_set *set, void (*fun)(struct criterion_test *)) {
+    size_t i = 0;
+    for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t)
+        fun(*t);
 }
 
 __attribute__ ((always_inline))
@@ -68,7 +119,10 @@ static void run_test(struct criterion_test *test) {
 
 void run_all(void) {
     report(PRE_EVERYTHING, NULL);
-    map_tests(run_test);
+    smart struct test_set *set = read_all_tests();
+    if (!set)
+        abort();
+    map_tests(set, run_test);
     report(POST_EVERYTHING, NULL);
 }
 

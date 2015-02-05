@@ -5,7 +5,7 @@ SRCS = runner.c report.c
 OBJS = $(addprefix src/,$(subst .c,.o,$(SRCS)))
 
 sample: samples/simple.o libcriterion.a
-	$(LINK.o) -o $@ $< -L. -lcriterion
+	$(LINK.o) -o $@ $< -L. -lcriterion -lcsptr
 
 libcriterion.a: $(OBJS)
 	$(AR) cru $@ $^
