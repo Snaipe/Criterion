@@ -2,6 +2,11 @@
 Criterion
 =========
 
+[![Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=master)](https://travis-ci.org/Snaipe/Criterion) 
+[![Coverage Status](https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=master)](https://coveralls.io/r/Snaipe/Criterion?branch=master) 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
+[![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases)
+
 A dead-simple, yet extensible, C test framework.
 
 ## Philosophy
