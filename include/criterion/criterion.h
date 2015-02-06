@@ -34,6 +34,7 @@ struct criterion_test_extra_data {
     unsigned line_;
     void (*init)(void);
     void (*fini)(void);
+    int signal;
 };
 
 struct criterion_test {

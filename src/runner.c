@@ -143,8 +143,15 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
         }
         int status;
         waitpid(pid, &status, 0);
-        if (WIFSIGNALED(status))
-            report(TEST_CRASH, test_stats);
+        if (WIFSIGNALED(status)) {
+            test_stats->signal = WTERMSIG(status);
+            if (test->data->signal == 0) {
+                report(TEST_CRASH, test_stats);
+            } else {
+                report(POST_TEST, test_stats);
+                report(POST_FINI, test_stats);
+            }
+        }
     }
 }
 

@@ -42,6 +42,7 @@ struct criterion_test_stats {
     struct criterion_assert_stats *asserts;
     int passed;
     int failed;
+    int signal;
     unsigned progress;
     const char *file;
 
