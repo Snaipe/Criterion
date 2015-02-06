@@ -27,6 +27,8 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include "criterion.h"
+# include "stats.h"
+# include "hooks.h"
 # include "event.h"
 
 enum criterion_assert_kind {
