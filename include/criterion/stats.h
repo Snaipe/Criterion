@@ -24,6 +24,7 @@
 #ifndef CRITERION_STATS_H_
 # define CRITERION_STATS_H_
 
+# include <stdbool.h>
 # include "criterion.h"
 
 struct criterion_assert_stats {
@@ -40,8 +41,9 @@ struct criterion_assert_stats {
 struct criterion_test_stats {
     struct criterion_test *test;
     struct criterion_assert_stats *asserts;
-    int passed;
-    int failed;
+    bool failed;
+    int passed_asserts;
+    int failed_asserts;
     int signal;
     unsigned progress;
     const char *file;

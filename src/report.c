@@ -53,9 +53,7 @@ ReportHook(PRE_INIT)(struct criterion_test *test) {
 }
 
 ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
-    int success = stats->failed == 0;
-
-    fprintf(stderr, "%s::%s: %s\n", stats->test->category, stats->test->name, success ? "SUCCESS" : "FAILURE");
+    fprintf(stderr, "%s::%s: %s\n", stats->test->category, stats->test->name, stats->failed ? "FAILURE" : "SUCCESS");
 }
 
 ReportHook(PRE_TEST)() {}

@@ -102,10 +102,10 @@ static void push_assert(s_glob_stats *stats,
 
     if (data->passed) {
         ++stats->asserts_passed;
-        ++test->passed;
+        ++test->passed_asserts;
     } else {
         ++stats->asserts_failed;
-        ++test->failed;
+        ++test->failed_asserts;
     }
 
     test->progress = dup->line;
@@ -115,15 +115,18 @@ static void push_assert(s_glob_stats *stats,
 static void push_post_test(s_glob_stats *stats,
                            s_test_stats *test,
                            UNUSED void *ptr) {
-    if (test->failed > 0)
+    if (test->failed_asserts > 0 || test->signal != test->test->data->signal) {
+        test->failed = 1;
         ++stats->tests_failed;
-    else
+    } else {
         ++stats->tests_passed;
+    }
 }
 
 static void push_test_crash(s_glob_stats *stats,
                             s_test_stats *test,
                             UNUSED void *ptr) {
+    test->failed = 1;
     ++stats->tests_failed;
     ++stats->tests_crashed;
 }
