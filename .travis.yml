@@ -10,6 +10,6 @@ before_install:
 script:
   - ./autogen.sh && ./configure --enable-gcov CFLAGS="-g -O0" && make && make check
 after_success:
-  - coveralls --gcov gcov-4.9 --exclude samples --gcov-options '\-lp' -b .
+  - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
 after_failure:
   - cat $(find check -iname '*.log') /dev/null
