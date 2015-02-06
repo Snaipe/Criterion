@@ -12,7 +12,8 @@
 !ChangeLog
 !doc/*
 
-!Makefile
+!Makefile.am
+!configure.ac
 
 *~
 *.swp
