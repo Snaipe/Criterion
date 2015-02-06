@@ -1,0 +1,4 @@
+2015-02-06  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * src/: Added criterion internals.
+	* include/: Added Test, ReportHook, assert and expect macros.
