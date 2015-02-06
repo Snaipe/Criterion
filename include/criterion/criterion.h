@@ -65,4 +65,6 @@ struct criterion_test {
     };                                                                         \
     TEST_PROTOTYPE_(Category, Name)
 
+int criterion_run_all_tests(void);
+
 #endif /* !CRITERION_H_ */

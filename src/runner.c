@@ -163,7 +163,7 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 }
 
 // TODO: disable & change tests at runtime
-int run_all(void) {
+int criterion_run_all_tests(void) {
     report(PRE_EVERYTHING, NULL);
     smart struct test_set *set = read_all_tests();
     smart struct criterion_global_stats *stats = stats_init();
@@ -176,5 +176,5 @@ int run_all(void) {
 }
 
 int main(void) {
-    return run_all();
+    return criterion_run_all_tests();
 }
