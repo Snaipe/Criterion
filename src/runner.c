@@ -146,9 +146,16 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
         if (WIFSIGNALED(status)) {
             test_stats->signal = WTERMSIG(status);
             if (test->data->signal == 0) {
+                struct event ev = { .kind = TEST_CRASH };
+                stat_push_event(stats, test_stats, &ev);
                 report(TEST_CRASH, test_stats);
             } else {
+                struct event ev = { .kind = POST_TEST };
+                stat_push_event(stats, test_stats, &ev);
                 report(POST_TEST, test_stats);
+
+                ev.kind = POST_FINI;
+                stat_push_event(stats, test_stats, &ev);
                 report(POST_FINI, test_stats);
             }
         }
@@ -156,7 +163,7 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 }
 
 // TODO: disable & change tests at runtime
-void run_all(void) {
+int run_all(void) {
     report(PRE_EVERYTHING, NULL);
     smart struct test_set *set = read_all_tests();
     smart struct criterion_global_stats *stats = stats_init();
@@ -164,8 +171,10 @@ void run_all(void) {
         abort();
     map_tests(set, stats, run_test);
     report(POST_EVERYTHING, stats);
+
+    return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && stats->tests_failed > 0;
 }
 
 int main(void) {
-    run_all();
+    return run_all();
 }

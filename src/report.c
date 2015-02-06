@@ -62,7 +62,9 @@ ReportHook(PRE_TEST)() {}
 ReportHook(POST_FINI)() {}
 
 ReportHook(PRE_EVERYTHING)() {}
-ReportHook(POST_EVERYTHING)() {}
+ReportHook(POST_EVERYTHING)(struct criterion_global_stats *stats) {
+    fprintf(stderr, "Synthesis: %lu tests were run. %lu passed, %lu failed (with %lu crashes)\n", stats->nb_tests, stats->tests_passed, stats->tests_failed, stats->tests_crashed);
+}
 
 ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
