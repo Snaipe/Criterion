@@ -5,12 +5,11 @@
 
 !*.c
 !*.h
+!*.rst
 
 !LICENSE
 !HEADER
-!README.md
 !ChangeLog
-!doc/*
 
 !Makefile.am
 !configure.ac
