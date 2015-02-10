@@ -37,5 +37,7 @@ libcriterion_la_SOURCES = \
 	src/report.h \
 	src/runner.c \
 	src/runner.h \
+	src/process.c \
+	src/process.h \
 	src/stats.c \
 	src/stats.h
