@@ -4,11 +4,7 @@ Criterion
  .. toctree::
     :maxdepth: 2 
 
+    intro
+    setup
     starter
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
-* :ref:`glossary`
+    hooks
