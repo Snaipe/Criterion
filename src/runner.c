@@ -35,6 +35,8 @@
 static struct criterion_test * const g_section_start = &__start_criterion_tests;
 static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
 
+static pid_t g_runner_pid;
+
 struct test_set {
     struct criterion_test **tests;
     size_t nb_tests;
@@ -87,8 +89,11 @@ static struct test_set *read_all_tests(void) {
 
 static void map_tests(struct test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
     size_t i = 0;
-    for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t)
+    for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t) {
         fun(stats, *t);
+        if (g_runner_pid != getpid())
+            return;
+    }
 }
 
 __attribute__ ((always_inline))
@@ -126,7 +131,10 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
         setup_child(&fds);
 
         run_test_child(test);
-        _exit(0);
+        if (!strcmp("1", getenv("CRITERION_NO_EARLY_EXIT") ?: "0"))
+            return;
+        else
+            _exit(0);
     } else {
         close(fds.out);
         struct event *ev;
@@ -163,16 +171,28 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 }
 
 // TODO: disable & change tests at runtime
-int criterion_run_all_tests(void) {
+static int criterion_run_all_tests_impl(void) {
     report(PRE_EVERYTHING, NULL);
+    g_runner_pid = getpid();
     smart struct test_set *set = read_all_tests();
     smart struct criterion_global_stats *stats = stats_init();
     if (!set)
         abort();
     map_tests(set, stats, run_test);
-    report(POST_EVERYTHING, stats);
 
-    return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && stats->tests_failed > 0;
+    if (g_runner_pid != getpid())
+        return -1;
+
+    report(POST_EVERYTHING, stats);
+    return stats->tests_failed > 0;
+}
+
+int criterion_run_all_tests(void) {
+    int res = criterion_run_all_tests_impl();
+    if (res == -1) // if this is the test worker terminating
+        exit(0);
+
+    return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && res;
 }
 
 int main(void) {
