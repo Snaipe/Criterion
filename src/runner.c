@@ -31,6 +31,7 @@
 #include "runner.h"
 #include "report.h"
 #include "event.h"
+#include "process.h"
 
 static struct criterion_test * const g_section_start = &__start_criterion_tests;
 static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
@@ -40,24 +41,16 @@ struct test_set {
     size_t nb_tests;
 };
 
-static int compare_test_by_name(const struct criterion_test *first,
-                                const struct criterion_test *second) {
-    // likely to happen
-    if (first->name == second->name)
-        return 0;
-    return strcmp(first->name, second->name);
-}
-
 static int compare_test(const void *a, const void *b) {
     struct criterion_test *first = *(struct criterion_test **) a;
     struct criterion_test *second = *(struct criterion_test **) b;
 
     // likely to happen
     if (first->category == second->category) {
-        return compare_test_by_name(first, second);
+        return strcmp(first->name, second->name);
     } else {
         return strcmp(first->category, second->category)
-            ?: compare_test_by_name(first, second);
+            ?: strcmp(first->name, second->name);
     }
 }
 
@@ -87,8 +80,11 @@ static struct test_set *read_all_tests(void) {
 
 static void map_tests(struct test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
     size_t i = 0;
-    for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t)
+    for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t) {
         fun(stats, *t);
+        if (!is_runner())
+            return;
+    }
 }
 
 __attribute__ ((always_inline))
@@ -104,77 +100,67 @@ static void run_test_child(struct criterion_test *test) {
     send_event(POST_FINI, NULL, 0);
 }
 
-struct pipefds {
-    int in, out;
-} __attribute__ ((packed));
-
-static void setup_child(struct pipefds *fds) {
-    close(STDIN_FILENO);
-    close(fds->in);
-    EVENT_PIPE = fds->out;
-}
-
 static void run_test(struct criterion_global_stats *stats, struct criterion_test *test) {
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
 
-    struct pipefds fds;
-    if (pipe((int*) &fds) == -1)
-        abort();
+    smart struct process *proc = spawn_test_worker(test, run_test_child);
+    if (proc == NULL && !is_runner())
+        return;
 
-    pid_t pid;
-    if (!(pid = fork())) {
-        setup_child(&fds);
-
-        run_test_child(test);
-        _exit(0);
-    } else {
-        close(fds.out);
-        struct event *ev;
-        while ((ev = read_event(fds.in)) != NULL) {
-            stat_push_event(stats, test_stats, ev);
-            switch (ev->kind) {
-                case PRE_INIT:  report(PRE_INIT, test); break;
-                case PRE_TEST:  report(PRE_TEST, test); break;
-                case ASSERT:    report(ASSERT, ev->data); break;
-                case POST_TEST: report(POST_TEST, test_stats); break;
-                case POST_FINI: report(POST_FINI, test_stats); break;
-            }
-            sfree(ev);
+    struct event *ev;
+    while ((ev = worker_read_event(proc)) != NULL) {
+        stat_push_event(stats, test_stats, ev);
+        switch (ev->kind) {
+            case PRE_INIT:  report(PRE_INIT, test); break;
+            case PRE_TEST:  report(PRE_TEST, test); break;
+            case ASSERT:    report(ASSERT, ev->data); break;
+            case POST_TEST: report(POST_TEST, test_stats); break;
+            case POST_FINI: report(POST_FINI, test_stats); break;
         }
-        int status;
-        waitpid(pid, &status, 0);
-        if (WIFSIGNALED(status)) {
-            test_stats->signal = WTERMSIG(status);
-            if (test->data->signal == 0) {
-                struct event ev = { .kind = TEST_CRASH };
-                stat_push_event(stats, test_stats, &ev);
-                report(TEST_CRASH, test_stats);
-            } else {
-                struct event ev = { .kind = POST_TEST };
-                stat_push_event(stats, test_stats, &ev);
-                report(POST_TEST, test_stats);
+        sfree(ev);
+    }
 
-                ev.kind = POST_FINI;
-                stat_push_event(stats, test_stats, &ev);
-                report(POST_FINI, test_stats);
-            }
+    struct process_status status = wait_proc(proc);
+    if (status.kind == SIGNAL) {
+        test_stats->signal = status.status;
+        if (test->data->signal == 0) {
+            struct event ev = { .kind = TEST_CRASH };
+            stat_push_event(stats, test_stats, &ev);
+            report(TEST_CRASH, test_stats);
+        } else {
+            struct event ev = { .kind = POST_TEST };
+            stat_push_event(stats, test_stats, &ev);
+            report(POST_TEST, test_stats);
+
+            ev.kind = POST_FINI;
+            stat_push_event(stats, test_stats, &ev);
+            report(POST_FINI, test_stats);
         }
     }
 }
 
 // TODO: disable & change tests at runtime
-int criterion_run_all_tests(void) {
+static int criterion_run_all_tests_impl(void) {
     report(PRE_EVERYTHING, NULL);
+    set_runner_pid();
+
     smart struct test_set *set = read_all_tests();
     smart struct criterion_global_stats *stats = stats_init();
     if (!set)
         abort();
     map_tests(set, stats, run_test);
-    report(POST_EVERYTHING, stats);
 
-    return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && stats->tests_failed > 0;
+    if (!is_runner())
+        return -1;
+
+    report(POST_EVERYTHING, stats);
+    return stats->tests_failed > 0;
 }
 
-int main(void) {
-    return criterion_run_all_tests();
+int criterion_run_all_tests(void) {
+    int res = criterion_run_all_tests_impl();
+    if (res == -1) // if this is the test worker terminating
+        exit(0);
+
+    return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && res;
 }
