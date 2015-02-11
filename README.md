@@ -28,30 +28,19 @@ the user would have with other frameworks:
   reported and tested.
 * Progress and statistics can be followed in real time with report hooks.
 
-## Installation
+## Documentation
 
-```bash
-$ git clone https://github.com/Snaipe/Criterion.git
-$ cd Criterion
-$ ./autogen.sh && ./configure && make && sudo make install
-```
-
-## Usage
-
-Given a test file named test.c, compile it with `-lcriterion`:
-
-```bash
-$ gcc -o test test.c -lcriterion
-```
+An online documentation is available on [ReadTheDocs][online-docs] 
+([PDF][pdf-docs] | [Zip][zip-docs] | [Epub][epub-docs])
 
 ## Samples
 
-Sample tests can be found in the [sample directory](https://github.com/Snaipe/Criterion/tree/master/samples).
+Sample tests can be found in the [sample directory][samples].
 
-* [A simple test](https://github.com/Snaipe/Criterion/blob/master/samples/simple.c)
-* [Using multiple suites](https://github.com/Snaipe/Criterion/blob/master/samples/suites.c)
-* [Tests with signals](https://github.com/Snaipe/Criterion/blob/master/samples/signal.c)
-* [Using report hooks](https://github.com/Snaipe/Criterion/blob/master/samples/report.c)
+* [A simple test][sample-simple]
+* [Using multiple suites][sample-suites]
+* [Tests with signals][sample-signal]
+* [Using report hooks][sample-report]
 
 ## F.A.Q.
 
@@ -69,6 +58,17 @@ A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
    most \*nix systems. More tests will be added on the build matrix.
 
 **Q. Will this work under Windows/MSVC?**  
-A. Windows support with MinGW is coming, but MSVC is a bit of a lost cause
-   for the C language. The project internally uses c99 features and gnu
-   extensions, and MSVC is stuck at supporting c89.
+A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
+   to compile the library itself: the project internally uses c99 features and gnu
+   extensions.
+
+[online-docs]: http://criterion.readthedocs.org/
+[pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
+[zip-docs]: http://readthedocs.org/projects/criterion/downloads/htmlzip/latest/
+[epub-docs]: http://readthedocs.org/projects/criterion/downloads/epub/latest/
+
+[samples]: https://github.com/Snaipe/Criterion/tree/master/samples
+[sample-simple]: https://github.com/Snaipe/Criterion/blob/master/samples/simple.c
+[sample-suites]: https://github.com/Snaipe/Criterion/blob/master/samples/suites.c
+[sample-signal]: https://github.com/Snaipe/Criterion/blob/master/samples/signal.c
+[sample-report]: https://github.com/Snaipe/Criterion/blob/master/samples/report.c
