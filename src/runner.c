@@ -164,7 +164,3 @@ int criterion_run_all_tests(void) {
 
     return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && res;
 }
-
-int main(void) {
-    return criterion_run_all_tests();
-}

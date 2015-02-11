@@ -40,4 +40,5 @@ libcriterion_la_SOURCES = \
 	src/process.c \
 	src/process.h \
 	src/stats.c \
-	src/stats.h
+	src/stats.h \
+	src/main.c
