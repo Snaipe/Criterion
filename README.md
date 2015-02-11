@@ -58,9 +58,9 @@ A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
    most \*nix systems. More tests will be added on the build matrix.
 
 **Q. Will this work under Windows/MSVC?**  
-A. Windows support with MinGW is coming, but MSVC is a bit of a lost cause
-   for the C language. The project internally uses c99 features and gnu
-   extensions, and MSVC is stuck at supporting c89.
+A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
+   to compile the library itself: the project internally uses c99 features and gnu
+   extensions.
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
