@@ -66,6 +66,11 @@ enum criterion_assert_kind {
 # define expectEqual(Actual, Expected, ...) \
     expect((Actual) == (Expected), ## __VA_ARGS__)
 
+# define assertFloatEqual(Actual, Expected, Epsilon, ...) \
+    assert((Expected) - (Actual) < (Epsilon) && (Actual) - (Expected) < (Epsilon), ## __VA_ARGS__)
+# define expectFloatEqual(Actual, Expected, Epsilon, ...) \
+    expect((Expected) - (Actual) < (Epsilon) && (Actual) - (Expected) < (Epsilon), ## __VA_ARGS__)
+
 # define assertStringsEqual(Actual, Expected, ...) \
     assert(!strcmp((Actual), (Expected)), ## __VA_ARGS__)
 # define expectStringsEqual(Actual, Expected, ...) \
