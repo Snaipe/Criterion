@@ -29,6 +29,7 @@ subdirinclude_HEADERS = \
 	include/criterion/event.h \
 	include/criterion/hooks.h \
 	include/criterion/logging.h \
+	include/criterion/options.h \
 	include/criterion/stats.h
 
 libcriterion_la_SOURCES = \
@@ -43,4 +44,5 @@ libcriterion_la_SOURCES = \
 	src/stats.c \
 	src/stats.h \
 	src/logging.c \
+	src/options.c \
 	src/main.c
