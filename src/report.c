@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "criterion/criterion.h"
 #include "criterion/stats.h"
+#include "criterion/logging.h"
 #include "report.h"
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                        \
@@ -49,11 +50,15 @@ IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_EVERYTHING);
 
 ReportHook(PRE_INIT)(struct criterion_test *test) {
-    fprintf(stderr, "%s::%s: RUNNING\n", test->category, test->name);
+    criterion_info("%s::%s: RUNNING\n", test->category, test->name);
 }
 
 ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
-    fprintf(stderr, "%s::%s: %s\n", stats->test->category, stats->test->name, stats->failed ? "FAILURE" : "SUCCESS");
+    criterion_log(stats->failed ? CRITERION_IMPORTANT : CRITERION_INFO,
+            "%s::%s: %s\n",
+            stats->test->category,
+            stats->test->name,
+            stats->failed ? "FAILURE" : "SUCCESS");
 }
 
 ReportHook(PRE_TEST)() {}
@@ -61,12 +66,16 @@ ReportHook(POST_FINI)() {}
 
 ReportHook(PRE_EVERYTHING)() {}
 ReportHook(POST_EVERYTHING)(struct criterion_global_stats *stats) {
-    fprintf(stderr, "Synthesis: %lu tests were run. %lu passed, %lu failed (with %lu crashes)\n", stats->nb_tests, stats->tests_passed, stats->tests_failed, stats->tests_crashed);
+    criterion_important("Synthesis: %lu tests were run. %lu passed, %lu failed (with %lu crashes)\n",
+            stats->nb_tests,
+            stats->tests_passed,
+            stats->tests_failed,
+            stats->tests_crashed);
 }
 
 ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
-        fprintf(stderr, "\t%s:%d: Assertion failed: %s\n",
+        criterion_important("%s:%d: Assertion failed: %s\n",
                 stats->file,
                 stats->line,
                 *stats->message ? stats->message : stats->condition);
@@ -74,7 +83,7 @@ ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
 }
 
 ReportHook(TEST_CRASH)(struct criterion_test_stats *stats) {
-    fprintf(stderr, "\tUnexpected signal after %s:%u!\n%s::%s: FAILURE (CRASH!)\n",
+    criterion_important("Unexpected signal after %s:%u!\n%s::%s: FAILURE (CRASH!)\n",
             stats->file,
             stats->progress,
             stats->test->category,
