@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Criterion</title>
+  <meta name="description" content="A KISS, non-intrusive C test framework">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Criterion</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">A KISS, non-intrusive C test framework</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/Snaipe/Criterion/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/Snaipe/Criterion/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/Snaipe/Criterion" class="code">View Criterion on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
+<a id="criterion" class="anchor" href="#criterion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Criterion</h1>
+
+<p><a href="https://travis-ci.org/Snaipe/Criterion"><img src="https://travis-ci.org/Snaipe/Criterion.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/r/Snaipe/Criterion?branch=master"><img src="https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=master" alt="Coverage Status"></a>
+<a href="https://github.com/Snaipe/Criterion/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="License"></a>
+<a href="https://github.com/Snaipe/Criterion/releases"><img src="https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&amp;style=flat" alt="Version"></a></p>
+
+<p>A dead-simple, yet extensible, C test framework.</p>
+
+<p><img src="../bleeding/doc/screencast.gif" alt="Screencast"></p>
+
+<h2>
+<a id="philosophy" class="anchor" href="#philosophy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Philosophy</h2>
+
+<p>Most test frameworks for C require a lot of boilerplate code to
+set up tests and test suites -- you need to create a main,
+then register new test suites, then register the tests within
+these suits, and finally call the right functions.</p>
+
+<p>This gives the user great control, at the unfortunate cost of simplicity.</p>
+
+<p>Criterion follows the KISS principle, while keeping the control
+the user would have with other frameworks:</p>
+
+<ul>
+<li>Tests are automatically registered when declared.</li>
+<li>A default entry point is provided, no need to declare a main
+unless you want to do special handling.</li>
+<li>Test are isolated in their own process, crashes and signals can be
+reported and tested.</li>
+<li>Progress and statistics can be followed in real time with report hooks.</li>
+</ul>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>An online documentation is available on <a href="http://criterion.readthedocs.org/">ReadTheDocs</a>
+(<a href="http://readthedocs.org/projects/criterion/downloads/pdf/latest/">PDF</a> | <a href="http://readthedocs.org/projects/criterion/downloads/htmlzip/latest/">Zip</a> | <a href="http://readthedocs.org/projects/criterion/downloads/epub/latest/">Epub</a>)</p>
+
+<h2>
+<a id="samples" class="anchor" href="#samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples</h2>
+
+<p>Sample tests can be found in the <a href="https://github.com/Snaipe/Criterion/tree/master/samples">sample directory</a>.</p>
+
+<ul>
+<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/simple.c">A simple test</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/suites.c">Using multiple suites</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/signal.c">Tests with signals</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/report.c">Using report hooks</a></li>
+</ul>
+
+<h2>
+<a id="faq" class="anchor" href="#faq" aria-hidden="true"><span class="octicon octicon-link"></span></a>F.A.Q.</h2>
+
+<p><strong>Q. What's wrong with other test frameworks?</strong>
+A. I worked with CUnit and Check, and I must say that they do their job
+   very well -- the only thing that bugs me is that setting up a test
+   suite from scratch is a pain, it should really be simpler. Most
+   (if not all) high-level languages have test frameworks with automatic
+   test registration, but all the ones for C require you to set up a
+   main, manually register suites, then tests. Criterion tries to
+   fix these shortcomings.</p>
+
+<p><strong>Q. Where has this been tested?</strong>
+A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
+   most *nix systems. More tests will be added on the build matrix.</p>
+
+<p><strong>Q. Will this work under Windows/MSVC?</strong>
+A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
+   to compile the library itself: the project internally uses c99 features and gnu
+   extensions.</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/Snaipe" class="avatar"><img src="https://avatars0.githubusercontent.com/u/977973?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/Snaipe">Snaipe</a> maintains <a href="https://github.com/Snaipe/Criterion">Criterion</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/Snaipe/Criterion/tarball/master" class="tar">tar</a><a href="https://github.com/Snaipe/Criterion/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
