@@ -18,6 +18,7 @@ int print_usage(char *progname) {
 int main(int argc, char *argv[]) {
     static struct option opts[] = {
         {"verbose", optional_argument,  0, 'v'},
+        {"tap",     no_argument,        0, 't'},
         {"help",    no_argument,        0, 'h'},
         {0,         0,                  0,  0 }
     };
@@ -25,6 +26,7 @@ int main(int argc, char *argv[]) {
     for (int c; (c = getopt_long(argc, argv, "h", opts, NULL)) != -1;) {
         switch (c) {
             case 'v': logging_threshold = atoi(optarg ?: "1"); break;
+            case 't': enable_tap_format = true; break;
             case 'h':
             default : return print_usage(argv[0]);
         }

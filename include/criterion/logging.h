@@ -24,7 +24,8 @@
 #ifndef CRITERION_LOGGING_H_
 # define CRITERION_LOGGING_H_
 
-#include "common.h"
+# include <stdbool.h>
+# include "common.h"
 
 enum criterion_logging_level {
     CRITERION_INFO = 1,
@@ -32,6 +33,7 @@ enum criterion_logging_level {
 };
 
 extern enum criterion_logging_level logging_threshold;
+extern bool enable_tap_format;
 
 FORMAT(printf, 2, 3)
 void criterion_log(enum criterion_logging_level level, const char *msg, ...);
