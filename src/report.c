@@ -25,6 +25,7 @@
 #include "criterion/criterion.h"
 #include "criterion/stats.h"
 #include "criterion/logging.h"
+#include "criterion/options.h"
 #include "report.h"
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                        \
@@ -52,13 +53,13 @@ IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_EVERYTHING);
 
 ReportHook(PRE_INIT)(struct criterion_test *test) {
-    if (enable_tap_format) return;
+    if (criterion_options.enable_tap_format) return;
 
     criterion_info("%s::%s: RUNNING\n", test->category, test->name);
 }
 
 ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
-    if (enable_tap_format) {
+    if (criterion_options.enable_tap_format) {
         criterion_important("%s %lu - %s::%s\n",
                 stats->failed ? "not ok" : "ok",
                 tap_test_index++,
@@ -90,7 +91,7 @@ ReportHook(PRE_TEST)() {}
 ReportHook(POST_FINI)() {}
 
 ReportHook(PRE_EVERYTHING)(struct criterion_test_set *set) {
-    if (enable_tap_format) {
+    if (criterion_options.enable_tap_format) {
         size_t enabled_count = 0, i = 0;
         for (struct criterion_test **test = set->tests; i < set->nb_tests; ++i)
             if (!(test[i])->data->disabled)
@@ -99,7 +100,7 @@ ReportHook(PRE_EVERYTHING)(struct criterion_test_set *set) {
     }
 }
 ReportHook(POST_EVERYTHING)(struct criterion_global_stats *stats) {
-    if (enable_tap_format) return;
+    if (criterion_options.enable_tap_format) return;
 
     criterion_important("Synthesis: %lu tests were run. %lu passed, %lu failed (with %lu crashes)\n",
             stats->nb_tests,
@@ -109,7 +110,7 @@ ReportHook(POST_EVERYTHING)(struct criterion_global_stats *stats) {
 }
 
 ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
-    if (enable_tap_format) return;
+    if (criterion_options.enable_tap_format) return;
 
     if (!stats->passed) {
         criterion_important("%s:%d: Assertion failed: %s\n",
@@ -120,7 +121,7 @@ ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
 }
 
 ReportHook(TEST_CRASH)(struct criterion_test_stats *stats) {
-    if (enable_tap_format) {
+    if (criterion_options.enable_tap_format) {
         criterion_important("not ok %lu - %s::%s unexpected signal after %s:%u\n",
                 tap_test_index++,
                 stats->test->category,

@@ -6,6 +6,7 @@
 #include <csptr/smart_ptr.h>
 
 #include "criterion/criterion.h"
+#include "criterion/options.h"
 #include "process.h"
 #include "event.h"
 
@@ -47,7 +48,7 @@ struct process *spawn_test_worker(struct criterion_test *test, void (*func)(stru
 
         func(test);
         close(fds[1]);
-        if (!strcmp("1", getenv("CRITERION_NO_EARLY_EXIT") ?: "0"))
+        if (!criterion_options.no_early_exit)
             return NULL;
         else
             _exit(0);

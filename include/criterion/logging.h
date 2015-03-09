@@ -32,9 +32,6 @@ enum criterion_logging_level {
     CRITERION_IMPORTANT,
 };
 
-extern enum criterion_logging_level logging_threshold;
-extern bool enable_tap_format;
-
 FORMAT(printf, 2, 3)
 void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 

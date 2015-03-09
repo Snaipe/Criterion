@@ -27,6 +27,7 @@
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
 #include "criterion/assert.h"
+#include "criterion/options.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
@@ -160,5 +161,5 @@ int criterion_run_all_tests(void) {
     if (res == -1) // if this is the test worker terminating
         exit(0);
 
-    return strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0") && res;
+    return criterion_options.always_succeed && res;
 }
