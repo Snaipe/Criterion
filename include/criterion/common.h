@@ -27,4 +27,10 @@
 # define SECTION_(Name) __attribute__((section(Name)))
 # define UNUSED __attribute__((unused))
 
+# ifdef __GNUC__
+#  define FORMAT(Archetype, Index, Ftc) __attribute__((format(Archetype, Index, Ftc)))
+# else
+#  define FORMAT(Archetype, Index, Ftc)
+# endif
+
 #endif /* !CRITERION_COMMON_H_ */
