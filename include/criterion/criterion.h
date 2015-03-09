@@ -30,18 +30,25 @@
 # include "assert.h"
 
 struct criterion_test_extra_data {
-    const char *file_;
-    unsigned line_;
+    const char *const file_;
+    const unsigned line_;
     void (*init)(void);
     void (*fini)(void);
     int signal;
+    bool disabled;
+    void *data;
 };
 
 struct criterion_test {
     const char *name;
     const char *category;
     void (*test)(void);
-    const struct criterion_test_extra_data *data;
+    struct criterion_test_extra_data *const data;
+};
+
+struct criterion_test_set {
+    struct criterion_test **tests;
+    size_t nb_tests;
 };
 
 # define IDENTIFIER_(Category, Name, Suffix) \

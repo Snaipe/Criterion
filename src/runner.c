@@ -36,11 +36,6 @@
 static struct criterion_test * const g_section_start = &__start_criterion_tests;
 static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
 
-struct test_set {
-    struct criterion_test **tests;
-    size_t nb_tests;
-};
-
 static int compare_test(const void *a, const void *b) {
     struct criterion_test *first = *(struct criterion_test **) a;
     struct criterion_test *second = *(struct criterion_test **) b;
@@ -55,11 +50,11 @@ static int compare_test(const void *a, const void *b) {
 }
 
 static void destroy_test_set(void *ptr, UNUSED void *meta) {
-    struct test_set *set = ptr;
+    struct criterion_test_set *set = ptr;
     free(set->tests);
 }
 
-static struct test_set *read_all_tests(void) {
+static struct criterion_test_set *read_all_tests(void) {
     size_t nb_tests = g_section_end - g_section_start;
 
     struct criterion_test **tests = malloc(nb_tests * sizeof (void *));
@@ -72,13 +67,13 @@ static struct test_set *read_all_tests(void) {
 
     qsort(tests, nb_tests, sizeof (void *), compare_test);
 
-    return unique_ptr(struct test_set, ({
+    return unique_ptr(struct criterion_test_set, ({
                 .tests = tests,
                 .nb_tests = nb_tests
             }), destroy_test_set);
 }
 
-static void map_tests(struct test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
+static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
     size_t i = 0;
     for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t) {
         fun(stats, *t);
@@ -101,6 +96,9 @@ static void run_test_child(struct criterion_test *test) {
 }
 
 static void run_test(struct criterion_global_stats *stats, struct criterion_test *test) {
+    if (test->data->disabled)
+        return;
+
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
 
     smart struct process *proc = spawn_test_worker(test, run_test_child);
@@ -139,12 +137,12 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
     }
 }
 
-// TODO: disable & change tests at runtime
 static int criterion_run_all_tests_impl(void) {
-    report(PRE_EVERYTHING, NULL);
+    smart struct criterion_test_set *set = read_all_tests();
+
+    report(PRE_EVERYTHING, set);
     set_runner_pid();
 
-    smart struct test_set *set = read_all_tests();
     smart struct criterion_global_stats *stats = stats_init();
     if (!set)
         abort();
