@@ -115,7 +115,7 @@ enum criterion_assert_kind {
 # define assert_strings(Actual, Expected, Op, ...) \
     assert(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
 # define expect_strings(Actual, Expected, Op, ...) \
-    assert(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
+    expect(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
 
 # define assert_strings_equal(Actual, Expected, ...) \
     assert_strings(Actual, Expected, ==, "" __VA_ARGS__)
