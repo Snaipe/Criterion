@@ -24,7 +24,7 @@
 #ifndef CRITERION_HOOKS_H_
 # define CRITERION_HOOKS_H_
 
-#include "common.h"
+# include "common.h"
 
 typedef enum {
     PRE_ALL,

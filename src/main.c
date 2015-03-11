@@ -1,26 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 #define _GNU_SOURCE
 #include <criterion/criterion.h>
 #include <criterion/logging.h>
@@ -50,9 +27,9 @@ int main(int argc, char *argv[]) {
     };
 
     criterion_options = (struct criterion_options) {
-        .always_succeed    = strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
-        .no_early_exit     = strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0"),
-        .enable_tap_format = strcmp("1", getenv("CRITERION_ENABLE_TAP")     ?: "0"),
+        .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
+        .no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0"),
+        .enable_tap_format = !strcmp("1", getenv("CRITERION_ENABLE_TAP")     ?: "0"),
         .logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2"),
     };
 

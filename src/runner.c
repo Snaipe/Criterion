@@ -158,7 +158,7 @@ static int criterion_run_all_tests_impl(void) {
 int criterion_run_all_tests(void) {
     int res = criterion_run_all_tests_impl();
     if (res == -1) // if this is the test worker terminating
-        exit(0);
+        _exit(0);
 
-    return criterion_options.always_succeed && res;
+    return !criterion_options.always_succeed && res;
 }
