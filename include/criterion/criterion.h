@@ -56,12 +56,12 @@ struct criterion_test_set {
 # define TEST_PROTOTYPE_(Category, Name) \
     void IDENTIFIER_(Category, Name, impl)(void)
 
-# define Test(Category, Name, Args...)                                         \
+# define Test(Category, Name, ...)                                             \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
         .file_ = __FILE__,                                                     \
         .line_ = __LINE__,                                                     \
-        Args                                                                   \
+        __VA_ARGS__                                                            \
     };                                                                         \
     SECTION_("criterion_tests")                                                \
     const struct criterion_test IDENTIFIER_(Category, Name, meta) = {          \
