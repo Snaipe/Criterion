@@ -11,7 +11,7 @@ TESTS += tests/tap_test.sh \
          tests/verbose.sh \
          tests/help.sh
 
-tests/tap_test.sh: simple
+tests/tap_test.sh: simple signal asserts
 tests/early_exit.sh: simple
 tests/verbose.sh: simple
 tests/help.sh: simple
