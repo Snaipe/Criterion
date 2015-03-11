@@ -23,12 +23,14 @@ This gives the user great control, at the unfortunate cost of simplicity.
 Criterion follows the KISS principle, while keeping the control
 the user would have with other frameworks:
 
-* Tests are automatically registered when declared.
-* A default entry point is provided, no need to declare a main
+* [x] Tests are automatically registered when declared.
+* [x] A default entry point is provided, no need to declare a main
   unless you want to do special handling.
-* Test are isolated in their own process, crashes and signals can be
+* [x] Test are isolated in their own process, crashes and signals can be
   reported and tested.
-* Progress and statistics can be followed in real time with report hooks.
+* [x] Progress and statistics can be followed in real time with report hooks.
+* [x] TAP output format can be enabled with an option.
+* [x] Runs on Linux and OS X.
 
 ## Documentation
 
@@ -41,6 +43,7 @@ Sample tests can be found in the [sample directory][samples].
 
 * [A simple test][sample-simple]
 * [Using multiple suites][sample-suites]
+* [Adding test fixtures][sample-fixtures]
 * [Tests with signals][sample-signal]
 * [Using report hooks][sample-report]
 
@@ -70,7 +73,8 @@ A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
 [epub-docs]: http://readthedocs.org/projects/criterion/downloads/epub/latest/
 
 [samples]: https://github.com/Snaipe/Criterion/tree/master/samples
-[sample-simple]: https://github.com/Snaipe/Criterion/blob/master/samples/simple.c
-[sample-suites]: https://github.com/Snaipe/Criterion/blob/master/samples/suites.c
-[sample-signal]: https://github.com/Snaipe/Criterion/blob/master/samples/signal.c
-[sample-report]: https://github.com/Snaipe/Criterion/blob/master/samples/report.c
+[sample-simple]: ./samples/simple.c
+[sample-suites]: ./samples/suites.c
+[sample-fixtures]: ./samples/fixtures.c
+[sample-signal]: ./samples/signal.c
+[sample-report]: ./samples/report.c
