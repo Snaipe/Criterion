@@ -82,15 +82,40 @@ enum criterion_assert_kind {
 
 // String asserts
 
+# define assert_strings(Actual, Expected, Op, ...) \
+    assert(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
+# define expect_strings(Actual, Expected, Op, ...) \
+    assert(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
+
 # define assert_strings_equal(Actual, Expected, ...) \
-    assert(!strcmp((Actual), (Expected)), "" __VA_ARGS__)
+    assert_strings(Actual, Expected, ==, "" __VA_ARGS__)
 # define expect_strings_equal(Actual, Expected, ...) \
-    expect(!strcmp((Actual), (Expected)), "" __VA_ARGS__)
+    expect_strings(Actual, Expected, ==, "" __VA_ARGS__)
+
+# define assert_strings_gt(Actual, Expected, ...) \
+    assert_strings(Actual, Expected, >, "" __VA_ARGS__)
+# define expect_strings_gt(Actual, Expected, ...) \
+    expect_strings(Actual, Expected, >, "" __VA_ARGS__)
+
+# define assert_strings_lt(Actual, Expected, ...) \
+    assert_strings(Actual, Expected, <, "" __VA_ARGS__)
+# define expect_strings_lt(Actual, Expected, ...) \
+    expect_strings(Actual, Expected, <, "" __VA_ARGS__)
+
+# define assert_strings_geq(Actual, Expected, ...) \
+    assert_strings(Actual, Expected, >=, "" __VA_ARGS__)
+# define expect_strings_geq(Actual, Expected, ...) \
+    expect_strings(Actual, Expected, >=, "" __VA_ARGS__)
+
+# define assert_strings_leq(Actual, Expected, ...) \
+    assert_strings(Actual, Expected, <=, "" __VA_ARGS__)
+# define expect_strings_leq(Actual, Expected, ...) \
+    expect_strings(Actual, Expected, <=, "" __VA_ARGS__)
 
 # define assert_strings_not_equal(Actual, Expected, ...) \
-    assert(strcmp((Actual), (Expected)), "" __VA_ARGS__)
+    assert_strings(Actual, Expected, !=, "" __VA_ARGS__)
 # define expect_strings_not_equal(Actual, Expected, ...) \
-    expect(strcmp((Actual), (Expected)), "" __VA_ARGS__)
+    expect_strings(Actual, Expected, !=, "" __VA_ARGS__)
 
 // Array asserts
 
