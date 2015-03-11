@@ -72,7 +72,7 @@ A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
 [zip-docs]: http://readthedocs.org/projects/criterion/downloads/htmlzip/latest/
 [epub-docs]: http://readthedocs.org/projects/criterion/downloads/epub/latest/
 
-[samples]: https://github.com/Snaipe/Criterion/tree/master/samples
+[samples]: ./samples/
 [sample-simple]: ./samples/simple.c
 [sample-suites]: ./samples/suites.c
 [sample-fixtures]: ./samples/fixtures.c
