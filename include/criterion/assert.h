@@ -101,9 +101,14 @@ enum criterion_assert_kind {
 // Floating-point asserts
 
 # define assert_float_equal(Actual, Expected, Epsilon, ...) \
-    assert((Expected) - (Actual) < (Epsilon) && (Actual) - (Expected) < (Epsilon), "" __VA_ARGS__)
+    assert((Expected) - (Actual) <= (Epsilon) && (Actual) - (Expected) <= (Epsilon), "" __VA_ARGS__)
 # define expect_float_equal(Actual, Expected, Epsilon, ...) \
-    expect((Expected) - (Actual) < (Epsilon) && (Actual) - (Expected) < (Epsilon), "" __VA_ARGS__)
+    expect((Expected) - (Actual) <= (Epsilon) && (Actual) - (Expected) <= (Epsilon), "" __VA_ARGS__)
+
+# define assert_float_not_equal(Actual, Expected, Epsilon, ...) \
+    assert((Expected) - (Actual) > (Epsilon) || (Actual) - (Expected) > (Epsilon), "" __VA_ARGS__)
+# define expect_float_not_equal(Actual, Expected, Epsilon, ...) \
+    expect((Expected) - (Actual) > (Epsilon) || (Actual) - (Expected) > (Epsilon), "" __VA_ARGS__)
 
 // String asserts
 
