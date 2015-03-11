@@ -26,7 +26,6 @@
 
 # include "criterion/criterion.h"
 
-extern struct criterion_test __start_criterion_tests;
-extern struct criterion_test __stop_criterion_tests;
+DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 
 #endif /* !CRITERION_RUNNER_H_ */

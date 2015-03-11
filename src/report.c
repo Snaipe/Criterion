@@ -29,13 +29,10 @@
 #include "report.h"
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                        \
-    static f_report_hook * const g_##Kind##_section_start = \
-        &__start_criterion_hooks_##Kind;                    \
-    static f_report_hook * const g_##Kind##_section_end =   \
-        &__stop_criterion_hooks_##Kind;                     \
+    IMPL_SECTION_LIMITS(f_report_hook, Kind);               \
     void call_report_hooks_##Kind(void *data) {             \
-        for (f_report_hook *hook = g_##Kind##_section_start;\
-             hook < g_##Kind##_section_end;                 \
+        for (f_report_hook *hook = SECTION_START(Kind);     \
+             hook < SECTION_END(Kind);                      \
              ++hook) {                                      \
             (*hook)(data);                                  \
         }                                                   \
@@ -43,14 +40,14 @@
 
 static size_t tap_test_index = 1;
 
-IMPL_CALL_REPORT_HOOKS(PRE_EVERYTHING);
+IMPL_CALL_REPORT_HOOKS(PRE_ALL);
 IMPL_CALL_REPORT_HOOKS(PRE_INIT);
 IMPL_CALL_REPORT_HOOKS(PRE_TEST);
 IMPL_CALL_REPORT_HOOKS(ASSERT);
 IMPL_CALL_REPORT_HOOKS(TEST_CRASH);
 IMPL_CALL_REPORT_HOOKS(POST_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_FINI);
-IMPL_CALL_REPORT_HOOKS(POST_EVERYTHING);
+IMPL_CALL_REPORT_HOOKS(POST_ALL);
 
 ReportHook(PRE_INIT)(struct criterion_test *test) {
     if (criterion_options.enable_tap_format) return;
@@ -90,7 +87,7 @@ ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
 ReportHook(PRE_TEST)() {}
 ReportHook(POST_FINI)() {}
 
-ReportHook(PRE_EVERYTHING)(struct criterion_test_set *set) {
+ReportHook(PRE_ALL)(struct criterion_test_set *set) {
     if (criterion_options.enable_tap_format) {
         size_t enabled_count = 0, i = 0;
         for (struct criterion_test **test = set->tests; i < set->nb_tests; ++i)
@@ -99,7 +96,7 @@ ReportHook(PRE_EVERYTHING)(struct criterion_test_set *set) {
         criterion_important("1..%lu\n", enabled_count);
     }
 }
-ReportHook(POST_EVERYTHING)(struct criterion_global_stats *stats) {
+ReportHook(POST_ALL)(struct criterion_global_stats *stats) {
     if (criterion_options.enable_tap_format) return;
 
     criterion_important("Synthesis: %lu tests were run. %lu passed, %lu failed (with %lu crashes)\n",

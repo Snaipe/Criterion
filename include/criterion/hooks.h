@@ -27,14 +27,14 @@
 #include "common.h"
 
 typedef enum {
-    PRE_EVERYTHING,
+    PRE_ALL,
     PRE_INIT,
     PRE_TEST,
     ASSERT,
     TEST_CRASH,
     POST_TEST,
     POST_FINI,
-    POST_EVERYTHING,
+    POST_ALL,
 } e_report_status;
 
 typedef void (*f_report_hook)();
@@ -48,7 +48,7 @@ typedef void (*f_report_hook)();
 
 # define ReportHook(Kind)                                                      \
     HOOK_PROTOTYPE_();                                                         \
-    SECTION_("criterion_hooks_" #Kind)                                         \
+    SECTION_("crit_" #Kind)                                         \
     const f_report_hook HOOK_IDENTIFIER_(func) = HOOK_IDENTIFIER_(impl);       \
     HOOK_PROTOTYPE_
 

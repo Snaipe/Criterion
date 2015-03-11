@@ -34,8 +34,7 @@
 #include "event.h"
 #include "process.h"
 
-static struct criterion_test * const g_section_start = &__start_criterion_tests;
-static struct criterion_test * const g_section_end   = &__stop_criterion_tests;
+IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 
 static int compare_test(const void *a, const void *b) {
     struct criterion_test *first = *(struct criterion_test **) a;
@@ -56,14 +55,14 @@ static void destroy_test_set(void *ptr, UNUSED void *meta) {
 }
 
 static struct criterion_test_set *read_all_tests(void) {
-    size_t nb_tests = g_section_end - g_section_start;
+    size_t nb_tests = SECTION_END(criterion_tests) - SECTION_START(criterion_tests);
 
     struct criterion_test **tests = malloc(nb_tests * sizeof (void *));
     if (tests == NULL)
         return NULL;
 
     size_t i = 0;
-    for (struct criterion_test *test = g_section_start; test < g_section_end; ++test)
+    for (struct criterion_test *test = SECTION_START(criterion_tests); test < SECTION_END(criterion_tests); ++test)
         tests[i++] = test;
 
     qsort(tests, nb_tests, sizeof (void *), compare_test);
@@ -141,7 +140,7 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 static int criterion_run_all_tests_impl(void) {
     smart struct criterion_test_set *set = read_all_tests();
 
-    report(PRE_EVERYTHING, set);
+    report(PRE_ALL, set);
     set_runner_pid();
 
     smart struct criterion_global_stats *stats = stats_init();
@@ -152,7 +151,7 @@ static int criterion_run_all_tests_impl(void) {
     if (!is_runner())
         return -1;
 
-    report(POST_EVERYTHING, stats);
+    report(POST_ALL, stats);
     return stats->tests_failed > 0;
 }
 

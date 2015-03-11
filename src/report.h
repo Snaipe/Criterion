@@ -28,18 +28,17 @@
 
 # define report(Kind, Data) call_report_hooks_##Kind(Data)
 
-# define DECL_CALL_REPORT_HOOKS(Kind)                       \
-    extern f_report_hook __start_criterion_hooks_##Kind;    \
-    extern f_report_hook __stop_criterion_hooks_##Kind;     \
+# define DECL_CALL_REPORT_HOOKS(Kind)           \
+    DECL_SECTION_LIMITS(f_report_hook, Kind);   \
     void call_report_hooks_##Kind(void *data)
 
-DECL_CALL_REPORT_HOOKS(PRE_EVERYTHING);
+DECL_CALL_REPORT_HOOKS(PRE_ALL);
 DECL_CALL_REPORT_HOOKS(PRE_INIT);
 DECL_CALL_REPORT_HOOKS(PRE_TEST);
 DECL_CALL_REPORT_HOOKS(ASSERT);
 DECL_CALL_REPORT_HOOKS(TEST_CRASH);
 DECL_CALL_REPORT_HOOKS(POST_TEST);
 DECL_CALL_REPORT_HOOKS(POST_FINI);
-DECL_CALL_REPORT_HOOKS(POST_EVERYTHING);
+DECL_CALL_REPORT_HOOKS(POST_ALL);
 
 #endif /* !REPORT_H_ */
