@@ -37,7 +37,7 @@ enum criterion_assert_kind {
     FATAL
 };
 
-# define assertImpl(Kind, Condition, ...)                       \
+# define assert_impl(Kind, Condition, ...)                       \
     do {                                                        \
         int passed = !!(Condition);                             \
         struct criterion_assert_stats stat = {                  \
@@ -53,45 +53,45 @@ enum criterion_assert_kind {
             return;                                             \
     } while (0)
 
-# define assert(Condition, ...) assertImpl(FATAL, (Condition), ## __VA_ARGS__)
-# define expect(Condition, ...) assertImpl(NORMAL, (Condition), ## __VA_ARGS__)
+# define assert(Condition, ...) assert_impl(FATAL, (Condition), ## __VA_ARGS__)
+# define expect(Condition, ...) assert_impl(NORMAL, (Condition), ## __VA_ARGS__)
 
-# define assertArraysEqual(A, B, Size, ...) \
+# define assert_arrays_equal(A, B, Size, ...) \
     assert(!memcmp((A), (B), (Size)), ## __VA_ARGS__)
-# define expectArraysEqual(A, B, Size, ...) \
+# define expect_arrays_equal(A, B, Size, ...) \
     expect(!memcmp((A), (B), (Size)), ## __VA_ARGS__)
 
-# define assertEqual(Actual, Expected, ...) \
+# define assert_equal(Actual, Expected, ...) \
     assert((Actual) == (Expected), ## __VA_ARGS__)
-# define expectEqual(Actual, Expected, ...) \
+# define expect_equal(Actual, Expected, ...) \
     expect((Actual) == (Expected), ## __VA_ARGS__)
 
-# define assertFloatEqual(Actual, Expected, Epsilon, ...) \
+# define assert_float_equal(Actual, Expected, Epsilon, ...) \
     assert((Expected) - (Actual) < (Epsilon) && (Actual) - (Expected) < (Epsilon), ## __VA_ARGS__)
-# define expectFloatEqual(Actual, Expected, Epsilon, ...) \
+# define expect_float_equal(Actual, Expected, Epsilon, ...) \
     expect((Expected) - (Actual) < (Epsilon) && (Actual) - (Expected) < (Epsilon), ## __VA_ARGS__)
 
-# define assertStringsEqual(Actual, Expected, ...) \
+# define assert_strings_equal(Actual, Expected, ...) \
     assert(!strcmp((Actual), (Expected)), ## __VA_ARGS__)
-# define expectStringsEqual(Actual, Expected, ...) \
+# define expect_strings_equal(Actual, Expected, ...) \
     expect(!strcmp((Actual), (Expected)), ## __VA_ARGS__)
 
-# define assertNot(Condition, ...) assert(!(Condition), ## __VA_ARGS__)
-# define expectNot(Condition, ...) expect(!(Condition), ## __VA_ARGS__)
+# define assert_not(Condition, ...) assert(!(Condition), ## __VA_ARGS__)
+# define expect_not(Condition, ...) expect(!(Condition), ## __VA_ARGS__)
 
-# define assertNotEqual(Actual, Expected, ...) \
+# define assert_not_equal(Actual, Expected, ...) \
     assert((Actual) != (Expected), ## __VA_ARGS__)
 # define expectNotEqual(Actual, Expected, ...) \
     expect((Actual) != (Expected), ## __VA_ARGS__)
 
-# define assertArraysNotEqual(A, B, Size, ...) \
+# define assert_arrays_not_equal(A, B, Size, ...) \
     assert(memcmp((A), (B), (Size)), ## __VA_ARGS__)
-# define expectArraysNotEqual(A, B, Size, ...) \
+# define expect_arrays_not_equal(A, B, Size, ...) \
     expect(memcmp((A), (B), (Size)), ## __VA_ARGS__)
 
-# define assertStringsNotEqual(Actual, Expected, ...) \
+# define assert_strings_not_equal(Actual, Expected, ...) \
     assert(strcmp((Actual), (Expected)), ## __VA_ARGS__)
-# define expectStringsNotEqual(Actual, Expected, ...) \
+# define expect_strings_not_equal(Actual, Expected, ...) \
     expect(strcmp((Actual), (Expected)), ## __VA_ARGS__)
 
 #endif /* !CRITERION_ASSERT_H_ */
