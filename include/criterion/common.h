@@ -27,14 +27,14 @@
 # ifdef __APPLE__
 #  define SECTION_START_PREFIX       __first
 #  define SECTION_END_PREFIX         __last
-#  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name);
-#  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name);
+#  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
+#  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
 #  define SECTION_(Name)             __attribute__((section("__DATA," Name)))
 # else
 #  define SECTION_START_PREFIX       __start
 #  define SECTION_END_PREFIX         __stop
-#  define SECTION_START_SUFFIX
-#  define SECTION_END_SUFFIX
+#  define SECTION_START_SUFFIX(Name)
+#  define SECTION_END_SUFFIX(Name)
 #  define SECTION_(Name)             __attribute__((section(Name)))
 # endif
 

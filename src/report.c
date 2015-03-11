@@ -29,10 +29,10 @@
 #include "report.h"
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                        \
-    IMPL_SECTION_LIMITS(f_report_hook, Kind);               \
+    IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);       \
     void call_report_hooks_##Kind(void *data) {             \
-        for (f_report_hook *hook = SECTION_START(Kind);     \
-             hook < SECTION_END(Kind);                      \
+        for (f_report_hook *hook = SECTION_START(crit_ ## Kind);     \
+             hook < SECTION_END(crit_ ## Kind);                      \
              ++hook) {                                      \
             (*hook)(data);                                  \
         }                                                   \
