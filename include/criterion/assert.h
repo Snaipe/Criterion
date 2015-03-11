@@ -63,15 +63,40 @@ enum criterion_assert_kind {
 
 // Native asserts
 
+# define assert_op(Actual, Expected, Op, ...) \
+    assert((Actual) Op (Expected), "" __VA_ARGS__)
+# define expect_op(Actual, Expected, Op, ...) \
+    expect((Actual) Op (Expected), "" __VA_ARGS__)
+
 # define assert_equal(Actual, Expected, ...) \
-    assert((Actual) == (Expected), "" __VA_ARGS__)
+    assert_op(Actual, Expected, ==, "" __VA_ARGS__)
 # define expect_equal(Actual, Expected, ...) \
-    expect((Actual) == (Expected), "" __VA_ARGS__)
+    expect_op(Actual, Expected, ==, "" __VA_ARGS__)
 
 # define assert_not_equal(Actual, Expected, ...) \
-    assert((Actual) != (Expected), "" __VA_ARGS__)
+    assert_op(Actual, Expected, !=, "" __VA_ARGS__)
 # define expectNotEqual(Actual, Expected, ...) \
-    expect((Actual) != (Expected), "" __VA_ARGS__)
+    expect_op(Actual, Expected, !=, "" __VA_ARGS__)
+
+# define assert_lt(Actual, Expected, ...) \
+    assert_op(Actual, Expected, <, "" __VA_ARGS__)
+# define expect_lt(Actual, Expected, ...) \
+    expect_op(Actual, Expected, <, "" __VA_ARGS__)
+
+# define assert_gt(Actual, Expected, ...) \
+    assert_op(Actual, Expected, >, "" __VA_ARGS__)
+# define expect_gt(Actual, Expected, ...) \
+    expect_op(Actual, Expected, >, "" __VA_ARGS__)
+
+# define assert_leq(Actual, Expected, ...) \
+    assert_op(Actual, Expected, <=, "" __VA_ARGS__)
+# define expect_leq(Actual, Expected, ...) \
+    expect_op(Actual, Expected, <=, "" __VA_ARGS__)
+
+# define assert_geq(Actual, Expected, ...) \
+    assert_op(Actual, Expected, >=, "" __VA_ARGS__)
+# define expect_geq(Actual, Expected, ...) \
+    expect_op(Actual, Expected, >=, "" __VA_ARGS__)
 
 // Floating-point asserts
 
