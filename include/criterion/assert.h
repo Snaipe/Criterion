@@ -55,8 +55,8 @@ enum criterion_assert_kind {
 
 // Common asserts
 
-# define assert(Condition, ...) assert_impl(FATAL, (Condition), "" __VA_ARGS__)
-# define expect(Condition, ...) assert_impl(NORMAL, (Condition), "" __VA_ARGS__)
+# define assert(Condition, ...) assert_impl(FATAL, Condition, "" __VA_ARGS__)
+# define expect(Condition, ...) assert_impl(NORMAL, Condition, "" __VA_ARGS__)
 
 # define assert_not(Condition, ...) assert(!(Condition), "" __VA_ARGS__)
 # define expect_not(Condition, ...) expect(!(Condition), "" __VA_ARGS__)
