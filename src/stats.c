@@ -64,14 +64,14 @@ void stat_push_event(s_glob_stats *stats,
                      s_test_stats *test,
                      struct event *data) {
     static void (*const handles[])(s_glob_stats *, s_test_stats *, void *) = {
-        nothing,            // PRE_EVERYTHING
+        nothing,            // PRE_ALL
         nothing,            // PRE_INIT
         push_pre_test,      // PRE_TEST
         push_assert,        // ASSERT
         push_test_crash,    // TEST_CRASH
         push_post_test,     // POST_TEST
         nothing,            // POST_FINI
-        nothing,            // POST_EVERYTHING
+        nothing,            // POST_ALL
     };
 
     assert(data->kind > 0);

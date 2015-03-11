@@ -21,11 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+# include "criterion/options.h"
 
-# include "criterion/criterion.h"
-
-DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
-
-#endif /* !CRITERION_RUNNER_H_ */
+struct criterion_options criterion_options = { .logging_threshold = CRITERION_IMPORTANT };

@@ -21,11 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef CRITERION_OPTIONS_H_
+# define CRITERION_OPTIONS_H_
 
-# include "criterion/criterion.h"
+# include "logging.h"
 
-DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
+struct criterion_options {
+    enum criterion_logging_level logging_threshold;
+    bool enable_tap_format;
+    bool no_early_exit;
+    bool always_succeed;
+};
 
-#endif /* !CRITERION_RUNNER_H_ */
+extern struct criterion_options criterion_options;
+
+#endif /*!CRITERION_OPTIONS_H_ */

@@ -24,7 +24,43 @@
 #ifndef CRITERION_COMMON_H_
 # define CRITERION_COMMON_H_
 
-# define SECTION_(Name) __attribute__((section(Name)))
+# ifdef __APPLE__
+#  define SECTION_START_PREFIX       __first
+#  define SECTION_END_PREFIX         __last
+#  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
+#  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
+#  define SECTION_(Name)             __attribute__((section("__DATA," Name)))
+# else
+#  define SECTION_START_PREFIX       __start
+#  define SECTION_END_PREFIX         __stop
+#  define SECTION_START_SUFFIX(Name)
+#  define SECTION_END_SUFFIX(Name)
+#  define SECTION_(Name)             __attribute__((section(Name)))
+# endif
+
+# define MAKE_IDENTIFIER_(Prefix, Id) MAKE_IDENTIFIER__(Prefix, Id)
+# define MAKE_IDENTIFIER__(Prefix, Id) Prefix ## _ ## Id
+
+# define SECTION_START_(Name) MAKE_IDENTIFIER_(SECTION_START_PREFIX, Name)
+# define SECTION_END_(Name)   MAKE_IDENTIFIER_(SECTION_END_PREFIX, Name)
+
+# define SECTION_START(Name)  g_ ## Name ## _section_start
+# define SECTION_END(Name)    g_ ## Name ## _section_end
+
+# define DECL_SECTION_LIMITS(Type, Name)                            \
+    extern Type SECTION_START_(Name) SECTION_START_SUFFIX(#Name);   \
+    extern Type SECTION_END_(Name)   SECTION_END_SUFFIX(#Name)
+
+# define IMPL_SECTION_LIMITS(Type, Name)                            \
+    Type *const SECTION_START(Name) = &SECTION_START_(Name);  \
+    Type *const SECTION_END(Name)   = &SECTION_END_(Name)
+
 # define UNUSED __attribute__((unused))
+
+# ifdef __GNUC__
+#  define FORMAT(Archetype, Index, Ftc) __attribute__((format(Archetype, Index, Ftc)))
+# else
+#  define FORMAT(Archetype, Index, Ftc)
+# endif
 
 #endif /* !CRITERION_COMMON_H_ */

@@ -1,4 +1,12 @@
+2015-03-11  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * include/criterion/logging.h, src/logging.c: A logging interface
+    * README.md, doc/*: Various readme and documentation changes
+    * src/main.c, include/criterion/options.h, src/options.c: Default CLI options & environment variables
+    * *: Mac OS X compatibility
+    * include/criterion/assert.h: Comparison assertions, floating-point equality assertions
+
 2015-02-06  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * src/: Added criterion internals.
-	* include/: Added Test, ReportHook, assert and expect macros.
+    * include/: Added Test, ReportHook, assert and expect macros.

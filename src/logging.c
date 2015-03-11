@@ -21,11 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#include <stdio.h>
+#include <stdarg.h>
+#include "criterion/logging.h"
+#include "criterion/options.h"
 
-# include "criterion/criterion.h"
+void criterion_log(enum criterion_logging_level level, const char *msg, ...) {
+    va_list args;
 
-DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
+    if (level < criterion_options.logging_threshold)
+        return;
 
-#endif /* !CRITERION_RUNNER_H_ */
+    va_start(args, msg);
+    vfprintf(stderr, msg, args);
+    va_end(args);
+}

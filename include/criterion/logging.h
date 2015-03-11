@@ -21,11 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef CRITERION_LOGGING_H_
+# define CRITERION_LOGGING_H_
 
-# include "criterion/criterion.h"
+# include <stdbool.h>
+# include "common.h"
 
-DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
+enum criterion_logging_level {
+    CRITERION_INFO = 1,
+    CRITERION_IMPORTANT,
+};
 
-#endif /* !CRITERION_RUNNER_H_ */
+FORMAT(printf, 2, 3)
+void criterion_log(enum criterion_logging_level level, const char *msg, ...);
+
+# define criterion_info(...) criterion_log(CRITERION_INFO, __VA_ARGS__)
+# define criterion_important(...) criterion_log(CRITERION_IMPORTANT, __VA_ARGS__)
+
+#endif /* !CRITERION_LOGGING_H_ */
