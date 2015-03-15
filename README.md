@@ -30,7 +30,15 @@ the user would have with other frameworks:
   reported and tested.
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
-* [x] Runs on Linux and OS X.
+* [x] Runs on Linux, Mac OS X, and Windows (compiles only with Cygwin for the moment).
+
+## Downloads
+
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-linux-x86_64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-osx-x86_64.tar.bz2)
+* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-win-x86_64.tar.bz2)
+
+If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
 ## Documentation
 
@@ -60,12 +68,14 @@ A. I worked with CUnit and Check, and I must say that they do their job
 
 **Q. Where has this been tested?**  
 A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
-   most \*nix systems. More tests will be added on the build matrix.
+   most \*nix systems; Mac OS X Yosemite 10.10, and finally Windows 7 (with
+   the Cygwin port of GCC).
+   More tests will be added on the build matrix.
 
-**Q. Will this work under Windows/MSVC?**  
-A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
-   to compile the library itself: the project internally uses c99 features and gnu
-   extensions.
+**Q. Can I use it on Windows without Cygwin?**  
+A. Yes, you can, Cygwin is only required to compile the static library if
+   you build it from source -- otherwise, a GNU C compatible compiler (like
+   GCC or Clang) is needed to compile your tests with the library.
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/

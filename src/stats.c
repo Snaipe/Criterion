@@ -75,7 +75,7 @@ void stat_push_event(s_glob_stats *stats,
     };
 
     assert(data->kind > 0);
-    assert(data->kind <= (ssize_t) (sizeof (handles) / sizeof (void (*)(void))));
+    assert(data->kind <= (signed long long) (sizeof (handles) / sizeof (void (*)(void))));
 
     handles[data->kind](stats, test, data->data);
 }

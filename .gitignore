@@ -6,6 +6,7 @@
 !*.c
 !*.h
 !*.rst
+!samples/tests/*.sh
 
 !LICENSE
 !HEADER
