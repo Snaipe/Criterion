@@ -39,7 +39,8 @@ struct process_status {
     int status;
 };
 
-void set_runner_pid(void);
+void set_runner_process(void);
+void unset_runner_process(void);
 bool is_runner(void);
 struct process_status wait_proc(struct process *proc);
 struct process *spawn_test_worker(struct criterion_test *test,

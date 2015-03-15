@@ -52,6 +52,7 @@ libcriterion_la_SOURCES = \
 	src/timer.c \
 	src/timer.h \
 	src/ordered-set.c \
+	src/posix-compat.c \
 	src/main.c
 
 TARGET = $(PACKAGE)-$(VERSION)

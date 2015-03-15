@@ -31,6 +31,6 @@ struct event {
     void *data;
 };
 
-struct event *read_event(int fd);
+struct event *read_event(FILE *f);
 
 #endif /* !EVENT_H_ */

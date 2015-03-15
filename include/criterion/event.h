@@ -25,8 +25,9 @@
 # define CRITERION_EVENT_H_
 
 # include <stddef.h>
+# include <stdio.h>
 
-extern int EVENT_PIPE;
+extern FILE *g_event_pipe;
 
 void send_event(int kind, void *data, size_t size);
 
