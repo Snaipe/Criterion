@@ -3,9 +3,9 @@ version: 0.3.0.{build}-{branch}
 os: Windows Server 2012
 
 init:
-  - ps: (New-Object System.Net.WebClient).DownloadFile("https://cygwin.com/setup-x86.exe", "$pwd\setup-x86.exe")
+  - ps: (New-Object System.Net.WebClient).DownloadFile("https://cygwin.com/setup-x86.exe", "c:\setup-x86.exe")
   - git config --global core.autocrlf input
-  - setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup \
+  - c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup \
     -P autoconf \
     -P automake \
     -P gcc-core \
