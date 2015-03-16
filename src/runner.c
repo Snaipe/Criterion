@@ -152,7 +152,7 @@ static int criterion_run_all_tests_impl(void) {
         return -1;
 
     report(POST_ALL, stats);
-    return stats->tests_failed > 0;
+    return stats->tests_failed == 0;
 }
 
 int criterion_run_all_tests(void) {
@@ -160,5 +160,5 @@ int criterion_run_all_tests(void) {
     if (res == -1) // if this is the test worker terminating
         _exit(0);
 
-    return !criterion_options.always_succeed && res;
+    return criterion_options.always_succeed || res;
 }

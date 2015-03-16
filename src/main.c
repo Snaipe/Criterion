@@ -44,5 +44,5 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    return criterion_run_all_tests();
+    return !criterion_run_all_tests();
 }
