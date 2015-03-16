@@ -52,13 +52,13 @@ configuration: Release
 
 install:
   - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
-  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./configure'"
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure"'
 
 build_script:
-  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; make'"
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
 
 test_script:
-  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; make check'"
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make check"'
 
 notifications:
 
