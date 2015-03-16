@@ -50,8 +50,8 @@ struct event *read_event(int fd) {
             return unique_ptr(struct event, ({ .kind = kind, .data = buf }), destroy_event);
         }
         case POST_TEST: {
-            float *elapsed_time = malloc(sizeof (float));
-            if (read(fd, elapsed_time, sizeof (float)) < (ssize_t) sizeof (float))
+            double *elapsed_time = malloc(sizeof (double));
+            if (read(fd, elapsed_time, sizeof (double)) < (ssize_t) sizeof (double))
                 return NULL;
 
             return unique_ptr(struct event, ({ .kind = kind, .data = elapsed_time }), destroy_event);

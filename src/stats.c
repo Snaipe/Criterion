@@ -114,7 +114,7 @@ static void push_assert(s_glob_stats *stats,
 
 static void push_post_test(s_glob_stats *stats,
                            s_test_stats *test,
-                           float *ptr) {
+                           double *ptr) {
     test->elapsed_time = *ptr;
     if (test->failed_asserts > 0 || test->signal != test->test->data->signal) {
         test->failed = 1;

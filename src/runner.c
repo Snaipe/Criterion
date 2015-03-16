@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <time.h>
 #include <csptr/smart_ptr.h>
 #include "criterion/options.h"
 #include "stats.h"
@@ -32,6 +31,7 @@
 #include "report.h"
 #include "event.h"
 #include "process.h"
+#include "timer.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 
@@ -89,11 +89,13 @@ static void run_test_child(struct criterion_test *test) {
     (test->data->init ?: nothing)();
     send_event(PRE_TEST, NULL, 0);
 
-    clock_t before = clock();
+    struct timespec_compat ts;
+    timer_start(&ts);
     (test->test       ?: nothing)();
-    clock_t after = clock();
+    double elapsed_time;
+    if (!timer_end(&elapsed_time, &ts))
+        elapsed_time = -1;
 
-    double elapsed_time = (double) (after - before) / CLOCKS_PER_SEC;
     send_event(POST_TEST, &elapsed_time, sizeof (double));
     (test->data->fini ?: nothing)();
     send_event(POST_FINI, NULL, 0);
@@ -135,7 +137,7 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
             stat_push_event(stats, test_stats, &ev);
             report(POST_TEST, test_stats);
 
-            ev.kind = POST_FINI;
+            ev = (struct event) { .kind = POST_FINI, .data = NULL };
             stat_push_event(stats, test_stats, &ev);
             report(POST_FINI, test_stats);
         }
