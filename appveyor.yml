@@ -1,4 +1,4 @@
-version: 3.0.0.{build}-{branch}
+version: 0.3.0.{build}-{branch}
 
 os: Windows Server 2012
 
