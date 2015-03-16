@@ -5,7 +5,7 @@ os: Windows Server 2012
 init:
   - ps: (New-Object System.Net.WebClient).DownloadFile("https://cygwin.com/setup-x86.exe", "c:\setup-x86.exe")
   - git config --global core.autocrlf input
-  - c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup \
+  - c:\setup-x86.exe -qnNdO -R %CYG_ROOT% -s %CYG_MIRROR% -l %CYG_CACHE% \
     -P autoconf \
     -P automake \
     -P gcc-core \
@@ -27,6 +27,17 @@ init:
     -P git \
     -P wget \
     -P curl
+  - "%CYG_BASH% -lc 'echo $PATH'"
+
+environment:
+  global:
+    CYG_ROOT: C:\cygwin
+    CYG_MIRROR: http://cygwin.mirror.constant.com
+    CYG_CACHE: C:\cygwin\var\cache\setup
+    CYG_BASH: C:\cygwin\bin\bash
+
+cache:
+  - '%CYG_CACHE%'
 
 clone_depth: 5
 
@@ -40,13 +51,14 @@ platform:
 configuration: Release
 
 install:
-  - cmd: c:\cygwin\bin\bash -c './autogen.sh && ./configure'
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./configure'"
 
 build_script:
-  - cmd: c:\cygwin\bin\bash -c 'make'
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; make'"
 
 test_script:
-  - cmd: c:\cygwin\bin\bash -c 'make check'
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; make check'"
 
 notifications:
 
