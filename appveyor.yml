@@ -40,7 +40,7 @@ platform:
 configuration: Release
 
 install:
-  - cmd: c:\cygwin\bin\bash -C './autogen && ./configure'
+  - cmd: c:\cygwin\bin\bash -C './autogen.sh && ./configure'
 
 build_script:
   - cmd: c:\cygwin\bin\bash -C 'make'
