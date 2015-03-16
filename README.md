@@ -30,13 +30,14 @@ the user would have with other frameworks:
   reported and tested.
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
-* [x] Runs on Linux, Mac OS X, and Windows (compiles only with Cygwin for the moment).
+* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (compiles only with Cygwin for the moment).
 
 ## Downloads
 
 * [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-linux-x86_64.tar.bz2)
 * [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-osx-x86_64.tar.bz2)
 * [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-win-x86_64.tar.bz2)
+* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v0.3/criterion-0.3-freebsd-x86_64.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
@@ -68,9 +69,8 @@ A. I worked with CUnit and Check, and I must say that they do their job
 
 **Q. Where has this been tested?**  
 A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
-   most \*nix systems; Mac OS X Yosemite 10.10, and finally Windows 7 (with
-   the Cygwin port of GCC).
-   More tests will be added on the build matrix.
+   most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, and finally
+   Windows 7 (with the Cygwin port of GCC).
 
 **Q. Can I use it on Windows without Cygwin?**  
 A. Yes, you can, Cygwin is only required to compile the static library if
