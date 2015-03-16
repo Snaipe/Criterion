@@ -22,9 +22,7 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
-#include <stdbool.h>
 #include <unistd.h>
-#include <sys/signal.h>
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
 

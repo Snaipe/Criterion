@@ -24,6 +24,8 @@
 #ifndef PROCESS_H_
 # define PROCESS_H_
 
+# include <stdbool.h>
+
 struct process;
 
 enum status_kind {

@@ -24,9 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/wait.h>
 #include <csptr/smart_ptr.h>
-#include "criterion/assert.h"
 #include "criterion/options.h"
 #include "stats.h"
 #include "runner.h"

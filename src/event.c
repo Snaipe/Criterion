@@ -21,14 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "criterion/assert.h"
-#undef assert
 
-#include <fcntl.h>
 #include <unistd.h>
-#include <assert.h>
 #include <csptr/smart_ptr.h>
-#include "criterion/criterion.h"
 #include "criterion/stats.h"
 #include "criterion/hooks.h"
 #include "event.h"

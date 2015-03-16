@@ -1,6 +1,5 @@
 #define _GNU_SOURCE
 #include <criterion/criterion.h>
-#include <criterion/logging.h>
 #include <criterion/options.h>
 #include <stdio.h>
 #include <getopt.h>
