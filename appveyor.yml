@@ -40,13 +40,13 @@ platform:
 configuration: Release
 
 install:
-  - cmd: c:\cygwin\bin\bash -C './autogen.sh && ./configure'
+  - cmd: c:\cygwin\bin\bash -C 'cd /cygdrive/c/projects/criterion && ./autogen.sh && ./configure'
 
 build_script:
-  - cmd: c:\cygwin\bin\bash -C 'make'
+  - cmd: c:\cygwin\bin\bash -C 'cd /cygdrive/c/projects/criterion && make'
 
 test_script:
-  - cmd: c:\cygwin\bin\bash -C 'make check'
+  - cmd: c:\cygwin\bin\bash -C 'cd /cygdrive/c/projects/criterion && make check'
 
 notifications:
 
