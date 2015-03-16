@@ -57,7 +57,7 @@ ReportHook(PRE_INIT)(struct criterion_test *test) {
 
 ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
     if (criterion_options.enable_tap_format) {
-        criterion_important("%s %lu - %s::%s\n",
+        criterion_important("%s " SIZE_T_FORMAT " - %s::%s\n",
                 stats->failed ? "not ok" : "ok",
                 tap_test_index++,
                 stats->test->category,
@@ -93,13 +93,13 @@ ReportHook(PRE_ALL)(struct criterion_test_set *set) {
         for (struct criterion_test **test = set->tests; i < set->nb_tests; ++i)
             if (!(test[i])->data->disabled)
                 ++enabled_count;
-        criterion_important("1..%lu\n", enabled_count);
+        criterion_important("1.." SIZE_T_FORMAT "\n", enabled_count);
     }
 }
 ReportHook(POST_ALL)(struct criterion_global_stats *stats) {
     if (criterion_options.enable_tap_format) return;
 
-    criterion_important("Synthesis: %lu tests were run. %lu passed, %lu failed (with %lu crashes)\n",
+    criterion_important("Synthesis: " SIZE_T_FORMAT " tests were run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crashes)\n",
             stats->nb_tests,
             stats->tests_passed,
             stats->tests_failed,
@@ -119,7 +119,7 @@ ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
 
 ReportHook(TEST_CRASH)(struct criterion_test_stats *stats) {
     if (criterion_options.enable_tap_format) {
-        criterion_important("not ok %lu - %s::%s unexpected signal after %s:%u\n",
+        criterion_important("not ok " SIZE_T_FORMAT " - %s::%s unexpected signal after %s:%u\n",
                 tap_test_index++,
                 stats->test->category,
                 stats->test->name,
