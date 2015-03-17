@@ -24,15 +24,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/wait.h>
 #include <csptr/smart_ptr.h>
-#include "criterion/assert.h"
 #include "criterion/options.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
 #include "event.h"
 #include "process.h"
+#include "timer.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 
@@ -89,8 +88,15 @@ static void run_test_child(struct criterion_test *test) {
     send_event(PRE_INIT, NULL, 0);
     (test->data->init ?: nothing)();
     send_event(PRE_TEST, NULL, 0);
+
+    struct timespec_compat ts;
+    timer_start(&ts);
     (test->test       ?: nothing)();
-    send_event(POST_TEST, NULL, 0);
+    double elapsed_time;
+    if (!timer_end(&elapsed_time, &ts))
+        elapsed_time = -1;
+
+    send_event(POST_TEST, &elapsed_time, sizeof (double));
     (test->data->fini ?: nothing)();
     send_event(POST_FINI, NULL, 0);
 }
@@ -126,11 +132,12 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
             stat_push_event(stats, test_stats, &ev);
             report(TEST_CRASH, test_stats);
         } else {
-            struct event ev = { .kind = POST_TEST };
+            double elapsed_time = 0;
+            struct event ev = { .kind = POST_TEST, .data = &elapsed_time };
             stat_push_event(stats, test_stats, &ev);
             report(POST_TEST, test_stats);
 
-            ev.kind = POST_FINI;
+            ev = (struct event) { .kind = POST_FINI, .data = NULL };
             stat_push_event(stats, test_stats, &ev);
             report(POST_FINI, test_stats);
         }
@@ -152,7 +159,7 @@ static int criterion_run_all_tests_impl(void) {
         return -1;
 
     report(POST_ALL, stats);
-    return stats->tests_failed > 0;
+    return stats->tests_failed == 0;
 }
 
 int criterion_run_all_tests(void) {
@@ -160,5 +167,5 @@ int criterion_run_all_tests(void) {
     if (res == -1) // if this is the test worker terminating
         _exit(0);
 
-    return !criterion_options.always_succeed && res;
+    return criterion_options.always_succeed || res;
 }

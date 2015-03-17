@@ -12,4 +12,4 @@ script:
 after_success:
   - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
 after_failure:
-  - cat $(find check -iname '*.log') /dev/null
+  - cat $(find samples -iname '*.log') /dev/null

@@ -1,3 +1,9 @@
+2015-03-18  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+    * src/timer.*: Added test timings
+    * src/, include/: Changed assert prototypes
+    * include/: ANSI compliance over header files
+    * *: Windows + FreeBSD compatibility
+
 2015-03-11  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * include/criterion/logging.h, src/logging.c: A logging interface

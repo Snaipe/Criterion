@@ -25,6 +25,7 @@
 # define CRITERION_STATS_H_
 
 # include <stdbool.h>
+# include <stddef.h>
 # include "criterion.h"
 
 struct criterion_assert_stats {
@@ -45,6 +46,7 @@ struct criterion_test_stats {
     int passed_asserts;
     int failed_asserts;
     int signal;
+    float elapsed_time;
     unsigned progress;
     const char *file;
 

@@ -57,6 +57,12 @@
 
 # define UNUSED __attribute__((unused))
 
+# ifdef _WIN32
+#  define SIZE_T_FORMAT "%Iu"
+# else
+#  define SIZE_T_FORMAT "%zu"
+# endif
+
 # ifdef __GNUC__
 #  define FORMAT(Archetype, Index, Ftc) __attribute__((format(Archetype, Index, Ftc)))
 # else

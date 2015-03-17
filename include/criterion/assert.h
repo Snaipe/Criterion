@@ -37,13 +37,23 @@ enum criterion_assert_kind {
     FATAL
 };
 
-# define assert_impl(Kind, Condition, ...)                       \
+struct criterion_assert_args {
+    const char *msg;
+    const char *default_msg;
+    int sentinel_;
+};
+
+# define assert_impl(Kind, Condition, ...)                      \
     do {                                                        \
+        struct criterion_assert_args args = {                   \
+            __VA_ARGS__                                         \
+        };                                                      \
         int passed = !!(Condition);                             \
         struct criterion_assert_stats stat = {                  \
             .kind = (Kind),                                     \
             .condition = #Condition,                            \
-            .message = "" __VA_ARGS__,                          \
+            .message = args.msg ? args.msg                      \
+                : (args.default_msg ? args.default_msg : ""),   \
             .passed = passed,                                   \
             .file = __FILE__,                                   \
             .line = __LINE__,                                   \
@@ -55,108 +65,130 @@ enum criterion_assert_kind {
 
 // Common asserts
 
-# define assert(Condition, ...) assert_impl(FATAL, Condition, "" __VA_ARGS__)
-# define expect(Condition, ...) assert_impl(NORMAL, Condition, "" __VA_ARGS__)
+# define abort_test(Message)                                                \
+    assert(0,                                                               \
+            .default_msg = "The conditions for this test were not met.",    \
+            .msg = (Message)                                                \
+        )
 
-# define assert_not(Condition, ...) assert(!(Condition), "" __VA_ARGS__)
-# define expect_not(Condition, ...) expect(!(Condition), "" __VA_ARGS__)
+# define assert(...) assert_(__VA_ARGS__, .sentinel_ = 0)
+# define expect(...) expect_(__VA_ARGS__, .sentinel_ = 0)
+
+# define assert_(Condition, ...) assert_impl(FATAL,  Condition, __VA_ARGS__)
+# define expect_(Condition, ...) assert_impl(NORMAL, Condition, __VA_ARGS__)
+
+# define assert_not(...) assert_not_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_not(...) expect_not_(__VA_ARGS__, .sentinel_ = 0)
+
+# define assert_not_(Condition, ...) \
+    assert_impl(FATAL,  !(Condition), __VA_ARGS__)
+# define expect_not_(Condition, ...) \
+    expect_impl(NORMAL, !(Condition), __VA_ARGS__)
 
 // Native asserts
 
-# define assert_op(Actual, Expected, Op, ...) \
-    assert((Actual) Op (Expected), "" __VA_ARGS__)
-# define expect_op(Actual, Expected, Op, ...) \
-    expect((Actual) Op (Expected), "" __VA_ARGS__)
+# define assert_op_(Op, Actual, Expected, ...) \
+    assert_impl(FATAL,  (Actual) Op (Expected), __VA_ARGS__)
+# define expect_op_(Op, Actual, Expected, ...) \
+    assert_impl(NORMAL, (Actual) Op (Expected), __VA_ARGS__)
 
-# define assert_equal(Actual, Expected, ...) \
-    assert_op(Actual, Expected, ==, "" __VA_ARGS__)
-# define expect_equal(Actual, Expected, ...) \
-    expect_op(Actual, Expected, ==, "" __VA_ARGS__)
+# define assert_eq(...) assert_op_(==, __VA_ARGS__, .sentinel_ = 0)
+# define expect_eq(...) expect_op_(==, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_not_equal(Actual, Expected, ...) \
-    assert_op(Actual, Expected, !=, "" __VA_ARGS__)
-# define expectNotEqual(Actual, Expected, ...) \
-    expect_op(Actual, Expected, !=, "" __VA_ARGS__)
+# define assert_neq(...) assert_op_(!=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_neq(...) expect_op_(!=, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_lt(Actual, Expected, ...) \
-    assert_op(Actual, Expected, <, "" __VA_ARGS__)
-# define expect_lt(Actual, Expected, ...) \
-    expect_op(Actual, Expected, <, "" __VA_ARGS__)
+# define assert_lt(...) assert_op_(<, __VA_ARGS__, .sentinel_ = 0)
+# define expect_lt(...) expect_op_(<, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_gt(Actual, Expected, ...) \
-    assert_op(Actual, Expected, >, "" __VA_ARGS__)
-# define expect_gt(Actual, Expected, ...) \
-    expect_op(Actual, Expected, >, "" __VA_ARGS__)
+# define assert_gt(...) assert_op_(>, __VA_ARGS__, .sentinel_ = 0)
+# define expect_gt(...) expect_op_(>, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_leq(Actual, Expected, ...) \
-    assert_op(Actual, Expected, <=, "" __VA_ARGS__)
-# define expect_leq(Actual, Expected, ...) \
-    expect_op(Actual, Expected, <=, "" __VA_ARGS__)
+# define assert_leq(...) assert_op_(<=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_leq(...) expect_op_(<=, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_geq(Actual, Expected, ...) \
-    assert_op(Actual, Expected, >=, "" __VA_ARGS__)
-# define expect_geq(Actual, Expected, ...) \
-    expect_op(Actual, Expected, >=, "" __VA_ARGS__)
+# define assert_geq(...) assert_op_(>=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_geq(...) expect_op_(>=, __VA_ARGS__, .sentinel_ = 0)
 
 // Floating-point asserts
 
-# define assert_float_equal(Actual, Expected, Epsilon, ...) \
-    assert((Expected) - (Actual) <= (Epsilon) && (Actual) - (Expected) <= (Epsilon), "" __VA_ARGS__)
-# define expect_float_equal(Actual, Expected, Epsilon, ...) \
-    expect((Expected) - (Actual) <= (Epsilon) && (Actual) - (Expected) <= (Epsilon), "" __VA_ARGS__)
+# define assert_float_eq(...) \
+    assert_float_eq_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_float_eq(...) \
+    expect_float_eq_(__VA_ARGS__, .sentinel_ = 0)
 
-# define assert_float_not_equal(Actual, Expected, Epsilon, ...) \
-    assert((Expected) - (Actual) > (Epsilon) || (Actual) - (Expected) > (Epsilon), "" __VA_ARGS__)
-# define expect_float_not_equal(Actual, Expected, Epsilon, ...) \
-    expect((Expected) - (Actual) > (Epsilon) || (Actual) - (Expected) > (Epsilon), "" __VA_ARGS__)
+# define assert_float_eq_(Actual, Expected, Epsilon, ...) \
+    assert_impl(FATAL,  (Expected) - (Actual) <= (Epsilon)  \
+                     && (Actual) - (Expected) <= (Epsilon), \
+                __VA_ARGS__)
+# define expect_float_eq_(Actual, Expected, Epsilon, ...) \
+    assert_impl(NORMAL, (Expected) - (Actual) <= (Epsilon)  \
+                     && (Actual) - (Expected) <= (Epsilon), \
+                __VA_ARGS__)
+
+# define assert_float_neq(...) \
+    assert_float_neq_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_float_neq(...) \
+    expect_float_neq_(__VA_ARGS__, .sentinel_ = 0)
+
+# define assert_float_neq_(Actual, Expected, Epsilon, ...) \
+    assert_impl(FATAL,  (Expected) - (Actual) > (Epsilon)  \
+                     || (Actual) - (Expected) > (Epsilon), \
+                __VA_ARGS__)
+# define expect_float_neq_(Actual, Expected, Epsilon, ...) \
+    assert_impl(NORMAL, (Expected) - (Actual) > (Epsilon)  \
+                     || (Actual) - (Expected) > (Epsilon), \
+                __VA_ARGS__)
 
 // String asserts
 
-# define assert_strings(Actual, Expected, Op, ...) \
-    assert(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
-# define expect_strings(Actual, Expected, Op, ...) \
-    expect(strcmp((Actual), (Expected)) Op 0, "" __VA_ARGS__)
+# define assert_strings_(Op, Actual, Expected, ...) \
+    assert_impl(FATAL, strcmp((Actual), (Expected)) Op 0, __VA_ARGS__)
+# define expect_strings_(Op, Actual, Expected, ...) \
+    assert_impl(NORMAL, strcmp((Actual), (Expected)) Op 0, __VA_ARGS__)
 
-# define assert_strings_equal(Actual, Expected, ...) \
-    assert_strings(Actual, Expected, ==, "" __VA_ARGS__)
-# define expect_strings_equal(Actual, Expected, ...) \
-    expect_strings(Actual, Expected, ==, "" __VA_ARGS__)
+# define assert_strings_eq(...) \
+    assert_strings_(==, __VA_ARGS__, .sentinel_ = 0)
+# define expect_strings_eq(...) \
+    expect_strings_(==, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_strings_gt(Actual, Expected, ...) \
-    assert_strings(Actual, Expected, >, "" __VA_ARGS__)
-# define expect_strings_gt(Actual, Expected, ...) \
-    expect_strings(Actual, Expected, >, "" __VA_ARGS__)
+# define assert_strings_neq(...) \
+    assert_strings_(!=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_strings_neq(...) \
+    expect_strings_(!=, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_strings_lt(Actual, Expected, ...) \
-    assert_strings(Actual, Expected, <, "" __VA_ARGS__)
-# define expect_strings_lt(Actual, Expected, ...) \
-    expect_strings(Actual, Expected, <, "" __VA_ARGS__)
+# define assert_strings_gt(...) assert_strings_(>, __VA_ARGS__, .sentinel_ = 0)
+# define expect_strings_gt(...) expect_strings_(>, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_strings_geq(Actual, Expected, ...) \
-    assert_strings(Actual, Expected, >=, "" __VA_ARGS__)
-# define expect_strings_geq(Actual, Expected, ...) \
-    expect_strings(Actual, Expected, >=, "" __VA_ARGS__)
+# define assert_strings_lt(...) assert_strings_(<, __VA_ARGS__, .sentinel_ = 0)
+# define expect_strings_lt(...) expect_strings_(<, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_strings_leq(Actual, Expected, ...) \
-    assert_strings(Actual, Expected, <=, "" __VA_ARGS__)
-# define expect_strings_leq(Actual, Expected, ...) \
-    expect_strings(Actual, Expected, <=, "" __VA_ARGS__)
+# define assert_strings_leq(...) assert_strings_(<=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_strings_leq(...) expect_strings_(<=, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_strings_not_equal(Actual, Expected, ...) \
-    assert_strings(Actual, Expected, !=, "" __VA_ARGS__)
-# define expect_strings_not_equal(Actual, Expected, ...) \
-    expect_strings(Actual, Expected, !=, "" __VA_ARGS__)
+# define assert_strings_geq(...) assert_strings_(>=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_strings_geq(...) expect_strings_(>=, __VA_ARGS__, .sentinel_ = 0)
 
 // Array asserts
 
-# define assert_arrays_equal(A, B, Size, ...) \
-    assert(!memcmp((A), (B), (Size)), "" __VA_ARGS__)
-# define expect_arrays_equal(A, B, Size, ...) \
-    expect(!memcmp((A), (B), (Size)), "" __VA_ARGS__)
+# define assert_arrays_eq(...) \
+    assert_arrays_eq_(__VA_ARGS__, .sentinel = 0)
+# define expect_arrays_eq(...) \
+    expect_arrays_eq_(__VA_ARGS__, .sentinel = 0)
 
-# define assert_arrays_not_equal(A, B, Size, ...) \
-    assert(memcmp((A), (B), (Size)), "" __VA_ARGS__)
-# define expect_arrays_not_equal(A, B, Size, ...) \
-    expect(memcmp((A), (B), (Size)), "" __VA_ARGS__)
+# define assert_arrays_neq(...) \
+    assert_arrays_neq_(__VA_ARGS__, .sentinel = 0)
+# define expect_arrays_neq(...) \
+    expect_arrays_neq_(__VA_ARGS__, .sentinel = 0)
+
+# define assert_arrays_eq_(A, B, Size, ...) \
+    assert_impl(FATAL, !memcmp((A), (B), (Size)), __VA_ARGS__)
+# define expect_arrays_eq_(A, B, Size, ...) \
+    assert_impl(NORMAL, !memcmp((A), (B), (Size)), __VA_ARGS__)
+
+# define assert_arrays_neq_(A, B, Size, ...) \
+    assert_impl(FATAL, memcmp((A), (B), (Size)), __VA_ARGS__)
+# define expect_arrays_neq_(A, B, Size, ...) \
+    assert_impl(NORMAL, memcmp((A), (B), (Size)), __VA_ARGS__)
 
 #endif /* !CRITERION_ASSERT_H_ */

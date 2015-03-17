@@ -22,9 +22,7 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
-#include <stdbool.h>
 #include <unistd.h>
-#include <sys/signal.h>
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
 
@@ -71,7 +69,7 @@ struct process *spawn_test_worker(struct criterion_test *test, void (*func)(stru
 
         func(test);
         close(fds[1]);
-        if (!criterion_options.no_early_exit)
+        if (criterion_options.no_early_exit)
             return NULL;
         else
             _exit(0);

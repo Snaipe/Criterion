@@ -1,6 +1,5 @@
 #define _GNU_SOURCE
 #include <criterion/criterion.h>
-#include <criterion/logging.h>
 #include <criterion/options.h>
 #include <stdio.h>
 #include <getopt.h>
@@ -44,5 +43,5 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    return criterion_run_all_tests();
+    return !criterion_run_all_tests();
 }

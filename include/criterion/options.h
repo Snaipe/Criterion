@@ -24,6 +24,7 @@
 #ifndef CRITERION_OPTIONS_H_
 # define CRITERION_OPTIONS_H_
 
+# include <stdbool.h>
 # include "logging.h"
 
 struct criterion_options {

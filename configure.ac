@@ -1,6 +1,6 @@
 AC_PREREQ([2.60])
 
-AC_INIT([criterion], [1.0], [], [criterion], [franklinmathieu@gmail.com])
+AC_INIT([criterion], [1.0.0], [], [criterion], [franklinmathieu@gmail.com])
 AC_CONFIG_SRCDIR([src/runner.c])
 
 LT_PREREQ([2.2.4])

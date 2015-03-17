@@ -1,0 +1,70 @@
+version: 1.0.0_b{build}-{branch}
+
+os: Windows Server 2012
+
+init:
+  - ps: (New-Object System.Net.WebClient).DownloadFile("https://cygwin.com/setup-x86.exe", "c:\setup-x86.exe")
+  - git config --global core.autocrlf input
+  - c:\setup-x86.exe -qnNdO -R %CYG_ROOT% -s %CYG_MIRROR% -l %CYG_CACHE% \
+    -P autoconf \
+    -P automake \
+    -P gcc-core \
+    -P mingw-runtime \
+    -P mingw-binutils \
+    -P mingw-gcc-core \
+    -P mingw-pthreads \
+    -P mingw-w32api \
+    -P libtool \
+    -P make \
+    -P python \
+    -P gettext-devel \
+    -P gettext \
+    -P expat \
+    -P intltool \
+    -P libiconv \
+    -P pkg-config \
+    -P check \
+    -P git \
+    -P wget \
+    -P curl
+  - "%CYG_BASH% -lc 'echo $PATH'"
+
+environment:
+  global:
+    CYG_ROOT: C:\cygwin
+    CYG_MIRROR: http://cygwin.mirror.constant.com
+    CYG_CACHE: C:\cygwin\var\cache\setup
+    CYG_BASH: C:\cygwin\bin\bash
+
+cache:
+  - '%CYG_CACHE%'
+
+clone_depth: 5
+
+matrix:
+  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+
+platform:
+  - x86
+  - Any CPU
+
+configuration: Release
+
+install:
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure"'
+
+build_script:
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
+
+test_script:
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make check"'
+
+after_test:
+  - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
+
+notifications:
+
+  - provider: Email
+    to: [franklinmathieu@gmail.com]
+    on_build_status_changed: true

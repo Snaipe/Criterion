@@ -30,6 +30,7 @@
 # include "assert.h"
 
 struct criterion_test_extra_data {
+    int sentinel_;
     const char *const file_;
     const unsigned line_;
     void (*init)(void);
@@ -56,7 +57,8 @@ struct criterion_test_set {
 # define TEST_PROTOTYPE_(Category, Name) \
     void IDENTIFIER_(Category, Name, impl)(void)
 
-# define Test(Category, Name, ...)                                             \
+# define Test(...) Test_(__VA_ARGS__, .sentinel_ = 0)
+# define Test_(Category, Name, ...)                                            \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
         .file_ = __FILE__,                                                     \
