@@ -40,15 +40,25 @@ struct event *read_event(int fd) {
     if (read(fd, &kind, sizeof (unsigned)) < (ssize_t) sizeof (unsigned))
         return NULL;
 
-    if (kind != ASSERT)
-        return unique_ptr(struct event, ({ .kind = kind, .data = NULL }));
+    switch (kind) {
+        case ASSERT: {
+            const size_t assert_size = sizeof (struct criterion_assert_stats);
+            unsigned char *buf = malloc(assert_size);
+            if (read(fd, buf, assert_size) < (ssize_t) assert_size)
+                return NULL;
 
-    const size_t assert_size = sizeof (struct criterion_assert_stats);
-    unsigned char *buf = malloc(assert_size);
-    if (read(fd, buf, assert_size) < (ssize_t) assert_size)
-        return NULL;
+            return unique_ptr(struct event, ({ .kind = kind, .data = buf }), destroy_event);
+        }
+        case POST_TEST: {
+            double *elapsed_time = malloc(sizeof (double));
+            if (read(fd, elapsed_time, sizeof (double)) < (ssize_t) sizeof (double))
+                return NULL;
 
-    return unique_ptr(struct event, ({ .kind = kind, .data = buf }), destroy_event);
+            return unique_ptr(struct event, ({ .kind = kind, .data = elapsed_time }), destroy_event);
+        }
+        default:
+            return unique_ptr(struct event, ({ .kind = kind, .data = NULL }));
+    }
 }
 
 void send_event(int kind, void *data, size_t size) {

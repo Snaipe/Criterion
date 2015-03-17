@@ -27,6 +27,7 @@
 #include "criterion/logging.h"
 #include "criterion/options.h"
 #include "report.h"
+#include "timer.h"
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                        \
     IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);       \
@@ -57,11 +58,14 @@ ReportHook(PRE_INIT)(struct criterion_test *test) {
 
 ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
     if (criterion_options.enable_tap_format) {
-        criterion_important("%s " SIZE_T_FORMAT " - %s::%s\n",
+        const char *format = can_measure_time() ? "%s " SIZE_T_FORMAT " - %s::%s (%3.2fs)\n"
+                                                : "%s " SIZE_T_FORMAT " - %s::%s\n";
+        criterion_important(format,
                 stats->failed ? "not ok" : "ok",
                 tap_test_index++,
                 stats->test->category,
-                stats->test->name);
+                stats->test->name,
+                stats->elapsed_time);
         for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
             if (!asrt->passed) {
                 char *dup = strdup(*asrt->message ? asrt->message : asrt->condition), *saveptr = NULL;
@@ -76,11 +80,13 @@ ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
             }
         }
     } else {
+        const char *format = can_measure_time() ? "%s::%s: %s (%3.2fs)\n" : "%s::%s: %s\n";
         criterion_log(stats->failed ? CRITERION_IMPORTANT : CRITERION_INFO,
-                "%s::%s: %s\n",
+                format,
                 stats->test->category,
                 stats->test->name,
-                stats->failed ? "FAILURE" : "SUCCESS");
+                stats->failed ? "FAILURE" : "SUCCESS",
+                stats->elapsed_time);
     }
 }
 
