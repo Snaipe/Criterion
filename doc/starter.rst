@@ -51,22 +51,22 @@ parameter, and an optional failure message:
 On top of those, more assertions are available for common operations:
 
 * ``{assert,expect}_not(Actual, Expected, [Message])``
-* ``{assert,expect}_equal(Actual, Expected, [Message])``
-* ``{assert,expect}_not_equal(Actual, Unexpected, [Message])``
+* ``{assert,expect}_eq(Actual, Expected, [Message])``
+* ``{assert,expect}_neq(Actual, Unexpected, [Message])``
 * ``{assert,expect}_lt(Actual, Expected, [Message])``
 * ``{assert,expect}_leq(Actual, Expected, [Message])``
 * ``{assert,expect}_gt(Actual, Expected, [Message])``
 * ``{assert,expect}_geq(Actual, Expected, [Message])``
-* ``{assert,expect}_float_equal(Actual, Expected, Epsilon, [Message])``
-* ``{assert,expect}_float_not_equal(Actual, Unexpected, Epsilon, [Message])``
-* ``{assert,expect}_strings_equal(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_not_equal(Actual, Unexpected, [Message])``
+* ``{assert,expect}_float_eq(Actual, Expected, Epsilon, [Message])``
+* ``{assert,expect}_float_neq(Actual, Unexpected, Epsilon, [Message])``
+* ``{assert,expect}_strings_eq(Actual, Expected, [Message])``
+* ``{assert,expect}_strings_neq(Actual, Unexpected, [Message])``
 * ``{assert,expect}_strings_lt(Actual, Expected, [Message])``
 * ``{assert,expect}_strings_leq(Actual, Expected, [Message])``
 * ``{assert,expect}_strings_gt(Actual, Expected, [Message])``
 * ``{assert,expect}_strings_geq(Actual, Expected, [Message])``
-* ``{assert,expect}_arrays_equal(Actual, Expected, Size, [Message])``
-* ``{assert,expect}_arrays_not_equal(Actual, Unexpected, Size, [Message])``
+* ``{assert,expect}_arrays_eq(Actual, Expected, Size, [Message])``
+* ``{assert,expect}_arrays_neq(Actual, Unexpected, Size, [Message])``
 
 Fixtures
 --------

@@ -65,6 +65,12 @@ struct criterion_assert_args {
 
 // Common asserts
 
+# define abort_test(Message)                                                \
+    assert(0,                                                               \
+            .default_msg = "The conditions for this test were not met.",    \
+            .msg = (Message)                                                \
+        )
+
 # define assert(...) assert_(__VA_ARGS__, .sentinel_ = 0)
 # define expect(...) expect_(__VA_ARGS__, .sentinel_ = 0)
 
@@ -86,11 +92,11 @@ struct criterion_assert_args {
 # define expect_op_(Op, Actual, Expected, ...) \
     assert_impl(NORMAL, (Actual) Op (Expected), __VA_ARGS__)
 
-# define assert_equal(...) assert_op_(==, __VA_ARGS__, .sentinel_ = 0)
-# define expect_equal(...) expect_op_(==, __VA_ARGS__, .sentinel_ = 0)
+# define assert_eq(...) assert_op_(==, __VA_ARGS__, .sentinel_ = 0)
+# define expect_eq(...) expect_op_(==, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_not_equal(...) assert_op_(!=, __VA_ARGS__, .sentinel_ = 0)
-# define expect_not_equal(...) expect_op_(!=, __VA_ARGS__, .sentinel_ = 0)
+# define assert_neq(...) assert_op_(!=, __VA_ARGS__, .sentinel_ = 0)
+# define expect_neq(...) expect_op_(!=, __VA_ARGS__, .sentinel_ = 0)
 
 # define assert_lt(...) assert_op_(<, __VA_ARGS__, .sentinel_ = 0)
 # define expect_lt(...) expect_op_(<, __VA_ARGS__, .sentinel_ = 0)
@@ -106,30 +112,30 @@ struct criterion_assert_args {
 
 // Floating-point asserts
 
-# define assert_float_equal(...) \
-    assert_float_equal_(__VA_ARGS__, .sentinel_ = 0)
-# define expect_float_equal(...) \
-    expect_float_equal_(__VA_ARGS__, .sentinel_ = 0)
+# define assert_float_eq(...) \
+    assert_float_eq_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_float_eq(...) \
+    expect_float_eq_(__VA_ARGS__, .sentinel_ = 0)
 
-# define assert_float_equal_(Actual, Expected, Epsilon, ...) \
+# define assert_float_eq_(Actual, Expected, Epsilon, ...) \
     assert_impl(FATAL,  (Expected) - (Actual) <= (Epsilon)  \
                      && (Actual) - (Expected) <= (Epsilon), \
                 __VA_ARGS__)
-# define expect_float_equal_(Actual, Expected, Epsilon, ...) \
+# define expect_float_eq_(Actual, Expected, Epsilon, ...) \
     assert_impl(NORMAL, (Expected) - (Actual) <= (Epsilon)  \
                      && (Actual) - (Expected) <= (Epsilon), \
                 __VA_ARGS__)
 
-# define assert_float_not_equal(...) \
-    assert_float_not_equal_(__VA_ARGS__, .sentinel_ = 0)
-# define expect_float_not_equal(...) \
-    expect_float_not_equal_(__VA_ARGS__, .sentinel_ = 0)
+# define assert_float_neq(...) \
+    assert_float_neq_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_float_neq(...) \
+    expect_float_neq_(__VA_ARGS__, .sentinel_ = 0)
 
-# define assert_float_not_equal_(Actual, Expected, Epsilon, ...) \
+# define assert_float_neq_(Actual, Expected, Epsilon, ...) \
     assert_impl(FATAL,  (Expected) - (Actual) > (Epsilon)  \
                      || (Actual) - (Expected) > (Epsilon), \
                 __VA_ARGS__)
-# define expect_float_not_equal_(Actual, Expected, Epsilon, ...) \
+# define expect_float_neq_(Actual, Expected, Epsilon, ...) \
     assert_impl(NORMAL, (Expected) - (Actual) > (Epsilon)  \
                      || (Actual) - (Expected) > (Epsilon), \
                 __VA_ARGS__)
@@ -141,14 +147,14 @@ struct criterion_assert_args {
 # define expect_strings_(Op, Actual, Expected, ...) \
     assert_impl(NORMAL, strcmp((Actual), (Expected)) Op 0, __VA_ARGS__)
 
-# define assert_strings_equal(...) \
+# define assert_strings_eq(...) \
     assert_strings_(==, __VA_ARGS__, .sentinel_ = 0)
-# define expect_strings_equal(...) \
+# define expect_strings_eq(...) \
     expect_strings_(==, __VA_ARGS__, .sentinel_ = 0)
 
-# define assert_strings_not_equal(...) \
+# define assert_strings_neq(...) \
     assert_strings_(!=, __VA_ARGS__, .sentinel_ = 0)
-# define expect_strings_not_equal(...) \
+# define expect_strings_neq(...) \
     expect_strings_(!=, __VA_ARGS__, .sentinel_ = 0)
 
 # define assert_strings_gt(...) assert_strings_(>, __VA_ARGS__, .sentinel_ = 0)
@@ -165,24 +171,24 @@ struct criterion_assert_args {
 
 // Array asserts
 
-# define assert_arrays_equal(...) \
-    assert_arrays_equal_(__VA_ARGS__, .sentinel = 0)
-# define expect_arrays_equal(...) \
-    expect_arrays_equal_(__VA_ARGS__, .sentinel = 0)
+# define assert_arrays_eq(...) \
+    assert_arrays_eq_(__VA_ARGS__, .sentinel = 0)
+# define expect_arrays_eq(...) \
+    expect_arrays_eq_(__VA_ARGS__, .sentinel = 0)
 
-# define assert_arrays_not_equal(...) \
-    assert_arrays_not_equal_(__VA_ARGS__, .sentinel = 0)
-# define expect_arrays_not_equal(...) \
-    expect_arrays_not_equal_(__VA_ARGS__, .sentinel = 0)
+# define assert_arrays_neq(...) \
+    assert_arrays_neq_(__VA_ARGS__, .sentinel = 0)
+# define expect_arrays_neq(...) \
+    expect_arrays_neq_(__VA_ARGS__, .sentinel = 0)
 
-# define assert_arrays_equal_(A, B, Size, ...) \
+# define assert_arrays_eq_(A, B, Size, ...) \
     assert_impl(FATAL, !memcmp((A), (B), (Size)), __VA_ARGS__)
-# define expect_arrays_equal_(A, B, Size, ...) \
+# define expect_arrays_eq_(A, B, Size, ...) \
     assert_impl(NORMAL, !memcmp((A), (B), (Size)), __VA_ARGS__)
 
-# define assert_arrays_not_equal_(A, B, Size, ...) \
+# define assert_arrays_neq_(A, B, Size, ...) \
     assert_impl(FATAL, memcmp((A), (B), (Size)), __VA_ARGS__)
-# define expect_arrays_not_equal_(A, B, Size, ...) \
+# define expect_arrays_neq_(A, B, Size, ...) \
     assert_impl(NORMAL, memcmp((A), (B), (Size)), __VA_ARGS__)
 
 #endif /* !CRITERION_ASSERT_H_ */

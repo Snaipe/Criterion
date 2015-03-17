@@ -52,6 +52,7 @@ Sample tests can be found in the [sample directory][samples].
 
 * [A simple test][sample-simple]
 * [Using multiple suites][sample-suites]
+* [Writing assertions][sample-asserts]
 * [Adding test fixtures][sample-fixtures]
 * [Tests with signals][sample-signal]
 * [Using report hooks][sample-report]
@@ -85,6 +86,7 @@ A. Yes, you can, Cygwin is only required to compile the static library if
 [samples]: ./samples/
 [sample-simple]: ./samples/simple.c
 [sample-suites]: ./samples/suites.c
+[sample-asserts]: ./samples/asserts.c
 [sample-fixtures]: ./samples/fixtures.c
 [sample-signal]: ./samples/signal.c
 [sample-report]: ./samples/report.c

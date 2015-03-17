@@ -6,14 +6,23 @@ Test(asserts, base) {
 
     assert(true, "Assertions may take failure messages");
 
+    assert(true, .msg = "You can use explicit named arguments");
+
     expect(false, "assert is fatal, expect isn't");
     assert(false, "This assert runs");
     assert(false, "This does not");
 }
 
+Test(asserts, old_school) {
+    if (false)
+        abort_test("You can abort the test with a message from anywhere");
+
+    abort_test(NULL); // or without a message
+}
+
 Test(asserts, string) {
-    assert_strings_equal("hello", "hello");
-    assert_strings_not_equal("hello", "olleh");
+    assert_strings_eq("hello", "hello");
+    assert_strings_neq("hello", "olleh");
 
     assert_strings_gt("hello", "hell");
     assert_strings_geq("hello", "hell");
@@ -25,8 +34,8 @@ Test(asserts, string) {
 }
 
 Test(asserts, native) {
-    assert_equal(1, 1);
-    assert_not_equal(1, 2);
+    assert_eq(1, 1);
+    assert_neq(1, 2);
 
     assert_lt(1, 2);
     assert_leq(1, 2);
@@ -38,6 +47,6 @@ Test(asserts, native) {
 }
 
 Test(asserts, float) {
-    assert_not_equal(0.1 * 0.1, 0.01);
-    assert_float_equal(0.1 * 0.1, 0.01, 0.001);
+    assert_neq(0.1 * 0.1, 0.01);
+    assert_float_eq(0.1 * 0.1, 0.01, 0.001);
 }
