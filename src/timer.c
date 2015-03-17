@@ -40,7 +40,7 @@ int gettime_compat(struct timespec_compat *ts) {
     int res = clock_get_time(cclock, &mts);
     mach_port_deallocate(mach_task_self(), cclock);
 
-    *ts = (struct timespec_compat) { mts->tv_sec, mts->tv_nsec };
+    *ts = (struct timespec_compat) { mts.tv_sec, mts.tv_nsec };
     return res > 0 ? -1 : 0;
 #elif defined(_WIN32) || defined(__CYGWIN__)
     LARGE_INTEGER freq, count;
