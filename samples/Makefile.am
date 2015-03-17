@@ -17,6 +17,8 @@ SCRIPT_TESTS = tests/tap_test.sh \
                tests/verbose.sh \
                tests/help.sh
 
+EXTRA_DIST = $(SCRIPT_TESTS)
+
 tests/tap_test.sh: simple signal asserts
 tests/early_exit.sh: simple
 tests/verbose.sh: simple
