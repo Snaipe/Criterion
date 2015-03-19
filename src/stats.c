@@ -43,7 +43,7 @@ static void destroy_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_glob_stats *stats_init(void) {
-    return unique_ptr(s_glob_stats, ({0}), destroy_stats);
+    return unique_ptr(s_glob_stats, {0}, destroy_stats);
 }
 
 static void destroy_test_stats(void *ptr, UNUSED void *meta) {
@@ -53,11 +53,11 @@ static void destroy_test_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_test_stats *test_stats_init(struct criterion_test *t) {
-    return shared_ptr(s_test_stats, ({
+    return shared_ptr(s_test_stats, {
                 .test = t,
                 .progress = t->data->line_,
                 .file = t->data->file_
-            }), destroy_test_stats);
+            }, destroy_test_stats);
 }
 
 void stat_push_event(s_glob_stats *stats,

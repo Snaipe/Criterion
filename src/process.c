@@ -76,7 +76,7 @@ struct process *spawn_test_worker(struct criterion_test *test, void (*func)(stru
     }
 
     close(fds[1]);
-    return unique_ptr(struct process, ({ .pid = pid, .in = fds[0] }), close_process);
+    return unique_ptr(struct process, { .pid = pid, .in = fds[0] }, close_process);
 }
 
 struct process_status wait_proc(struct process *proc) {

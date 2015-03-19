@@ -66,10 +66,10 @@ static struct criterion_test_set *read_all_tests(void) {
 
     qsort(tests, nb_tests, sizeof (void *), compare_test);
 
-    return unique_ptr(struct criterion_test_set, ({
+    return unique_ptr(struct criterion_test_set, {
                 .tests = tests,
                 .nb_tests = nb_tests
-            }), destroy_test_set);
+            }, destroy_test_set);
 }
 
 static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
