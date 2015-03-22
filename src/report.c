@@ -30,45 +30,28 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "report.h"
-#include "timer.h"
 
-#define IMPL_CALL_REPORT_HOOKS(Kind)                        \
-    IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);       \
-    void call_report_hooks_##Kind(void *data) {             \
-        for (f_report_hook *hook = SECTION_START(crit_ ## Kind);     \
-             hook < SECTION_END(crit_ ## Kind);                      \
-             ++hook) {                                      \
-            (*hook)(data);                                  \
-        }                                                   \
+#define IMPL_CALL_REPORT_HOOKS(Kind)                                \
+    IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);              \
+    void call_report_hooks_##Kind(void *data) {                     \
+        for (f_report_hook *hook = SECTION_START(crit_ ## Kind);    \
+             hook < SECTION_END(crit_ ## Kind);                     \
+             ++hook) {                                              \
+            (*hook)(data);                                          \
+        }                                                           \
     }
+
+#define IMPL_REPORT_HOOK(Type)      \
+    IMPL_CALL_REPORT_HOOKS(Type);   \
+    ReportHook(Type)
 
 #define log(Type, Arg) \
     (criterion_options.output_provider->log_ ## Type ?: nothing)(Arg);
 
-IMPL_CALL_REPORT_HOOKS(PRE_ALL);
-IMPL_CALL_REPORT_HOOKS(PRE_INIT);
-IMPL_CALL_REPORT_HOOKS(PRE_TEST);
-IMPL_CALL_REPORT_HOOKS(ASSERT);
-IMPL_CALL_REPORT_HOOKS(TEST_CRASH);
-IMPL_CALL_REPORT_HOOKS(POST_TEST);
-IMPL_CALL_REPORT_HOOKS(POST_FINI);
-IMPL_CALL_REPORT_HOOKS(POST_ALL);
-
 __attribute__((always_inline))
 static inline void nothing() {}
 
-ReportHook(PRE_INIT)(struct criterion_test *test) {
-    log(pre_init, test);
-}
-
-ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
-    log(post_test, stats);
-}
-
-ReportHook(PRE_TEST)() {}
-ReportHook(POST_FINI)() {}
-
-ReportHook(PRE_ALL)(struct criterion_test_set *set) {
+IMPL_REPORT_HOOK(PRE_ALL)(struct criterion_test_set *set) {
     if (criterion_options.pattern) {
         FOREACH_SET(struct criterion_suite_set *s, set->suites) {
             if ((s->suite.data && s->suite.data->disabled) || !s->tests)
@@ -87,14 +70,30 @@ ReportHook(PRE_ALL)(struct criterion_test_set *set) {
     log(pre_all, set);
 }
 
-ReportHook(POST_ALL)(struct criterion_global_stats *stats) {
-    log(post_all, stats);
+IMPL_REPORT_HOOK(PRE_INIT)(struct criterion_test *test) {
+    log(pre_init, test);
 }
 
-ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
+IMPL_REPORT_HOOK(PRE_TEST)(struct criterion_test *test) {
+    log(pre_test, test);
+}
+
+IMPL_REPORT_HOOK(ASSERT)(struct criterion_assert_stats *stats) {
     log(assert, stats);
 }
 
-ReportHook(TEST_CRASH)(struct criterion_test_stats *stats) {
+IMPL_REPORT_HOOK(TEST_CRASH)(struct criterion_test_stats *stats) {
     log(test_crash, stats);
+}
+
+IMPL_REPORT_HOOK(POST_TEST)(struct criterion_test_stats *stats) {
+    log(post_test, stats);
+}
+
+IMPL_REPORT_HOOK(POST_FINI)(struct criterion_test_stats *stats) {
+    log(post_fini, stats);
+}
+
+IMPL_REPORT_HOOK(POST_ALL)(struct criterion_global_stats *stats) {
+    log(post_all, stats);
 }
