@@ -59,7 +59,7 @@ static void dtor_test_set(void *ptr, UNUSED void *meta) {
     sfree(t->suites);
 }
 
-static struct criterion_test_set *criterion_init(void) {
+struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
