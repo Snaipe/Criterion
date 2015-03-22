@@ -33,6 +33,7 @@ struct criterion_options {
     bool no_early_exit;
     bool always_succeed;
     bool use_ascii;
+    bool fail_fast;
 };
 
 extern struct criterion_options criterion_options;

@@ -18,6 +18,7 @@
     "    -v or --version: prints the version of criterion " \
             "these tests have been linked against\n"        \
     "    -l or --list: prints all the tests in a list\n"    \
+    "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
     "    --tap: enables TAP formatting\n"                   \
@@ -85,6 +86,7 @@ int main(int argc, char *argv[]) {
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
+        {"fail-fast",       no_argument,        0, 'f'},
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {0,                 0,                  0,  0 }
@@ -100,13 +102,14 @@ int main(int argc, char *argv[]) {
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
-    for (int c; (c = getopt_long(argc, argv, "hvl", opts, NULL)) != -1;) {
+    for (int c; (c = getopt_long(argc, argv, "hvlf", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = atoi(optarg ?: "1"); break;
             case 't': criterion_options.enable_tap_format = true; break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
+            case 'f': criterion_options.fail_fast         = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h':
