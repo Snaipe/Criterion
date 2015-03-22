@@ -9,7 +9,6 @@ WARNINGS = -Wall -Wextra \
 libcriterion_la_CFLAGS = \
 	$(WARNINGS) \
 	-std=gnu11 \
-	-fplan9-extensions \
 	-I$(top_srcdir)/include/ \
 	-I$(top_srcdir)/dependencies/csptr/include/ \
 	$(COVERAGE_CFLAGS)
