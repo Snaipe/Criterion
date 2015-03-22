@@ -34,6 +34,7 @@ struct criterion_options {
     bool always_succeed;
     bool use_ascii;
     bool fail_fast;
+    const char *pattern;
 };
 
 extern struct criterion_options criterion_options;

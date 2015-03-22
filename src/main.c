@@ -44,6 +44,8 @@
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
+    "    --pattern [PATTERN]: run tests matching the "      \
+            "given pattern\n"                               \
     "    --tap: enables TAP formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
@@ -110,6 +112,7 @@ int main(int argc, char *argv[]) {
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
         {"fail-fast",       no_argument,        0, 'f'},
+        {"pattern",         required_argument,  0, 'p'},
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {0,                 0,                  0,  0 }
@@ -133,6 +136,7 @@ int main(int argc, char *argv[]) {
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'f': criterion_options.fail_fast         = true; break;
+            case 'p': criterion_options.pattern           = optarg; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h':
