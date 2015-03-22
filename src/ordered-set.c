@@ -55,7 +55,8 @@ void *insert_ordered_set(struct criterion_ordered_set *l, void *ptr, size_t size
 
     struct criterion_ordered_set_node *new = smalloc(
             .size = sizeof(struct criterion_ordered_set_node) + size,
-            .dtor = destroy_ordered_set_node
+            .dtor = destroy_ordered_set_node,
+            .meta = { &l, sizeof (void *) },
         );
     if (!new)
         return NULL;

@@ -54,7 +54,12 @@ static void dtor_suite_set(void *ptr, UNUSED void *meta) {
     sfree(s->tests);
 }
 
-static struct criterion_test_set criterion_init(void) {
+static void dtor_test_set(void *ptr, UNUSED void *meta) {
+    struct criterion_test_set *t = ptr;
+    sfree(t->suites);
+}
+
+static struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
@@ -78,10 +83,10 @@ static struct criterion_test_set criterion_init(void) {
     const size_t nb_tests = SECTION_END(criterion_tests)
                           - SECTION_START(criterion_tests);
 
-    return (struct criterion_test_set) {
+    return unique_ptr(struct criterion_test_set, {
         suites,
         nb_tests,
-    };
+    }, dtor_test_set);
 }
 
 typedef void (*f_test_run)(struct criterion_global_stats *, struct criterion_test *, struct criterion_suite *);
@@ -167,13 +172,13 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 }
 
 static int criterion_run_all_tests_impl(void) {
-    struct criterion_test_set set = criterion_init();
+    smart struct criterion_test_set *set = criterion_init();
 
-    report(PRE_ALL, &set);
+    report(PRE_ALL, set);
     set_runner_pid();
 
     smart struct criterion_global_stats *stats = stats_init();
-    map_tests(&set, stats, run_test);
+    map_tests(set, stats, run_test);
 
     if (!is_runner())
         return -1;
