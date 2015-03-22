@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
@@ -71,6 +72,8 @@ struct process *spawn_test_worker(struct criterion_test *test,
 
         func(test, suite);
         close(fds[1]);
+
+        fflush(NULL); // flush all opened streams
         if (criterion_options.no_early_exit)
             return NULL;
         else
