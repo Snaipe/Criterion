@@ -24,9 +24,7 @@
 #ifndef CRITERION_STATS_H_
 # define CRITERION_STATS_H_
 
-# include <stdbool.h>
-# include <stddef.h>
-# include "criterion.h"
+# include "types.h"
 
 struct criterion_assert_stats {
     int kind;

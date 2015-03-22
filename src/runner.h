@@ -24,7 +24,7 @@
 #ifndef CRITERION_RUNNER_H_
 # define CRITERION_RUNNER_H_
 
-# include "criterion/criterion.h"
+# include "criterion/types.h"
 
 DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 DECL_SECTION_LIMITS(struct criterion_suite, crit_suites);

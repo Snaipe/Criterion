@@ -21,39 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_ORDERED_SET_H_
-# define CRITERION_ORDERED_SET_H_
+#ifndef CRITERION_TYPES_H_
+# define CRITERION_TYPES_H_
 
-# include "types.h"
+# include <stdbool.h>
+# include <stddef.h>
 
-struct criterion_ordered_set {
-    struct criterion_ordered_set_node *first;
-    size_t size;
-    int (*const cmp)(void *, void *);
-    void (*const dtor)(void *, void *);
+struct criterion_test_extra_data {
+    int sentinel_;
+    const char *const file_;
+    const unsigned line_;
+    void (*init)(void);
+    void (*fini)(void);
+    int signal;
+    bool disabled;
+    void *data;
 };
 
-struct criterion_ordered_set_node {
-    struct criterion_ordered_set_node *next;
-    char data[0];
+struct criterion_test {
+    const char *name;
+    const char *category;
+    void (*test)(void);
+    struct criterion_test_extra_data *const data;
 };
 
-struct criterion_suite_set {
-    struct criterion_suite suite;
-    struct criterion_ordered_set *tests;
+struct criterion_suite {
+    const char *name;
+    struct criterion_test_extra_data *const data;
+#if 1
+    void *pad[2];
+#endif
 };
 
-struct criterion_test_set {
-    struct criterion_ordered_set *suites;
-    size_t tests;
-};
-
-struct criterion_ordered_set *new_ordered_set(int (*cmp)(void *, void *), void (*dtor)(void *, void *));
-void *insert_ordered_set(struct criterion_ordered_set *l, void *ptr, size_t size);
-
-# define FOREACH_SET(Elt, Set)                                                 \
-    for (struct criterion_ordered_set_node *n = Set->first; n; n = n->next)    \
-        for (int cond = 1; cond;)                                              \
-            for (Elt = (void*) n->data; cond; cond = 0)
-
-#endif /* !CRITERION_ORDERED_SET_H_ */
+#endif /* !CRITERION_TYPES_H_ */

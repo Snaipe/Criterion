@@ -27,7 +27,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <stdbool.h>
-# include "criterion.h"
+# include "types.h"
 # include "stats.h"
 # include "hooks.h"
 # include "event.h"

@@ -27,7 +27,7 @@
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
 
-#include "criterion/criterion.h"
+#include "criterion/types.h"
 #include "criterion/options.h"
 #include "process.h"
 #include "event.h"

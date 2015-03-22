@@ -29,6 +29,7 @@ subdirinclude_HEADERS = \
 	include/criterion/event.h \
 	include/criterion/hooks.h \
 	include/criterion/logging.h \
+	include/criterion/types.h \
 	include/criterion/options.h \
 	include/criterion/ordered-set.h \
 	include/criterion/stats.h

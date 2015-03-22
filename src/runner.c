@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <csptr/smart_ptr.h>
+#include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "stats.h"

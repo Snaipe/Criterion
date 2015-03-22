@@ -23,8 +23,9 @@
  */
 #define _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
 #include <fnmatch.h>
-#include "criterion/criterion.h"
+#include "criterion/types.h"
 #include "criterion/stats.h"
 #include "criterion/logging.h"
 #include "criterion/options.h"

@@ -27,6 +27,7 @@
 # include <stdbool.h>
 # include "common.h"
 # include "ordered-set.h"
+# include "stats.h"
 
 enum criterion_logging_level {
     CRITERION_INFO = 1,
