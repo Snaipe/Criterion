@@ -29,7 +29,7 @@
 
 struct criterion_options {
     enum criterion_logging_level logging_threshold;
-    bool enable_tap_format;
+    struct criterion_output_provider *output_provider;
     bool no_early_exit;
     bool always_succeed;
     bool use_ascii;

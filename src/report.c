@@ -42,7 +42,8 @@
         }                                                   \
     }
 
-static size_t tap_test_index = 1;
+#define log(Type, Arg) \
+    (criterion_options.output_provider->log_ ## Type ?: nothing)(Arg);
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL);
 IMPL_CALL_REPORT_HOOKS(PRE_INIT);
@@ -53,44 +54,15 @@ IMPL_CALL_REPORT_HOOKS(POST_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_ALL);
 
-ReportHook(PRE_INIT)(struct criterion_test *test) {
-    if (criterion_options.enable_tap_format) return;
+__attribute__((always_inline))
+static inline void nothing() {}
 
-    criterion_info("%s::%s: RUNNING\n", test->category, test->name);
+ReportHook(PRE_INIT)(struct criterion_test *test) {
+    log(pre_init, test);
 }
 
 ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
-    if (criterion_options.enable_tap_format) {
-        const char *format = can_measure_time() ? "%s " SIZE_T_FORMAT " - %s::%s (%3.2fs)\n"
-                                                : "%s " SIZE_T_FORMAT " - %s::%s\n";
-        criterion_important(format,
-                stats->failed ? "not ok" : "ok",
-                tap_test_index++,
-                stats->test->category,
-                stats->test->name,
-                stats->elapsed_time);
-        for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
-            if (!asrt->passed) {
-                char *dup = strdup(*asrt->message ? asrt->message : asrt->condition), *saveptr = NULL;
-                char *line = strtok_r(dup, "\n", &saveptr);
-                criterion_important("\t%s:%u: Assertion failed: %s\n",
-                        asrt->file,
-                        asrt->line,
-                        line);
-                while ((line = strtok_r(NULL, "\n", &saveptr)))
-                    criterion_important("\t%s\n", line);
-                free(dup);
-            }
-        }
-    } else {
-        const char *format = can_measure_time() ? "%s::%s: %s (%3.2fs)\n" : "%s::%s: %s\n";
-        criterion_log(stats->failed ? CRITERION_IMPORTANT : CRITERION_INFO,
-                format,
-                stats->test->category,
-                stats->test->name,
-                stats->failed ? "FAILURE" : "SUCCESS",
-                stats->elapsed_time);
-    }
+    log(post_test, stats);
 }
 
 ReportHook(PRE_TEST)() {}
@@ -112,54 +84,17 @@ ReportHook(PRE_ALL)(struct criterion_test_set *set) {
             }
         }
     }
-    if (criterion_options.enable_tap_format) {
-        size_t enabled_count = 0;
-        FOREACH_SET(struct criterion_suite_set *s, set->suites) {
-            if ((s->suite.data && s->suite.data->disabled) || !s->tests)
-                continue;
-
-            FOREACH_SET(struct criterion_test *test, s->tests) {
-                if (!test->data->disabled)
-                    ++enabled_count;
-            }
-        }
-        criterion_important("1.." SIZE_T_FORMAT "\n", enabled_count);
-    }
+    log(pre_all, set);
 }
-ReportHook(POST_ALL)(struct criterion_global_stats *stats) {
-    if (criterion_options.enable_tap_format) return;
 
-    criterion_important("Synthesis: " SIZE_T_FORMAT " tests were run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crashes)\n",
-            stats->nb_tests,
-            stats->tests_passed,
-            stats->tests_failed,
-            stats->tests_crashed);
+ReportHook(POST_ALL)(struct criterion_global_stats *stats) {
+    log(post_all, stats);
 }
 
 ReportHook(ASSERT)(struct criterion_assert_stats *stats) {
-    if (criterion_options.enable_tap_format) return;
-
-    if (!stats->passed) {
-        criterion_important("%s:%d: Assertion failed: %s\n",
-                stats->file,
-                stats->line,
-                *stats->message ? stats->message : stats->condition);
-    }
+    log(assert, stats);
 }
 
 ReportHook(TEST_CRASH)(struct criterion_test_stats *stats) {
-    if (criterion_options.enable_tap_format) {
-        criterion_important("not ok " SIZE_T_FORMAT " - %s::%s unexpected signal after %s:%u\n",
-                tap_test_index++,
-                stats->test->category,
-                stats->test->name,
-                stats->file,
-                stats->progress);
-    } else {
-        criterion_important("Unexpected signal after %s:%u!\n%s::%s: FAILURE (CRASH!)\n",
-                stats->file,
-                stats->progress,
-                stats->test->category,
-                stats->test->name);
-    }
+    log(test_crash, stats);
 }

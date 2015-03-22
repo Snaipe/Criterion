@@ -121,9 +121,11 @@ int main(int argc, char *argv[]) {
     criterion_options = (struct criterion_options) {
         .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
         .no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0"),
-        .enable_tap_format = !strcmp("1", getenv("CRITERION_ENABLE_TAP")     ?: "0"),
         .logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2"),
+        .output_provider   = NORMAL_LOGGING,
     };
+
+    bool use_tap = !strcmp("1", getenv("CRITERION_ENABLE_TAP") ?: "0");
 
     bool do_list_tests = false;
     bool do_print_version = false;
@@ -131,18 +133,20 @@ int main(int argc, char *argv[]) {
     for (int c; (c = getopt_long(argc, argv, "hvlf", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = atoi(optarg ?: "1"); break;
-            case 't': criterion_options.enable_tap_format = true; break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'p': criterion_options.pattern           = optarg; break;
+            case 't': use_tap = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h':
             default : do_print_usage = true; break;
         }
     }
+    if (use_tap)
+        criterion_options.output_provider = TAP_LOGGING;
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)

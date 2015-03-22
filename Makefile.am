@@ -45,6 +45,8 @@ libcriterion_la_SOURCES = \
 	src/stats.c \
 	src/stats.h \
 	src/logging.c \
+	src/log/tap.c \
+	src/log/normal.c \
 	src/options.c \
 	src/timer.c \
 	src/timer.h \
