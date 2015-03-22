@@ -26,6 +26,7 @@
 #include "criterion/stats.h"
 #include "criterion/logging.h"
 #include "criterion/options.h"
+#include "criterion/ordered-set.h"
 #include "report.h"
 #include "timer.h"
 
@@ -95,10 +96,16 @@ ReportHook(POST_FINI)() {}
 
 ReportHook(PRE_ALL)(struct criterion_test_set *set) {
     if (criterion_options.enable_tap_format) {
-        size_t enabled_count = 0, i = 0;
-        for (struct criterion_test **test = set->tests; i < set->nb_tests; ++i)
-            if (!(test[i])->data->disabled)
-                ++enabled_count;
+        size_t enabled_count = 0;
+        FOREACH_SET(struct criterion_suite_set *s, set->suites) {
+            if ((s->suite.data && s->suite.data->disabled) || !s->tests)
+                continue;
+
+            FOREACH_SET(struct criterion_test *test, s->tests) {
+                if (!test->data->disabled)
+                    ++enabled_count;
+            }
+        }
         criterion_important("1.." SIZE_T_FORMAT "\n", enabled_count);
     }
 }

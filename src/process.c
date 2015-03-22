@@ -54,7 +54,9 @@ struct event *worker_read_event(struct process *proc) {
     return read_event(proc->in);
 }
 
-struct process *spawn_test_worker(struct criterion_test *test, void (*func)(struct criterion_test *)) {
+struct process *spawn_test_worker(struct criterion_test *test,
+                                  struct criterion_suite *suite,
+                                  void (*func)(struct criterion_test *, struct criterion_suite *)) {
     int fds[2];
     if (pipe(fds) == -1)
         abort();
@@ -67,7 +69,7 @@ struct process *spawn_test_worker(struct criterion_test *test, void (*func)(stru
         close(fds[0]);
         EVENT_PIPE = fds[1];
 
-        func(test);
+        func(test, suite);
         close(fds[1]);
         if (criterion_options.no_early_exit)
             return NULL;

@@ -42,7 +42,9 @@ struct process_status {
 void set_runner_pid(void);
 bool is_runner(void);
 struct process_status wait_proc(struct process *proc);
-struct process *spawn_test_worker(struct criterion_test *test, void (*func)(struct criterion_test *));
+struct process *spawn_test_worker(struct criterion_test *test,
+                                  struct criterion_suite *suite,
+                                  void (*func)(struct criterion_test *, struct criterion_suite *));
 struct event *worker_read_event(struct process *proc);
 
 #endif /* !PROCESS_H_ */
