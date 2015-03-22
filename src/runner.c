@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <csptr/smart_ptr.h>
 #include "criterion/options.h"
+#include "criterion/ordered-set.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
@@ -34,58 +35,77 @@
 #include "timer.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
+IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
 
-static int compare_test(const void *a, const void *b) {
-    struct criterion_test *first = *(struct criterion_test **) a;
-    struct criterion_test *second = *(struct criterion_test **) b;
+TestSuite(default);
 
-    // likely to happen
-    if (first->category == second->category) {
-        return strcmp(first->name, second->name);
-    } else {
-        return strcmp(first->category, second->category)
-            ?: strcmp(first->name, second->name);
+int cmp_suite(void *a, void *b) {
+    struct criterion_suite *s1 = a, *s2 = b;
+    return strcmp(s1->name, s2->name);
+}
+
+int cmp_test(void *a, void *b) {
+    struct criterion_test *s1 = a, *s2 = b;
+    return strcmp(s1->name, s2->name);
+}
+
+static void dtor_suite_set(void *ptr, UNUSED void *meta) {
+    struct criterion_suite_set *s = ptr;
+    sfree(s->tests);
+}
+
+static struct criterion_test_set criterion_init(void) {
+    struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
+
+    FOREACH_SUITE_SEC(s) {
+        struct criterion_suite_set css = {
+            .suite = *s,
+        };
+        insert_ordered_set(suites, &css, sizeof (css));
     }
+
+    FOREACH_TEST_SEC(test) {
+        struct criterion_suite_set css = {
+            .suite = { .name = test->category },
+        };
+        struct criterion_suite_set *s = insert_ordered_set(suites, &css, sizeof (css));
+        if (!s->tests)
+            s->tests = new_ordered_set(cmp_test, NULL);
+
+        insert_ordered_set(s->tests, test, sizeof(*test));
+    }
+
+    const size_t nb_tests = SECTION_END(criterion_tests)
+                          - SECTION_START(criterion_tests);
+
+    return (struct criterion_test_set) {
+        suites,
+        nb_tests,
+    };
 }
 
-static void destroy_test_set(void *ptr, UNUSED void *meta) {
-    struct criterion_test_set *set = ptr;
-    free(set->tests);
-}
+typedef void (*f_test_run)(struct criterion_global_stats *, struct criterion_test *, struct criterion_suite *);
 
-static struct criterion_test_set *read_all_tests(void) {
-    size_t nb_tests = SECTION_END(criterion_tests) - SECTION_START(criterion_tests);
+static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, f_test_run fun) {
+    FOREACH_SET(struct criterion_suite_set *s, set->suites) {
+        if ((s->suite.data && s->suite.data->disabled) || !s->tests)
+            continue;
 
-    struct criterion_test **tests = malloc(nb_tests * sizeof (void *));
-    if (tests == NULL)
-        return NULL;
-
-    size_t i = 0;
-    for (struct criterion_test *test = SECTION_START(criterion_tests); test < SECTION_END(criterion_tests); ++test)
-        tests[i++] = test;
-
-    qsort(tests, nb_tests, sizeof (void *), compare_test);
-
-    return unique_ptr(struct criterion_test_set, {
-                .tests = tests,
-                .nb_tests = nb_tests
-            }, destroy_test_set);
-}
-
-static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, void (*fun)(struct criterion_global_stats *, struct criterion_test *)) {
-    size_t i = 0;
-    for (struct criterion_test **t = set->tests; i < set->nb_tests; ++i, ++t) {
-        fun(stats, *t);
-        if (!is_runner())
-            return;
+        FOREACH_SET(struct criterion_test *t, s->tests) {
+            fun(stats, t, &s->suite);
+            if (!is_runner())
+                return;
+        }
     }
 }
 
 __attribute__ ((always_inline))
 static inline void nothing() {}
 
-static void run_test_child(struct criterion_test *test) {
+static void run_test_child(struct criterion_test *test, struct criterion_suite *suite) {
     send_event(PRE_INIT, NULL, 0);
+    if (suite->data)
+        (suite->data->init ?: nothing)();
     (test->data->init ?: nothing)();
     send_event(PRE_TEST, NULL, 0);
 
@@ -98,16 +118,18 @@ static void run_test_child(struct criterion_test *test) {
 
     send_event(POST_TEST, &elapsed_time, sizeof (double));
     (test->data->fini ?: nothing)();
+    if (suite->data)
+        (suite->data->fini ?: nothing)();
     send_event(POST_FINI, NULL, 0);
 }
 
-static void run_test(struct criterion_global_stats *stats, struct criterion_test *test) {
+static void run_test(struct criterion_global_stats *stats, struct criterion_test *test, struct criterion_suite *suite) {
     if (test->data->disabled)
         return;
 
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
 
-    smart struct process *proc = spawn_test_worker(test, run_test_child);
+    smart struct process *proc = spawn_test_worker(test, suite, run_test_child);
     if (proc == NULL && !is_runner())
         return;
 
@@ -145,15 +167,13 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 }
 
 static int criterion_run_all_tests_impl(void) {
-    smart struct criterion_test_set *set = read_all_tests();
+    struct criterion_test_set set = criterion_init();
 
-    report(PRE_ALL, set);
+    report(PRE_ALL, &set);
     set_runner_pid();
 
     smart struct criterion_global_stats *stats = stats_init();
-    if (!set)
-        abort();
-    map_tests(set, stats, run_test);
+    map_tests(&set, stats, run_test);
 
     if (!is_runner())
         return -1;

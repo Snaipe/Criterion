@@ -47,9 +47,12 @@ struct criterion_test {
     struct criterion_test_extra_data *const data;
 };
 
-struct criterion_test_set {
-    struct criterion_test **tests;
-    size_t nb_tests;
+struct criterion_suite {
+    const char *name;
+    struct criterion_test_extra_data *const data;
+#if 1
+    void *pad[2];
+#endif
 };
 
 # define IDENTIFIER_(Category, Name, Suffix) \
@@ -57,12 +60,15 @@ struct criterion_test_set {
 # define TEST_PROTOTYPE_(Category, Name) \
     void IDENTIFIER_(Category, Name, impl)(void)
 
+# define SUITE_IDENTIFIER_(Name, Suffix) \
+    suite_ ## Name ## _ ## Suffix
+
 # define Test(...) Test_(__VA_ARGS__, .sentinel_ = 0)
 # define Test_(Category, Name, ...)                                            \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
-        .file_ = __FILE__,                                                     \
-        .line_ = __LINE__,                                                     \
+        .file_    = __FILE__,                                                  \
+        .line_    = __LINE__,                                                  \
         __VA_ARGS__                                                            \
     };                                                                         \
     SECTION_("criterion_tests")                                                \
@@ -73,6 +79,19 @@ struct criterion_test_set {
         .data     = &IDENTIFIER_(Category, Name, extra)                        \
     };                                                                         \
     TEST_PROTOTYPE_(Category, Name)
+
+# define TestSuite(...) TestSuite_(__VA_ARGS__, .sentinel_ = 0)
+# define TestSuite_(Name, ...)                                                 \
+    struct criterion_test_extra_data SUITE_IDENTIFIER_(Name, extra) = {        \
+        .file_    = __FILE__,                                                  \
+        .line_    = 0,                                                         \
+        __VA_ARGS__                                                            \
+    };                                                                         \
+    SECTION_("crit_suites")                                                    \
+    const struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {             \
+        .name     = #Name,                                                     \
+        .data     = &SUITE_IDENTIFIER_(Name, extra),                           \
+    }
 
 int criterion_run_all_tests(void);
 

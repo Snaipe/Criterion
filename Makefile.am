@@ -4,11 +4,11 @@ SUBDIRS = dependencies/csptr samples
 lib_LTLIBRARIES = libcriterion.la
 
 WARNINGS = -Wall -Wextra \
-	-Wno-unused-result -Wno-missing-field-initializers
+	-Wno-unused-result
 
 libcriterion_la_CFLAGS = \
 	$(WARNINGS) \
-	-std=gnu99 \
+	-std=gnu11 \
 	-fplan9-extensions \
 	-I$(top_srcdir)/include/ \
 	-I$(top_srcdir)/dependencies/csptr/include/ \
@@ -30,6 +30,7 @@ subdirinclude_HEADERS = \
 	include/criterion/hooks.h \
 	include/criterion/logging.h \
 	include/criterion/options.h \
+	include/criterion/ordered-set.h \
 	include/criterion/stats.h
 
 libcriterion_la_SOURCES = \
@@ -47,4 +48,5 @@ libcriterion_la_SOURCES = \
 	src/options.c \
 	src/timer.c \
 	src/timer.h \
+	src/ordered-set.c \
 	src/main.c
