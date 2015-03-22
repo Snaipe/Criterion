@@ -29,6 +29,8 @@
 DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 DECL_SECTION_LIMITS(struct criterion_suite, crit_suites);
 
+struct criterion_test_set *criterion_init(void);
+
 # define FOREACH_TEST_SEC(Test)                                         \
     for (struct criterion_test *Test = SECTION_START(criterion_tests);  \
             Test < SECTION_END(criterion_tests);                        \

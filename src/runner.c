@@ -59,7 +59,7 @@ static void dtor_test_set(void *ptr, UNUSED void *meta) {
     sfree(t->suites);
 }
 
-static struct criterion_test_set *criterion_init(void) {
+struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
@@ -98,6 +98,8 @@ static void map_tests(struct criterion_test_set *set, struct criterion_global_st
 
         FOREACH_SET(struct criterion_test *t, s->tests) {
             fun(stats, t, &s->suite);
+            if (criterion_options.fail_fast && stats->tests_failed > 0)
+                return;
             if (!is_runner())
                 return;
         }

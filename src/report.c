@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <fnmatch.h>
 #include "criterion/criterion.h"
 #include "criterion/stats.h"
 #include "criterion/logging.h"
@@ -95,6 +97,21 @@ ReportHook(PRE_TEST)() {}
 ReportHook(POST_FINI)() {}
 
 ReportHook(PRE_ALL)(struct criterion_test_set *set) {
+    if (criterion_options.pattern) {
+        FOREACH_SET(struct criterion_suite_set *s, set->suites) {
+            if ((s->suite.data && s->suite.data->disabled) || !s->tests)
+                continue;
+
+            FOREACH_SET(struct criterion_test *test, s->tests) {
+                char *name = NULL;
+                asprintf(&name, "%s/%s", s->suite.name, test->name);
+                if (fnmatch(criterion_options.pattern, name, 0))
+                    test->data->disabled = true;
+
+                free(name);
+            }
+        }
+    }
     if (criterion_options.enable_tap_format) {
         size_t enabled_count = 0;
         FOREACH_SET(struct criterion_suite_set *s, set->suites) {
