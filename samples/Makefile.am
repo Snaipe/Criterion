@@ -4,6 +4,8 @@ BIN_TESTS = \
 	suites \
 	fixtures \
 	asserts \
+	more-suites \
+	long-messages \
 	simple
 
 TESTS_ENVIRONMENT = CRITERION_ALWAYS_SUCCEED=1
