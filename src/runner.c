@@ -90,7 +90,10 @@ struct criterion_test_set *criterion_init(void) {
     }, dtor_test_set);
 }
 
-typedef void (*f_test_run)(struct criterion_global_stats *, struct criterion_test *, struct criterion_suite *);
+typedef void (*f_test_run)(struct criterion_global_stats *,
+        struct criterion_suite_stats *,
+        struct criterion_test *,
+        struct criterion_suite *);
 
 static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, f_test_run fun) {
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
@@ -99,15 +102,20 @@ static void map_tests(struct criterion_test_set *set, struct criterion_global_st
 
         report(PRE_SUITE, s);
 
+        smart struct criterion_suite_stats *suite_stats = suite_stats_init(&s->suite);
+
+        struct event ev = { .kind = PRE_SUITE };
+        stat_push_event(stats, suite_stats, NULL, &ev);
+
         FOREACH_SET(struct criterion_test *t, s->tests) {
-            fun(stats, t, &s->suite);
+            fun(stats, suite_stats, t, &s->suite);
             if (criterion_options.fail_fast && stats->tests_failed > 0)
                 break;
             if (!is_runner())
                 return;
         }
 
-        report(POST_SUITE, s);
+        report(POST_SUITE, suite_stats);
     }
 }
 
@@ -135,7 +143,11 @@ static void run_test_child(struct criterion_test *test, struct criterion_suite *
     send_event(POST_FINI, NULL, 0);
 }
 
-static void run_test(struct criterion_global_stats *stats, struct criterion_test *test, struct criterion_suite *suite) {
+static void run_test(struct criterion_global_stats *stats,
+        struct criterion_suite_stats *suite_stats,
+        struct criterion_test *test,
+        struct criterion_suite *suite) {
+
     if (test->data->disabled)
         return;
 
@@ -147,7 +159,7 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
 
     struct event *ev;
     while ((ev = worker_read_event(proc)) != NULL) {
-        stat_push_event(stats, test_stats, ev);
+        stat_push_event(stats, suite_stats, test_stats, ev);
         switch (ev->kind) {
             case PRE_INIT:  report(PRE_INIT, test); break;
             case PRE_TEST:  report(PRE_TEST, test); break;
@@ -163,16 +175,16 @@ static void run_test(struct criterion_global_stats *stats, struct criterion_test
         test_stats->signal = status.status;
         if (test->data->signal == 0) {
             struct event ev = { .kind = TEST_CRASH };
-            stat_push_event(stats, test_stats, &ev);
+            stat_push_event(stats, suite_stats, test_stats, &ev);
             report(TEST_CRASH, test_stats);
         } else {
             double elapsed_time = 0;
             struct event ev = { .kind = POST_TEST, .data = &elapsed_time };
-            stat_push_event(stats, test_stats, &ev);
+            stat_push_event(stats, suite_stats, test_stats, &ev);
             report(POST_TEST, test_stats);
 
             ev = (struct event) { .kind = POST_FINI, .data = NULL };
-            stat_push_event(stats, test_stats, &ev);
+            stat_push_event(stats, suite_stats, test_stats, &ev);
             report(POST_FINI, test_stats);
         }
     }

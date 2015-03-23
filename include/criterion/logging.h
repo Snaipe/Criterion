@@ -49,7 +49,7 @@ struct criterion_output_provider {
     void (*log_test_crash)(struct criterion_test_stats *stats);
     void (*log_post_test )(struct criterion_test_stats *stats);
     void (*log_post_fini )(struct criterion_test_stats *stats);
-    void (*log_post_suite)(struct criterion_suite_set *set);
+    void (*log_post_suite)(struct criterion_suite_stats *stats);
     void (*log_post_all  )(struct criterion_global_stats *stats);
 };
 
