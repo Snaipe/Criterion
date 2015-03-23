@@ -9,6 +9,7 @@ WARNINGS = -Wall -Wextra \
 libcriterion_la_CFLAGS = \
 	$(WARNINGS) \
 	-std=gnu11 \
+	-I$(top_srcdir)/src/ \
 	-I$(top_srcdir)/include/ \
 	-I$(top_srcdir)/dependencies/csptr/include/ \
 	$(COVERAGE_CFLAGS)
