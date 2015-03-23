@@ -24,6 +24,7 @@ Criterion follows the KISS principle, while keeping the control
 the user would have with other frameworks:
 
 * [x] Tests are automatically registered when declared.
+* [x] Implements a xUnit framework structure.
 * [x] A default entry point is provided, no need to declare a main
   unless you want to do special handling.
 * [x] Test are isolated in their own process, crashes and signals can be

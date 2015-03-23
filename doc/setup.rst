@@ -8,7 +8,8 @@ Currently, this library only works under \*nix systems.
 
 To compile the static library and its dependencies, GCC 4.9+ is needed.
 
-To use the static library, GCC or Clang are needed.
+To use the static library, any GNU-C compatible compiler will suffice
+(GCC, Clang/LLVM, ICC, MinGW-GCC, ...).
 
 Installation
 ------------
