@@ -121,7 +121,10 @@ int main(int argc, char *argv[]) {
     criterion_options = (struct criterion_options) {
         .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
         .no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0"),
+        .fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0"),
+        .use_ascii         = !strcmp("1", getenv("CRITERION_USE_ASCII")      ?: "0"),
         .logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2"),
+        .pattern           = getenv("CRITERION_TEST_PATTERN"),
         .output_provider   = NORMAL_LOGGING,
     };
 
