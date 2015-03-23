@@ -21,7 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "criterion/stats.h"
 #include "criterion/logging.h"
 #include "criterion/options.h"
@@ -69,6 +72,9 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
+        char *dup = strdup(*stats->message ? stats->message : stats->condition), *saveptr = NULL;
+        char *line = strtok_r(dup, "\n", &saveptr);
+
         criterion_important("[%s----%s] ", FG_BLUE, RESET);
         criterion_important("%s%s%s:%s%d%s: Assertion failed: %s\n",
                 FG_BOLD,
@@ -77,7 +83,11 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
                 FG_RED,
                 stats->line,
                 RESET,
-                *stats->message ? stats->message : stats->condition);
+                line);
+
+        while ((line = strtok_r(NULL, "\n", &saveptr)))
+            criterion_important("[%s----%s]   %s\n", FG_BLUE, RESET, line);
+        free(dup);
     }
 }
 
