@@ -53,3 +53,17 @@ libcriterion_la_SOURCES = \
 	src/timer.h \
 	src/ordered-set.c \
 	src/main.c
+
+TARGET = $(PACKAGE)-$(VERSION)
+
+package: all
+	rm -Rf $(TARGET)
+	mkdir -p $(TARGET)
+	cp -Rf .libs $(TARGET)/lib/
+	rm -f $(TARGET)/lib/libcriterion.la
+	cp -f libcriterion.la $(TARGET)/lib
+	cp -Rf include $(TARGET)
+	tar -cvjf $(TARGET).tar.bz2 $(TARGET)
+
+clean-local:
+	rm -Rf $(TARGET) $(TARGET).tar.bz2
