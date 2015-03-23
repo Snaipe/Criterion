@@ -54,6 +54,6 @@ void *insert_ordered_set(struct criterion_ordered_set *l, void *ptr, size_t size
 # define FOREACH_SET(Elt, Set)                                                 \
     for (struct criterion_ordered_set_node *n = Set->first; n; n = n->next)    \
         for (int cond = 1; cond;)                                              \
-            for (Elt = (void*) n->data; cond; cond = 0)
+            for (Elt = (void*) n->data; cond && (cond = 0, 1);)
 
 #endif /* !CRITERION_ORDERED_SET_H_ */
