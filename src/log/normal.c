@@ -47,7 +47,7 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
                                                              : CRITERION_INFO;
     const char *color = stats->failed ? FG_RED : FG_GREEN;
 
-    criterion_log(level, "[%s%s%s%s] ", FG_BOLD, color, stats->failed ? "FAIL" : "PASS", RESET);
+    criterion_log(level, "[%s%s%s] ", color, stats->failed ? "FAIL" : "PASS", RESET);
     criterion_log(level, format,
             stats->test->category,
             stats->test->name,
@@ -56,14 +56,15 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
 
 void normal_log_post_all(struct criterion_global_stats *stats) {
     criterion_important("[%s====%s] ", FG_BLUE, RESET);
-    criterion_important("%sSynthesis: " SIZE_T_FORMAT " test%s run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crash%s)\n",
+    criterion_important("%sSynthesis: " SIZE_T_FORMAT " test%s run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crash%s)%s\n",
             FG_BOLD,
             stats->nb_tests,
             stats->nb_tests == 1 ? " was" : "s were",
             stats->tests_passed,
             stats->tests_failed,
             stats->tests_crashed,
-            stats->tests_crashed == 1 ? "" : "es");
+            stats->tests_crashed == 1 ? "" : "es",
+            RESET);
 }
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
