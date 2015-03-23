@@ -9,3 +9,4 @@ Criterion
     starter
     hooks
     env
+    faq
