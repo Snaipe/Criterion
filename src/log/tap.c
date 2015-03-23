@@ -30,6 +30,7 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "timer.h"
+#include "config.h"
 
 static size_t tap_test_index = 1;
 
@@ -44,7 +45,14 @@ void tap_log_pre_all(struct criterion_test_set *set) {
                 ++enabled_count;
         }
     }
-    criterion_important("1.." SIZE_T_FORMAT "\n", enabled_count);
+    criterion_important("TAP version 13\n1.." SIZE_T_FORMAT "\n", enabled_count);
+    criterion_important("# Criterion v%s\n", VERSION);
+}
+
+void tap_log_pre_suite(struct criterion_suite_set *set) {
+    criterion_important("\n# Running " SIZE_T_FORMAT " tests from %s\n",
+            set->tests->size,
+            set->suite.name);
 }
 
 void tap_log_post_test(struct criterion_test_stats *stats) {
@@ -60,12 +68,12 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
         if (!asrt->passed) {
             char *dup = strdup(*asrt->message ? asrt->message : asrt->condition), *saveptr = NULL;
             char *line = strtok_r(dup, "\n", &saveptr);
-            criterion_important("\t%s:%u: Assertion failed: %s\n",
+            criterion_important("  %s:%u: Assertion failed: %s\n",
                     asrt->file,
                     asrt->line,
                     line);
             while ((line = strtok_r(NULL, "\n", &saveptr)))
-                criterion_important("\t%s\n", line);
+                criterion_important("    %s\n", line);
             free(dup);
         }
     }
@@ -82,6 +90,7 @@ void tap_log_test_crash(struct criterion_test_stats *stats) {
 
 struct criterion_output_provider tap_logging = {
     .log_pre_all    = tap_log_pre_all,
+    .log_pre_suite  = tap_log_pre_suite,
     .log_test_crash = tap_log_test_crash,
     .log_post_test  = tap_log_post_test,
 };
