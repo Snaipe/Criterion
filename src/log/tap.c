@@ -32,8 +32,6 @@
 #include "timer.h"
 #include "config.h"
 
-static size_t tap_test_index = 1;
-
 void tap_log_pre_all(struct criterion_test_set *set) {
     size_t enabled_count = 0;
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
@@ -56,11 +54,10 @@ void tap_log_pre_suite(struct criterion_suite_set *set) {
 }
 
 void tap_log_post_test(struct criterion_test_stats *stats) {
-    const char *format = can_measure_time() ? "%s " SIZE_T_FORMAT " - %s::%s (%3.2fs)\n"
-                                            : "%s " SIZE_T_FORMAT " - %s::%s\n";
+    const char *format = can_measure_time() ? "%s - %s::%s (%3.2fs)\n"
+                                            : "%s - %s::%s\n";
     criterion_important(format,
             stats->failed ? "not ok" : "ok",
-            tap_test_index++,
             stats->test->category,
             stats->test->name,
             stats->elapsed_time);
@@ -80,8 +77,7 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
 }
 
 void tap_log_test_crash(struct criterion_test_stats *stats) {
-    criterion_important("not ok " SIZE_T_FORMAT " - %s::%s unexpected signal after %s:%u\n",
-            tap_test_index++,
+    criterion_important("not ok - %s::%s unexpected signal after %s:%u\n",
             stats->test->category,
             stats->test->name,
             stats->file,
