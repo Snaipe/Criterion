@@ -71,6 +71,10 @@ IMPL_REPORT_HOOK(PRE_ALL)(struct criterion_test_set *set) {
     log(pre_all, set);
 }
 
+IMPL_REPORT_HOOK(PRE_SUITE)(struct criterion_suite_set *set) {
+    log(pre_suite, set);
+}
+
 IMPL_REPORT_HOOK(PRE_INIT)(struct criterion_test *test) {
     log(pre_init, test);
 }
@@ -93,6 +97,10 @@ IMPL_REPORT_HOOK(POST_TEST)(struct criterion_test_stats *stats) {
 
 IMPL_REPORT_HOOK(POST_FINI)(struct criterion_test_stats *stats) {
     log(post_fini, stats);
+}
+
+IMPL_REPORT_HOOK(POST_SUITE)(struct criterion_suite_set *set) {
+    log(post_suite, set);
 }
 
 IMPL_REPORT_HOOK(POST_ALL)(struct criterion_global_stats *stats) {

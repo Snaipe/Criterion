@@ -33,6 +33,7 @@
 #define FG_BOLD  NORMALIZE("\e[0;1m")
 #define FG_RED   NORMALIZE("\e[0;31m")
 #define FG_GREEN NORMALIZE("\e[0;32m")
+#define FG_GOLD  NORMALIZE("\e[0;33m")
 #define FG_BLUE  NORMALIZE("\e[0;34m")
 #define RESET    NORMALIZE("\e[0m")
 
@@ -95,8 +96,21 @@ void normal_log_test_crash(struct criterion_test_stats *stats) {
             stats->test->name);
 }
 
+void normal_log_pre_suite(struct criterion_suite_set *set) {
+    criterion_info("[%s====%s] ", FG_BLUE, RESET);
+    criterion_info("Running %s" SIZE_T_FORMAT "%s test%s from %s%s%s:\n",
+            FG_BLUE,
+            set->tests->size,
+            RESET,
+            set->tests->size == 1 ? "" : "s",
+            FG_GOLD,
+            set->suite.name,
+            RESET);
+}
+
 struct criterion_output_provider normal_logging = {
     .log_pre_init = normal_log_pre_init,
+    .log_pre_suite = normal_log_pre_suite,
     .log_post_test = normal_log_post_test,
     .log_assert = normal_log_assert,
     .log_post_all = normal_log_post_all,

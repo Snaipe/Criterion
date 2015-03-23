@@ -97,13 +97,17 @@ static void map_tests(struct criterion_test_set *set, struct criterion_global_st
         if ((s->suite.data && s->suite.data->disabled) || !s->tests)
             continue;
 
+        report(PRE_SUITE, s);
+
         FOREACH_SET(struct criterion_test *t, s->tests) {
             fun(stats, t, &s->suite);
             if (criterion_options.fail_fast && stats->tests_failed > 0)
-                return;
+                break;
             if (!is_runner())
                 return;
         }
+
+        report(POST_SUITE, s);
     }
 }
 

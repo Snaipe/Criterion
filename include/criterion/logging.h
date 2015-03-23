@@ -42,12 +42,14 @@ void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 
 struct criterion_output_provider {
     void (*log_pre_all   )(struct criterion_test_set *set);
+    void (*log_pre_suite )(struct criterion_suite_set *set);
     void (*log_pre_init  )(struct criterion_test *test);
     void (*log_pre_test  )(struct criterion_test *test);
     void (*log_assert    )(struct criterion_assert_stats *stats);
     void (*log_test_crash)(struct criterion_test_stats *stats);
     void (*log_post_test )(struct criterion_test_stats *stats);
     void (*log_post_fini )(struct criterion_test_stats *stats);
+    void (*log_post_suite)(struct criterion_suite_set *set);
     void (*log_post_all  )(struct criterion_global_stats *stats);
 };
 
