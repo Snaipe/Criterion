@@ -43,11 +43,13 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
 }
 
 void normal_log_post_all(struct criterion_global_stats *stats) {
-    criterion_important("Synthesis: " SIZE_T_FORMAT " tests were run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crashes)\n",
+    criterion_important("Synthesis: " SIZE_T_FORMAT " test%s run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crash%s)\n",
             stats->nb_tests,
+            stats->nb_tests == 1 ? " was" : "s were",
             stats->tests_passed,
             stats->tests_failed,
-            stats->tests_crashed);
+            stats->tests_crashed,
+            stats->tests_crashed == 1 ? "" : "es");
 }
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
