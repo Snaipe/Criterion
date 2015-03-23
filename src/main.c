@@ -29,9 +29,9 @@
 #include <getopt.h>
 #include <csptr/smart_ptr.h>
 #include "runner.h"
+#include "config.h"
 
-# define VERSION "v1.0.0"
-# define VERSION_MSG "Tests compiled with Criterion " VERSION "\n"
+# define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
 # define USAGE                                              \
     VERSION_MSG "\n"                                        \

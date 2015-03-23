@@ -30,6 +30,7 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "timer.h"
+#include "config.h"
 
 #define NORMALIZE(Str) (criterion_options.use_ascii ? "" : Str)
 
@@ -39,6 +40,10 @@
 #define FG_GOLD  NORMALIZE("\e[0;33m")
 #define FG_BLUE  NORMALIZE("\e[0;34m")
 #define RESET    NORMALIZE("\e[0m")
+
+void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
+    criterion_info("[%s====%s] Criterion v%s\n", FG_BLUE, RESET, VERSION);
+}
 
 void normal_log_pre_init(struct criterion_test *test) {
     criterion_info("[%sRUN%s ] %s::%s\n", FG_BLUE, RESET, test->category, test->name);
@@ -120,6 +125,7 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
 }
 
 struct criterion_output_provider normal_logging = {
+    .log_pre_all = normal_log_pre_all,
     .log_pre_init = normal_log_pre_init,
     .log_pre_suite = normal_log_pre_suite,
     .log_post_test = normal_log_post_test,
