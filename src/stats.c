@@ -51,6 +51,7 @@ s_glob_stats *stats_init(void) {
 static void destroy_suite_stats(void *ptr, UNUSED void *meta) {
     s_suite_stats *stats = ptr;
     sfree(stats->tests);
+    sfree(stats->next);
 }
 
 s_suite_stats *suite_stats_init(struct criterion_suite *s) {
