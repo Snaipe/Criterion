@@ -148,6 +148,15 @@ static inline bool is_disabled(struct criterion_test *t, struct criterion_suite 
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
+#define push_event(Kind, ...)                                       \
+    do {                                                            \
+        stat_push_event(stats,                                      \
+                suite_stats,                                        \
+                test_stats,                                         \
+                &(struct event) { .kind = Kind, __VA_ARGS__ });     \
+        report(Kind, test_stats);                                   \
+    } while (0)
+
 static void run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
         struct criterion_test *test,
@@ -156,8 +165,7 @@ static void run_test(struct criterion_global_stats *stats,
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
 
     if (is_disabled(test, suite)) {
-        struct event ev = { .kind = PRE_TEST };
-        stat_push_event(stats, suite_stats, test_stats, &ev);
+        stat_push_event(stats, suite_stats, test_stats, &(struct event) { .kind = PRE_TEST });
         return;
     }
 
@@ -182,18 +190,11 @@ static void run_test(struct criterion_global_stats *stats,
     if (status.kind == SIGNAL) {
         test_stats->signal = status.status;
         if (test->data->signal == 0) {
-            struct event ev = { .kind = TEST_CRASH };
-            stat_push_event(stats, suite_stats, test_stats, &ev);
-            report(TEST_CRASH, test_stats);
+            push_event(TEST_CRASH);
         } else {
             double elapsed_time = 0;
-            struct event ev = { .kind = POST_TEST, .data = &elapsed_time };
-            stat_push_event(stats, suite_stats, test_stats, &ev);
-            report(POST_TEST, test_stats);
-
-            ev = (struct event) { .kind = POST_FINI, .data = NULL };
-            stat_push_event(stats, suite_stats, test_stats, &ev);
-            report(POST_FINI, test_stats);
+            push_event(POST_TEST, .data = &elapsed_time);
+            push_event(POST_FINI);
         }
     }
 }

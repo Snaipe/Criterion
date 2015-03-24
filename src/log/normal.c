@@ -143,12 +143,12 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
 }
 
 struct criterion_output_provider normal_logging = {
-    .log_pre_all = normal_log_pre_all,
-    .log_pre_init = normal_log_pre_init,
-    .log_pre_suite = normal_log_pre_suite,
-    .log_post_test = normal_log_post_test,
-    .log_assert = normal_log_assert,
-    .log_post_suite = normal_log_post_suite,
-    .log_post_all = normal_log_post_all,
+    .log_pre_all    = normal_log_pre_all,
+    .log_pre_init   = normal_log_pre_init,
+    .log_pre_suite  = normal_log_pre_suite,
+    .log_assert     = normal_log_assert,
     .log_test_crash = normal_log_test_crash,
+    .log_post_test  = normal_log_post_test,
+    .log_post_suite = normal_log_post_suite,
+    .log_post_all   = normal_log_post_all,
 };

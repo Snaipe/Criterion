@@ -97,7 +97,7 @@ int list_tests(bool unicode) {
                     --tests == 0 ? end : node,
                     join,
                     t->name,
-                    is_disabled(&s->suite, t) ? "(disabled)" : "");
+                    is_disabled(&s->suite, t) ? " (disabled)" : "");
         }
     }
     return 0;
