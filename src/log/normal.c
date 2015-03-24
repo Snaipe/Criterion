@@ -47,6 +47,8 @@ void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
 
 void normal_log_pre_init(struct criterion_test *test) {
     criterion_info("[%sRUN%s ] %s::%s\n", FG_BLUE, RESET, test->category, test->name);
+    if (test->data->description)
+        criterion_info("[%s----%s]   %s\n",   FG_BLUE, RESET, test->data->description);
 }
 
 void normal_log_post_test(struct criterion_test_stats *stats) {
@@ -76,6 +78,8 @@ void normal_log_post_suite(struct criterion_suite_stats *stats) {
                     ts->test->category,
                     ts->test->name,
                     ts->test->data->disabled ? "test" : "suite");
+            if (ts->test->data->description)
+                criterion_info("[%s----%s]   %s\n", FG_BLUE, RESET, ts->test->data->description);
         }
     }
 }

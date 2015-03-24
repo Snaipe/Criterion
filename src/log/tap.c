@@ -61,21 +61,23 @@ static inline bool is_disabled(struct criterion_test *t, struct criterion_suite 
 void tap_log_post_suite(struct criterion_suite_stats *stats) {
     for (struct criterion_test_stats *ts = stats->tests; ts; ts = ts->next) {
         if (is_disabled(ts->test, stats->suite)) {
-            criterion_important("ok - %s::%s # SKIP %s is disabled\n",
+            criterion_important("ok - %s::%s %s # SKIP %s is disabled\n",
                     ts->test->category,
                     ts->test->name,
+                    ts->test->data->description ?: "",
                     ts->test->data->disabled ? "test" : "suite");
         }
     }
 }
 
 void tap_log_post_test(struct criterion_test_stats *stats) {
-    const char *format = can_measure_time() ? "%s - %s::%s (%3.2fs)\n"
-                                            : "%s - %s::%s\n";
+    const char *format = can_measure_time() ? "%s - %s::%s %s (%3.2fs)\n"
+                                            : "%s - %s::%s %s\n";
     criterion_important(format,
             stats->failed ? "not ok" : "ok",
             stats->test->category,
             stats->test->name,
+            stats->test->data->description ?: "",
             stats->elapsed_time);
     for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
         if (!asrt->passed) {

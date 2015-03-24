@@ -6,6 +6,7 @@ BIN_TESTS = \
 	asserts \
 	more-suites \
 	long-messages \
+	description \
 	simple
 
 TESTS_ENVIRONMENT = CRITERION_ALWAYS_SUCCEED=1

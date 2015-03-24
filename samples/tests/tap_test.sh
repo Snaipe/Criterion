@@ -4,3 +4,4 @@
 ./asserts --tap --always-succeed
 ./more-suites --tap --always-succeed
 ./long-messages --tap --always-succeed
+./description --tap --always-succeed
