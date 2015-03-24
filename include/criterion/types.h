@@ -29,6 +29,7 @@
 
 struct criterion_test_extra_data {
     int sentinel_;
+    const char *const identifier_;
     const char *const file_;
     const unsigned line_;
     void (*init)(void);

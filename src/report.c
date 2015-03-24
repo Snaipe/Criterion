@@ -59,12 +59,8 @@ IMPL_REPORT_HOOK(PRE_ALL)(struct criterion_test_set *set) {
                 continue;
 
             FOREACH_SET(struct criterion_test *test, s->tests) {
-                char *name = NULL;
-                asprintf(&name, "%s/%s", s->suite.name, test->name);
-                if (fnmatch(criterion_options.pattern, name, 0))
+                if (fnmatch(criterion_options.pattern, test->data->identifier_, 0))
                     test->data->disabled = true;
-
-                free(name);
             }
         }
     }

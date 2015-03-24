@@ -17,6 +17,7 @@
 # define Test_(Category, Name, ...)                                            \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
+        .identifier_ = #Category "/" #Name,                                    \
         .file_    = __FILE__,                                                  \
         .line_    = __LINE__,                                                  \
         __VA_ARGS__                                                            \
