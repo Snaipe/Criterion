@@ -4,6 +4,9 @@ BIN_TESTS = \
 	suites \
 	fixtures \
 	asserts \
+	more-suites \
+	long-messages \
+	description \
 	simple
 
 TESTS_ENVIRONMENT = CRITERION_ALWAYS_SUCCEED=1
@@ -15,6 +18,9 @@ LDADD = -L$(top_srcdir)/ -lcriterion
 SCRIPT_TESTS = tests/tap_test.sh \
                tests/early_exit.sh \
                tests/verbose.sh \
+               tests/list.sh \
+               tests/pattern.sh \
+               tests/fail_fast.sh \
                tests/help.sh
 
 EXTRA_DIST = $(SCRIPT_TESTS)

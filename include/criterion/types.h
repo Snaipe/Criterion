@@ -21,30 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef PROCESS_H_
-# define PROCESS_H_
+#ifndef CRITERION_TYPES_H_
+# define CRITERION_TYPES_H_
 
 # include <stdbool.h>
+# include <stddef.h>
 
-struct process;
-
-enum status_kind {
-    EXIT_STATUS,
-    STOPPED,
-    SIGNAL,
+struct criterion_test_extra_data {
+    int sentinel_;
+    const char *const identifier_;
+    const char *const file_;
+    const unsigned line_;
+    void (*init)(void);
+    void (*fini)(void);
+    int signal;
+    bool disabled;
+    const char *description;
+    void *data;
 };
 
-struct process_status {
-    enum status_kind kind;
-    int status;
+struct criterion_test {
+    const char *name;
+    const char *category;
+    void (*test)(void);
+    struct criterion_test_extra_data *const data;
 };
 
-void set_runner_pid(void);
-bool is_runner(void);
-struct process_status wait_proc(struct process *proc);
-struct process *spawn_test_worker(struct criterion_test *test,
-                                  struct criterion_suite *suite,
-                                  void (*func)(struct criterion_test *, struct criterion_suite *));
-struct event *worker_read_event(struct process *proc);
+struct criterion_suite {
+    const char *name;
+    struct criterion_test_extra_data *const data;
+};
 
-#endif /* !PROCESS_H_ */
+#endif /* !CRITERION_TYPES_H_ */

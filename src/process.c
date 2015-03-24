@@ -22,11 +22,12 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <csptr/smart_ptr.h>
 
-#include "criterion/criterion.h"
+#include "criterion/types.h"
 #include "criterion/options.h"
 #include "process.h"
 #include "event.h"
@@ -54,7 +55,9 @@ struct event *worker_read_event(struct process *proc) {
     return read_event(proc->in);
 }
 
-struct process *spawn_test_worker(struct criterion_test *test, void (*func)(struct criterion_test *)) {
+struct process *spawn_test_worker(struct criterion_test *test,
+                                  struct criterion_suite *suite,
+                                  void (*func)(struct criterion_test *, struct criterion_suite *)) {
     int fds[2];
     if (pipe(fds) == -1)
         abort();
@@ -67,8 +70,10 @@ struct process *spawn_test_worker(struct criterion_test *test, void (*func)(stru
         close(fds[0]);
         EVENT_PIPE = fds[1];
 
-        func(test);
+        func(test, suite);
         close(fds[1]);
+
+        fflush(NULL); // flush all opened streams
         if (criterion_options.no_early_exit)
             return NULL;
         else
@@ -76,7 +81,7 @@ struct process *spawn_test_worker(struct criterion_test *test, void (*func)(stru
     }
 
     close(fds[1]);
-    return unique_ptr(struct process, ({ .pid = pid, .in = fds[0] }), close_process);
+    return unique_ptr(struct process, { .pid = pid, .in = fds[0] }, close_process);
 }
 
 struct process_status wait_proc(struct process *proc) {

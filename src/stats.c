@@ -28,22 +28,36 @@
 #include <assert.h>
 
 static void nothing() {};
+static void push_pre_suite();
 static void push_pre_test();
 static void push_assert();
 static void push_post_test();
 static void push_test_crash();
 
 typedef struct criterion_global_stats s_glob_stats;
+typedef struct criterion_suite_stats  s_suite_stats;
 typedef struct criterion_test_stats   s_test_stats;
 typedef struct criterion_assert_stats s_assert_stats;
 
 static void destroy_stats(void *ptr, UNUSED void *meta) {
     s_glob_stats *stats = ptr;
-    sfree(stats->tests);
+    sfree(stats->suites);
 }
 
 s_glob_stats *stats_init(void) {
-    return unique_ptr(s_glob_stats, ({0}), destroy_stats);
+    return unique_ptr(s_glob_stats, .dtor = destroy_stats);
+}
+
+static void destroy_suite_stats(void *ptr, UNUSED void *meta) {
+    s_suite_stats *stats = ptr;
+    sfree(stats->tests);
+    sfree(stats->next);
+}
+
+s_suite_stats *suite_stats_init(struct criterion_suite *s) {
+    return shared_ptr(s_suite_stats, {
+                .suite = s,
+            }, destroy_suite_stats);
 }
 
 static void destroy_test_stats(void *ptr, UNUSED void *meta) {
@@ -53,39 +67,53 @@ static void destroy_test_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_test_stats *test_stats_init(struct criterion_test *t) {
-    return shared_ptr(s_test_stats, ({
+    return shared_ptr(s_test_stats, {
                 .test = t,
                 .progress = t->data->line_,
                 .file = t->data->file_
-            }), destroy_test_stats);
+            }, destroy_test_stats);
 }
 
 void stat_push_event(s_glob_stats *stats,
+                     s_suite_stats *suite,
                      s_test_stats *test,
                      struct event *data) {
-    static void (*const handles[])(s_glob_stats *, s_test_stats *, void *) = {
+    static void (*const handles[])(s_glob_stats *, s_suite_stats *, s_test_stats *, void *) = {
         nothing,            // PRE_ALL
+        push_pre_suite,     // PRE_SUITE
         nothing,            // PRE_INIT
         push_pre_test,      // PRE_TEST
         push_assert,        // ASSERT
         push_test_crash,    // TEST_CRASH
         push_post_test,     // POST_TEST
         nothing,            // POST_FINI
+        nothing,            // PRE_SUITE
         nothing,            // POST_ALL
     };
 
     assert(data->kind > 0);
     assert(data->kind <= (signed long long) (sizeof (handles) / sizeof (void (*)(void))));
 
-    handles[data->kind](stats, test, data->data);
+    handles[data->kind](stats, suite, test, data->data);
+}
+
+static void push_pre_suite(s_glob_stats *stats,
+                        s_suite_stats *suite,
+                        UNUSED s_test_stats *test,
+                        UNUSED void *ptr) {
+    suite->next = stats->suites;
+    stats->suites = sref(suite);
+    ++stats->nb_suites;
 }
 
 static void push_pre_test(s_glob_stats *stats,
+                          s_suite_stats *suite,
                           s_test_stats *test,
                           UNUSED void *ptr) {
-    test->next = stats->tests;
-    stats->tests = sref(test);
+    test->next = suite->tests;
+    suite->tests = sref(test);
     ++stats->nb_tests;
+    ++suite->nb_tests;
 }
 
 static void destroy_assert(void *ptr, UNUSED void *meta) {
@@ -94,6 +122,7 @@ static void destroy_assert(void *ptr, UNUSED void *meta) {
 }
 
 static void push_assert(s_glob_stats *stats,
+                        s_suite_stats *suite,
                         s_test_stats *test,
                         s_assert_stats *data) {
     s_assert_stats *dup = unique_ptr(s_assert_stats, (*data), destroy_assert);
@@ -102,9 +131,11 @@ static void push_assert(s_glob_stats *stats,
 
     if (data->passed) {
         ++stats->asserts_passed;
+        ++suite->asserts_passed;
         ++test->passed_asserts;
     } else {
         ++stats->asserts_failed;
+        ++suite->asserts_failed;
         ++test->failed_asserts;
     }
 
@@ -113,21 +144,27 @@ static void push_assert(s_glob_stats *stats,
 }
 
 static void push_post_test(s_glob_stats *stats,
+                           s_suite_stats *suite,
                            s_test_stats *test,
                            double *ptr) {
     test->elapsed_time = *ptr;
     if (test->failed_asserts > 0 || test->signal != test->test->data->signal) {
         test->failed = 1;
         ++stats->tests_failed;
+        ++suite->tests_failed;
     } else {
         ++stats->tests_passed;
+        ++suite->tests_passed;
     }
 }
 
 static void push_test_crash(s_glob_stats *stats,
+                            s_suite_stats *suite,
                             s_test_stats *test,
                             UNUSED void *ptr) {
     test->failed = 1;
+    ++suite->tests_failed;
+    ++suite->tests_crashed;
     ++stats->tests_failed;
     ++stats->tests_crashed;
 }

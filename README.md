@@ -24,6 +24,7 @@ Criterion follows the KISS principle, while keeping the control
 the user would have with other frameworks:
 
 * [x] Tests are automatically registered when declared.
+* [x] Implements a xUnit framework structure.
 * [x] A default entry point is provided, no need to declare a main
   unless you want to do special handling.
 * [x] Test are isolated in their own process, crashes and signals can be
@@ -34,10 +35,10 @@ the user would have with other frameworks:
 
 ## Downloads
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.0.0/criterion-1.0.0-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.0.0/criterion-1.0.0-osx-x86_64.tar.bz2)
-* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.0.0/criterion-1.0.0-win-x86_64.tar.bz2)
-* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.0.0/criterion-1.0.0-freebsd-x86_64.tar.bz2)
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-linux-x86_64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-osx-x86_64.tar.bz2)
+* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-win-x86_64.tar.bz2)
+* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-freebsd-x86_64.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 

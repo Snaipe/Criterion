@@ -51,8 +51,8 @@
     extern Type SECTION_START_(Name) SECTION_START_SUFFIX(#Name);   \
     extern Type SECTION_END_(Name)   SECTION_END_SUFFIX(#Name)
 
-# define IMPL_SECTION_LIMITS(Type, Name)                            \
-    Type *const SECTION_START(Name) = &SECTION_START_(Name);  \
+# define IMPL_SECTION_LIMITS(Type, Name)                        \
+    Type *const SECTION_START(Name) = &SECTION_START_(Name);    \
     Type *const SECTION_END(Name)   = &SECTION_END_(Name)
 
 # define UNUSED __attribute__((unused))

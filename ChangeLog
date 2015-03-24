@@ -1,3 +1,15 @@
+2015-03-24  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+    * src/log/: Refactored logging system
+    * src/log/: Changed output format to a better-looking one
+    * src/log/: Added Syntactic coloration
+
+    * include/, src/: Added test suite separation
+    * include/, src/: Added test suite statistics
+
+    * src/main.c: Added --list option
+    * src/main.c: Added --fail-fast option
+    * src/main.c, src/report.c: Added --pattern option
+
 2015-03-18  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
     * src/timer.*: Added test timings
     * src/, include/: Changed assert prototypes

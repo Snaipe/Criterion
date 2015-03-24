@@ -26,3 +26,7 @@ Features
 * Test are isolated in their own process, crashes and signals can be
   reported and tested.
 * Progress and statistics can be followed in real time with report hooks.
+* TAP output format can be enabled with an option.
+* Runs on Linux, FreeBSD, Mac OS X, and Windows (compiles only with Cygwin
+  for the moment).
+* xUnit framework structure

@@ -23,12 +23,14 @@ Testing Phases
 The flow of the test process goes as follows:
 
 1. ``PRE_ALL``: occurs before running the tests.
+#. ``PRE_SUITE``: occurs before a suite is initialized.
 #. ``PRE_INIT``: occurs before a test is initialized.
 #. ``PRE_TEST``: occurs after the test initialization, but before the test is run.
 #. ``ASSERT``: occurs when an assertion is hit
 #. ``TEST_CRASH``: occurs when a test crashes unexpectedly.
 #. ``POST_TEST``: occurs after a test ends, but before the test finalization.
 #. ``POST_FINI``: occurs after a test finalization.
+#. ``POST_SUITE``: occurs before a suite is finalized.
 #. ``POST_ALL``: occurs after all the tests are done.
 
 Hook Parameters
@@ -40,9 +42,10 @@ type for that phase.
 
 Valid types for each phases are:
 
+* ``struct criterion_test_set *`` for ``PRE_ALL``.
+* ``struct criterion_suite_set *`` for ``PRE_SUITE``.
 * ``struct criterion_test *`` for ``PRE_INIT`` and ``PRE_TEST``.
-* ``struct criterion_test_stats *`` for ``POST_TEST``, ``POST_FINI``, and ``TEST_CRASH``.
 * ``struct criterion_assert_stats *`` for ``ASSERT``.
+* ``struct criterion_test_stats *`` for ``POST_TEST``, ``POST_FINI``, and ``TEST_CRASH``.
+* ``struct criterion_suite_stats *`` for ``POST_SUITE``.
 * ``struct criterion_global_stats *`` for ``POST_ALL``.
-
-``PRE_ALL`` does not take any parameter.

@@ -24,8 +24,21 @@
 #ifndef CRITERION_RUNNER_H_
 # define CRITERION_RUNNER_H_
 
-# include "criterion/criterion.h"
+# include "criterion/types.h"
 
 DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
+DECL_SECTION_LIMITS(struct criterion_suite, crit_suites);
+
+struct criterion_test_set *criterion_init(void);
+
+# define FOREACH_TEST_SEC(Test)                                         \
+    for (struct criterion_test *Test = SECTION_START(criterion_tests);  \
+            Test < SECTION_END(criterion_tests);                        \
+            ++Test)
+
+# define FOREACH_SUITE_SEC(Suite)                                       \
+    for (struct criterion_suite *Suite = SECTION_START(crit_suites);    \
+            Suite < SECTION_END(crit_suites);                           \
+            ++Suite)
 
 #endif /* !CRITERION_RUNNER_H_ */

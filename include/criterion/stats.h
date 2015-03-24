@@ -24,9 +24,7 @@
 #ifndef CRITERION_STATS_H_
 # define CRITERION_STATS_H_
 
-# include <stdbool.h>
-# include <stddef.h>
-# include "criterion.h"
+# include "types.h"
 
 struct criterion_assert_stats {
     int kind;
@@ -53,8 +51,23 @@ struct criterion_test_stats {
     struct criterion_test_stats *next;
 };
 
-struct criterion_global_stats {
+struct criterion_suite_stats {
+    struct criterion_suite *suite;
     struct criterion_test_stats *tests;
+    size_t nb_tests;
+    size_t nb_asserts;
+    size_t tests_failed;
+    size_t tests_crashed;
+    size_t tests_passed;
+    size_t asserts_failed;
+    size_t asserts_passed;
+
+    struct criterion_suite_stats *next;
+};
+
+struct criterion_global_stats {
+    struct criterion_suite_stats *suites;
+    size_t nb_suites;
     size_t nb_tests;
     size_t nb_asserts;
     size_t tests_failed;
