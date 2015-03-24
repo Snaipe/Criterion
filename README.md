@@ -75,9 +75,7 @@ A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
    Windows 7 (with the Cygwin port of GCC).
 
 **Q. Can I use it on Windows without Cygwin?**  
-A. Yes, you can, Cygwin is only required to compile the static library if
-   you build it from source -- otherwise, a GNU C compatible compiler (like
-   GCC or Clang) is needed to compile your tests with the library.
+A. Not for the moment.
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
