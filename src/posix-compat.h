@@ -1,9 +1,15 @@
 #ifndef POSIX_COMPAT_H_
 # define POSIX_COMPAT_H_
 
-# define _POSIX_SOURCE 1
+# if !defined(_POSIX_SOURCE)
+#  define _POSIX_SOURCE 1
+#  define TMP_POSIX
+# endif
 # include <stdio.h>
-# undef _POSIX_SOURCE
+# ifdef TMP_POSIX
+#  undef _POSIX_SOURCE
+#  undef TMP_POSIX
+# endif
 
 # ifdef _WIN32
 #  define WEXITSTATUS(Status)    (((Status) & 0xFF00) >> 8)
