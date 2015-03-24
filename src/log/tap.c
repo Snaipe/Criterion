@@ -43,7 +43,7 @@ void tap_log_pre_all(struct criterion_test_set *set) {
                 ++enabled_count;
         }
     }
-    criterion_important("TAP version 13\n1.." SIZE_T_FORMAT "\n", enabled_count);
+    criterion_important("TAP version 13\n1.." SIZE_T_FORMAT "\n", set->tests);
     criterion_important("# Criterion v%s\n", VERSION);
 }
 
@@ -51,6 +51,22 @@ void tap_log_pre_suite(struct criterion_suite_set *set) {
     criterion_important("\n# Running " SIZE_T_FORMAT " tests from %s\n",
             set->tests->size,
             set->suite.name);
+}
+
+__attribute__((always_inline))
+static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+    return t->data->disabled || (s->data && s->data->disabled);
+}
+
+void tap_log_post_suite(struct criterion_suite_stats *stats) {
+    for (struct criterion_test_stats *ts = stats->tests; ts; ts = ts->next) {
+        if (is_disabled(ts->test, stats->suite)) {
+            criterion_important("ok - %s::%s # SKIP %s is disabled\n",
+                    ts->test->category,
+                    ts->test->name,
+                    ts->test->data->disabled ? "test" : "suite");
+        }
+    }
 }
 
 void tap_log_post_test(struct criterion_test_stats *stats) {
@@ -89,4 +105,5 @@ struct criterion_output_provider tap_logging = {
     .log_pre_suite  = tap_log_pre_suite,
     .log_test_crash = tap_log_test_crash,
     .log_post_test  = tap_log_post_test,
+    .log_post_suite = tap_log_post_suite,
 };

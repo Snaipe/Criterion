@@ -62,6 +62,24 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
+__attribute__((always_inline))
+static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+    return t->data->disabled || (s->data && s->data->disabled);
+}
+
+void normal_log_post_suite(struct criterion_suite_stats *stats) {
+    for (struct criterion_test_stats *ts = stats->tests; ts; ts = ts->next) {
+        if (is_disabled(ts->test, stats->suite)) {
+            criterion_info("[%sSKIP%s] %s::%s: %s is disabled\n",
+                    FG_GOLD,
+                    RESET,
+                    ts->test->category,
+                    ts->test->name,
+                    ts->test->data->disabled ? "test" : "suite");
+        }
+    }
+}
+
 void normal_log_post_all(struct criterion_global_stats *stats) {
     criterion_important("[%s====%s] ", FG_BLUE, RESET);
     criterion_important("%sSynthesis: " SIZE_T_FORMAT " test%s run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crash%s)%s\n",
@@ -130,6 +148,7 @@ struct criterion_output_provider normal_logging = {
     .log_pre_suite = normal_log_pre_suite,
     .log_post_test = normal_log_post_test,
     .log_assert = normal_log_assert,
+    .log_post_suite = normal_log_post_suite,
     .log_post_all = normal_log_post_all,
     .log_test_crash = normal_log_test_crash,
 };

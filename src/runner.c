@@ -97,7 +97,7 @@ typedef void (*f_test_run)(struct criterion_global_stats *,
 
 static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, f_test_run fun) {
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
-        if ((s->suite.data && s->suite.data->disabled) || !s->tests)
+        if (!s->tests)
             continue;
 
         report(PRE_SUITE, s);
@@ -143,15 +143,23 @@ static void run_test_child(struct criterion_test *test, struct criterion_suite *
     send_event(POST_FINI, NULL, 0);
 }
 
+__attribute__((always_inline))
+static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+    return t->data->disabled || (s->data && s->data->disabled);
+}
+
 static void run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
         struct criterion_test *test,
         struct criterion_suite *suite) {
 
-    if (test->data->disabled)
-        return;
-
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
+
+    if (is_disabled(test, suite)) {
+        struct event ev = { .kind = PRE_TEST };
+        stat_push_event(stats, suite_stats, test_stats, &ev);
+        return;
+    }
 
     smart struct process *proc = spawn_test_worker(test, suite, run_test_child);
     if (proc == NULL && !is_runner())
