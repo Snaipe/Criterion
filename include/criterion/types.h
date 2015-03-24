@@ -48,9 +48,6 @@ struct criterion_test {
 struct criterion_suite {
     const char *name;
     struct criterion_test_extra_data *const data;
-#if 1
-    void *pad[2];
-#endif
 };
 
 #endif /* !CRITERION_TYPES_H_ */
