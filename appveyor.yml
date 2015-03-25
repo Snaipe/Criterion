@@ -52,7 +52,7 @@ configuration: Release
 
 install:
   - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure"'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-pc-mingw32-gcc"'
 
 build_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
