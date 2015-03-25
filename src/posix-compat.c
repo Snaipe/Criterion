@@ -72,7 +72,7 @@ static inline void get_stack_info(struct stack_info *stack) {
     stack->size = mbi.RegionSize;
 }
 
-static g_jmp;
+static jmp_buf g_jmp;
 
 static void resume_child(void) {
     longjmp(g_jmp, 1);
