@@ -6,6 +6,26 @@
 # include <windows.h>
 # include <io.h>
 # include <fcntl.h>
+# include <winnt.h>
+# include <setjmp.h>
+
+# define CREATE_SUSPENDED(Filename, CmdLine, StartupInfo, Info) \
+    CreateProcessW(Filename,                                    \
+            CmdLine(),                                          \
+            NULL,                                               \
+            NULL,                                               \
+            TRUE,                                               \
+            CREATE_SUSPENDED,                                   \
+            NULL,                                               \
+            NULL,                                               \
+            &(StartupInfo),                                     \
+            &(Info))
+
+# ifdef _WIN64
+#  define Register(Reg, Context) ((Context).R ## Reg)
+# else
+#  define Register(Reg, Context) ((Context).E ## Reg)
+# endif
 #else
 # include <unistd.h>
 # include <sys/wait.h>
@@ -17,7 +37,7 @@
 
 struct proc_handle {
 #ifdef _WIN32
-    // TODO
+    HANDLE handle;
 #else
     pid_t pid;
 #endif
@@ -31,9 +51,69 @@ struct pipe_handle {
 #endif
 };
 
+#ifdef _WIN32
+# define CONTEXT_INIT {CONTEXT_FULL | CONTEXT_DEBUG_REGISTERS | CONTEXT_FLOATING_POINT}
+struct stack_info {
+    char *ptr;
+    char *base;
+    size_t size;
+};
+
+static inline get_stack_info(struct stack_info *stack) {
+    CONTEXT context = CONTEXT_INIT;
+    MEMORY_BASIC_INFORMATION mbi;
+
+    GetThreadContext(GetCurrentThread(), &context);
+    stack->ptr = (char *) Register(sp, context);
+
+    VirtualQuery(stack->ptr, &mbi, sizeof (mbi));
+    stack->base = mbi->BaseAddress;
+    stack->size = mbi->RegionSize;
+}
+
+static g_jmp;
+
+static void resume_child(void) {
+    longjmp(g_jmp, 1);
+}
+#endif
+
 s_proc_handle *fork_process() {
 #ifdef _WIN32
-    // TODO
+    PROCESS_INFORMATION info;
+    STARTUPINFOW si = { .cb = sizeof (STARTUPINFOW) };
+
+    ZeroMemory(&info, sizeof (info));
+
+    CONTEXT context = {CONTEXT_FULL | CONTEXT_DEBUG_REGISTERS | CONTEXT_FLOATING_POINT};
+
+    // Initialize longjmp buffer
+    if (setjmp(g_jmp))
+        return NULL; // we are the child, return
+
+    // Create the suspended child process
+    wchar_t filename[MAX_PATH];
+    GetModuleFileNameW(NULL, filename, MAX_PATH);
+
+    if (!CREATE_SUSPENDED(filename, GetCommandLineW(), si, info))
+        return NULL;
+
+    // Set child's instruction pointer to resume_child
+    GetThreadContext(info.hThread, &context);
+    Register(ip, context) = resume_child;
+    SetThreadContext(info.hThread, &context);
+
+    // Copy stack
+    struct stack_info stack;
+    get_stack_info(&stack);
+
+    VirtualAllocEx(info.hProcess, stack->base, stack->size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    WriteProcessMemory(info.hProcess, stack->ptr, stack->ptr, stack->base + stack->size - stack->ptr, NULL);
+
+    ResumeThread(info.hThread);
+    CloseHandle(info.hThread);
+
+    return unique_ptr(s_proc_handle, { info.hProcess });
 #else
     pid_t pid = fork();
     if (pid == -1)
@@ -46,7 +126,11 @@ s_proc_handle *fork_process() {
 
 void wait_process(s_proc_handle *handle, int *status) {
 #ifdef _WIN32
-    // TODO
+    WaitForSingleObject(handle->handle, INFINITE);
+    DWORD exit_code;
+    GetExitCodeProcess(handle->handle, &exit_code);
+    CloseHandle(handle->handle);
+    *status = exit_code << 8;
 #else
     waitpid(handle->pid, status, 0);
 #endif
