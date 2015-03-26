@@ -60,28 +60,38 @@ struct event *worker_read_event(struct process *proc) {
     return read_event(proc->in);
 }
 
+void run_worker(struct worker_context *ctx) {
+    fclose(stdin);
+    g_event_pipe = pipe_out(ctx->pipe);
+
+    ctx->func(ctx->test, ctx->suite);
+    fclose(g_event_pipe);
+
+    fflush(NULL); // flush all opened streams
+    if (criterion_options.no_early_exit)
+        return;
+    _Exit(0);
+}
+
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
-                                  void (*func)(struct criterion_test *, struct criterion_suite *)) {
+                                  f_worker_func func) {
     smart s_pipe_handle *pipe = stdpipe();
     if (pipe == NULL)
         abort();
 
+    g_worker_context = (struct worker_context) {
+        .test = test,
+        .suite = suite,
+        .func = func,
+        .pipe = pipe
+    };
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
         return NULL;
     } else if (proc == NULL) {
-        fclose(stdin);
-        g_event_pipe = pipe_out(pipe);
-
-        func(test, suite);
-        fclose(g_event_pipe);
-
-        fflush(NULL); // flush all opened streams
-        if (criterion_options.no_early_exit)
-            return NULL;
-        else
-            _Exit(0);
+        run_worker(&g_worker_context);
+        return NULL;
     }
 
     return unique_ptr(struct process, { .proc = proc, .in = pipe_in(pipe) }, close_process);

@@ -33,6 +33,7 @@
 #include "event.h"
 #include "process.h"
 #include "timer.h"
+#include "posix-compat.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
@@ -199,6 +200,9 @@ static void run_test(struct criterion_global_stats *stats,
 }
 
 static int criterion_run_all_tests_impl(void) {
+    if (resume_child()) // (windows only) resume from the fork
+        return -1;
+
     smart struct criterion_test_set *set = criterion_init();
 
     report(PRE_ALL, set);

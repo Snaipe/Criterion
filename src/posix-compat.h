@@ -20,13 +20,24 @@
 #  include <sys/wait.h>
 # endif
 
-#include <stdbool.h>
+#include <criterion/types.h>
 
 struct proc_handle;
 typedef struct proc_handle s_proc_handle;
 
 struct pipe_handle;
 typedef struct pipe_handle s_pipe_handle;
+
+struct worker_context {
+    struct criterion_test *test;
+    struct criterion_suite *suite;
+    f_worker_func func;
+    struct pipe_handle *pipe;
+};
+
+extern struct worker_context g_worker_context;
+
+int resume_child(void);
 
 s_pipe_handle *stdpipe();
 FILE *pipe_in(s_pipe_handle *p);

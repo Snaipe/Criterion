@@ -1,4 +1,5 @@
 #include "posix-compat.h"
+#include "process.h"
 
 #ifdef _WIN32
 # define VC_EXTRALEAN
@@ -7,7 +8,6 @@
 # include <io.h>
 # include <fcntl.h>
 # include <winnt.h>
-# include <setjmp.h>
 # include <stdint.h>
 
 # define CREATE_SUSPENDED_(Filename, CmdLine, StartupInfo, Info)    \
@@ -22,11 +22,7 @@
             &(StartupInfo),                                         \
             &(Info))
 
-# ifdef _WIN64
-#  define Register(Reg, Context) ((Context).R ## Reg)
-# else
-#  define Register(Reg, Context) ((Context).E ## Reg)
-# endif
+# define CONTEXT_INIT { .ContextFlags = CONTEXT_FULL | CONTEXT_DEBUG_REGISTERS | CONTEXT_FLOATING_POINT }
 #else
 # include <unistd.h>
 # include <sys/wait.h>
@@ -52,39 +48,23 @@ struct pipe_handle {
 #endif
 };
 
+struct worker_context g_worker_context = {.test = NULL};
+
 #ifdef _WIN32
-# define CONTEXT_INIT { .ContextFlags = CONTEXT_FULL | CONTEXT_DEBUG_REGISTERS | CONTEXT_FLOATING_POINT }
-struct region_info {
-    char *ptr;
-    char *base;
-    size_t size;
-};
-
-static inline void get_memory_info(struct region_info *stack, struct region_info *heap) {
-    CONTEXT context = CONTEXT_INIT;
-    MEMORY_BASIC_INFORMATION mbi;
-
-    GetThreadContext(GetCurrentThread(), &context);
-    stack->ptr = (char *) Register(sp, context);
-
-    VirtualQuery(stack->ptr, &mbi, sizeof (mbi));
-    stack->base = mbi.BaseAddress;
-    stack->size = mbi.RegionSize;
-
-    void *ptr = malloc(1);
-    VirtualQuery(ptr, &mbi, sizeof (mbi));
-    heap->ptr  = NULL;
-    heap->base = mbi.BaseAddress;
-    heap->size = mbi.RegionSize;
-    free(ptr);
-}
-
-static jmp_buf g_jmp;
-
-static void resume_child(void) {
-    longjmp(g_jmp, 1);
-}
+static struct criterion_test            child_test;
+static struct criterion_test_extra_data child_test_data;
+static struct criterion_suite           child_suite;
+static struct criterion_test_extra_data child_suite_data;
+static struct pipe_handle               child_pipe;
 #endif
+
+int resume_child(void) {
+    if (g_worker_context.test) {
+        run_worker(&g_worker_context);
+        return 1;
+    }
+    return 0;
+}
 
 s_proc_handle *fork_process() {
 #ifdef _WIN32
@@ -95,35 +75,32 @@ s_proc_handle *fork_process() {
 
     CONTEXT context = CONTEXT_INIT;
 
-    // Initialize longjmp buffer
-    if (setjmp(g_jmp))
-        return NULL; // we are the child, return
-
     // Create the suspended child process
     wchar_t filename[MAX_PATH];
     GetModuleFileNameW(NULL, filename, MAX_PATH);
 
     if (!CREATE_SUSPENDED_(filename, GetCommandLineW(), si, info))
-        return NULL;
+        return (void *) -1;
 
-    // Set child's instruction pointer to resume_child
-    GetThreadContext(info.hThread, &context);
-    Register(ip, context) = (intptr_t) resume_child;
-    SetThreadContext(info.hThread, &context);
+    // Copy context over
+    f_worker_func child_func = g_worker_context.func;
 
-    // Copy stack, heap
-    struct region_info stack;
-    struct region_info heap;
-    get_memory_info(&stack, &heap);
+    child_test          = *g_worker_context.test;
+    child_test_data     = *g_worker_context.test->data;
+    child_suite         = *g_worker_context.suite;
+    child_suite_data    = *g_worker_context.suite->data;
+    child_pipe          = *g_worker_context.pipe;
 
-    VirtualAllocEx(info.hProcess, stack.base, stack.size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    WriteProcessMemory(info.hProcess, stack.base, stack.base, stack.size, NULL);
+    g_worker_context = (struct worker_context) { &child_test, &child_suite, child_func, &child_pipe };
+    child_test.data  = &child_test_data;
+    child_suite.data = &child_suite_data;
 
-    VirtualAllocEx(info.hProcess, heap.base, heap.size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    WriteProcessMemory(info.hProcess, heap.base, heap.base, heap.size, NULL);
-
-    // Copy jmp_buf
-    WriteProcessMemory(info.hProcess, &g_jmp, &g_jmp, sizeof (jmp_buf), NULL);
+    WriteProcessMemory(info.hProcess, &child_test, &child_test, sizeof (child_test), NULL);
+    WriteProcessMemory(info.hProcess, &child_test_data, &child_test_data, sizeof (child_test_data), NULL);
+    WriteProcessMemory(info.hProcess, &child_suite, &child_suite, sizeof (child_suite), NULL);
+    WriteProcessMemory(info.hProcess, &child_suite_data, &child_suite_data, sizeof (child_suite_data), NULL);
+    WriteProcessMemory(info.hProcess, &child_pipe, &child_pipe, sizeof (child_pipe), NULL);
+    WriteProcessMemory(info.hProcess, &g_worker_context, &g_worker_context, sizeof (struct worker_context), NULL);
 
     ResumeThread(info.hThread);
     CloseHandle(info.hThread);

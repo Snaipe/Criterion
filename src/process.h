@@ -25,6 +25,7 @@
 # define PROCESS_H_
 
 # include <stdbool.h>
+# include "posix-compat.h"
 
 struct process;
 
@@ -39,6 +40,7 @@ struct process_status {
     int status;
 };
 
+void run_worker(struct worker_context *ctx);
 void set_runner_process(void);
 void unset_runner_process(void);
 bool is_runner(void);
