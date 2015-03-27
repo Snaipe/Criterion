@@ -29,9 +29,9 @@
 
 struct criterion_test_extra_data {
     int sentinel_;
-    const char *const identifier_;
-    const char *const file_;
-    const unsigned line_;
+    const char *identifier_;
+    const char *file_;
+    unsigned line_;
     void (*init)(void);
     void (*fini)(void);
     int signal;
@@ -44,12 +44,14 @@ struct criterion_test {
     const char *name;
     const char *category;
     void (*test)(void);
-    struct criterion_test_extra_data *const data;
+    struct criterion_test_extra_data *data;
 };
 
 struct criterion_suite {
     const char *name;
-    struct criterion_test_extra_data *const data;
+    struct criterion_test_extra_data *data;
 };
+
+typedef void (*f_worker_func)(struct criterion_test *, struct criterion_suite *);
 
 #endif /* !CRITERION_TYPES_H_ */

@@ -22,71 +22,84 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include <stdbool.h>
 #include <csptr/smart_ptr.h>
 
 #include "criterion/types.h"
 #include "criterion/options.h"
 #include "process.h"
 #include "event.h"
+#include "posix-compat.h"
 
 struct process {
-    pid_t pid;
-    int in;
+    s_proc_handle *proc;
+    FILE *in;
 };
 
-static pid_t g_runner_pid;
+static s_proc_handle *g_current_proc;
 
-void set_runner_pid(void) {
-    g_runner_pid = getpid();
+void set_runner_process(void) {
+    g_current_proc = get_current_process();
+}
+
+void unset_runner_process(void) {
+    sfree(g_current_proc);
 }
 
 bool is_runner(void) {
-    return g_runner_pid == getpid();
+    return is_current_process(g_current_proc);
 }
 
 static void close_process(void *ptr, UNUSED void *meta) {
-    close(((struct process *) ptr)->in);
+    struct process *proc = ptr;
+    fclose(proc->in);
+    sfree(proc->proc);
 }
 
 struct event *worker_read_event(struct process *proc) {
     return read_event(proc->in);
 }
 
+void run_worker(struct worker_context *ctx) {
+    fclose(stdin);
+    g_event_pipe = pipe_out(ctx->pipe);
+
+    ctx->func(ctx->test, ctx->suite);
+    fclose(g_event_pipe);
+
+    fflush(NULL); // flush all opened streams
+    if (criterion_options.no_early_exit)
+        return;
+    _Exit(0);
+}
+
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
-                                  void (*func)(struct criterion_test *, struct criterion_suite *)) {
-    int fds[2];
-    if (pipe(fds) == -1)
+                                  f_worker_func func) {
+    smart s_pipe_handle *pipe = stdpipe();
+    if (pipe == NULL)
         abort();
 
-    pid_t pid = fork();
-    if (pid == -1) {
+    g_worker_context = (struct worker_context) {
+        .test = test,
+        .suite = suite,
+        .func = func,
+        .pipe = pipe
+    };
+    s_proc_handle *proc = fork_process();
+    if (proc == (void *) -1) {
         return NULL;
-    } else if (!pid) {
-        close(STDIN_FILENO);
-        close(fds[0]);
-        EVENT_PIPE = fds[1];
-
-        func(test, suite);
-        close(fds[1]);
-
-        fflush(NULL); // flush all opened streams
-        if (criterion_options.no_early_exit)
-            return NULL;
-        else
-            _exit(0);
+    } else if (proc == NULL) {
+        run_worker(&g_worker_context);
+        return NULL;
     }
 
-    close(fds[1]);
-    return unique_ptr(struct process, { .pid = pid, .in = fds[0] }, close_process);
+    return unique_ptr(struct process, { .proc = proc, .in = pipe_in(pipe) }, close_process);
 }
 
 struct process_status wait_proc(struct process *proc) {
     int status;
-    waitpid(proc->pid, &status, 0);
+    wait_process(proc->proc, &status);
 
     if (WIFEXITED(status))
         return (struct process_status) { .kind = EXIT_STATUS, .status = WEXITSTATUS(status) };

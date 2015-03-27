@@ -20,6 +20,8 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_SUBST([LIBTOOL_DEPS])
 
+AC_FUNC_FNMATCH
+
 AC_ARG_ENABLE([gcov],
   [AS_HELP_STRING([--enable-gcov],
     [Compile the project with converage enabled])],

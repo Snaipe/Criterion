@@ -23,7 +23,6 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <csptr/smart_ptr.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
@@ -34,6 +33,7 @@
 #include "event.h"
 #include "process.h"
 #include "timer.h"
+#include "posix-compat.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
@@ -200,10 +200,12 @@ static void run_test(struct criterion_global_stats *stats,
 }
 
 static int criterion_run_all_tests_impl(void) {
+    if (resume_child()) // (windows only) resume from the fork
+        return -1;
+
     smart struct criterion_test_set *set = criterion_init();
 
     report(PRE_ALL, set);
-    set_runner_pid();
 
     smart struct criterion_global_stats *stats = stats_init();
     map_tests(set, stats, run_test);
@@ -216,9 +218,12 @@ static int criterion_run_all_tests_impl(void) {
 }
 
 int criterion_run_all_tests(void) {
+    set_runner_process();
     int res = criterion_run_all_tests_impl();
+    unset_runner_process();
+
     if (res == -1) // if this is the test worker terminating
-        _exit(0);
+        _Exit(0);
 
     return criterion_options.always_succeed || res;
 }

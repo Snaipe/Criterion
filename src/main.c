@@ -33,6 +33,14 @@
 
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
+#ifdef HAVE_FNMATCH
+# define PATTERN_USAGE                                      \
+    "    --pattern [PATTERN]: run tests matching the "      \
+            "given pattern\n"
+#else
+# define PATTERN_USAGE
+#endif
+
 # define USAGE                                              \
     VERSION_MSG "\n"                                        \
     "usage: %s OPTIONS\n"                                   \
@@ -44,8 +52,7 @@
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
-    "    --pattern [PATTERN]: run tests matching the "      \
-            "given pattern\n"                               \
+    PATTERN_USAGE                                           \
     "    --tap: enables TAP formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
@@ -112,7 +119,9 @@ int main(int argc, char *argv[]) {
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
         {"fail-fast",       no_argument,        0, 'f'},
+#ifdef HAVE_FNMATCH
         {"pattern",         required_argument,  0, 'p'},
+#endif
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {0,                 0,                  0,  0 }
@@ -124,7 +133,9 @@ int main(int argc, char *argv[]) {
         .fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0"),
         .use_ascii         = !strcmp("1", getenv("CRITERION_USE_ASCII")      ?: "0"),
         .logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2"),
+#ifdef HAVE_FNMATCH
         .pattern           = getenv("CRITERION_TEST_PATTERN"),
+#endif
         .output_provider   = NORMAL_LOGGING,
     };
 
@@ -140,7 +151,9 @@ int main(int argc, char *argv[]) {
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'f': criterion_options.fail_fast         = true; break;
+#ifdef HAVE_FNMATCH
             case 'p': criterion_options.pattern           = optarg; break;
+#endif
             case 't': use_tap = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
