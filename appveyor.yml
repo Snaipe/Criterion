@@ -14,6 +14,7 @@ init:
     -P mingw-gcc-core \
     -P mingw-pthreads \
     -P mingw-w32api \
+    -P mingw64-i686-gcc-core \
     -P libtool \
     -P make \
     -P python \
@@ -52,7 +53,7 @@ configuration: Release
 
 install:
   - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-pc-mingw32-gcc"'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-w64-mingw32-gcc"'
 
 build_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
