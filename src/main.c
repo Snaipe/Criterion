@@ -33,6 +33,14 @@
 
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
+#ifdef HAVE_FNMATCH
+# define PATTERN_USAGE                                      \
+    "    --pattern [PATTERN]: run tests matching the "      \
+            "given pattern\n"
+#else
+# define PATTERN_USAGE
+#endif
+
 # define USAGE                                              \
     VERSION_MSG "\n"                                        \
     "usage: %s OPTIONS\n"                                   \
@@ -44,8 +52,7 @@
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
-    "    --pattern [PATTERN]: run tests matching the "      \
-            "given pattern\n"                               \
+    PATTERN_USAGE                                           \
     "    --tap: enables TAP formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
