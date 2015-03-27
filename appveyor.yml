@@ -59,7 +59,7 @@ build_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
 
 test_script:
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make check"'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER/samples; exec 0</dev/null; make check"'
 
 after_test:
   - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
