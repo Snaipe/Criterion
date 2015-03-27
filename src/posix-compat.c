@@ -22,7 +22,6 @@
             &(StartupInfo),                                         \
             &(Info))
 
-# define CONTEXT_INIT { .ContextFlags = CONTEXT_FULL | CONTEXT_DEBUG_REGISTERS | CONTEXT_FLOATING_POINT }
 #else
 # include <unistd.h>
 # include <sys/wait.h>
@@ -73,8 +72,6 @@ s_proc_handle *fork_process() {
 
     ZeroMemory(&info, sizeof (info));
 
-    CONTEXT context = CONTEXT_INIT;
-
     // Create the suspended child process
     wchar_t filename[MAX_PATH];
     GetModuleFileNameW(NULL, filename, MAX_PATH);
@@ -85,20 +82,23 @@ s_proc_handle *fork_process() {
     // Copy context over
     f_worker_func child_func = g_worker_context.func;
 
-    child_test          = *g_worker_context.test;
-    child_test_data     = *g_worker_context.test->data;
-    child_suite         = *g_worker_context.suite;
-    child_suite_data    = *g_worker_context.suite->data;
-    child_pipe          = *g_worker_context.pipe;
+    child_test      = *g_worker_context.test;
+    child_test_data = *g_worker_context.test->data;
+    child_suite     = *g_worker_context.suite;
+    child_pipe      = *g_worker_context.pipe;
 
     g_worker_context = (struct worker_context) { &child_test, &child_suite, child_func, &child_pipe };
     child_test.data  = &child_test_data;
-    child_suite.data = &child_suite_data;
+
+    if (g_worker_context.suite->data) {
+        child_suite_data = *g_worker_context.suite->data;
+        child_suite.data = &child_suite_data;
+        WriteProcessMemory(info.hProcess, &child_suite_data, &child_suite_data, sizeof (child_suite_data), NULL);
+    }
 
     WriteProcessMemory(info.hProcess, &child_test, &child_test, sizeof (child_test), NULL);
     WriteProcessMemory(info.hProcess, &child_test_data, &child_test_data, sizeof (child_test_data), NULL);
     WriteProcessMemory(info.hProcess, &child_suite, &child_suite, sizeof (child_suite), NULL);
-    WriteProcessMemory(info.hProcess, &child_suite_data, &child_suite_data, sizeof (child_suite_data), NULL);
     WriteProcessMemory(info.hProcess, &child_pipe, &child_pipe, sizeof (child_pipe), NULL);
     WriteProcessMemory(info.hProcess, &g_worker_context, &g_worker_context, sizeof (struct worker_context), NULL);
 
@@ -167,7 +167,8 @@ FILE *pipe_out(s_pipe_handle *p) {
 s_pipe_handle *stdpipe() {
 #ifdef _WIN32
     HANDLE fhs[2];
-    if (!CreatePipe(fhs, fhs + 1, NULL, 0))
+    SECURITY_ATTRIBUTES attr = { .nLength = sizeof (SECURITY_ATTRIBUTES), .bInheritHandle = TRUE }; 
+    if (!CreatePipe(fhs, fhs + 1, &attr, 0))
         return NULL;
     return unique_ptr(s_pipe_handle, {{ fhs[0], fhs[1] }});
 #else
