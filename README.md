@@ -31,7 +31,7 @@ the user would have with other frameworks:
   reported and tested.
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
-* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (compiles only with Cygwin for the moment).
+* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiles only with MinGW or Cygwin).
 
 ## Downloads
 
@@ -72,10 +72,7 @@ A. I worked with CUnit and Check, and I must say that they do their job
 **Q. Where has this been tested?**  
 A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
    most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, and finally
-   Windows 7 (with the Cygwin port of GCC).
-
-**Q. Can I use it on Windows without Cygwin?**  
-A. Not for the moment.
+   Windows 7 (with the MinGW and Cygwin ports of GCC).
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
