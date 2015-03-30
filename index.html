@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
 <html>
 <head>
   <meta charset="utf-8">
@@ -39,12 +39,12 @@
           <h1>
 <a id="criterion" class="anchor" href="#criterion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Criterion</h1>
 
-<p><a href="https://travis-ci.org/Snaipe/Criterion"><img src="https://travis-ci.org/Snaipe/Criterion.svg?branch=master" alt="Build Status"></a>
-<a href="https://coveralls.io/r/Snaipe/Criterion?branch=master"><img src="https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=master" alt="Coverage Status"></a>
-<a href="https://github.com/Snaipe/Criterion/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="License"></a>
-<a href="https://github.com/Snaipe/Criterion/releases"><img src="https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&amp;style=flat" alt="Version"></a></p>
+<p><a href="https://travis-ci.org/Snaipe/Criterion"><img src="https://travis-ci.org/Snaipe/Criterion.svg?branch=master" alt="Build Status"></a> 
+<a href="https://coveralls.io/r/Snaipe/Criterion?branch=master"><img src="https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=master" alt="Coverage Status"></a> 
+<a href="https://github.com/Snaipe/Criterion/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="License"></a> 
+<a href="https://github.com/Snaipe/Criterion/releases"><img src="https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&amp;style=flat" alt="Version"></a> </p>
 
-<p>A dead-simple, yet extensible, C test framework.</p>
+<p>A dead-simple, yet extensible, C unit testing framework.</p>
 
 <p><img src="https://raw.githubusercontent.com/Snaipe/Criterion/bleeding/doc/screencast.gif" alt="Screencast"></p>
 
@@ -62,13 +62,28 @@ these suits, and finally call the right functions.</p>
 the user would have with other frameworks:</p>
 
 <ul>
-<li>Tests are automatically registered when declared.</li>
-<li>A default entry point is provided, no need to declare a main
+<li>[x] Tests are automatically registered when declared.</li>
+<li>[x] Implements a xUnit framework structure.</li>
+<li>[x] A default entry point is provided, no need to declare a main
 unless you want to do special handling.</li>
-<li>Test are isolated in their own process, crashes and signals can be
+<li>[x] Test are isolated in their own process, crashes and signals can be
 reported and tested.</li>
-<li>Progress and statistics can be followed in real time with report hooks.</li>
+<li>[x] Progress and statistics can be followed in real time with report hooks.</li>
+<li>[x] TAP output format can be enabled with an option.</li>
+<li>[x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiles only with MinGW or Cygwin).</li>
 </ul>
+
+<h2>
+<a id="downloads" class="anchor" href="#downloads" aria-hidden="true"><span class="octicon octicon-link"></span></a>Downloads</h2>
+
+<ul>
+<li><a href="https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-linux-x86_64.tar.bz2">Linux (x86_64)</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-osx-x86_64.tar.bz2">OS X (x86_64)</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-win-x86_64.tar.bz2">Windows (x86_64)</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-freebsd-x86_64.tar.bz2">FreeBSD (x86_64)</a></li>
+</ul>
+
+<p>If you have a different platform, you can still <a href="http://criterion.readthedocs.org/en/latest/setup.html#installation">build the library from source</a></p>
 
 <h2>
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
@@ -79,19 +94,21 @@ reported and tested.</li>
 <h2>
 <a id="samples" class="anchor" href="#samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples</h2>
 
-<p>Sample tests can be found in the <a href="https://github.com/Snaipe/Criterion/tree/master/samples">sample directory</a>.</p>
+<p>Sample tests can be found in the <a href="https://github.com/Snaipe/Criterion/tree/bleeding/samples/">sample directory</a>.</p>
 
 <ul>
-<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/simple.c">A simple test</a></li>
-<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/suites.c">Using multiple suites</a></li>
-<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/signal.c">Tests with signals</a></li>
-<li><a href="https://github.com/Snaipe/Criterion/blob/master/samples/report.c">Using report hooks</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/bleeding/samples/simple.c">A simple test</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/bleeding/samples/suites.c">Using multiple suites</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/bleeding/samples/asserts.c">Writing assertions</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/bleeding/samples/fixtures.c">Adding test fixtures</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/bleeding/samples/signal.c">Tests with signals</a></li>
+<li><a href="https://github.com/Snaipe/Criterion/blob/bleeding/samples/report.c">Using report hooks</a></li>
 </ul>
 
 <h2>
 <a id="faq" class="anchor" href="#faq" aria-hidden="true"><span class="octicon octicon-link"></span></a>F.A.Q.</h2>
 
-<p><strong>Q. What's wrong with other test frameworks?</strong>
+<p><strong>Q. What's wrong with other test frameworks?</strong><br>
 A. I worked with CUnit and Check, and I must say that they do their job
    very well -- the only thing that bugs me is that setting up a test
    suite from scratch is a pain, it should really be simpler. Most
@@ -100,14 +117,10 @@ A. I worked with CUnit and Check, and I must say that they do their job
    main, manually register suites, then tests. Criterion tries to
    fix these shortcomings.</p>
 
-<p><strong>Q. Where has this been tested?</strong>
+<p><strong>Q. Where has this been tested?</strong><br>
 A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
-   most *nix systems. More tests will be added on the build matrix.</p>
-
-<p><strong>Q. Will this work under Windows/MSVC?</strong>
-A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
-   to compile the library itself: the project internally uses c99 features and gnu
-   extensions.</p>
+   most *nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, and finally
+   Windows 7 (with the MinGW and Cygwin ports of GCC).</p>
         </article>
       </div>
     </div>
@@ -118,7 +131,7 @@ A. Windows support with MinGW/MSVC is coming, but MSVC is a bit of a lost cause
 
       </div>
       <div class="creds">
-        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
       </div>
     </footer>
   </div>
