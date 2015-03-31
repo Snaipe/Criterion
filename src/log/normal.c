@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #define _GNU_SOURCE
+#define CRITERION_LOGGING_COLORS
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,32 +32,25 @@
 #include "criterion/ordered-set.h"
 #include "timer.h"
 #include "config.h"
-
-#define NORMALIZE(Str) (criterion_options.use_ascii ? "" : Str)
-
-#define FG_BOLD  NORMALIZE("\e[0;1m")
-#define FG_RED   NORMALIZE("\e[0;31m")
-#define FG_GREEN NORMALIZE("\e[0;32m")
-#define FG_GOLD  NORMALIZE("\e[0;33m")
-#define FG_BLUE  NORMALIZE("\e[0;34m")
-#define RESET    NORMALIZE("\e[0m")
+#include "i18n.h"
 
 void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
-    criterion_info("[%s====%s] Criterion v%s\n", FG_BLUE, RESET, VERSION);
+    criterion_pinfo(CRITERION_PREFIX_DASHES, _("Criterion v%s\n"), VERSION);
 }
 
 void normal_log_pre_init(struct criterion_test *test) {
-    criterion_info("[%sRUN%s ] %s::%s\n", FG_BLUE, RESET, test->category, test->name);
+    criterion_pinfo(CRITERION_PREFIX_RUN, _("%1$s::%2$s\n"), test->category, test->name);
 }
 
 void normal_log_post_test(struct criterion_test_stats *stats) {
-    const char *format = can_measure_time() ? "%s::%s: (%3.2fs)\n" : "%s::%s\n";
-    const enum criterion_logging_level level = stats->failed ? CRITERION_IMPORTANT
-                                                             : CRITERION_INFO;
-    const char *color = stats->failed ? FG_RED : FG_GREEN;
+    const char *format = can_measure_time() ? "%1$s::%2$s: (%3$3.2fs)\n" : "%1$s::%2$s\n";
 
-    criterion_log(level, "[%s%s%s] ", color, stats->failed ? "FAIL" : "PASS", RESET);
-    criterion_log(level, format,
+    const enum criterion_logging_level level
+            = stats->failed ? CRITERION_IMPORTANT : CRITERION_INFO;
+    const struct criterion_prefix_data *prefix
+            = stats->failed ? CRITERION_PREFIX_FAIL : CRITERION_PREFIX_PASS;
+
+    criterion_plog(level, prefix, _(format),
             stats->test->category,
             stats->test->name,
             stats->elapsed_time);
@@ -70,26 +64,29 @@ static inline bool is_disabled(struct criterion_test *t, struct criterion_suite 
 void normal_log_post_suite(struct criterion_suite_stats *stats) {
     for (struct criterion_test_stats *ts = stats->tests; ts; ts = ts->next) {
         if (is_disabled(ts->test, stats->suite)) {
-            criterion_info("[%sSKIP%s] %s::%s: %s is disabled\n",
-                    FG_GOLD,
-                    RESET,
+            const char *format = ts->test->data->disabled
+                    ? _("%1$s::%2$s: Test is disabled\n")
+                    : _("%1$s::%2$s: Suite is disabled\n");
+
+            criterion_pinfo(CRITERION_PREFIX_SKIP, format,
                     ts->test->category,
-                    ts->test->name,
-                    ts->test->data->disabled ? "test" : "suite");
+                    ts->test->name);
         }
     }
 }
 
 void normal_log_post_all(struct criterion_global_stats *stats) {
-    criterion_important("[%s====%s] ", FG_BLUE, RESET);
-    criterion_important("%sSynthesis: " SIZE_T_FORMAT " test%s run. " SIZE_T_FORMAT " passed, " SIZE_T_FORMAT " failed (with " SIZE_T_FORMAT " crash%s)%s\n",
+    criterion_pimportant(CRITERION_PREFIX_EQUALS,
+            _("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
+              "| Passing: %5$s%6$lu%7$s "
+              "| Failing: %8$s%9$lu%10$s "
+              "| Crashing: %11$s%12$lu%13$s "
+              "%14$s\n"),
             FG_BOLD,
-            stats->nb_tests,
-            stats->nb_tests == 1 ? " was" : "s were",
-            stats->tests_passed,
-            stats->tests_failed,
-            stats->tests_crashed,
-            stats->tests_crashed == 1 ? "" : "es",
+            FG_BLUE,  stats->nb_tests,      FG_BOLD,
+            FG_GREEN, stats->tests_passed,  FG_BOLD,
+            FG_RED,   stats->tests_failed,  FG_BOLD,
+            FG_RED,   stats->tests_crashed, FG_BOLD,
             RESET);
 }
 
@@ -98,48 +95,36 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
         char *dup = strdup(*stats->message ? stats->message : stats->condition), *saveptr = NULL;
         char *line = strtok_r(dup, "\n", &saveptr);
 
-        criterion_important("[%s----%s] ", FG_BLUE, RESET);
-        criterion_important("%s%s%s:%s%d%s: Assertion failed: %s\n",
-                FG_BOLD,
-                stats->file,
-                RESET,
-                FG_RED,
-                stats->line,
-                RESET,
+        criterion_pimportant(CRITERION_PREFIX_DASHES,
+                _("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n"),
+                FG_BOLD, stats->file, RESET,
+                FG_RED,  stats->line, RESET,
                 line);
 
         while ((line = strtok_r(NULL, "\n", &saveptr)))
-            criterion_important("[%s----%s]   %s\n", FG_BLUE, RESET, line);
+            criterion_pimportant(CRITERION_PREFIX_DASHES, _("  %s\n"), line);
         free(dup);
     }
 }
 
 void normal_log_test_crash(struct criterion_test_stats *stats) {
-    criterion_important("[%s----%s] ", FG_BLUE, RESET);
-    criterion_important("%s%s%s:%s%u%s: Unexpected signal caught below this line!\n",
-            FG_BOLD,
-            stats->file,
-            RESET,
-            FG_RED,
-            stats->progress,
-            RESET);
-    criterion_important("[%sFAIL%s] %s::%s: CRASH!\n",
-            FG_RED,
-            RESET,
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _("%1$s%2$s%3$s:%4$s%5$u%6$s: "
+              "Unexpected signal caught below this line!\n"),
+            FG_BOLD, stats->file,     RESET,
+            FG_RED,  stats->progress, RESET);
+    criterion_pimportant(CRITERION_PREFIX_FAIL, _("%1$s::%2$s: CRASH!\n"),
             stats->test->category,
             stats->test->name);
 }
 
 void normal_log_pre_suite(struct criterion_suite_set *set) {
-    criterion_info("[%s====%s] ", FG_BLUE, RESET);
-    criterion_info("Running %s" SIZE_T_FORMAT "%s test%s from %s%s%s:\n",
-            FG_BLUE,
-            set->tests->size,
-            RESET,
-            set->tests->size == 1 ? "" : "s",
-            FG_GOLD,
-            set->suite.name,
-            RESET);
+    criterion_pinfo(CRITERION_PREFIX_EQUALS,
+            _s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
+               "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n",
+               set->tests->size),
+            FG_BLUE, set->tests->size, RESET,
+            FG_GOLD, set->suite.name,  RESET);
 }
 
 struct criterion_output_provider normal_logging = {

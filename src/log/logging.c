@@ -21,18 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define CRITERION_LOGGING_COLORS
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 #include "criterion/logging.h"
 #include "criterion/options.h"
+#include "i18n.h"
 
-void criterion_log(enum criterion_logging_level level, const char *msg, ...) {
+#define LOG_FORMAT "[%1$s%2$s%3$s] %4$s"
+
+const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
+    [CRITERION_LOGGING_PREFIX_DASHES]   = { "----", CRIT_FG_BLUE  },
+    [CRITERION_LOGGING_PREFIX_EQUALS]   = { "====", CRIT_FG_BLUE  },
+    [CRITERION_LOGGING_PREFIX_RUN]      = { "RUN ", CRIT_FG_BLUE  },
+    [CRITERION_LOGGING_PREFIX_SKIP]     = { "SKIP", CRIT_FG_GOLD  },
+    [CRITERION_LOGGING_PREFIX_PASS]     = { "PASS", CRIT_FG_GREEN },
+    [CRITERION_LOGGING_PREFIX_FAIL]     = { "FAIL", CRIT_FG_RED   },
+    { NULL }
+};
+
+void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...) {
     va_list args;
 
     if (level < criterion_options.logging_threshold)
         return;
 
+    char formatted_msg[1024];
     va_start(args, msg);
-    vfprintf(stderr, msg, args);
+    vsnprintf(formatted_msg, sizeof formatted_msg, msg, args);
     va_end(args);
+
+    fprintf(stderr, _(LOG_FORMAT),
+            CRIT_COLOR_NORMALIZE(prefix->color),
+            prefix->prefix,
+            RESET,
+            formatted_msg);
+}
+
+void criterion_log(enum criterion_logging_level level, const char *msg, ...) {
+    va_list args;
+    va_start(args, msg);
+    criterion_vlog(level, msg, args);
+    va_end(args);
+}
+
+void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args) {
+    if (level < criterion_options.logging_threshold)
+        return;
+
+    vfprintf(stderr, msg, args);
 }
