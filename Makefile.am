@@ -51,6 +51,8 @@ libcriterion_la_SOURCES = \
 	src/options.c \
 	src/timer.c \
 	src/timer.h \
+	src/i18n.c \
+	src/i18n.h \
 	src/ordered-set.c \
 	src/main.c
 

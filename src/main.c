@@ -26,6 +26,7 @@
 #include <criterion/options.h>
 #include <criterion/ordered-set.h>
 #include <stdio.h>
+#include <locale.h>
 #include <getopt.h>
 #include <csptr/smart_ptr.h>
 #include "runner.h"
@@ -117,6 +118,8 @@ int main(int argc, char *argv[]) {
         {"no-early-exit",   no_argument,        0, 'z'},
         {0,                 0,                  0,  0 }
     };
+
+    setlocale(LC_ALL, "");
 
     criterion_options = (struct criterion_options) {
         .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
