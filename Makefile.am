@@ -1,5 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = dependencies/csptr samples
+AM_CPPFLAGS = -DLOCALEDIR='"$(localedir)"'
+SUBDIRS = po dependencies/csptr samples
 
 lib_LTLIBRARIES = libcriterion.la
 
@@ -19,7 +20,7 @@ libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS)
 # dirty but unless someone has a better alternative...
 libcriterion_la_LIBADD = dependencies/csptr/src/libcsptr_la-*.lo
 
-EXTRA_DIST = LICENSE
+EXTRA_DIST = config.rpath LICENSE
 
 subdirincludedir = $(includedir)/criterion/
 subdirinclude_HEADERS = \

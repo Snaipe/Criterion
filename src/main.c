@@ -32,6 +32,10 @@
 #include "runner.h"
 #include "config.h"
 
+#ifdef I18N
+# include <libintl.h>
+#endif
+
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
 # define USAGE                                              \
@@ -120,6 +124,9 @@ int main(int argc, char *argv[]) {
     };
 
     setlocale(LC_ALL, "");
+#ifdef I18N
+    textdomain (PACKAGE "-test");
+#endif
 
     criterion_options = (struct criterion_options) {
         .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
