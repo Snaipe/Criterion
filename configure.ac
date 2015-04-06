@@ -22,6 +22,9 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_FUNC_FNMATCH
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18])
+
 AC_ARG_ENABLE([gcov],
   [AS_HELP_STRING([--enable-gcov],
     [Compile the project with converage enabled])],
@@ -33,7 +36,7 @@ AC_ARG_ENABLE([gcov],
     [])
 
 AC_CONFIG_HEADERS([src/config.h])
-AC_CONFIG_FILES([Makefile samples/Makefile])
+AC_CONFIG_FILES([Makefile samples/Makefile po/Makefile.in])
 
 AC_CONFIG_SUBDIRS([dependencies/csptr])
 

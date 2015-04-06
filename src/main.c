@@ -26,10 +26,15 @@
 #include <criterion/options.h>
 #include <criterion/ordered-set.h>
 #include <stdio.h>
+#include <locale.h>
 #include <getopt.h>
 #include <csptr/smart_ptr.h>
 #include "runner.h"
 #include "config.h"
+
+#ifdef I18N
+# include <libintl.h>
+#endif
 
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
@@ -129,6 +134,11 @@ int main(int argc, char *argv[]) {
 
     bool use_ascii = !strcmp("1", getenv("CRITERION_USE_ASCII")      ?: "0")
                   || !strcmp("dumb", getenv("TERM") ?: "dumb");
+
+    setlocale(LC_ALL, "");
+#ifdef I18N
+    textdomain (PACKAGE "-test");
+#endif
 
     criterion_options = (struct criterion_options) {
         .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),

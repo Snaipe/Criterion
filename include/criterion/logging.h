@@ -25,6 +25,7 @@
 # define CRITERION_LOGGING_H_
 
 # include <stdbool.h>
+# include <stdarg.h>
 # include "common.h"
 # include "ordered-set.h"
 # include "stats.h"
@@ -34,11 +35,60 @@ enum criterion_logging_level {
     CRITERION_IMPORTANT,
 };
 
+enum criterion_logging_prefix {
+    CRITERION_LOGGING_PREFIX_DASHES,
+    CRITERION_LOGGING_PREFIX_EQUALS,
+    CRITERION_LOGGING_PREFIX_RUN,
+    CRITERION_LOGGING_PREFIX_SKIP,
+    CRITERION_LOGGING_PREFIX_PASS,
+    CRITERION_LOGGING_PREFIX_FAIL,
+};
+
+struct criterion_prefix_data {
+    const char *prefix;
+    const char *color;
+};
+
+# ifdef CRITERION_LOGGING_COLORS
+#  define CRIT_COLOR_NORMALIZE(Str) (criterion_options.use_ascii ? "" : Str)
+
+#  define CRIT_FG_BOLD  "\e[0;1m"
+#  define CRIT_FG_RED   "\e[0;31m"
+#  define CRIT_FG_GREEN "\e[0;32m"
+#  define CRIT_FG_GOLD  "\e[0;33m"
+#  define CRIT_FG_BLUE  "\e[0;34m"
+#  define CRIT_RESET    "\e[0m"
+
+#  define FG_BOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
+#  define FG_RED   CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
+#  define FG_GREEN CRIT_COLOR_NORMALIZE(CRIT_FG_GREEN)
+#  define FG_GOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_GOLD)
+#  define FG_BLUE  CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
+#  define RESET    CRIT_COLOR_NORMALIZE(CRIT_RESET)
+# endif
+
+extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
+
+# define CRITERION_PREFIX_DASHES (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_DASHES])
+# define CRITERION_PREFIX_EQUALS (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_EQUALS])
+# define CRITERION_PREFIX_RUN    (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_RUN   ])
+# define CRITERION_PREFIX_SKIP   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_SKIP  ])
+# define CRITERION_PREFIX_PASS   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_PASS  ])
+# define CRITERION_PREFIX_FAIL   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_EQUALS])
+
+void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
+
+FORMAT(printf, 3, 4)
+void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...);
+
 FORMAT(printf, 2, 3)
 void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 
 # define criterion_info(...) criterion_log(CRITERION_INFO, __VA_ARGS__)
 # define criterion_important(...) criterion_log(CRITERION_IMPORTANT, __VA_ARGS__)
+
+# define criterion_pinfo(...) criterion_plog(CRITERION_INFO, __VA_ARGS__)
+# define criterion_pimportant(...) criterion_plog(CRITERION_IMPORTANT, __VA_ARGS__)
 
 struct criterion_output_provider {
     void (*log_pre_all   )(struct criterion_test_set *set);
