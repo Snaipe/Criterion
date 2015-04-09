@@ -223,7 +223,7 @@ int criterion_run_all_tests(void) {
     unset_runner_process();
 
     if (res == -1) // if this is the test worker terminating
-        _Exit(0);
+        exit(0);
 
     return criterion_options.always_succeed || res;
 }
