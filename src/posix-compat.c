@@ -1,7 +1,7 @@
 #include "posix-compat.h"
 #include "process.h"
 
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
 # define VC_EXTRALEAN
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
@@ -32,7 +32,7 @@
 #include <csptr/smart_ptr.h>
 
 struct proc_handle {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     HANDLE handle;
 #else
     pid_t pid;
@@ -40,7 +40,7 @@ struct proc_handle {
 };
 
 struct pipe_handle {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     HANDLE fhs[2];
 #else
     int fds[2];
@@ -49,7 +49,7 @@ struct pipe_handle {
 
 struct worker_context g_worker_context = {.test = NULL};
 
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
 static struct criterion_test            child_test;
 static struct criterion_test_extra_data child_test_data;
 static struct criterion_suite           child_suite;
@@ -66,7 +66,7 @@ int resume_child(void) {
 }
 
 s_proc_handle *fork_process() {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     PROCESS_INFORMATION info;
     STARTUPINFOW si = { .cb = sizeof (STARTUPINFOW) };
 
@@ -117,7 +117,7 @@ s_proc_handle *fork_process() {
 }
 
 void wait_process(s_proc_handle *handle, int *status) {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     WaitForSingleObject(handle->handle, INFINITE);
     DWORD exit_code;
     GetExitCodeProcess(handle->handle, &exit_code);
@@ -129,7 +129,7 @@ void wait_process(s_proc_handle *handle, int *status) {
 }
 
 FILE *pipe_in(s_pipe_handle *p) {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     CloseHandle(p->fhs[1]);
     int fd = _open_osfhandle((intptr_t) p->fhs[0], _O_RDONLY);
     if (fd == -1)
@@ -147,7 +147,7 @@ FILE *pipe_in(s_pipe_handle *p) {
 }
 
 FILE *pipe_out(s_pipe_handle *p) {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     CloseHandle(p->fhs[0]);
     int fd = _open_osfhandle((intptr_t) p->fhs[1], _O_WRONLY);
     if (fd == -1)
@@ -165,7 +165,7 @@ FILE *pipe_out(s_pipe_handle *p) {
 }
 
 s_pipe_handle *stdpipe() {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     HANDLE fhs[2];
     SECURITY_ATTRIBUTES attr = { .nLength = sizeof (SECURITY_ATTRIBUTES), .bInheritHandle = TRUE }; 
     if (!CreatePipe(fhs, fhs + 1, &attr, 0))
@@ -180,7 +180,7 @@ s_pipe_handle *stdpipe() {
 }
 
 s_proc_handle *get_current_process() {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     return unique_ptr(s_proc_handle, { GetCurrentProcess() });
 #else
     return unique_ptr(s_proc_handle, { getpid() });
@@ -188,7 +188,7 @@ s_proc_handle *get_current_process() {
 }
 
 bool is_current_process(s_proc_handle *proc) {
-#ifdef _WIN32
+#ifdef VANILLA_WIN32
     return GetProcessId(proc->handle) == GetProcessId(GetCurrentProcess());
 #else
     return proc->pid == getpid();

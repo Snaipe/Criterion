@@ -1,6 +1,10 @@
 #ifndef POSIX_COMPAT_H_
 # define POSIX_COMPAT_H_
 
+#if defined(_WIN32) && !defined(__CYGWIN__)
+# define VANILLA_WIN32
+#endif
+
 # if !defined(_POSIX_SOURCE)
 #  define _POSIX_SOURCE 1
 #  define TMP_POSIX
@@ -11,7 +15,7 @@
 #  undef TMP_POSIX
 # endif
 
-# ifdef _WIN32
+# ifdef VANILLA_WIN32
 #  define WEXITSTATUS(Status)    (((Status) & 0xFF00) >> 8)
 #  define WTERMSIG(Status)       ((Status) & 0x7F)
 #  define WIFEXITED(Status)      (WTERMSIG(Status) == 0)
