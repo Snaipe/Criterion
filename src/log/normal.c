@@ -88,10 +88,10 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
               "| Crashing: %11$s%12$lu%13$s "
               "%14$s\n"),
             FG_BOLD,
-            FG_BLUE,  stats->nb_tests,      FG_BOLD,
-            FG_GREEN, stats->tests_passed,  FG_BOLD,
-            FG_RED,   stats->tests_failed,  FG_BOLD,
-            FG_RED,   stats->tests_crashed, FG_BOLD,
+            FG_BLUE,  (unsigned long) stats->nb_tests,      FG_BOLD,
+            FG_GREEN, (unsigned long) stats->tests_passed,  FG_BOLD,
+            FG_RED,   (unsigned long) stats->tests_failed,  FG_BOLD,
+            FG_RED,   (unsigned long) stats->tests_crashed, FG_BOLD,
             RESET);
 }
 
@@ -128,7 +128,7 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
             _s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
                "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n",
                set->tests->size),
-            FG_BLUE, set->tests->size, RESET,
+            FG_BLUE, (unsigned long) set->tests->size, RESET,
             FG_GOLD, set->suite.name,  RESET);
 }
 
