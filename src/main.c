@@ -32,7 +32,7 @@
 #include "runner.h"
 #include "config.h"
 
-#ifdef I18N
+#if ENABLE_NLS
 # include <libintl.h>
 #endif
 
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
                   || !strcmp("dumb", getenv("TERM") ?: "dumb");
 
     setlocale(LC_ALL, "");
-#ifdef I18N
+#if ENABLE_NLS
     textdomain (PACKAGE "-test");
 #endif
 

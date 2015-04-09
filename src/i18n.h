@@ -3,7 +3,7 @@
 
 # include "config.h"
 
-# ifndef I18N
+# if !ENABLE_NLS
 #  define _(String) String
 #  define _s(String, Plural, Quantity) ((Quantity) == 1 ? String : Plural)
 # else
