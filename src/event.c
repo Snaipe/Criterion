@@ -48,14 +48,18 @@ struct event *read_event(FILE *f) {
             if (fread(buf, assert_size, 1, f) == 0)
                 return NULL;
 
-            return unique_ptr(struct event, { .kind = kind, .data = buf }, destroy_event);
+            return unique_ptr(struct event,
+                    .value = { .kind = kind, .data = buf },
+                    .dtor  = destroy_event);
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
             if (fread(elapsed_time, sizeof (double), 1, f) == 0)
                 return NULL;
 
-            return unique_ptr(struct event, { .kind = kind, .data = elapsed_time }, destroy_event);
+            return unique_ptr(struct event,
+                    .value = { .kind = kind, .data = elapsed_time },
+                    .dtor  = destroy_event);
         }
         default:
             return unique_ptr(struct event, { .kind = kind, .data = NULL });

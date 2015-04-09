@@ -39,13 +39,18 @@ void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
 }
 
 void normal_log_pre_init(struct criterion_test *test) {
-    criterion_pinfo(CRITERION_PREFIX_RUN, _("%1$s::%2$s\n"), test->category, test->name);
+    criterion_pinfo(CRITERION_PREFIX_RUN, _("%1$s::%2$s\n"),
+            test->category,
+            test->name);
+
     if (test->data->description)
-        criterion_pinfo(CRITERION_PREFIX_RUN, _("  %s\n"), test->data->description);
+        criterion_pinfo(CRITERION_PREFIX_RUN, _("  %s\n"),
+                test->data->description);
 }
 
 void normal_log_post_test(struct criterion_test_stats *stats) {
-    const char *format = can_measure_time() ? "%1$s::%2$s: (%3$3.2fs)\n" : "%1$s::%2$s\n";
+    const char *format = can_measure_time() ? "%1$s::%2$s: (%3$3.2fs)\n"
+                                            : "%1$s::%2$s\n";
 
     const enum criterion_logging_level level
             = stats->failed ? CRITERION_IMPORTANT : CRITERION_INFO;
@@ -59,7 +64,8 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
 }
 
 __attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+static inline bool is_disabled(struct criterion_test *t,
+                               struct criterion_suite *s) {
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
@@ -75,7 +81,8 @@ void normal_log_post_suite(struct criterion_suite_stats *stats) {
                     ts->test->name);
 
             if (ts->test->data->description)
-                criterion_pinfo(CRITERION_PREFIX_DASHES, "  %s\n", ts->test->data->description);
+                criterion_pinfo(CRITERION_PREFIX_DASHES, "  %s\n",
+                        ts->test->data->description);
         }
     }
 }
@@ -97,8 +104,10 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
-        char *dup = strdup(*stats->message ? stats->message : stats->condition), *saveptr = NULL;
-        char *line = strtok_r(dup, "\n", &saveptr);
+        char *dup       = strdup(*stats->message ? stats->message
+                                                 : stats->condition);
+        char *saveptr   = NULL;
+        char *line      = strtok_r(dup, "\n", &saveptr);
 
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n"),

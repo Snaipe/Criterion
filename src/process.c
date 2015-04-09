@@ -94,7 +94,9 @@ struct process *spawn_test_worker(struct criterion_test *test,
         return NULL;
     }
 
-    return unique_ptr(struct process, { .proc = proc, .in = pipe_in(pipe) }, close_process);
+    return unique_ptr(struct process,
+            .value = { .proc = proc, .in = pipe_in(pipe) },
+            .dtor  = close_process);
 }
 
 struct process_status wait_proc(struct process *proc) {
@@ -102,10 +104,16 @@ struct process_status wait_proc(struct process *proc) {
     wait_process(proc->proc, &status);
 
     if (WIFEXITED(status))
-        return (struct process_status) { .kind = EXIT_STATUS, .status = WEXITSTATUS(status) };
+        return (struct process_status) {
+            .kind = EXIT_STATUS,
+            .status = WEXITSTATUS(status)
+        };
 
     if (WIFSIGNALED(status))
-        return (struct process_status) { .kind = SIGNAL, .status = WTERMSIG(status) };
+        return (struct process_status) {
+            .kind = SIGNAL,
+            .status = WTERMSIG(status)
+        };
 
     return (struct process_status) { .kind = STOPPED };
 }

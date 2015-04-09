@@ -16,10 +16,10 @@
 # endif
 
 # ifdef VANILLA_WIN32
-#  define WEXITSTATUS(Status)    (((Status) & 0xFF00) >> 8)
-#  define WTERMSIG(Status)       ((Status) & 0x7F)
-#  define WIFEXITED(Status)      (WTERMSIG(Status) == 0)
-#  define WIFSIGNALED(Status)    (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
+#  define WEXITSTATUS(Status) (((Status) & 0xFF00) >> 8)
+#  define WTERMSIG(Status)    ((Status) & 0x7F)
+#  define WIFEXITED(Status)   (WTERMSIG(Status) == 0)
+#  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
 # else
 #  include <sys/wait.h>
 # endif

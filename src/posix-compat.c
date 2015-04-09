@@ -22,6 +22,9 @@
             &(StartupInfo),                                         \
             &(Info))
 
+# define WRITE_PROCESS_(Proc, What, Size)                           \
+        WriteProcessMemory(Proc, &What, &What, Size, NULL);
+
 #else
 # include <unistd.h>
 # include <sys/wait.h>
@@ -87,20 +90,26 @@ s_proc_handle *fork_process() {
     child_suite     = *g_worker_context.suite;
     child_pipe      = *g_worker_context.pipe;
 
-    g_worker_context = (struct worker_context) { &child_test, &child_suite, child_func, &child_pipe };
+    g_worker_context = (struct worker_context) {
+        &child_test,
+        &child_suite,
+        child_func,
+        &child_pipe
+    };
+
     child_test.data  = &child_test_data;
 
     if (g_worker_context.suite->data) {
         child_suite_data = *g_worker_context.suite->data;
         child_suite.data = &child_suite_data;
-        WriteProcessMemory(info.hProcess, &child_suite_data, &child_suite_data, sizeof (child_suite_data), NULL);
+        WRITE_PROCESS_(info.hProcess, child_suite_data, sizeof (child_suite_data));
     }
 
-    WriteProcessMemory(info.hProcess, &child_test, &child_test, sizeof (child_test), NULL);
-    WriteProcessMemory(info.hProcess, &child_test_data, &child_test_data, sizeof (child_test_data), NULL);
-    WriteProcessMemory(info.hProcess, &child_suite, &child_suite, sizeof (child_suite), NULL);
-    WriteProcessMemory(info.hProcess, &child_pipe, &child_pipe, sizeof (child_pipe), NULL);
-    WriteProcessMemory(info.hProcess, &g_worker_context, &g_worker_context, sizeof (struct worker_context), NULL);
+    WRITE_PROCESS_(info.hProcess, child_test,       sizeof (child_test));
+    WRITE_PROCESS_(info.hProcess, child_test_data,  sizeof (child_test_data));
+    WRITE_PROCESS_(info.hProcess, child_suite,      sizeof (child_suite));
+    WRITE_PROCESS_(info.hProcess, child_pipe,       sizeof (child_pipe));
+    WRITE_PROCESS_(info.hProcess, g_worker_context, sizeof (struct worker_context));
 
     ResumeThread(info.hThread);
     CloseHandle(info.hThread);
@@ -167,7 +176,10 @@ FILE *pipe_out(s_pipe_handle *p) {
 s_pipe_handle *stdpipe() {
 #ifdef VANILLA_WIN32
     HANDLE fhs[2];
-    SECURITY_ATTRIBUTES attr = { .nLength = sizeof (SECURITY_ATTRIBUTES), .bInheritHandle = TRUE }; 
+    SECURITY_ATTRIBUTES attr = {
+        .nLength = sizeof (SECURITY_ATTRIBUTES),
+        .bInheritHandle = TRUE
+    };
     if (!CreatePipe(fhs, fhs + 1, &attr, 0))
         return NULL;
     return unique_ptr(s_pipe_handle, {{ fhs[0], fhs[1] }});

@@ -9,7 +9,8 @@
 # else
 #  include <libintl.h>
 #  define _(String) dgettext(PACKAGE, String)
-#  define _s(String, Plural, Quantity) dngettext(PACKAGE, String, Plural, (Quantity))
+#  define _s(String, Plural, Quantity) \
+        dngettext(PACKAGE, String, Plural, (Quantity))
 # endif
 
 #endif /* !I18N_H_ */

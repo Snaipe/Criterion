@@ -38,6 +38,7 @@
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
 
+// This is here to make the test suite section non-empty
 TestSuite(default);
 
 int cmp_suite(void *a, void *b) {
@@ -95,7 +96,10 @@ typedef void (*f_test_run)(struct criterion_global_stats *,
         struct criterion_test *,
         struct criterion_suite *);
 
-static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, f_test_run fun) {
+static void map_tests(struct criterion_test_set *set,
+                      struct criterion_global_stats *stats,
+                      f_test_run fun) {
+
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         if (!s->tests)
             continue;
@@ -122,7 +126,9 @@ static void map_tests(struct criterion_test_set *set, struct criterion_global_st
 __attribute__ ((always_inline))
 static inline void nothing() {}
 
-static void run_test_child(struct criterion_test *test, struct criterion_suite *suite) {
+static void run_test_child(struct criterion_test *test,
+                           struct criterion_suite *suite) {
+
     send_event(PRE_INIT, NULL, 0);
     if (suite->data)
         (suite->data->init ?: nothing)();
@@ -144,7 +150,9 @@ static void run_test_child(struct criterion_test *test, struct criterion_suite *
 }
 
 __attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+static inline bool is_disabled(struct criterion_test *t,
+                               struct criterion_suite *s) {
+
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
@@ -165,7 +173,10 @@ static void run_test(struct criterion_global_stats *stats,
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
 
     if (is_disabled(test, suite)) {
-        stat_push_event(stats, suite_stats, test_stats, &(struct event) { .kind = PRE_TEST });
+        stat_push_event(stats,
+                suite_stats,
+                test_stats,
+                &(struct event) { .kind = PRE_TEST });
         return;
     }
 
