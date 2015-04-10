@@ -29,7 +29,7 @@
 
 static void nothing() {};
 static void push_pre_suite();
-static void push_pre_test();
+static void push_pre_init();
 static void push_assert();
 static void push_post_test();
 static void push_test_crash();
@@ -81,8 +81,8 @@ void stat_push_event(s_glob_stats *stats,
     static void (*const handles[])(s_glob_stats *, s_suite_stats *, s_test_stats *, void *) = {
         nothing,            // PRE_ALL
         push_pre_suite,     // PRE_SUITE
-        nothing,            // PRE_INIT
-        push_pre_test,      // PRE_TEST
+        push_pre_init,      // PRE_INIT
+        nothing,            // PRE_TEST
         push_assert,        // ASSERT
         push_test_crash,    // TEST_CRASH
         push_post_test,     // POST_TEST
@@ -113,7 +113,7 @@ static inline bool is_disabled(struct criterion_test *t,
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
-static void push_pre_test(s_glob_stats *stats,
+static void push_pre_init(s_glob_stats *stats,
                           s_suite_stats *suite,
                           s_test_stats *test,
                           UNUSED void *ptr) {

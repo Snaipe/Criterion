@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-10 00:15+0200\n"
+"POT-Creation-Date: 2015-04-10 23:08+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -28,22 +28,22 @@ msgstr "Criterion v%s\n"
 msgid "%1$s::%2$s\n"
 msgstr "%1$s::%2$s\n"
 
-#: src/log/normal.c:44 src/log/normal.c:110
+#: src/log/normal.c:47 src/log/normal.c:121
 #, c-format
 msgid "  %s\n"
 msgstr "  %s\n"
 
-#: src/log/normal.c:70
+#: src/log/normal.c:76
 #, c-format
 msgid "%1$s::%2$s: Test is disabled\n"
 msgstr "%1$s::%2$s: Le test est désactivé\n"
 
-#: src/log/normal.c:71
+#: src/log/normal.c:77
 #, c-format
 msgid "%1$s::%2$s: Suite is disabled\n"
 msgstr "%1$s::%2$s: La suite est désactivée\n"
 
-#: src/log/normal.c:85
+#: src/log/normal.c:94
 #, c-format
 msgid ""
 "%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"
@@ -52,19 +52,26 @@ msgstr ""
 "%1$sSynthèse: Testés: %2$s%3$lu%4$s | Validés: %5$s%6$lu%7$s | Échoués: %8$s"
 "%9$lu%10$s | Plantages: %11$s%12$lu%13$s %14$s\n"
 
-#: src/log/normal.c:104
+#: src/log/normal.c:115
 #, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n"
 msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Échec d'assertion: %7$s\n"
 
-#: src/log/normal.c:117
+#: src/log/normal.c:128
 #, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n"
 msgstr ""
 "%1$s%2$s%3$s:%4$s%5$u%6$s: Un signal inattendu a été reçu après cette "
 "ligne!\n"
 
-#: src/log/normal.c:121
+#: src/log/normal.c:132
 #, c-format
 msgid "%1$s::%2$s: CRASH!\n"
 msgstr "%1$s::%2$s: PLANTAGE!\n"
+
+#: src/log/normal.c:139
+#, c-format
+msgid "%1$sWarning! This test crashed during its setup or teardown.%2$s\n"
+msgstr ""
+"%1$sAttention! Ce test a planté pendant son initialisation ou sa "
+"finalisation.%2$s\n"

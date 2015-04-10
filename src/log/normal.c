@@ -134,6 +134,12 @@ void normal_log_test_crash(struct criterion_test_stats *stats) {
             stats->test->name);
 }
 
+void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _("%1$sWarning! This test crashed during its setup or teardown.%2$s\n"),
+            FG_BOLD, RESET);
+}
+
 void normal_log_pre_suite(struct criterion_suite_set *set) {
     criterion_pinfo(CRITERION_PREFIX_EQUALS,
             _s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
@@ -144,12 +150,13 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
 }
 
 struct criterion_output_provider normal_logging = {
-    .log_pre_all    = normal_log_pre_all,
-    .log_pre_init   = normal_log_pre_init,
-    .log_pre_suite  = normal_log_pre_suite,
-    .log_assert     = normal_log_assert,
-    .log_test_crash = normal_log_test_crash,
-    .log_post_test  = normal_log_post_test,
-    .log_post_suite = normal_log_post_suite,
-    .log_post_all   = normal_log_post_all,
+    .log_pre_all        = normal_log_pre_all,
+    .log_pre_init       = normal_log_pre_init,
+    .log_pre_suite      = normal_log_pre_suite,
+    .log_assert         = normal_log_assert,
+    .log_test_crash     = normal_log_test_crash,
+    .log_other_crash    = normal_log_other_crash,
+    .log_post_test      = normal_log_post_test,
+    .log_post_suite     = normal_log_post_suite,
+    .log_post_all       = normal_log_post_all,
 };

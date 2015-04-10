@@ -184,14 +184,20 @@ static void run_test(struct criterion_global_stats *stats,
     if (proc == NULL && !is_runner())
         return;
 
+    bool test_started  = false;
+    bool normal_finish = false;
     struct event *ev;
     while ((ev = worker_read_event(proc)) != NULL) {
         stat_push_event(stats, suite_stats, test_stats, ev);
         switch (ev->kind) {
             case PRE_INIT:  report(PRE_INIT, test); break;
-            case PRE_TEST:  report(PRE_TEST, test); break;
+            case PRE_TEST:  report(PRE_TEST, test);
+                            test_started = true;
+                            break;
             case ASSERT:    report(ASSERT, ev->data); break;
-            case POST_TEST: report(POST_TEST, test_stats); break;
+            case POST_TEST: report(POST_TEST, test_stats);
+                            normal_finish = true;
+                            break;
             case POST_FINI: report(POST_FINI, test_stats); break;
         }
         sfree(ev);
@@ -199,6 +205,16 @@ static void run_test(struct criterion_global_stats *stats,
 
     struct process_status status = wait_proc(proc);
     if (status.kind == SIGNAL) {
+        if (normal_finish || !test_started) {
+            log(other_crash, test_stats);
+            if (!test_started) {
+                stat_push_event(stats,
+                        suite_stats,
+                        test_stats,
+                        &(struct event) { .kind = TEST_CRASH });
+            }
+            return;
+        }
         test_stats->signal = status.status;
         if (test->data->signal == 0) {
             push_event(TEST_CRASH);

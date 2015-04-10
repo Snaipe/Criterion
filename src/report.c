@@ -50,9 +50,6 @@
     IMPL_CALL_REPORT_HOOKS(Type);   \
     ReportHook(Type)
 
-#define log(Type, Arg) \
-    (criterion_options.output_provider->log_ ## Type ?: nothing)(Arg);
-
 __attribute__((always_inline))
 static inline void nothing() {}
 
