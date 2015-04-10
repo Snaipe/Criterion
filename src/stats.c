@@ -106,6 +106,13 @@ static void push_pre_suite(s_glob_stats *stats,
     ++stats->nb_suites;
 }
 
+__attribute__((always_inline))
+static inline bool is_disabled(struct criterion_test *t,
+                               struct criterion_suite *s) {
+
+    return t->data->disabled || (s->data && s->data->disabled);
+}
+
 static void push_pre_test(s_glob_stats *stats,
                           s_suite_stats *suite,
                           s_test_stats *test,
@@ -114,6 +121,11 @@ static void push_pre_test(s_glob_stats *stats,
     suite->tests = sref(test);
     ++stats->nb_tests;
     ++suite->nb_tests;
+
+    if (is_disabled(test->test, suite->suite)) {
+        ++stats->tests_skipped;
+        ++suite->tests_skipped;
+    }
 }
 
 static void destroy_assert(void *ptr, UNUSED void *meta) {

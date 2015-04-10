@@ -88,6 +88,8 @@ void normal_log_post_suite(struct criterion_suite_stats *stats) {
 }
 
 void normal_log_post_all(struct criterion_global_stats *stats) {
+    size_t tested = stats->nb_tests - stats->tests_skipped;
+
     criterion_pimportant(CRITERION_PREFIX_EQUALS,
             _("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
               "| Passing: %5$s%6$lu%7$s "
@@ -95,7 +97,7 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
               "| Crashing: %11$s%12$lu%13$s "
               "%14$s\n"),
             FG_BOLD,
-            FG_BLUE,  (unsigned long) stats->nb_tests,      FG_BOLD,
+            FG_BLUE,  (unsigned long) tested,               FG_BOLD,
             FG_GREEN, (unsigned long) stats->tests_passed,  FG_BOLD,
             FG_RED,   (unsigned long) stats->tests_failed,  FG_BOLD,
             FG_RED,   (unsigned long) stats->tests_crashed, FG_BOLD,
