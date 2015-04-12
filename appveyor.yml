@@ -28,7 +28,6 @@ init:
     -P git \
     -P wget \
     -P curl
-  - "%CYG_BASH% -lc 'pip install cpp-coveralls'"
 
 environment:
   global:
@@ -59,6 +58,10 @@ install:
 
 build_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
+
+before_test:
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; .ci/install-pip.sh'"
+  - "%CYG_BASH% -lc 'pip install cpp-coveralls'"
 
 test_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER/samples; exec 0</dev/null; make check"'
