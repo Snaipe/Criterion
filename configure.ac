@@ -22,6 +22,11 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_FUNC_FNMATCH
 
+enable_rt_tests="no"
+AC_CHECK_LIB([rt], [clock_gettime], [enable_rt_tests="yes"])
+
+AM_CONDITIONAL([ENABLE_RT_TESTS], [test "x$enable_rt_tests" != "xno"])
+
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.18])
 

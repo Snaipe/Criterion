@@ -8,7 +8,6 @@ BIN_TESTS = \
 	long-messages \
 	description \
 	other-crashes \
-	with-time \
 	simple
 
 TESTS_ENVIRONMENT = CRITERION_ALWAYS_SUCCEED=1
@@ -17,7 +16,10 @@ check_PROGRAMS := $(BIN_TESTS)
 CFLAGS = -I$(top_srcdir)/include/ -std=c99 -Wall -Wextra -pedantic
 LDADD = -L$(top_srcdir)/ -lcriterion
 
+if ENABLE_RT_TESTS
+BIN_TESTS += with-time
 with_time_LDADD = $(LDADD) -lrt
+endif
 
 SCRIPT_TESTS = tests/tap_test.sh \
                tests/early_exit.sh \
