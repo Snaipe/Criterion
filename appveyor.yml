@@ -17,7 +17,7 @@ init:
     -P mingw64-i686-gcc-core \
     -P libtool \
     -P make \
-    -P python \
+    -P python3 \
     -P gettext-devel \
     -P gettext \
     -P expat \
