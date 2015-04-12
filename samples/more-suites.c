@@ -1,10 +1,12 @@
 #include <criterion/criterion.h>
 
 void setup_suite(void) {
-    // setup suite
 }
 
-TestSuite(suite1, .init = setup_suite);
+void teardown_suite(void) {
+}
+
+TestSuite(suite1, .init = setup_suite, .fini = teardown_suite);
 
 Test(suite1, test) {
     assert(1);
