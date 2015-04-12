@@ -28,7 +28,7 @@ init:
     -P git \
     -P wget \
     -P curl
-  - "%CYG_BASH% -lc 'echo $PATH'"
+  - "%CYG_BASH% -lc 'pip install cpp-coveralls'"
 
 environment:
   global:
@@ -36,6 +36,8 @@ environment:
     CYG_MIRROR: http://cygwin.mirror.constant.com
     CYG_CACHE: C:\cygwin\var\cache\setup
     CYG_BASH: C:\cygwin\bin\bash
+  COVERALLS_TOKEN:
+    secure: 5nuCg+faxFPeppoNNcSwVobswAVFUf8ut83vw8CX/4W2y0kZkGmwEfCUxSQWiQDU
 
 cache:
   - '%CYG_CACHE%'
@@ -53,7 +55,7 @@ configuration: Release
 
 install:
   - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-w64-mingw32-gcc"'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-w64-mingw32-gcc CFLAGS=\"-g -O0\" --enable-gcov"'
 
 build_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
@@ -63,6 +65,7 @@ test_script:
 
 after_test:
   - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; coveralls --exclude samples --exclude dependencies --gcov-options \\-lp -b . -t $(COVERALLS_TOKEN)'
 
 notifications:
 
