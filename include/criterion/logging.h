@@ -74,7 +74,7 @@ extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 # define CRITERION_PREFIX_RUN    (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_RUN   ])
 # define CRITERION_PREFIX_SKIP   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_SKIP  ])
 # define CRITERION_PREFIX_PASS   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_PASS  ])
-# define CRITERION_PREFIX_FAIL   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_EQUALS])
+# define CRITERION_PREFIX_FAIL   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_FAIL  ])
 
 void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
 
