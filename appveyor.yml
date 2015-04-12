@@ -67,7 +67,7 @@ test_script:
 
 after_test:
   - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; coveralls --exclude samples --exclude dependencies --gcov-options \\-lp -b . -t $(COVERALLS_TOKEN)'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; coveralls --exclude samples --exclude dependencies --gcov-options \\-lp -b . -t $COVERALLS_TOKEN'
 
 notifications:
 
