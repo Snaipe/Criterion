@@ -48,7 +48,6 @@ matrix:
 
 platform:
   - x86
-  - Any CPU
 
 configuration: Release
 
