@@ -176,7 +176,7 @@ static void run_test(struct criterion_global_stats *stats,
         stat_push_event(stats,
                 suite_stats,
                 test_stats,
-                &(struct event) { .kind = PRE_TEST });
+                &(struct event) { .kind = PRE_INIT });
         return;
     }
 
