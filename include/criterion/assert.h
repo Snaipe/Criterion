@@ -111,6 +111,22 @@ struct criterion_assert_args {
 # define assert_geq(...) assert_op_(>=, __VA_ARGS__, .sentinel_ = 0)
 # define expect_geq(...) expect_op_(>=, __VA_ARGS__, .sentinel_ = 0)
 
+# define assert_null_(Value, ...) \
+    assert_impl(FATAL,  (Value) == NULL, __VA_ARGS__)
+# define expect_null_(Value, ...) \
+    assert_impl(NORMAL, (Value) == NULL, __VA_ARGS__)
+
+# define assert_null(...) assert_null_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_null(...) expect_null_(__VA_ARGS__, .sentinel_ = 0)
+
+# define assert_not_null_(Value, ...) \
+    assert_impl(FATAL,  (Value) != NULL, __VA_ARGS__)
+# define expect_not_null_(Value, ...) \
+    assert_impl(NORMAL, (Value) != NULL, __VA_ARGS__)
+
+# define assert_not_null(...) assert_not_null_(__VA_ARGS__, .sentinel_ = 0)
+# define expect_not_null(...) expect_not_null_(__VA_ARGS__, .sentinel_ = 0)
+
 // Floating-point asserts
 
 # define assert_float_eq(...) \
@@ -173,23 +189,82 @@ struct criterion_assert_args {
 // Array asserts
 
 # define assert_arrays_eq(...) \
-    assert_arrays_eq_(__VA_ARGS__, .sentinel = 0)
+    assert_arrays_eq_(__VA_ARGS__, .sentinel_ = 0)
 # define expect_arrays_eq(...) \
-    expect_arrays_eq_(__VA_ARGS__, .sentinel = 0)
+    expect_arrays_eq_(__VA_ARGS__, .sentinel_ = 0)
 
 # define assert_arrays_neq(...) \
-    assert_arrays_neq_(__VA_ARGS__, .sentinel = 0)
+    assert_arrays_neq_(__VA_ARGS__, .sentinel_ = 0)
 # define expect_arrays_neq(...) \
-    expect_arrays_neq_(__VA_ARGS__, .sentinel = 0)
+    expect_arrays_neq_(__VA_ARGS__, .sentinel_ = 0)
 
-# define assert_arrays_eq_(A, B, Size, ...) \
-    assert_impl(FATAL, !memcmp((A), (B), (Size)), __VA_ARGS__)
+# define assert_arrays_eq_(A, B, Size, ...)             \
+    assert_impl(FATAL, !memcmp((A), (B), (Size)),       \
+            .default_msg = "Arrays are not equal.",     \
+            __VA_ARGS__)
 # define expect_arrays_eq_(A, B, Size, ...) \
-    assert_impl(NORMAL, !memcmp((A), (B), (Size)), __VA_ARGS__)
+    assert_impl(NORMAL, !memcmp((A), (B), (Size)),      \
+            .default_msg = "Arrays are not equal.",     \
+            __VA_ARGS__)
 
-# define assert_arrays_neq_(A, B, Size, ...) \
-    assert_impl(FATAL, memcmp((A), (B), (Size)), __VA_ARGS__)
-# define expect_arrays_neq_(A, B, Size, ...) \
-    assert_impl(NORMAL, memcmp((A), (B), (Size)), __VA_ARGS__)
+# define assert_arrays_neq_(A, B, Size, ...)            \
+    assert_impl(FATAL, memcmp((A), (B), (Size)),        \
+            .default_msg = "Arrays are equal",          \
+            __VA_ARGS__)
+# define expect_arrays_neq_(A, B, Size, ...)            \
+    assert_impl(NORMAL, memcmp((A), (B), (Size)),       \
+            .default_msg = "Arrays are equal",          \
+            __VA_ARGS__)
+
+# ifdef __GNUC__
+#  define CRIT_ARR_COMPARE_(A, B, Size, Cmp, Result)                \
+    __typeof__(&(A)[0]) first = (A);                                \
+    __typeof__(&(B)[0]) second = (B);                               \
+    int equals = 1;                                                 \
+    for (size_t i = 0, size = (Size); equals && i < size; ++i)      \
+        equals = equals && !Cmp(first + i, second + i)
+
+#  define assert_arrays_eq_cmp_(A, B, Size, Cmp, ...)                   \
+    do {                                                                \
+        CRIT_ARR_COMPARE_(A, B, Size, Cmp, equals);                     \
+        assert_impl(FATAL, equals,                                      \
+                .default_msg = "Arrays are not equal",                  \
+                __VA_ARGS__);                                           \
+    } while (0)
+
+#  define expect_arrays_eq_cmp_(A, B, Size, Cmp, ...)                   \
+    do {                                                                \
+        CRIT_ARR_COMPARE_(A, B, Size, Cmp, equals);                     \
+        assert_impl(NORMAL, equals,                                     \
+                .default_msg = "Arrays are not equal",                  \
+                __VA_ARGS__);                                           \
+    } while (0)
+
+#  define assert_arrays_eq_cmp(...) \
+    assert_arrays_eq_cmp_(__VA_ARGS__, .sentinel_ = 0)
+#  define expect_arrays_eq_cmp(...) \
+    expect_arrays_eq_cmp_(__VA_ARGS__, .sentinel_ = 0)
+
+#  define assert_arrays_neq_cmp_(A, B, Size, Cmp, ...)                  \
+    do {                                                                \
+        CRIT_ARR_COMPARE_(A, B, Size, Cmp, equals);                     \
+        assert_impl(FATAL, !equals,                                     \
+                .default_msg = "Arrays not equal",                      \
+                __VA_ARGS__);                                           \
+    } while (0)
+
+#  define expect_arrays_neq_cmp_(A, B, Size, Cmp, ...)                  \
+    do {                                                                \
+        CRIT_ARR_COMPARE_(A, B, Size, Cmp, equals);                     \
+        assert_impl(NORMAL, equals,                                     \
+                .default_msg = "Arrays not equal",                      \
+                __VA_ARGS__);                                           \
+    } while (0)
+
+#  define assert_arrays_neq_cmp(...) \
+    assert_arrays_eq_cmp_(__VA_ARGS__, .sentinel_ = 0)
+#  define expect_arrays_neq_cmp(...) \
+    expect_arrays_eq_cmp_(__VA_ARGS__, .sentinel_ = 0)
+# endif /* !__GNUC__ */
 
 #endif /* !CRITERION_ASSERT_H_ */
