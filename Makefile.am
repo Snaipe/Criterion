@@ -16,9 +16,7 @@ libcriterion_la_CFLAGS = \
 	$(COVERAGE_CFLAGS)
 
 libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS)
-
-# dirty but unless someone has a better alternative...
-libcriterion_la_LIBADD = dependencies/csptr/src/libcsptr_la-*.lo
+libcriterion_la_LIBADD = -lcsptr
 
 EXTRA_DIST = config.rpath LICENSE
 

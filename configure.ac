@@ -7,7 +7,7 @@ LT_PREREQ([2.2.4])
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip foreign subdir-objects parallel-tests color-tests])
-LT_INIT([disable-shared])
+LT_INIT([disable-static])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
