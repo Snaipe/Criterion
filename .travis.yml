@@ -8,7 +8,7 @@ before_install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
   - sudo pip install cpp-coveralls
 script:
-  - ./autogen.sh && ./configure --enable-gcov CFLAGS="-g -O0" && make && make check
+  - ./autogen.sh && ./configure --enable-gcov CFLAGS="-g -O0" && make && make -C samples check
 after_success:
   - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
 after_failure:
