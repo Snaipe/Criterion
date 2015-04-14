@@ -1,3 +1,0 @@
-[submodule "dependencies/csptr"]
-	path = dependencies/csptr
-	url = https://github.com/Snaipe/c-smart-pointers.git
