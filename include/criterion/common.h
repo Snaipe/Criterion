@@ -56,6 +56,7 @@
     Type *const SECTION_END(Name)   = &SECTION_END_(Name)
 
 # define UNUSED __attribute__((unused))
+# define NORETURN __attribute__((noreturn))
 
 # ifdef _WIN32
 #  define SIZE_T_FORMAT "%Iu"

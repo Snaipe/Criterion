@@ -31,6 +31,7 @@
 # include "stats.h"
 # include "hooks.h"
 # include "event.h"
+# include "abort.h"
 
 enum criterion_assert_kind {
     NORMAL,
@@ -60,7 +61,7 @@ struct criterion_assert_args {
         };                                                      \
         send_event(ASSERT, &stat, sizeof (stat));               \
         if (!passed && (Kind) == FATAL)                         \
-            return;                                             \
+            criterion_abort_test();                             \
     } while (0)
 
 // Common asserts

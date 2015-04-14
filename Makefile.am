@@ -25,6 +25,7 @@ EXTRA_DIST = config.rpath LICENSE
 subdirincludedir = $(includedir)/criterion/
 subdirinclude_HEADERS = \
 	include/criterion/assert.h \
+	include/criterion/abort.h \
 	include/criterion/common.h \
 	include/criterion/criterion.h \
 	include/criterion/event.h \
@@ -36,6 +37,8 @@ subdirinclude_HEADERS = \
 	include/criterion/stats.h
 
 libcriterion_la_SOURCES = \
+	src/abort.c \
+	src/abort.h \
 	src/event.c \
 	src/event.h \
 	src/report.c \

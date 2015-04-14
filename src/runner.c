@@ -34,6 +34,7 @@
 #include "process.h"
 #include "timer.h"
 #include "posix-compat.h"
+#include "abort.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
@@ -139,8 +140,11 @@ static void run_test_child(struct criterion_test *test,
     send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
-    timer_start(&ts);
-    (test->test       ?: nothing)();
+    if (setup_abort_test()) {
+        timer_start(&ts);
+        (test->test ?: nothing)();
+    }
+
     double elapsed_time;
     if (!timer_end(&elapsed_time, &ts))
         elapsed_time = -1;
