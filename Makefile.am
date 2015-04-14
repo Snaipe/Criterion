@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DLOCALEDIR='"$(localedir)"'
-SUBDIRS = po dependencies/csptr samples
+SUBDIRS = po samples
 
 lib_LTLIBRARIES = libcriterion.la
 
@@ -12,11 +12,9 @@ libcriterion_la_CFLAGS = \
 	-std=gnu11 \
 	-I$(top_srcdir)/src/ \
 	-I$(top_srcdir)/include/ \
-	-I$(top_srcdir)/dependencies/csptr/include/ \
 	$(COVERAGE_CFLAGS)
 
 libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS)
-libcriterion_la_LIBADD = -lcsptr
 
 EXTRA_DIST = config.rpath LICENSE
 
