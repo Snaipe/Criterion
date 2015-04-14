@@ -140,17 +140,15 @@ int main(int argc, char *argv[]) {
     textdomain (PACKAGE "-test");
 #endif
 
-    criterion_options = (struct criterion_options) {
-        .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
-        .no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0"),
-        .fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0"),
-        .use_ascii         = use_ascii,
-        .logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2"),
+    struct criterion_options *opt = &criterion_options;
+    opt->always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0");
+    opt->no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0");
+    opt->fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0");
+    opt->use_ascii         = use_ascii;
+    opt->logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2");
 #ifdef HAVE_FNMATCH
-        .pattern           = getenv("CRITERION_TEST_PATTERN"),
+    opt->pattern           = getenv("CRITERION_TEST_PATTERN");
 #endif
-        .output_provider   = NORMAL_LOGGING,
-    };
 
     bool use_tap = !strcmp("1", getenv("CRITERION_ENABLE_TAP") ?: "0");
 
