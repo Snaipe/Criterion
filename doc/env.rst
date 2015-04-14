@@ -14,7 +14,7 @@ Command line arguments
 * ``-f or --fail-fast``: Exit after the first test failure.
 * ``--ascii``: Don't use fancy unicode symbols or colors in the output.
 * ``--pattern [PATTERN]``: Run tests whose string identifier matches
-  the given shell wildcard pattern (see dedicated section below).
+  the given shell wildcard pattern (see dedicated section below). (\*nix only)
 * ``--no-early-exit``: The test workers shall not prematurely exit when done and
   will properly return from the main, cleaning up their process space.
   This is useful when tracking memory leaks with ``valgrind --tool=memcheck``.
@@ -27,7 +27,8 @@ Shell Wildcard Pattern
 ----------------------
 
 Patterns in criterion are matched against a test's string identifier with
-``fnmatch``.
+``fnmatch``. This feature is only available on \*nix systems where ``fnmatch``
+is provided.
 
 Special characters used in shell-style wildcard patterns are:
 
@@ -61,4 +62,4 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_VERBOSITY_LEVEL``: Same as ``--verbose``. Sets the verbosity level
   to its value.
 * ``CRITERION_TEST_PATTERN``:    Same as ``--pattern``. Sets the test pattern
-  to its value.
+  to its value. (\*nix only)

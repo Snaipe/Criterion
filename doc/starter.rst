@@ -68,8 +68,16 @@ On top of those, more assertions are available for common operations:
 * ``{assert,expect}_arrays_eq(Actual, Expected, Size, [Message])``
 * ``{assert,expect}_arrays_neq(Actual, Unexpected, Size, [Message])``
 
+Please note that ``arrays_(n)eq`` assertions should not be used for padded structures.
+
+Configuring tests
+-----------------
+
+Tests may receive optional configuration parameters to alter their behaviour
+or provide additional metadata.
+
 Fixtures
---------
+~~~~~~~~
 
 Tests that need some setup and teardown can register functions that will
 run before and after the test function:
@@ -91,8 +99,13 @@ run before and after the test function:
         // test contents
     }
 
+If a setup crashes, you will get a warning message, and the test will be aborted
+and marked as a failure.
+Is a teardown crashes, you will get a warning message, and the test will keep
+its result.
+
 Testing signals
----------------
+~~~~~~~~~~~~~~~
 
 If a test receives a signal, it will by default be marked as a failure.
 You can, however, expect a test to only pass if a special kind of signal
@@ -115,3 +128,47 @@ is received:
         int *ptr = NULL;
         *ptr = 42;
     }
+
+This feature will of course not work on Windows.
+
+Configuration reference
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Here is an exhaustive list of all possible configuration parameters you can
+pass:
+
+============= =============== ==============================================================
+Parameter     Type            Description
+============= =============== ==============================================================
+.description  const char *    Adds a description. Cannot be ``NULL``.
+------------- --------------- --------------------------------------------------------------
+.init         void (*)(void)  Adds a setup function the be executed before the test.
+------------- --------------- --------------------------------------------------------------
+.fini         void (*)(void)  Adds a teardown function the be executed after the test.
+------------- --------------- --------------------------------------------------------------
+.disabled     bool            Disables the test.
+------------- --------------- --------------------------------------------------------------
+.signal       int             Expect the test to raise the specified signal.
+============= =============== ==============================================================
+
+Setting up suite-wise configuration
+-----------------------------------
+
+Tests under the same suite can have a suite-wise configuration -- this is done
+using the ``TestSuite`` macro:
+
+.. code-block:: c
+
+    #include <criterion/criterion.h>
+
+    TestSuite(suite_name, [params...]);
+
+    Test(suite_name, test_1) {
+    }
+
+    Test(suite_name, test_2) {
+    }
+
+Configuration parameters are the same as above, but applied to the suite itself.
+
+Suite fixtures are run *along with* test fixtures.

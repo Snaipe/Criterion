@@ -39,3 +39,16 @@ Starting the test runner
 
 The test runner can be called with ``criterion_run_all_tests``. The function
 returns 0 if one test or more failed, 1 otherwise.
+
+Implementing your own output provider
+-------------------------------------
+
+In case you are not satisfied by the default output provider, you can implement
+yours. To do so, simply set the ``output_provider`` option to your custom
+output provider.
+
+Each function contained in the structure is called during one of the standard
+phase of the criterion runner.
+
+For more insight on how to implement this, see other existing output providers
+in ``src/log/``.
