@@ -38,8 +38,9 @@
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
 
-// This is here to make the test suite section non-empty
-TestSuite(default);
+// This is here to make the test suite & test sections non-empty
+TestSuite();
+Test(,) {};
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -71,7 +72,11 @@ struct criterion_test_set *criterion_init(void) {
         insert_ordered_set(suites, &css, sizeof (css));
     }
 
+    size_t nb_tests = 0;
     FOREACH_TEST_SEC(test) {
+        if (!*test->category)
+            continue;
+
         struct criterion_suite_set css = {
             .suite = { .name = test->category },
         };
@@ -80,10 +85,8 @@ struct criterion_test_set *criterion_init(void) {
             s->tests = new_ordered_set(cmp_test, NULL);
 
         insert_ordered_set(s->tests, test, sizeof(*test));
+        ++nb_tests;
     }
-
-    const size_t nb_tests = SECTION_END(criterion_tests)
-                          - SECTION_START(criterion_tests);
 
     return unique_ptr(struct criterion_test_set, {
         suites,
