@@ -1,5 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = dependencies/csptr samples
+AM_CPPFLAGS = -DLOCALEDIR='"$(localedir)"'
+SUBDIRS = po dependencies/csptr samples
 
 lib_LTLIBRARIES = libcriterion.la
 
@@ -14,16 +15,17 @@ libcriterion_la_CFLAGS = \
 	-I$(top_srcdir)/dependencies/csptr/include/ \
 	$(COVERAGE_CFLAGS)
 
-libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS)
+libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS) -version-info 1:0:0
 
 # dirty but unless someone has a better alternative...
 libcriterion_la_LIBADD = dependencies/csptr/src/libcsptr_la-*.lo
 
-EXTRA_DIST = LICENSE
+EXTRA_DIST = config.rpath LICENSE
 
 subdirincludedir = $(includedir)/criterion/
 subdirinclude_HEADERS = \
 	include/criterion/assert.h \
+	include/criterion/abort.h \
 	include/criterion/common.h \
 	include/criterion/criterion.h \
 	include/criterion/event.h \
@@ -35,6 +37,8 @@ subdirinclude_HEADERS = \
 	include/criterion/stats.h
 
 libcriterion_la_SOURCES = \
+	src/abort.c \
+	src/abort.h \
 	src/event.c \
 	src/event.h \
 	src/report.c \
@@ -51,7 +55,10 @@ libcriterion_la_SOURCES = \
 	src/options.c \
 	src/timer.c \
 	src/timer.h \
+	src/i18n.c \
+	src/i18n.h \
 	src/ordered-set.c \
+	src/posix-compat.c \
 	src/main.c
 
 TARGET = $(PACKAGE)-$(VERSION)

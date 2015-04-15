@@ -17,6 +17,10 @@ A report hook can be declared using the ``ReportHook`` macro:
 The macro takes a Phase parameter that indicates the phase at which the function
 shall be run. Valid phases are described below.
 
+**Note**: there are no guarantees regarding the order of execution of report hooks
+on the same phase. In other words, all report hooks of a specific phase could
+be executed in any order.
+
 Testing Phases
 --------------
 
@@ -49,3 +53,18 @@ Valid types for each phases are:
 * ``struct criterion_test_stats *`` for ``POST_TEST``, ``POST_FINI``, and ``TEST_CRASH``.
 * ``struct criterion_suite_stats *`` for ``POST_SUITE``.
 * ``struct criterion_global_stats *`` for ``POST_ALL``.
+
+For instance, these are valid report hook declarations for the ``PRE_TEST`` phase:
+
+.. code-block:: c
+
+    #include <criterion/criterion.h>
+    #include <criterion/hooks.h>
+
+    ReportHook(PRE_TEST)() {
+        // not using the parameter
+    }
+
+    ReportHook(PRE_TEST)(struct criterion_test *test) {
+        // using the parameter
+    }

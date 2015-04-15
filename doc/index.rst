@@ -9,4 +9,5 @@ Criterion
     starter
     hooks
     env
+    internal
     faq

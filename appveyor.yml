@@ -14,9 +14,10 @@ init:
     -P mingw-gcc-core \
     -P mingw-pthreads \
     -P mingw-w32api \
+    -P mingw64-i686-gcc-core \
     -P libtool \
     -P make \
-    -P python \
+    -P python3 \
     -P gettext-devel \
     -P gettext \
     -P expat \
@@ -27,7 +28,6 @@ init:
     -P git \
     -P wget \
     -P curl
-  - "%CYG_BASH% -lc 'echo $PATH'"
 
 environment:
   global:
@@ -35,6 +35,8 @@ environment:
     CYG_MIRROR: http://cygwin.mirror.constant.com
     CYG_CACHE: C:\cygwin\var\cache\setup
     CYG_BASH: C:\cygwin\bin\bash
+  COVERALLS_TOKEN:
+    secure: 5nuCg+faxFPeppoNNcSwVobswAVFUf8ut83vw8CX/4W2y0kZkGmwEfCUxSQWiQDU
 
 cache:
   - '%CYG_CACHE%'
@@ -46,22 +48,27 @@ matrix:
 
 platform:
   - x86
-  - Any CPU
 
 configuration: Release
 
 install:
+  - 'set GCOV_PREFIX=%APPVEYOR_BUILD_FOLDER%'
   - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure"'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-w64-mingw32-gcc CFLAGS=\"-g -O0\" --enable-gcov"'
 
 build_script:
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
 
+before_test:
+  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; .ci/install-pip.sh'"
+  - "%CYG_BASH% -lc 'pip install cpp-coveralls'"
+
 test_script:
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make check"'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER/samples; exec 0</dev/null; make check"'
 
 after_test:
   - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; coveralls --gcov i686-w64-mingw32-gcov --exclude samples --exclude dependencies --gcov-options \"\-lp\" -b . -t $COVERALLS_TOKEN'
 
 notifications:
 

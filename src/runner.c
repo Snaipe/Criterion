@@ -23,7 +23,6 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <csptr/smart_ptr.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
@@ -34,11 +33,15 @@
 #include "event.h"
 #include "process.h"
 #include "timer.h"
+#include "posix-compat.h"
+#include "abort.h"
 
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
 
-TestSuite(default);
+// This is here to make the test suite & test sections non-empty
+TestSuite();
+Test(,) {};
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -70,7 +73,11 @@ struct criterion_test_set *criterion_init(void) {
         insert_ordered_set(suites, &css, sizeof (css));
     }
 
+    size_t nb_tests = 0;
     FOREACH_TEST_SEC(test) {
+        if (!*test->category)
+            continue;
+
         struct criterion_suite_set css = {
             .suite = { .name = test->category },
         };
@@ -79,10 +86,8 @@ struct criterion_test_set *criterion_init(void) {
             s->tests = new_ordered_set(cmp_test, NULL);
 
         insert_ordered_set(s->tests, test, sizeof(*test));
+        ++nb_tests;
     }
-
-    const size_t nb_tests = SECTION_END(criterion_tests)
-                          - SECTION_START(criterion_tests);
 
     return unique_ptr(struct criterion_test_set, {
         suites,
@@ -95,7 +100,10 @@ typedef void (*f_test_run)(struct criterion_global_stats *,
         struct criterion_test *,
         struct criterion_suite *);
 
-static void map_tests(struct criterion_test_set *set, struct criterion_global_stats *stats, f_test_run fun) {
+static void map_tests(struct criterion_test_set *set,
+                      struct criterion_global_stats *stats,
+                      f_test_run fun) {
+
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         if (!s->tests)
             continue;
@@ -122,7 +130,9 @@ static void map_tests(struct criterion_test_set *set, struct criterion_global_st
 __attribute__ ((always_inline))
 static inline void nothing() {}
 
-static void run_test_child(struct criterion_test *test, struct criterion_suite *suite) {
+static void run_test_child(struct criterion_test *test,
+                           struct criterion_suite *suite) {
+
     send_event(PRE_INIT, NULL, 0);
     if (suite->data)
         (suite->data->init ?: nothing)();
@@ -130,8 +140,11 @@ static void run_test_child(struct criterion_test *test, struct criterion_suite *
     send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
-    timer_start(&ts);
-    (test->test       ?: nothing)();
+    if (setup_abort_test()) {
+        timer_start(&ts);
+        (test->test ?: nothing)();
+    }
+
     double elapsed_time;
     if (!timer_end(&elapsed_time, &ts))
         elapsed_time = -1;
@@ -144,7 +157,9 @@ static void run_test_child(struct criterion_test *test, struct criterion_suite *
 }
 
 __attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+static inline bool is_disabled(struct criterion_test *t,
+                               struct criterion_suite *s) {
+
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
@@ -165,7 +180,10 @@ static void run_test(struct criterion_global_stats *stats,
     smart struct criterion_test_stats *test_stats = test_stats_init(test);
 
     if (is_disabled(test, suite)) {
-        stat_push_event(stats, suite_stats, test_stats, &(struct event) { .kind = PRE_TEST });
+        stat_push_event(stats,
+                suite_stats,
+                test_stats,
+                &(struct event) { .kind = PRE_INIT });
         return;
     }
 
@@ -173,14 +191,20 @@ static void run_test(struct criterion_global_stats *stats,
     if (proc == NULL && !is_runner())
         return;
 
+    bool test_started  = false;
+    bool normal_finish = false;
     struct event *ev;
     while ((ev = worker_read_event(proc)) != NULL) {
         stat_push_event(stats, suite_stats, test_stats, ev);
         switch (ev->kind) {
             case PRE_INIT:  report(PRE_INIT, test); break;
-            case PRE_TEST:  report(PRE_TEST, test); break;
+            case PRE_TEST:  report(PRE_TEST, test);
+                            test_started = true;
+                            break;
             case ASSERT:    report(ASSERT, ev->data); break;
-            case POST_TEST: report(POST_TEST, test_stats); break;
+            case POST_TEST: report(POST_TEST, test_stats);
+                            normal_finish = true;
+                            break;
             case POST_FINI: report(POST_FINI, test_stats); break;
         }
         sfree(ev);
@@ -188,6 +212,16 @@ static void run_test(struct criterion_global_stats *stats,
 
     struct process_status status = wait_proc(proc);
     if (status.kind == SIGNAL) {
+        if (normal_finish || !test_started) {
+            log(other_crash, test_stats);
+            if (!test_started) {
+                stat_push_event(stats,
+                        suite_stats,
+                        test_stats,
+                        &(struct event) { .kind = TEST_CRASH });
+            }
+            return;
+        }
         test_stats->signal = status.status;
         if (test->data->signal == 0) {
             push_event(TEST_CRASH);
@@ -200,10 +234,12 @@ static void run_test(struct criterion_global_stats *stats,
 }
 
 static int criterion_run_all_tests_impl(void) {
+    if (resume_child()) // (windows only) resume from the fork
+        return -1;
+
     smart struct criterion_test_set *set = criterion_init();
 
     report(PRE_ALL, set);
-    set_runner_pid();
 
     smart struct criterion_global_stats *stats = stats_init();
     map_tests(set, stats, run_test);
@@ -216,9 +252,12 @@ static int criterion_run_all_tests_impl(void) {
 }
 
 int criterion_run_all_tests(void) {
+    set_runner_process();
     int res = criterion_run_all_tests_impl();
+    unset_runner_process();
+
     if (res == -1) // if this is the test worker terminating
-        _exit(0);
+        exit(0);
 
     return criterion_options.always_succeed || res;
 }

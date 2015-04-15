@@ -26,12 +26,25 @@
 #include <criterion/options.h>
 #include <criterion/ordered-set.h>
 #include <stdio.h>
+#include <locale.h>
 #include <getopt.h>
 #include <csptr/smart_ptr.h>
 #include "runner.h"
 #include "config.h"
 
+#if ENABLE_NLS
+# include <libintl.h>
+#endif
+
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
+
+#ifdef HAVE_FNMATCH
+# define PATTERN_USAGE                                      \
+    "    --pattern [PATTERN]: run tests matching the "      \
+            "given pattern\n"
+#else
+# define PATTERN_USAGE
+#endif
 
 # define USAGE                                              \
     VERSION_MSG "\n"                                        \
@@ -44,8 +57,7 @@
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
-    "    --pattern [PATTERN]: run tests matching the "      \
-            "given pattern\n"                               \
+    PATTERN_USAGE                                           \
     "    --tap: enables TAP formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
@@ -112,21 +124,31 @@ int main(int argc, char *argv[]) {
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
         {"fail-fast",       no_argument,        0, 'f'},
+#ifdef HAVE_FNMATCH
         {"pattern",         required_argument,  0, 'p'},
+#endif
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {0,                 0,                  0,  0 }
     };
 
-    criterion_options = (struct criterion_options) {
-        .always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0"),
-        .no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0"),
-        .fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0"),
-        .use_ascii         = !strcmp("1", getenv("CRITERION_USE_ASCII")      ?: "0"),
-        .logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2"),
-        .pattern           = getenv("CRITERION_TEST_PATTERN"),
-        .output_provider   = NORMAL_LOGGING,
-    };
+    bool use_ascii = !strcmp("1", getenv("CRITERION_USE_ASCII")      ?: "0")
+                  || !strcmp("dumb", getenv("TERM") ?: "dumb");
+
+    setlocale(LC_ALL, "");
+#if ENABLE_NLS
+    textdomain (PACKAGE "-test");
+#endif
+
+    struct criterion_options *opt = &criterion_options;
+    opt->always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0");
+    opt->no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0");
+    opt->fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0");
+    opt->use_ascii         = use_ascii;
+    opt->logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2");
+#ifdef HAVE_FNMATCH
+    opt->pattern           = getenv("CRITERION_TEST_PATTERN");
+#endif
 
     bool use_tap = !strcmp("1", getenv("CRITERION_ENABLE_TAP") ?: "0");
 
@@ -140,7 +162,9 @@ int main(int argc, char *argv[]) {
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'f': criterion_options.fail_fast         = true; break;
+#ifdef HAVE_FNMATCH
             case 'p': criterion_options.pattern           = optarg; break;
+#endif
             case 't': use_tap = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;

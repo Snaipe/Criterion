@@ -24,13 +24,17 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
-#include <fnmatch.h>
 #include "criterion/types.h"
 #include "criterion/stats.h"
 #include "criterion/logging.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "report.h"
+#include "config.h"
+
+#ifdef HAVE_FNMATCH
+#include <fnmatch.h>
+#endif
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                                \
     IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);              \
@@ -46,24 +50,29 @@
     IMPL_CALL_REPORT_HOOKS(Type);   \
     ReportHook(Type)
 
-#define log(Type, Arg) \
-    (criterion_options.output_provider->log_ ## Type ?: nothing)(Arg);
-
 __attribute__((always_inline))
 static inline void nothing() {}
 
-IMPL_REPORT_HOOK(PRE_ALL)(struct criterion_test_set *set) {
-    if (criterion_options.pattern) {
-        FOREACH_SET(struct criterion_suite_set *s, set->suites) {
-            if ((s->suite.data && s->suite.data->disabled) || !s->tests)
-                continue;
+#ifdef HAVE_FNMATCH
+void disable_unmatching(struct criterion_test_set *set) {
+    FOREACH_SET(struct criterion_suite_set *s, set->suites) {
+        if ((s->suite.data && s->suite.data->disabled) || !s->tests)
+            continue;
 
-            FOREACH_SET(struct criterion_test *test, s->tests) {
-                if (fnmatch(criterion_options.pattern, test->data->identifier_, 0))
-                    test->data->disabled = true;
-            }
+        FOREACH_SET(struct criterion_test *test, s->tests) {
+            if (fnmatch(criterion_options.pattern, test->data->identifier_, 0))
+                test->data->disabled = true;
         }
     }
+}
+#endif
+
+IMPL_REPORT_HOOK(PRE_ALL)(struct criterion_test_set *set) {
+#ifdef HAVE_FNMATCH
+    if (criterion_options.pattern) {
+        disable_unmatching(set);
+    }
+#endif
     log(pre_all, set);
 }
 

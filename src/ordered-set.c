@@ -39,12 +39,17 @@ static void destroy_ordered_set_node(void *ptr, void *meta) {
     sfree(((struct criterion_ordered_set_node *) ptr)->next);
 }
 
-struct criterion_ordered_set *new_ordered_set(int (*cmp)(void *, void *), f_destructor dtor) {
+struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
+                                              f_destructor dtor) {
+
     return unique_ptr(struct criterion_ordered_set,
-            { .cmp = cmp, .dtor = dtor }, destroy_ordered_set);
+            .value = { .cmp = cmp, .dtor = dtor },
+            .dtor  = destroy_ordered_set);
 }
 
-void *insert_ordered_set(struct criterion_ordered_set *l, void *ptr, size_t size) {
+void *insert_ordered_set(struct criterion_ordered_set *l,
+                         void *ptr,
+                         size_t size) {
     int cmp;
     struct criterion_ordered_set_node *n, *prev = NULL;
     for (n = l->first; n && (cmp = l->cmp(ptr, n->data)) > 0; n = n->next)

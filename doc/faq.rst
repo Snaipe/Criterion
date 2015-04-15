@@ -14,4 +14,5 @@ There are plenty of ways to fix that behaviour:
 **Q. I'm having an issue with the library, what can I do ?**
 
 A. Open a new issue on the `github issue tracker <https://github.com/Snaipe/Criterion/issues>`_,
-and describe the problem you are experiencing.
+and describe the problem you are experiencing, along with the platform you are
+running criterion on.

@@ -21,33 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef PROCESS_H_
-# define PROCESS_H_
+#ifndef ABORT_H_
+# define ABORT_H_
 
-# include <stdbool.h>
-# include "posix-compat.h"
+# include <criterion/abort.h>
 
-struct process;
+int setup_abort_test(void);
 
-enum status_kind {
-    EXIT_STATUS,
-    STOPPED,
-    SIGNAL,
-};
-
-struct process_status {
-    enum status_kind kind;
-    int status;
-};
-
-void run_worker(struct worker_context *ctx);
-void set_runner_process(void);
-void unset_runner_process(void);
-bool is_runner(void);
-struct process_status wait_proc(struct process *proc);
-struct process *spawn_test_worker(struct criterion_test *test,
-                                  struct criterion_suite *suite,
-                                  void (*func)(struct criterion_test *, struct criterion_suite *));
-struct event *worker_read_event(struct process *proc);
-
-#endif /* !PROCESS_H_ */
+#endif /* !ABORT_H_ */

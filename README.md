@@ -2,8 +2,8 @@
 Criterion
 =========
 
-[![Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=master)](https://travis-ci.org/Snaipe/Criterion) 
-[![Coverage Status](https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=master)](https://coveralls.io/r/Snaipe/Criterion?branch=master) 
+[![Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
+[![Coverage Status](https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=bleeding)](https://coveralls.io/r/Snaipe/Criterion?branch=bleeding) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
 [![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
 
@@ -31,14 +31,14 @@ the user would have with other frameworks:
   reported and tested.
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
-* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (compiles only with Cygwin for the moment).
+* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiles only with MinGW or Cygwin).
 
 ## Downloads
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-osx-x86_64.tar.bz2)
-* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-win-x86_64.tar.bz2)
-* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.1.0/criterion-1.1.0-freebsd-x86_64.tar.bz2)
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-linux-x86_64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-osx-x86_64.tar.bz2)
+* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-win-x86_64.tar.bz2)
+* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-freebsd-x86_64.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
@@ -58,6 +58,34 @@ Sample tests can be found in the [sample directory][samples].
 * [Tests with signals][sample-signal]
 * [Using report hooks][sample-report]
 
+## Contributing
+
+Contributions are welcomed, but must follow a simple set of rules in order to
+be merged.
+
+**Please follow these conventions if you want your pull request(s) accepted.**
+
+### General
+
+* Use 4 (four) spaces for indentation.
+* No trailing whitespaces.
+* 80 chars column limit.
+* No trash files. Trash files are by-products of the compilation process, or
+  generated files that does not need to be under version control.
+* Pull requests must compile and work properly.
+* Pull requests must be mergeable automatically.
+* Number of commits in a pull request should be kept to one commit and all
+  additional commits must be squashed.
+* You may have more than one commit in a pull request if the commits are
+  separate changes, otherwise squash them.
+
+### Translations
+
+* You can contribute new translation files for output messages, on the
+  condition that you are fluent with the language itself.
+* Each correction on existing translations must be followed by a
+  rationale ("why would the translation be better if the change is applied?")
+
 ## F.A.Q.
 
 **Q. What's wrong with other test frameworks?**  
@@ -72,12 +100,7 @@ A. I worked with CUnit and Check, and I must say that they do their job
 **Q. Where has this been tested?**  
 A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
    most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, and finally
-   Windows 7 (with the Cygwin port of GCC).
-
-**Q. Can I use it on Windows without Cygwin?**  
-A. Yes, you can, Cygwin is only required to compile the static library if
-   you build it from source -- otherwise, a GNU C compatible compiler (like
-   GCC or Clang) is needed to compile your tests with the library.
+   Windows 7 (with the MinGW and Cygwin ports of GCC).
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/

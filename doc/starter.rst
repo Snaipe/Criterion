@@ -50,26 +50,52 @@ parameter, and an optional failure message:
 
 On top of those, more assertions are available for common operations:
 
-* ``{assert,expect}_not(Actual, Expected, [Message])``
-* ``{assert,expect}_eq(Actual, Expected, [Message])``
-* ``{assert,expect}_neq(Actual, Unexpected, [Message])``
-* ``{assert,expect}_lt(Actual, Expected, [Message])``
-* ``{assert,expect}_leq(Actual, Expected, [Message])``
-* ``{assert,expect}_gt(Actual, Expected, [Message])``
-* ``{assert,expect}_geq(Actual, Expected, [Message])``
-* ``{assert,expect}_float_eq(Actual, Expected, Epsilon, [Message])``
-* ``{assert,expect}_float_neq(Actual, Unexpected, Epsilon, [Message])``
-* ``{assert,expect}_strings_eq(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_neq(Actual, Unexpected, [Message])``
-* ``{assert,expect}_strings_lt(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_leq(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_gt(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_geq(Actual, Expected, [Message])``
-* ``{assert,expect}_arrays_eq(Actual, Expected, Size, [Message])``
-* ``{assert,expect}_arrays_neq(Actual, Unexpected, Size, [Message])``
+* ``assert_null(Ptr, [Message])``: passes if Ptr is NULL.
+* ``assert_eq(Actual, Expected, [Message])``: passes if Actual == Expected.
+* ``assert_lt(Actual, Expected, [Message])``: passes if Actual < Expected.
+* ``assert_leq(Actual, Expected, [Message])``: passes if Actual <= Expected.
+* ``assert_gt(Actual, Expected, [Message])``: passes if Actual > Expected.
+* ``assert_geq(Actual, Expected, [Message])``: passes if Actual >= Expected.
+* ``assert_float_eq(Actual, Expected, Epsilon, [Message])``:
+  passes if Actual == Expected with an error of Epsilon.
+* ``assert_arrays_eq(Actual, Expected, Size, [Message])``:
+  passes if all elements of Actual (from 0 to Size - 1) are equals to those
+  of Expected.
+* ``assert_arrays_eq_cmp(Actual, Expected, Size, Cmp, [Message])``:
+  Same as ``arrays_eq`` but equality is defined by the result of the binary
+  Cmp function.
+
+Equality and lexical comparison assertions are also available for strings:
+
+* ``assert_strings_eq(Actual, Expected, [Message])``
+* ``assert_strings_lt(Actual, Expected, [Message])``
+* ``assert_strings_leq(Actual, Expected, [Message])``
+* ``assert_strings_gt(Actual, Expected, [Message])``
+* ``assert_strings_geq(Actual, Expected, [Message])``
+
+And some assertions have a logical negative counterpart:
+
+* ``assert_not(Condition, [Message])``
+* ``assert_not_null(Ptr, [Message])``
+* ``assert_neq(Actual, Unexpected, [Message])``
+* ``assert_float_neq(Actual, Unexpected, Epsilon, [Message])``
+* ``assert_strings_neq(Actual, Unexpected, [Message])``
+* ``assert_arrays_neq(Actual, Unexpected, Size, [Message])``
+* ``assert_arrays_neq_cmp(Actual, Unexpected, Size, Cmp, [Message])``
+
+Of course, every ``assert`` has an ``expect`` counterpart.
+
+Please note that ``arrays_(n)eq`` assertions should not be used on padded
+structures -- please use ``arrays_(n)eq_cmp`` instead.
+
+Configuring tests
+-----------------
+
+Tests may receive optional configuration parameters to alter their behaviour
+or provide additional metadata.
 
 Fixtures
---------
+~~~~~~~~
 
 Tests that need some setup and teardown can register functions that will
 run before and after the test function:
@@ -91,8 +117,13 @@ run before and after the test function:
         // test contents
     }
 
+If a setup crashes, you will get a warning message, and the test will be aborted
+and marked as a failure.
+Is a teardown crashes, you will get a warning message, and the test will keep
+its result.
+
 Testing signals
----------------
+~~~~~~~~~~~~~~~
 
 If a test receives a signal, it will by default be marked as a failure.
 You can, however, expect a test to only pass if a special kind of signal
@@ -115,3 +146,47 @@ is received:
         int *ptr = NULL;
         *ptr = 42;
     }
+
+This feature will of course not work on Windows.
+
+Configuration reference
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Here is an exhaustive list of all possible configuration parameters you can
+pass:
+
+============= =============== ==============================================================
+Parameter     Type            Description
+============= =============== ==============================================================
+.description  const char *    Adds a description. Cannot be ``NULL``.
+------------- --------------- --------------------------------------------------------------
+.init         void (*)(void)  Adds a setup function the be executed before the test.
+------------- --------------- --------------------------------------------------------------
+.fini         void (*)(void)  Adds a teardown function the be executed after the test.
+------------- --------------- --------------------------------------------------------------
+.disabled     bool            Disables the test.
+------------- --------------- --------------------------------------------------------------
+.signal       int             Expect the test to raise the specified signal.
+============= =============== ==============================================================
+
+Setting up suite-wise configuration
+-----------------------------------
+
+Tests under the same suite can have a suite-wise configuration -- this is done
+using the ``TestSuite`` macro:
+
+.. code-block:: c
+
+    #include <criterion/criterion.h>
+
+    TestSuite(suite_name, [params...]);
+
+    Test(suite_name, test_1) {
+    }
+
+    Test(suite_name, test_2) {
+    }
+
+Configuration parameters are the same as above, but applied to the suite itself.
+
+Suite fixtures are run *along with* test fixtures.

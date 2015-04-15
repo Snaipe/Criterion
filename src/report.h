@@ -43,4 +43,7 @@ DECL_CALL_REPORT_HOOKS(POST_FINI);
 DECL_CALL_REPORT_HOOKS(POST_SUITE);
 DECL_CALL_REPORT_HOOKS(POST_ALL);
 
+#define log(Type, Arg) \
+    (criterion_options.output_provider->log_ ## Type ?: nothing)(Arg);
+
 #endif /* !REPORT_H_ */
