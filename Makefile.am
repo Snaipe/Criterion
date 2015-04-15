@@ -14,7 +14,7 @@ libcriterion_la_CFLAGS = \
 	-I$(top_srcdir)/include/ \
 	$(COVERAGE_CFLAGS)
 
-libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS)
+libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS) -no-undefined
 
 EXTRA_DIST = config.rpath LICENSE
 
