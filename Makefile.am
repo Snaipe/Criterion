@@ -15,7 +15,7 @@ libcriterion_la_CFLAGS = \
 	-I$(top_srcdir)/dependencies/csptr/include/ \
 	$(COVERAGE_CFLAGS)
 
-libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS)
+libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS) -version-info 1:0:0
 
 # dirty but unless someone has a better alternative...
 libcriterion_la_LIBADD = dependencies/csptr/src/libcsptr_la-*.lo
