@@ -50,25 +50,43 @@ parameter, and an optional failure message:
 
 On top of those, more assertions are available for common operations:
 
-* ``{assert,expect}_not(Actual, Expected, [Message])``
-* ``{assert,expect}_eq(Actual, Expected, [Message])``
-* ``{assert,expect}_neq(Actual, Unexpected, [Message])``
-* ``{assert,expect}_lt(Actual, Expected, [Message])``
-* ``{assert,expect}_leq(Actual, Expected, [Message])``
-* ``{assert,expect}_gt(Actual, Expected, [Message])``
-* ``{assert,expect}_geq(Actual, Expected, [Message])``
-* ``{assert,expect}_float_eq(Actual, Expected, Epsilon, [Message])``
-* ``{assert,expect}_float_neq(Actual, Unexpected, Epsilon, [Message])``
-* ``{assert,expect}_strings_eq(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_neq(Actual, Unexpected, [Message])``
-* ``{assert,expect}_strings_lt(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_leq(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_gt(Actual, Expected, [Message])``
-* ``{assert,expect}_strings_geq(Actual, Expected, [Message])``
-* ``{assert,expect}_arrays_eq(Actual, Expected, Size, [Message])``
-* ``{assert,expect}_arrays_neq(Actual, Unexpected, Size, [Message])``
+* ``assert_null(Ptr, [Message])``: passes if Ptr is NULL.
+* ``assert_eq(Actual, Expected, [Message])``: passes if Actual == Expected.
+* ``assert_lt(Actual, Expected, [Message])``: passes if Actual < Expected.
+* ``assert_leq(Actual, Expected, [Message])``: passes if Actual <= Expected.
+* ``assert_gt(Actual, Expected, [Message])``: passes if Actual > Expected.
+* ``assert_geq(Actual, Expected, [Message])``: passes if Actual >= Expected.
+* ``assert_float_eq(Actual, Expected, Epsilon, [Message])``:
+  passes if Actual == Expected with an error of Epsilon.
+* ``assert_arrays_eq(Actual, Expected, Size, [Message])``:
+  passes if all elements of Actual (from 0 to Size - 1) are equals to those
+  of Expected.
+* ``assert_arrays_eq_cmp(Actual, Expected, Size, Cmp, [Message])``:
+  Same as ``arrays_eq`` but equality is defined by the result of the binary
+  Cmp function.
 
-Please note that ``arrays_(n)eq`` assertions should not be used for padded structures.
+Equality and lexical comparison assertions are also available for strings:
+
+* ``assert_strings_eq(Actual, Expected, [Message])``
+* ``assert_strings_lt(Actual, Expected, [Message])``
+* ``assert_strings_leq(Actual, Expected, [Message])``
+* ``assert_strings_gt(Actual, Expected, [Message])``
+* ``assert_strings_geq(Actual, Expected, [Message])``
+
+And some assertions have a logical negative counterpart:
+
+* ``assert_not(Condition, [Message])``
+* ``assert_not_null(Ptr, [Message])``
+* ``assert_neq(Actual, Unexpected, [Message])``
+* ``assert_float_neq(Actual, Unexpected, Epsilon, [Message])``
+* ``assert_strings_neq(Actual, Unexpected, [Message])``
+* ``assert_arrays_neq(Actual, Unexpected, Size, [Message])``
+* ``assert_arrays_neq_cmp(Actual, Unexpected, Size, Cmp, [Message])``
+
+Of course, every ``assert`` has an ``expect`` counterpart.
+
+Please note that ``arrays_(n)eq`` assertions should not be used on padded
+structures -- please use ``arrays_(n)eq_cmp`` instead.
 
 Configuring tests
 -----------------
