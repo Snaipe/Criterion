@@ -1,30 +1,36 @@
 2015-03-24  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
-    * src/log/: Refactored logging system
-    * src/log/: Changed output format to a better-looking one
-    * src/log/: Added Syntactic coloration
 
-    * include/, src/: Added test suite separation
-    * include/, src/: Added test suite statistics
+    * criterion: version 1.1.0
+    * Refactored logging system
+    * Changed output format to a better-looking one
+    * Added Syntactic coloration
 
-    * src/main.c: Added --list option
-    * src/main.c: Added --fail-fast option
-    * src/main.c, src/report.c: Added --pattern option
+    * Added test suite separation
+    * Added test suite statistics
+
+    * Added --list option
+    * Added --fail-fast option
+    * Added --pattern option
 
 2015-03-18  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
-    * src/timer.*: Added test timings
-    * src/, include/: Changed assert prototypes
-    * include/: ANSI compliance over header files
-    * *: Windows + FreeBSD compatibility
+
+    * criterion: version 1.0.0
+    * Added test timings
+    * Changed assert prototypes
+    * ANSI compliance over header files
+    * Windows + FreeBSD compatibility
 
 2015-03-11  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
-    * include/criterion/logging.h, src/logging.c: A logging interface
-    * README.md, doc/*: Various readme and documentation changes
-    * src/main.c, include/criterion/options.h, src/options.c: Default CLI options & environment variables
-    * *: Mac OS X compatibility
-    * include/criterion/assert.h: Comparison assertions, floating-point equality assertions
+    * criterion: version 0.3.0
+    * A logging interface
+    * Various readme and documentation changes
+    * Default CLI options & environment variables
+    * Mac OS X compatibility
+    * Comparison assertions, floating-point equality assertions
 
 2015-02-06  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
-    * src/: Added criterion internals.
-    * include/: Added Test, ReportHook, assert and expect macros.
+    * criterion: version 0.2.0
+    * Added criterion internals.
+    * Added Test, ReportHook, assert and expect macros.
