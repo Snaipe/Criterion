@@ -1,13 +1,13 @@
 #!/bin/bash
 repo="https://github.com/Snaipe/libcsptr.git"
-tag="v2.0.1"
+tag="v2.0.2"
 
 mkdir dependencies
 git clone --branch ${tag} --depth 1 ${repo} dependencies/libcsptr &&
 (
     cd dependencies/libcsptr &&
     ./autogen.sh &&
-    ./configure --prefix=/usr &&
+    ./configure "$@" &&
     make &&
     {
         if command -v sudo; then

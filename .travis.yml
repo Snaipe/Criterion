@@ -7,7 +7,7 @@ before_install:
   - sudo apt-get -qq install -y check gcc-4.9 gettext autopoint
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
   - sudo pip install cpp-coveralls
-  - .ci/install-libcsptr.sh
+  - .ci/install-libcsptr.sh --prefix=/usr
 script:
   - ./autogen.sh && ./configure --enable-gcov CFLAGS="-g -O0" && make && make check
 after_success:
