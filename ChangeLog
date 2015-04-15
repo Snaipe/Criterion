@@ -1,3 +1,16 @@
+2015-04-15  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 1.2.0
+    * Added native Windows support through MinGW
+    * Fixed inaccurate statistics on disabled and crashing tests
+    * Fixed asserts not aborting the test when used in functions
+    * Fixed programs not compiling when no tests are declared
+    * Added assert_null to test for pointer nullity
+    * Added assert_arrays_eq_cmp for padded struct arrays equality
+
+    * Added i18n support
+    * Added fr_FR localization
+
 2015-03-24  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 1.1.0
