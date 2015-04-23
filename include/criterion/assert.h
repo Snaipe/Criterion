@@ -72,7 +72,13 @@ struct criterion_assert_args {
             .msg = (Message)                                                \
         )
 
+# ifdef assert
+#  undef assert
+#  pragma message("The assert macro has been replaced by criterion.")
+# endif
 # define assert(...) assert_(__VA_ARGS__, .sentinel_ = 0)
+# define criterion_assert(...) assert_(__VA_ARGS__, .sentinel_ = 0)
+
 # define expect(...) expect_(__VA_ARGS__, .sentinel_ = 0)
 
 # define assert_(Condition, ...) assert_impl(FATAL,  Condition, __VA_ARGS__)
@@ -266,5 +272,9 @@ struct criterion_assert_args {
 #  define expect_arrays_neq_cmp(...) \
     expect_arrays_eq_cmp_(__VA_ARGS__, .sentinel_ = 0)
 # endif /* !__GNUC__ */
+
+// this is needed to make the POSIX assert.h redefine assert if
+// subsequently included
+# define _ASSERT_H 1
 
 #endif /* !CRITERION_ASSERT_H_ */
