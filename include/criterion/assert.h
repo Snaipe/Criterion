@@ -287,7 +287,9 @@ struct criterion_assert_args {
 
 // this is needed to make the POSIX assert.h redefine assert if
 // subsequently included
-#   define _ASSERT_H 1
+#   ifndef _ASSERT_H
+#    define _ASSERT_H 1
+#   endif /* !_ASSERT_H */
 #  endif /* !assert */
 
 #  define abort_test(Message) CRITERION_ASSERT_DEPRECATED_(abort_test) cr_abort_test(Message)
