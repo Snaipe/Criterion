@@ -10,5 +10,5 @@ void teardown(void) {
 }
 
 Test(simple, fixtures, .init = setup, .fini = teardown) {
-    assert(1);
+    cr_assert(1);
 }

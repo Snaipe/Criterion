@@ -6,9 +6,9 @@ void crash(void) {
 }
 
 Test(misc, setup_crash, .init = crash) {
-    assert(true);
+    cr_assert(true);
 }
 
 Test(misc, teardown_crash, .fini = crash) {
-    assert(true);
+    cr_assert(true);
 }
