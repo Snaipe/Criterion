@@ -2,6 +2,7 @@
 !*/
 
 !.gitignore
+!.bumpversion.cfg
 
 !*.c
 !*.h
