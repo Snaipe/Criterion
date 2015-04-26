@@ -2,8 +2,8 @@
 #include <criterion/criterion.h>
 
 Test(sample, test) {
-    expect(0);
-    assert(1);
+    cr_expect(0);
+    cr_assert(1);
 }
 
 ReportHook(PRE_INIT)(struct criterion_test *test) {

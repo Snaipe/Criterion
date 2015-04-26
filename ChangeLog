@@ -1,3 +1,9 @@
+2015-04-26  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 1.2.1
+    * Added a cr_ prefix to all assertion macros. Old macros are deprecated
+    and will be removed in a future version.
+
 2015-04-15  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 1.2.0

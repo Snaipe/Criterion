@@ -1,5 +1,5 @@
 #include <criterion/criterion.h>
 
 Test(samples, timed) {
-    assert(0);
+    cr_assert(0);
 }

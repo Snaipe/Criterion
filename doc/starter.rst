@@ -26,14 +26,14 @@ Asserting things
 
 Assertions come in two kinds:
 
-* ``assert*`` are assertions that are fatal to the current test if failed;
+* ``cr_assert*`` are assertions that are fatal to the current test if failed;
   in other words, if the condition evaluates to ``false``, the test is
   marked as a failure and the execution of the function is aborted.
-* ``expect*`` are, in the other hand, assertions that are not fatal to the
+* ``cr_expect*`` are, in the other hand, assertions that are not fatal to the
   test. Execution will continue even if the condition evaluates to
   ``false``, but the test will be marked as a failure.
 
-``assert()`` and ``expect()`` are the most simple kinds of assertions
+``cr_assert()`` and ``cr_expect()`` are the most simple kinds of assertions
 criterion has to offer. They both take a mandatory condition as a first
 parameter, and an optional failure message:
 
@@ -43,45 +43,45 @@ parameter, and an optional failure message:
     #include <criterion/criterion.h>
 
     Test(sample, test) {
-        expect(strlen("Test") == 4, "Expected \"Test\" to have a length of 4.");
-        expect(strlen("Hello") == 4, "This will always fail, why did I add this?");
-        assert(strlen("") == 0);
+        cr_expect(strlen("Test") == 4, "Expected \"Test\" to have a length of 4.");
+        cr_expect(strlen("Hello") == 4, "This will always fail, why did I add this?");
+        cr_assert(strlen("") == 0);
     }
 
 On top of those, more assertions are available for common operations:
 
-* ``assert_null(Ptr, [Message])``: passes if Ptr is NULL.
-* ``assert_eq(Actual, Expected, [Message])``: passes if Actual == Expected.
-* ``assert_lt(Actual, Expected, [Message])``: passes if Actual < Expected.
-* ``assert_leq(Actual, Expected, [Message])``: passes if Actual <= Expected.
-* ``assert_gt(Actual, Expected, [Message])``: passes if Actual > Expected.
-* ``assert_geq(Actual, Expected, [Message])``: passes if Actual >= Expected.
-* ``assert_float_eq(Actual, Expected, Epsilon, [Message])``:
+* ``cr_assert_null(Ptr, [Message])``: passes if Ptr is NULL.
+* ``cr_assert_eq(Actual, Expected, [Message])``: passes if Actual == Expected.
+* ``cr_assert_lt(Actual, Expected, [Message])``: passes if Actual < Expected.
+* ``cr_assert_leq(Actual, Expected, [Message])``: passes if Actual <= Expected.
+* ``cr_assert_gt(Actual, Expected, [Message])``: passes if Actual > Expected.
+* ``cr_assert_geq(Actual, Expected, [Message])``: passes if Actual >= Expected.
+* ``cr_assert_float_eq(Actual, Expected, Epsilon, [Message])``:
   passes if Actual == Expected with an error of Epsilon.
-* ``assert_arrays_eq(Actual, Expected, Size, [Message])``:
+* ``cr_assert_arrays_eq(Actual, Expected, Size, [Message])``:
   passes if all elements of Actual (from 0 to Size - 1) are equals to those
   of Expected.
-* ``assert_arrays_eq_cmp(Actual, Expected, Size, Cmp, [Message])``:
+* ``cr_assert_arrays_eq_cmp(Actual, Expected, Size, Cmp, [Message])``:
   Same as ``arrays_eq`` but equality is defined by the result of the binary
   Cmp function.
 
 Equality and lexical comparison assertions are also available for strings:
 
-* ``assert_strings_eq(Actual, Expected, [Message])``
-* ``assert_strings_lt(Actual, Expected, [Message])``
-* ``assert_strings_leq(Actual, Expected, [Message])``
-* ``assert_strings_gt(Actual, Expected, [Message])``
-* ``assert_strings_geq(Actual, Expected, [Message])``
+* ``cr_assert_strings_eq(Actual, Expected, [Message])``
+* ``cr_assert_strings_lt(Actual, Expected, [Message])``
+* ``cr_assert_strings_leq(Actual, Expected, [Message])``
+* ``cr_assert_strings_gt(Actual, Expected, [Message])``
+* ``cr_assert_strings_geq(Actual, Expected, [Message])``
 
 And some assertions have a logical negative counterpart:
 
-* ``assert_not(Condition, [Message])``
-* ``assert_not_null(Ptr, [Message])``
-* ``assert_neq(Actual, Unexpected, [Message])``
-* ``assert_float_neq(Actual, Unexpected, Epsilon, [Message])``
-* ``assert_strings_neq(Actual, Unexpected, [Message])``
-* ``assert_arrays_neq(Actual, Unexpected, Size, [Message])``
-* ``assert_arrays_neq_cmp(Actual, Unexpected, Size, Cmp, [Message])``
+* ``cr_assert_not(Condition, [Message])``
+* ``cr_assert_not_null(Ptr, [Message])``
+* ``cr_assert_neq(Actual, Unexpected, [Message])``
+* ``cr_assert_float_neq(Actual, Unexpected, Epsilon, [Message])``
+* ``cr_assert_strings_neq(Actual, Unexpected, [Message])``
+* ``cr_assert_arrays_neq(Actual, Unexpected, Size, [Message])``
+* ``cr_assert_arrays_neq_cmp(Actual, Unexpected, Size, Cmp, [Message])``
 
 Of course, every ``assert`` has an ``expect`` counterpart.
 
