@@ -14,7 +14,7 @@ TESTS_ENVIRONMENT = CRITERION_ALWAYS_SUCCEED=1
 
 check_PROGRAMS := $(BIN_TESTS)
 CFLAGS = -I$(top_srcdir)/include/ -std=c99 -Wall -Wextra -pedantic
-LDADD = -L$(top_srcdir)/ -lcriterion
+LDADD = -L$(top_srcdir)/ -lcriterion -lpcre
 
 if ENABLE_RT_TESTS
 BIN_TESTS += with-time

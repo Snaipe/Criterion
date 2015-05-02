@@ -18,7 +18,7 @@ libcriterion_la_CFLAGS = \
 libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS) -version-info 1:0:0
 
 # dirty but unless someone has a better alternative...
-libcriterion_la_LIBADD = dependencies/csptr/src/libcsptr_la-*.lo
+libcriterion_la_LIBADD = dependencies/csptr/src/libcsptr_la-*.lo -lpcre
 
 EXTRA_DIST = config.rpath LICENSE
 
@@ -59,6 +59,8 @@ libcriterion_la_SOURCES = \
 	src/i18n.h \
 	src/ordered-set.c \
 	src/posix-compat.c \
+	src/extmatch.c \
+	src/extmatch.h \
 	src/main.c
 
 TARGET = $(PACKAGE)-$(VERSION)
