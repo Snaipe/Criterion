@@ -38,7 +38,7 @@
 
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
-#ifdef HAVE_FNMATCH
+#ifdef HAVE_PCRE
 # define PATTERN_USAGE                                      \
     "    --pattern [PATTERN]: run tests matching the "      \
             "given pattern\n"
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
         {"fail-fast",       no_argument,        0, 'f'},
-#ifdef HAVE_FNMATCH
+#ifdef HAVE_PCRE
         {"pattern",         required_argument,  0, 'p'},
 #endif
         {"always-succeed",  no_argument,        0, 'y'},
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
     opt->fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0");
     opt->use_ascii         = use_ascii;
     opt->logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2");
-#ifdef HAVE_FNMATCH
+#ifdef HAVE_PCRE
     opt->pattern           = getenv("CRITERION_TEST_PATTERN");
 #endif
 
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'f': criterion_options.fail_fast         = true; break;
-#ifdef HAVE_FNMATCH
+#ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
             case 't': use_tap = true; break;

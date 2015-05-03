@@ -24,12 +24,12 @@ AC_CHECK_LIB([csptr], [smalloc], [], [AC_MSG_ERROR([Could not find libcsptr depe
               Please go to https://github.com/Snaipe/c-smart-pointers.git \
               and follow the installation instructions.])])
 
-AC_FUNC_FNMATCH
-
 enable_rt_tests="no"
 AC_CHECK_LIB([rt], [clock_gettime], [enable_rt_tests="yes"])
 
 AM_CONDITIONAL([ENABLE_RT_TESTS], [test "x$enable_rt_tests" != "xno"])
+
+AC_CHECK_LIB([pcre], [pcre_compile], [AC_DEFINE([HAVE_PCRE], [1], [Define to 1 if you have the `pcre` library (-lpcre)])])
 
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.18])
