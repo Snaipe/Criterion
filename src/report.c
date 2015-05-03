@@ -33,7 +33,7 @@
 #include "config.h"
 
 #ifdef HAVE_FNMATCH
-#include <fnmatch.h>
+#include "extmatch.h"
 #endif
 
 #define IMPL_CALL_REPORT_HOOKS(Kind)                                \
@@ -60,8 +60,14 @@ void disable_unmatching(struct criterion_test_set *set) {
             continue;
 
         FOREACH_SET(struct criterion_test *test, s->tests) {
-            if (fnmatch(criterion_options.pattern, test->data->identifier_, 0))
+            const char *errmsg;
+            int ret = extmatch(criterion_options.pattern, test->data->identifier_, &errmsg);
+            if (ret == -10) {
+                printf("pattern error: %s\n", errmsg);
+                exit(1);
+            } else if (ret < 0) {
                 test->data->disabled = true;
+            }
         }
     }
 }

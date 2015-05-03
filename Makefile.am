@@ -15,6 +15,7 @@ libcriterion_la_CFLAGS = \
 	$(COVERAGE_CFLAGS)
 
 libcriterion_la_LDFLAGS = $(COVERAGE_LDFLAGS) -no-undefined -version-info 1:0:0
+libcriterion_la_LIBADD = -lpcre
 
 EXTRA_DIST = config.rpath LICENSE
 
@@ -55,6 +56,8 @@ libcriterion_la_SOURCES = \
 	src/i18n.h \
 	src/ordered-set.c \
 	src/posix-compat.c \
+	src/extmatch.c \
+	src/extmatch.h \
 	src/main.c
 
 TARGET = $(PACKAGE)-$(VERSION)
