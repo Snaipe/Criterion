@@ -53,6 +53,7 @@ configuration: Release
 
 install:
   - 'set GCOV_PREFIX=%APPVEYOR_BUILD_FOLDER%'
+  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32"'
   - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
   - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-w64-mingw32-gcc CFLAGS=\"-g -O0\" --enable-gcov"'
 

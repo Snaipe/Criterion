@@ -7,7 +7,7 @@ LT_PREREQ([2.2.4])
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip foreign subdir-objects parallel-tests color-tests])
-LT_INIT([disable-shared])
+LT_INIT([disable-static])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
@@ -19,6 +19,10 @@ AC_PROG_LN_S
 
 AC_PROG_MAKE_SET
 AC_SUBST([LIBTOOL_DEPS])
+
+AC_CHECK_LIB([csptr], [smalloc], [], [AC_MSG_ERROR([Could not find libcsptr dependency. \
+              Please go to https://github.com/Snaipe/c-smart-pointers.git \
+              and follow the installation instructions.])])
 
 AC_FUNC_FNMATCH
 
@@ -42,7 +46,5 @@ AC_ARG_ENABLE([gcov],
 
 AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_FILES([Makefile samples/Makefile po/Makefile.in])
-
-AC_CONFIG_SUBDIRS([dependencies/csptr])
 
 AC_OUTPUT
