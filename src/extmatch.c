@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <pcre.h>
+#include <setjmp.h>
 
 #include <stdio.h>
 #include "criterion/common.h"
@@ -11,6 +12,8 @@ struct context {
     const char *src;
     char old, cur;
     int eos;
+    const char **errmsg;
+    jmp_buf jmp;
 };
 
 void transform_impl(struct context *ctx);
@@ -167,34 +170,81 @@ void transform_impl(struct context *ctx) {
             return;
     }
     if (ctx->depth > 0) {
-        puts("pattern error: mismatching parenthesis");
-        exit(1);
+        *ctx->errmsg = "mismatching parenthesis";
+        longjmp(ctx->jmp, -1); // abort operation
     }
 }
 
-static void transform(const char *pattern, char *result) {
+static int transform(const char *pattern, char *result, const char **errmsg) {
     struct context ctx = {
         .src = pattern,
         .dst = result,
+        .errmsg = errmsg,
     };
-    copy_char(&ctx, '^');
-    transform_impl(&ctx);
-    copy_char(&ctx, '$');
-    copy_char(&ctx, '\0');
+    if (!setjmp(ctx.jmp)) {
+        copy_char(&ctx, '^');
+        transform_impl(&ctx);
+        copy_char(&ctx, '$');
+        copy_char(&ctx, '\0');
+        return 0;
+    }
+    return -1;
 }
 
-int extmatch(const char *pattern, const char *string) {
-    char regex[strlen(pattern) * 2];
-    transform(pattern, regex);
+/*
+ * let T be the transformation function,
+ * let diff be the function that yields the greatest character difference
+ * before and after its parameter has been transformed by T.
+ *
+ * T('*')   = '.*';                     diff('*') = 1
+ * T('!()') = '(?!).*' or '(?!$).*';    diff('!()') = 4
+ * T('@')   = '' or '@';                diff('@') = 0
+ * T('|')   = '|' or '\|';              diff('|') = 1
+ * T('.')   = '\.';                     diff('.') = 1
+ * T('(')   = '\(';                     diff('(') = 1
+ * T(')')   = '\)';                     diff(')') = 1
+ * for every other 1 character string s, we have T(s) = s; hence diff(s) = 0
+ *
+ * let num be the function that yields the number of occurences of a string.
+ * let spec be the set {(s, num(s)) | ∀s}
+ * ∀s, lenght(T(s)) = length(s) + Σ((c_i, n_i) ∈ spec, n_i * diff(c_i))
+ *
+ * let S = {'*', '!()', '|', '.', '(', ')'}.
+ * since ∀s ∉ S, diff(s) = 0, we can simplify the above equation as:
+ *
+ * ∀s, lenght(T(s)) = length(s) + num('*') + num('|') + num('.')
+ *                              + num('(') + num(')') + 4 * num('!()').
+ *
+ * We must now find the maximal length L such as ∀s, L >= length(T(s))
+ *
+ * It is immediately apparent that the largest string will depend on the number
+ * of occurrences of '!()'. Hence, let s be a string that is a repeating
+ * sequence of '!()',
+ *
+ * let N = floor(length(s) / 3),
+ * let Q = length(s) mod 3,
+ * ∀s, num('!()') = N (1)
+ *
+ * ∀s, length(T(s)) <= length(s) + 4 * N
+ *                  <= 3 * N + Q + 4 * N
+ *                  <= 7 * N + 2
+ *                  <= 7 * floor(length(s) / 3) + 2
+ *
+ */
+static inline size_t max_length(size_t len) {
+    return 7 * len / 3 + 2;
+}
 
-    const char *errmsg;
-    int erroffset;
-    pcre *preg = pcre_compile(regex, 0, &errmsg, &erroffset, NULL);
-    if (preg) {
-        int res = pcre_exec(preg, NULL, string, strlen(string), 0, 0, NULL, 0);
-        pcre_free(preg);
-        return res;
+int extmatch(const char *pattern, const char *string, const char **errmsg) {
+    char regex[max_length(strlen(pattern))];
+    if (transform(pattern, regex, errmsg) != -1) {
+        int erroffset;
+        pcre *preg = pcre_compile(regex, 0, errmsg, &erroffset, NULL);
+        if (preg) {
+            int res = pcre_exec(preg, NULL, string, strlen(string), 0, 0, NULL, 0);
+            pcre_free(preg);
+            return res;
+        }
     }
-    printf("pattern error: %s\n", errmsg);
-    exit(1);
+    return -10;
 }

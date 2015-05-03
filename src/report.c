@@ -60,8 +60,14 @@ void disable_unmatching(struct criterion_test_set *set) {
             continue;
 
         FOREACH_SET(struct criterion_test *test, s->tests) {
-            if (extmatch(criterion_options.pattern, test->data->identifier_))
+            const char *errmsg;
+            int ret = extmatch(criterion_options.pattern, test->data->identifier_, &errmsg);
+            if (ret == -10) {
+                printf("pattern error: %s\n", errmsg);
+                exit(1);
+            } else if (ret < 0) {
                 test->data->disabled = true;
+            }
         }
     }
 }
