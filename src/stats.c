@@ -41,7 +41,10 @@ typedef struct criterion_assert_stats s_assert_stats;
 
 static void destroy_stats(void *ptr, UNUSED void *meta) {
     s_glob_stats *stats = ptr;
-    sfree(stats->suites);
+    for (s_suite_stats *s = stats->suites, *next; s; s = next) {
+        next = s->next;
+        sfree(s);
+    }
 }
 
 s_glob_stats *stats_init(void) {
@@ -50,8 +53,10 @@ s_glob_stats *stats_init(void) {
 
 static void destroy_suite_stats(void *ptr, UNUSED void *meta) {
     s_suite_stats *stats = ptr;
-    sfree(stats->tests);
-    sfree(stats->next);
+    for (s_test_stats *t = stats->tests, *next; t; t = next) {
+        next = t->next;
+        sfree(t);
+    }
 }
 
 s_suite_stats *suite_stats_init(struct criterion_suite *s) {
@@ -62,8 +67,10 @@ s_suite_stats *suite_stats_init(struct criterion_suite *s) {
 
 static void destroy_test_stats(void *ptr, UNUSED void *meta) {
     s_test_stats *stats = ptr;
-    sfree(stats->asserts);
-    sfree(stats->next);
+    for (s_assert_stats *a = stats->asserts, *next; a; a = next) {
+        next = a->next;
+        sfree(a);
+    }
 }
 
 s_test_stats *test_stats_init(struct criterion_test *t) {
@@ -128,16 +135,11 @@ static void push_pre_init(s_glob_stats *stats,
     }
 }
 
-static void destroy_assert(void *ptr, UNUSED void *meta) {
-    s_assert_stats *data = ptr;
-    sfree(data->next);
-}
-
 static void push_assert(s_glob_stats *stats,
                         s_suite_stats *suite,
                         s_test_stats *test,
                         s_assert_stats *data) {
-    s_assert_stats *dup = unique_ptr(s_assert_stats, (*data), destroy_assert);
+    s_assert_stats *dup = unique_ptr(s_assert_stats, (*data));
     dup->next = test->asserts;
     test->asserts = dup;
 
