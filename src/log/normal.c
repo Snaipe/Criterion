@@ -136,8 +136,9 @@ void normal_log_test_crash(struct criterion_test_stats *stats) {
 
 void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_DASHES,
-            _("%1$sWarning! This test crashed during its setup or teardown.%2$s\n"),
-            FG_BOLD, RESET);
+            _("%1$sWarning! The test `%2$s::%3$s` crashed during its "
+              "setup or teardown.%4$s\n"),
+            FG_BOLD, stats->test->category, stats->test->name, RESET);
 }
 
 void normal_log_pre_suite(struct criterion_suite_set *set) {
