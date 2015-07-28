@@ -1,0 +1,6 @@
+#ifndef CONFIG_H_IN_
+# define CONFIG_H_IN_
+
+# define VERSION "${PACKAGE_VERSION}"
+
+#endif /* !CONFIG_H_IN_ */
