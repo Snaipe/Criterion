@@ -2,17 +2,30 @@ cmake_minimum_required(VERSION 3.2.2)
 cmake_policy(SET CMP0048 NEW)
 
 project(Criterion VERSION 1.2.2)
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
 
+set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
+set(GettextTranslate_ALL)
+set(GettextTranslate_GMO_BINARY)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/.cmake/Modules/")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu11")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
 
+find_package(Gettext)
+if (GETTEXT_FOUND)
+  include(GettextTranslate)
+  add_subdirectory(po)
+  set(ENABLE_NLS 1)
+endif ()
+
 include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
-find_package(Gettext REQUIRED)
 find_package(Libcsptr)
 
 configure_file(
@@ -63,7 +76,6 @@ set(INTERFACE_FILES
 )
 
 add_subdirectory(samples)
-#add_subdirectory(po)
 
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
@@ -80,7 +92,7 @@ if (PCRE_FOUND)
   target_link_libraries(criterion pcre)
 endif()
 
-install(FILES ${INTERFACE_FILES} DESTINATION include/insight)
+install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
   LIBRARY DESTINATION lib
 )
