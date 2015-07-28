@@ -20,5 +20,6 @@
 !src/config.h.in
 src/config.h
 
+build
 *~
 *.swp
