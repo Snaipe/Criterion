@@ -14,9 +14,8 @@
 !HEADER
 !ChangeLog
 
-!Makefile.am
-!configure.ac
-!autogen.sh
+!CMakeLists.txt
+!.cmake/*
 
 src/config.h
 
