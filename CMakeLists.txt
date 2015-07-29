@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0048 NEW)
 
-project(Criterion VERSION 1.2.2)
+project(Criterion C)
 
+set(PROJECT_VERSION "1.2.2")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL)
 set(GettextTranslate_GMO_BINARY)
