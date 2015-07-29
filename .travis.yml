@@ -1,26 +1,23 @@
 language: c
 compiler:
-  - gcc
+    - gcc-5
 sudo: false
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
-  packages:
+    packages:
     - check
-    - gcc-4.9
+    - gcc-5
     - gettext
     - cmake
 before_install:
   - pip install --user cpp-coveralls
   - .ci/install-libcsptr.sh
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
-  - export LIBRARY_PATH=$LIBRARY_PATH:$HOME/lib
+  - export CFLAGS="-g -O0"
 script:
-  - mkdir -p build && cd $_
-  - cmake ..
-  - make
-  - make -C samples test
+  - mkdir -p build && cd $_ && cmake -DCMAKE_PREFIX_PATH=$HOME .. && make && make -C samples test
 after_success:
   - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
 after_failure:

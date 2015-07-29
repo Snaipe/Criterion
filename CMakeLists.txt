@@ -22,7 +22,7 @@ include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
-find_package(Libcsptr)
+find_package(Libcsptr REQUIRED)
 
 configure_file(
   "${CMAKE_SOURCE_DIR}/src/config.h.in"
@@ -75,19 +75,18 @@ enable_testing()
 
 add_subdirectory(samples)
 
-include_directories(include src)
+include_directories(include src ${CSPTR_INCLUDE_DIRS})
+
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
 
-link_directories(/usr/lib)
-
-target_link_libraries(criterion csptr)
+target_link_libraries(criterion ${CSPTR_LIBRARIES})
 
 if (HAVE_CLOCK_GETTIME)
   target_link_libraries(criterion rt)
 endif()
 
 if (PCRE_FOUND)
-  target_link_libraries(criterion pcre)
+  target_link_libraries(criterion ${PCRE_LIBRARIES})
 endif()
 
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
