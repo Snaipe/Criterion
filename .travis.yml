@@ -1,15 +1,25 @@
 language: c
 compiler:
   - gcc
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+  packages:
+    - check
+    - gcc-4.9
+    - gettext
+    - cmake
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install -y check gcc-4.9 gettext cmake
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
-  - sudo pip install cpp-coveralls
-  - .ci/install-libcsptr.sh --prefix=/usr
+  - pip install --user cpp-coveralls
+  - .ci/install-libcsptr.sh
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
+  - export LIBRARY_PATH=$LIBRARY_PATH:$HOME/lib
 script:
-  - mkdir -p build && cd $_ && cmake .. && make && make -C samples test
+  - mkdir -p build && cd $_
+  - cmake ..
+  - make
+  - make -C samples test
 after_success:
   - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
 after_failure:

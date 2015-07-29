@@ -7,14 +7,8 @@ git clone --branch ${tag} --depth 1 ${repo} dependencies/libcsptr &&
 (
     cd dependencies/libcsptr &&
     ./autogen.sh &&
-    ./configure "$@" &&
+    ./configure --prefix=$HOME &&
     make &&
-    {
-        if command -v sudo; then
-            sudo make install
-        else
-            make install
-        fi
-    }
+    make install
 )
 rm -Rf dependencies

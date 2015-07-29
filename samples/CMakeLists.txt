@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.1)
 project(criterion_samples)
 
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
