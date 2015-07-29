@@ -18,7 +18,25 @@ set(SAMPLES
   simple
 )
 
+set(SCRIPTS
+  tap_test
+  early_exit
+  verbose
+  list
+  pattern
+  fail_fast
+  help
+)
+
 foreach(sample ${SAMPLES})
     add_executable(${sample} ${sample}.c)
     target_link_libraries(${sample} criterion)
+    add_test(${sample} ${sample})
+    set_property(TEST ${sample} PROPERTY
+        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+    )
+endforeach()
+
+foreach(script ${SCRIPTS})
+    add_test(${script} ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
 endforeach()

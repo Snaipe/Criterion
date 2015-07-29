@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.2.2)
 cmake_policy(SET CMP0048 NEW)
 
 project(Criterion VERSION 1.2.2)
-get_cmake_property(_variableNames VARIABLES)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
 
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL)
@@ -74,6 +70,8 @@ set(INTERFACE_FILES
   include/criterion/ordered-set.h
   include/criterion/stats.h
 )
+
+enable_testing()
 
 add_subdirectory(samples)
 
