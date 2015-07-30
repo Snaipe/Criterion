@@ -3,43 +3,13 @@ version: 1.2.3_b{build}-{branch}
 os: Windows Server 2012
 
 init:
-  - ps: (New-Object System.Net.WebClient).DownloadFile("https://cygwin.com/setup-x86.exe", "c:\setup-x86.exe")
   - git config --global core.autocrlf input
-  - c:\setup-x86.exe -qnNdO -R %CYG_ROOT% -s %CYG_MIRROR% -l %CYG_CACHE% \
-    -P autoconf \
-    -P automake \
-    -P gcc-core \
-    -P mingw-runtime \
-    -P mingw-binutils \
-    -P mingw-gcc-core \
-    -P mingw-pthreads \
-    -P mingw-w32api \
-    -P mingw64-i686-gcc-core \
-    -P libtool \
-    -P make \
-    -P python3 \
-    -P gettext-devel \
-    -P gettext \
-    -P expat \
-    -P intltool \
-    -P libiconv \
-    -P pkg-config \
-    -P check \
-    -P git \
-    -P wget \
-    -P curl
+  - C:\MinGW\bin\mingw-get install mingw32-autotools curl
+  - 'SET PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin'
 
 environment:
-  global:
-    CYG_ROOT: C:\cygwin
-    CYG_MIRROR: http://cygwin.mirror.constant.com
-    CYG_CACHE: C:\cygwin\var\cache\setup
-    CYG_BASH: C:\cygwin\bin\bash
   COVERALLS_TOKEN:
     secure: 5nuCg+faxFPeppoNNcSwVobswAVFUf8ut83vw8CX/4W2y0kZkGmwEfCUxSQWiQDU
-
-cache:
-  - '%CYG_CACHE%'
 
 clone_depth: 5
 
@@ -53,23 +23,19 @@ configuration: Release
 
 install:
   - 'set GCOV_PREFIX=%APPVEYOR_BUILD_FOLDER%'
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32"'
-  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; ./autogen.sh'"
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure CC=i686-w64-mingw32-gcc CFLAGS=\"-g -O0\" --enable-gcov"'
+  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh --host i686-w64-mingw32"'
+  - 'mkdir build & cd build'
+  - 'cmake -DCMAKE_PREFIX_PATH=%HOME% -G "MSYS Makefiles" ..'
 
 build_script:
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
-
-before_test:
-  - "%CYG_BASH% -lc 'cd $APPVEYOR_BUILD_FOLDER; .ci/install-pip.sh'"
-  - "%CYG_BASH% -lc 'pip install cpp-coveralls'"
+  - 'mingw32-make'
 
 test_script:
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER/samples; exec 0</dev/null; make check"'
+  - 'mingw32-make test'
 
 after_test:
   - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
-  - '%CYG_BASH% -lc "cd $APPVEYOR_BUILD_FOLDER; coveralls --gcov i686-w64-mingw32-gcov --exclude samples --exclude dependencies --gcov-options \"\-lp\" -b . -t $COVERALLS_TOKEN'
+  - 'mingw32-make coveralls'
 
 notifications:
 

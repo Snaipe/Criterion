@@ -112,6 +112,7 @@ endif()
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
 )
 
 add_custom_target(uninstall
