@@ -90,7 +90,22 @@ endif()
 
 find_package(Git)
 
-# TODO: Add these git things to the coveralls json.
+set(JSON_REPO_TEMPLATE
+  "{
+    \"head\": {
+      \"id\": \"\@GIT_COMMIT_HASH\@\",
+      \"author_name\": \"\@GIT_AUTHOR_NAME\@\",
+      \"author_email\": \"\@GIT_AUTHOR_EMAIL\@\",
+      \"committer_name\": \"\@GIT_COMMITTER_NAME\@\",
+      \"committer_email\": \"\@GIT_COMMITTER_EMAIL\@\",
+      \"message\": \"\@GIT_COMMIT_MESSAGE\@\"
+    },
+    \"branch\": \"@GIT_BRANCH@\",
+    \"remotes\": []
+  }"
+)
+
+# TODO: Fill in git remote data
 if (GIT_FOUND)
 	# Branch.
 	execute_process(
@@ -114,6 +129,7 @@ if (GIT_FOUND)
 	git_log_format(cn GIT_COMMITTER_NAME)
 	git_log_format(ce GIT_COMMITTER_EMAIL)
 	git_log_format(B GIT_COMMIT_MESSAGE)
+	git_log_format(H GIT_COMMIT_HASH)
 
 	message("Git exe: ${GIT_EXECUTABLE}")
 	message("Git branch: ${GIT_BRANCH}")
@@ -121,8 +137,12 @@ if (GIT_FOUND)
 	message("Git e-mail: ${GIT_AUTHOR_EMAIL}")
 	message("Git commiter name: ${GIT_COMMITTER_NAME}")
 	message("Git commiter e-mail: ${GIT_COMMITTER_EMAIL}")
+	message("Git commit hash: ${GIT_COMMIT_HASH}")
 	message("Git commit message: ${GIT_COMMIT_MESSAGE}")
 
+	string(CONFIGURE ${JSON_REPO_TEMPLATE} JSON_REPO_DATA)
+else()
+	set(JSON_REPO_DATA "{}")
 endif()
 
 ############################# Macros #########################################
@@ -256,7 +276,8 @@ set(JSON_TEMPLATE
   \"repo_token\": \"\@JSON_REPO_TOKEN\@\",
   \"service_name\": \"\@JSON_SERVICE_NAME\@\",
   \"service_job_id\": \"\@JSON_SERVICE_JOB_ID\@\",
-  \"source_files\": \@JSON_GCOV_FILES\@
+  \"source_files\": \@JSON_GCOV_FILES\@,
+  \"git\": \@JSON_REPO_DATA\@
 }"
 )
 
