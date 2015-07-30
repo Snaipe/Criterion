@@ -38,7 +38,7 @@ const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
     [CRITERION_LOGGING_PREFIX_SKIP]     = { "SKIP", CRIT_FG_GOLD  },
     [CRITERION_LOGGING_PREFIX_PASS]     = { "PASS", CRIT_FG_GREEN },
     [CRITERION_LOGGING_PREFIX_FAIL]     = { "FAIL", CRIT_FG_RED   },
-    { NULL }
+    { NULL, NULL }
 };
 
 void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...) {
