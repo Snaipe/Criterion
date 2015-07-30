@@ -1,6 +1,6 @@
 #!/bin/bash
 repo="https://github.com/Snaipe/libcsptr.git"
-tag="v2.0.2"
+tag="v2.0.4"
 
 mkdir dependencies
 git clone --branch ${tag} --depth 1 ${repo} dependencies/libcsptr &&
