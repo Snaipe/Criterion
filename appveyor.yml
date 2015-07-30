@@ -4,7 +4,6 @@ os: Windows Server 2012
 
 init:
   - git config --global core.autocrlf input
-  - C:\MinGW\bin\mingw-get install mingw32-autotools curl
   - 'SET PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin'
 
 environment:
@@ -23,19 +22,18 @@ configuration: Release
 
 install:
   - 'set GCOV_PREFIX=%APPVEYOR_BUILD_FOLDER%'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh --host i686-w64-mingw32"'
-  - 'mkdir build & cd build'
-  - 'cmake -DCMAKE_PREFIX_PATH=%HOME% -G "MSYS Makefiles" ..'
+  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
+  - 'cd dependencies/libcsptr/build && make && make install && cd ../../../'
+  - 'mkdir build && cd build && cmake -DCMAKE_PREFIX_PATH=%HOME% -G "MSYS Makefiles" ..'
 
 build_script:
-  - 'mingw32-make'
+  - 'make'
 
 test_script:
-  - 'mingw32-make test'
+  - 'make test'
 
 after_test:
-  - '%CYG_BASH% -lc "cat $(find $APPVEYOR_BUILD_FOLDER/samples -iname \"*.log\") /dev/null'
-  - 'mingw32-make coveralls'
+  - 'make coveralls'
 
 notifications:
 

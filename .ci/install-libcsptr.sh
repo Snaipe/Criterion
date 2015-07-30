@@ -6,9 +6,9 @@ mkdir dependencies
 git clone --branch ${tag} --depth 1 ${repo} dependencies/libcsptr &&
 (
     cd dependencies/libcsptr &&
-    ./autogen.sh &&
-    ./configure --prefix=$HOME "$@" &&
+    mkdir build &&
+    cd $_ &&
+    cmake -DCMAKE_INSTALL_PREFIX=$HOME "$@" .. &&
     make &&
     make install
 )
-rm -Rf dependencies
