@@ -17,8 +17,8 @@ before_install:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
   - export CFLAGS="-g -O0"
 script:
-  - mkdir -p build && cd $_ && cmake -DCMAKE_PREFIX_PATH=$HOME .. && make && make -C samples test
+  - mkdir -p build && cd $_ && cmake -Dcoverage=on -DCMAKE_PREFIX_PATH=$HOME .. && make && make -C samples test
 after_success:
-  - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
+  - coveralls --gcov gcov-5 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
 after_failure:
   - cat $(find samples -iname '*.log') /dev/null

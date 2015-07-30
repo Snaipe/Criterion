@@ -71,6 +71,12 @@ set(INTERFACE_FILES
   include/criterion/stats.h
 )
 
+option(coverage "coverage" OFF)
+if (coverage)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
+
 enable_testing()
 
 add_subdirectory(samples)
