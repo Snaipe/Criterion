@@ -1,6 +1,6 @@
 language: c
 compiler:
-    - gcc-5
+  - gcc-5
 sudo: false
 addons:
   apt:
@@ -12,13 +12,13 @@ addons:
     - gettext
     - cmake
 before_install:
-  - pip install --user cpp-coveralls
   - .ci/install-libcsptr.sh
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
   - export CFLAGS="-g -O0"
+  - export GCOV=gcov-5
 script:
-  - mkdir -p build && cd $_ && cmake -Dcoverage=on -DCMAKE_PREFIX_PATH=$HOME .. && make && make -C samples test
+  - mkdir -p build && cd $_ && cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME .. && make && make -C samples test
 after_success:
-  - coveralls --gcov gcov-5 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
+  - make coveralls
 after_failure:
   - cat $(find samples -iname '*.log') /dev/null

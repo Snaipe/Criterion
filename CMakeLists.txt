@@ -2,14 +2,32 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Criterion C)
 
+# Project setup & environment variables
+
+enable_testing()
+add_subdirectory(samples)
+
 set(PROJECT_VERSION "1.2.2")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL)
 set(GettextTranslate_GMO_BINARY)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/.cmake/Modules/")
+set(MODULE_DIR "${CMAKE_SOURCE_DIR}/.cmake/Modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu11")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
+
+# Setup coveralls
+
+option(COVERALLS "Turn on coveralls support" OFF)
+option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+
+if (COVERALLS)
+  include(Coveralls)
+  coveralls_turn_on_coverage()
+endif()
+
+# Find dependencies
 
 find_package(Gettext)
 if (GETTEXT_FOUND)
@@ -24,10 +42,14 @@ CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 find_package(PCRE)
 find_package(Libcsptr REQUIRED)
 
+# Generate the configure file
+
 configure_file(
   "${CMAKE_SOURCE_DIR}/src/config.h.in"
   "${CMAKE_SOURCE_DIR}/src/config.h"
 )
+
+# List sources and headers
 
 set(SOURCE_FILES
   src/abort.c
@@ -71,20 +93,8 @@ set(INTERFACE_FILES
   include/criterion/stats.h
 )
 
-option(coverage "coverage" OFF)
-if (coverage)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
-endif()
-
-enable_testing()
-
-add_subdirectory(samples)
-
 include_directories(include src ${CSPTR_INCLUDE_DIRS})
-
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
-
 target_link_libraries(criterion ${CSPTR_LIBRARIES})
 
 if (HAVE_CLOCK_GETTIME)
@@ -93,6 +103,10 @@ endif()
 
 if (PCRE_FOUND)
   target_link_libraries(criterion ${PCRE_LIBRARIES})
+endif()
+
+if (COVERALLS)
+  coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
 
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
