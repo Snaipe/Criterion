@@ -67,6 +67,17 @@ endif()
 # CMake list format.
 string(REGEX REPLACE "\\*" ";" COVERAGE_SRCS ${COVERAGE_SRCS})
 
+# convert all paths in COVERAGE_SRCS to absolute paths
+set(COVERAGE_SRCS_TMP "")
+foreach (COVERAGE_SRC ${COVERAGE_SRCS})
+	if (NOT "${COVERAGE_SRC}" MATCHES "^/")
+		set(COVERAGE_SRC ${PROJECT_ROOT}/${COVERAGE_SRC})
+	endif()
+	list(APPEND COVERAGE_SRCS_TMP ${COVERAGE_SRC})
+endforeach()
+set(COVERAGE_SRCS ${COVERAGE_SRCS_TMP})
+unset(COVERAGE_SRCS_TMP)
+
 if (NOT DEFINED ENV{GCOV})
 	find_program(GCOV_EXECUTABLE gcov)
 else()
@@ -216,6 +227,7 @@ foreach (GCOV_FILE ${ALL_GCOV_FILES})
 	# -> 
 	# /path/to/project/root/subdir/the_file.c 
 	get_source_path_from_gcov_filename(GCOV_SRC_PATH ${GCOV_FILE})
+	file(RELATIVE_PATH GCOV_SRC_REL_PATH "${PROJECT_ROOT}" "${GCOV_SRC_PATH}")
 
 	# Is this in the list of source files?
 	# TODO: We want to match against relative path filenames from the source file root...
@@ -281,6 +293,9 @@ foreach (GCOV_FILE ${GCOV_FILES})
 	string(REPLACE "[" "_" GCOV_CONTENTS "${GCOV_CONTENTS}")
 	string(REPLACE "]" "_" GCOV_CONTENTS "${GCOV_CONTENTS}")
 	string(REPLACE "\\" "_" GCOV_CONTENTS "${GCOV_CONTENTS}")
+
+	# Remove file contents to avoid encoding issues (cmake 2.8 has no ENCODING option)
+	string(REGEX REPLACE "([^:]*):([^:]*):([^\n]*)\n" "\\1:\\2: \n" GCOV_CONTENTS "${GCOV_CONTENTS}")
 	file(WRITE ${GCOV_FILE}_tmp "${GCOV_CONTENTS}")
 
 	file(STRINGS ${GCOV_FILE}_tmp GCOV_LINES)
@@ -396,14 +411,19 @@ endforeach()
 # as well, and generate JSON for those as well with 0% coverage.
 foreach(NOT_COVERED_SRC ${COVERAGE_SRCS_REMAINING})
 
+	# Set variables for json replacement
+	set(GCOV_SRC_PATH ${NOT_COVERED_SRC})
+	file(MD5 "${GCOV_SRC_PATH}" GCOV_CONTENTS_MD5)
+	file(RELATIVE_PATH GCOV_SRC_REL_PATH "${PROJECT_ROOT}" "${GCOV_SRC_PATH}")
+
 	# Loads the source file as a list of lines.
-    file(STRINGS ${PROJECT_ROOT}/${NOT_COVERED_SRC} SRC_LINES)
+	file(STRINGS ${NOT_COVERED_SRC} SRC_LINES)
 
 	set(GCOV_FILE_COVERAGE "[")
 	set(GCOV_FILE_SOURCE "")
 
 	foreach (SOURCE ${SRC_LINES})
-		set(GCOV_FILE_COVERAGE "${GCOV_FILE_COVERAGE}0, ")
+		set(GCOV_FILE_COVERAGE "${GCOV_FILE_COVERAGE}null, ")
 
 		string(REPLACE "\\" "\\\\" SOURCE "${SOURCE}")
 		string(REGEX REPLACE "\"" "\\\\\"" SOURCE "${SOURCE}")
