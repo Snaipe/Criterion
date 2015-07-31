@@ -8,7 +8,7 @@ git clone --branch ${tag} --depth 1 ${repo} dependencies/libcsptr &&
     cd dependencies/libcsptr &&
     mkdir build &&
     cd $_ &&
-    cmake -DCMAKE_INSTALL_PREFIX=$HOME "$@" .. &&
+    cmake -DCMAKE_INSTALL_PREFIX=$LOCAL_INSTALL "$@" .. &&
     make &&
     make install
 )
