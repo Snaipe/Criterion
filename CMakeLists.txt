@@ -30,7 +30,8 @@ endif()
 # Find dependencies
 
 find_package(Gettext)
-if (GETTEXT_FOUND)
+find_package(Libintl)
+if (GETTEXT_FOUND AND Libintl_FOUND)
   include(GettextTranslate)
   add_subdirectory(po)
   set(ENABLE_NLS 1)
@@ -108,6 +109,10 @@ endif()
 
 if (PCRE_FOUND)
   target_link_libraries(criterion ${PCRE_LIBRARIES})
+endif()
+
+if (LIBINTL_FOUND)
+  target_link_libraries(criterion ${LIBINTL_LIBRARIES})
 endif()
 
 if (COVERALLS)
