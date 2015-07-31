@@ -36,8 +36,8 @@ find_path(LIBINTL_INCLUDE_DIR libintl.h
 set(LIBINTL_LIB_FOUND FALSE)
 
 if(LIBINTL_INCLUDE_DIR)
-  include(CheckFunctionExists)
-  check_function_exists(dgettext LIBINTL_LIBC_HAS_DGETTEXT)
+  include(CheckSymbolExists)
+  check_symbol_exists(dgettext libintl.h LIBINTL_LIBC_HAS_DGETTEXT)
 
   if (LIBINTL_LIBC_HAS_DGETTEXT)
     set(LIBINTL_LIBRARIES)

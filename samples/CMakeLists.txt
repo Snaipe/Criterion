@@ -37,5 +37,5 @@ foreach(sample ${SAMPLES})
 endforeach()
 
 foreach(script ${SCRIPTS})
-    add_test(${script} ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
+    add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
 endforeach()
