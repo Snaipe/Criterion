@@ -4,6 +4,8 @@
 #ifdef VANILLA_WIN32
 # define VC_EXTRALEAN
 # define WIN32_LEAN_AND_MEAN
+# undef _WIN32_WINNT
+# define _WIN32_WINNT 0x0502
 # include <windows.h>
 # include <io.h>
 # include <fcntl.h>
