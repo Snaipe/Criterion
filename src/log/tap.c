@@ -31,6 +31,13 @@
 #include "criterion/ordered-set.h"
 #include "timer.h"
 #include "config.h"
+#include "posix-compat.h"
+
+#ifdef VANILLA_WIN32
+// provided by windows' libc implementation
+char *strtok_s(char *strToken, const char *strDelimit, char **context);
+# define strtok_r strtok_s
+#endif
 
 void tap_log_pre_all(struct criterion_test_set *set) {
     size_t enabled_count = 0;

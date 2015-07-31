@@ -33,6 +33,13 @@
 #include "timer.h"
 #include "config.h"
 #include "i18n.h"
+#include "posix-compat.h"
+
+#ifdef VANILLA_WIN32
+// provided by windows' libc implementation
+char *strtok_s(char *strToken, const char *strDelimit, char **context);
+# define strtok_r strtok_s
+#endif
 
 typedef const char *const msg_t;
 
