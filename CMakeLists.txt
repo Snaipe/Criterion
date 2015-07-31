@@ -74,10 +74,15 @@ set(SOURCE_FILES
   src/i18n.h
   src/ordered-set.c
   src/posix-compat.c
-  src/extmatch.c
-  src/extmatch.h
   src/main.c
 )
+
+if (PCRE_FOUND)
+  set (SOURCE_FILES ${SOURCE_FILES}
+    src/extmatch.c
+    src/extmatch.h
+  )
+endif ()
 
 set(INTERFACE_FILES
   include/criterion/assert.h
