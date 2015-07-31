@@ -31,7 +31,7 @@ endif()
 
 find_package(Gettext)
 find_package(Libintl)
-if (GETTEXT_FOUND AND Libintl_FOUND)
+if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
   include(GettextTranslate)
   add_subdirectory(po)
   set(ENABLE_NLS 1)
@@ -42,13 +42,6 @@ CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
 find_package(Libcsptr REQUIRED)
-
-# Generate the configure file
-
-configure_file(
-  "${CMAKE_SOURCE_DIR}/src/config.h.in"
-  "${CMAKE_SOURCE_DIR}/src/config.h"
-)
 
 # List sources and headers
 
@@ -100,6 +93,13 @@ set(INTERFACE_FILES
   include/criterion/stats.h
 )
 
+# Generate the configure file
+
+configure_file(
+  "${CMAKE_SOURCE_DIR}/src/config.h.in"
+  "${CMAKE_SOURCE_DIR}/src/config.h"
+)
+
 include_directories(include src ${CSPTR_INCLUDE_DIRS})
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
 target_link_libraries(criterion ${CSPTR_LIBRARIES})
@@ -112,7 +112,7 @@ if (PCRE_FOUND)
   target_link_libraries(criterion ${PCRE_LIBRARIES})
 endif()
 
-if (LIBINTL_FOUND)
+if (LIBINTL_LIB_FOUND)
   target_link_libraries(criterion ${LIBINTL_LIBRARIES})
 endif()
 
