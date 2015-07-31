@@ -35,10 +35,11 @@
 #include "i18n.h"
 #include "posix-compat.h"
 
+#define USED __attribute__ ((used))
+
 #ifdef VANILLA_WIN32
-// provided by windows' libc implementation
-char *strtok_s(char *strToken, const char *strDelimit, char **context);
-# define strtok_r strtok_s
+// fallback to strtok on windows since strtok_s is not available everywhere
+# define strtok_r(str, delim, saveptr) strtok(str, delim)
 #endif
 
 typedef const char *const msg_t;
@@ -151,8 +152,13 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
         char *dup       = strdup(*stats->message ? stats->message
                                                  : stats->condition);
+
+#ifdef VANILLA_WIN32
+        char *line      = strtok(dup, "\n");
+#else
         char *saveptr   = NULL;
         char *line      = strtok_r(dup, "\n", &saveptr);
+#endif
 
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_fail),
@@ -160,7 +166,11 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
                 FG_RED,  stats->line, RESET,
                 line);
 
+#ifdef VANILLA_WIN32
+        while ((line = strtok(NULL, "\n")))
+#else
         while ((line = strtok_r(NULL, "\n", &saveptr)))
+#endif
             criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
         free(dup);
     }
