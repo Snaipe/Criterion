@@ -83,6 +83,7 @@ if (PCRE_FOUND)
     src/extmatch.c
     src/extmatch.h
   )
+  set(HAVE_PCRE 1)
 endif ()
 
 set(INTERFACE_FILES
