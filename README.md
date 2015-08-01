@@ -1,5 +1,5 @@
 
-Criterion
+<img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
 [![Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
