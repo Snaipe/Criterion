@@ -31,19 +31,20 @@
 #include "criterion/ordered-set.h"
 #include "report.h"
 #include "config.h"
+#include "posix-compat.h"
 
 #ifdef HAVE_PCRE
 #include "extmatch.h"
 #endif
 
-#define IMPL_CALL_REPORT_HOOKS(Kind)                                \
-    IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);              \
-    void call_report_hooks_##Kind(void *data) {                     \
-        for (f_report_hook *hook = SECTION_START(crit_ ## Kind);    \
-             hook < SECTION_END(crit_ ## Kind);                     \
-             ++hook) {                                              \
-            (*hook)(data);                                          \
-        }                                                           \
+#define IMPL_CALL_REPORT_HOOKS(Kind)                                    \
+    IMPL_SECTION_LIMITS(f_report_hook, crit_ ## Kind);                  \
+    void call_report_hooks_##Kind(void *data) {                         \
+        for (f_report_hook *hook = GET_SECTION_START(crit_ ## Kind);    \
+             hook < GET_SECTION_END(crit_ ## Kind);                     \
+             ++hook) {                                                  \
+            (*hook)(data);                                              \
+        }                                                               \
     }
 
 #define IMPL_REPORT_HOOK(Type)      \

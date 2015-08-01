@@ -208,3 +208,17 @@ bool is_current_process(s_proc_handle *proc) {
     return proc->pid == getpid();
 #endif
 }
+
+#ifdef VANILLA_WIN32
+void *get_win_section_start(const char *section) {
+    char symbol[64];
+    sprintf(symbol, "g_%s_section_start", section);
+    return (void*) GetProcAddress(GetModuleHandle(NULL), symbol);
+}
+
+void *get_win_section_end(const char *section) {
+    char symbol[64];
+    sprintf(symbol, "g_%s_section_end", section);
+    return (void*) GetProcAddress(GetModuleHandle(NULL), symbol);
+}
+#endif
