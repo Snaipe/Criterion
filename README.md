@@ -101,6 +101,10 @@ A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
    most \*nix systems; Mac OS X Yosemite 10.10, and FreeBSD 10.0.
    Windows is currently not supported, but it being worked on.
 
+## Credits
+
+Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
+
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
 [zip-docs]: http://readthedocs.org/projects/criterion/downloads/htmlzip/latest/
