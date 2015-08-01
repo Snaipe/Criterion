@@ -56,8 +56,8 @@ bool is_current_process(s_proc_handle *proc);
 # ifdef VANILLA_WIN32
 void *get_win_section_start(const char *section);
 void *get_win_section_end(const char *section);
-#  define GET_SECTION_START(Name) get_win_section_start(Name)
-#  define GET_SECTION_END(Name)   get_win_section_end(Name)
+#  define GET_SECTION_START(Name) get_win_section_start(#Name)
+#  define GET_SECTION_END(Name)   get_win_section_end(#Name)
 # else
 #  define GET_SECTION_START(Name) SECTION_START(Name)
 #  define GET_SECTION_END(Name)   SECTION_END(Name)
