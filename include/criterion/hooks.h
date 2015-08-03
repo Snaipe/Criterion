@@ -48,9 +48,27 @@ typedef void (*f_report_hook)();
 # define HOOK_PROTOTYPE_                                                       \
     void HOOK_IDENTIFIER_(impl)
 
+// Section abbreviations
+# define HOOK_SECTION_PRE_ALL       cr_pra
+# define HOOK_SECTION_PRE_SUITE     cr_prs
+# define HOOK_SECTION_PRE_INIT      cr_pri
+# define HOOK_SECTION_PRE_TEST      cr_prt
+# define HOOK_SECTION_ASSERT        cr_ast
+# define HOOK_SECTION_TEST_CRASH    cr_tsc
+# define HOOK_SECTION_POST_TEST     cr_pot
+# define HOOK_SECTION_POST_FINI     cr_pof
+# define HOOK_SECTION_POST_SUITE    cr_pos
+# define HOOK_SECTION_POST_ALL      cr_poa
+
+# define HOOK_SECTION(Kind) HOOK_SECTION_ ## Kind
+
+# define HOOK_SECTION_STRINGIFY__(Sec) #Sec
+# define HOOK_SECTION_STRINGIFY_(Sec) HOOK_SECTION_STRINGIFY__(Sec)
+# define HOOK_SECTION_STRINGIFY(Kind) HOOK_SECTION_STRINGIFY_(HOOK_SECTION(Kind))
+
 # define ReportHook(Kind)                                                      \
     HOOK_PROTOTYPE_();                                                         \
-    SECTION_("crit_" #Kind)                                         \
+    SECTION_(HOOK_SECTION_STRINGIFY(Kind))                                     \
     const f_report_hook HOOK_IDENTIFIER_(func) = HOOK_IDENTIFIER_(impl);       \
     HOOK_PROTOTYPE_
 

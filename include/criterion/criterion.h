@@ -22,7 +22,7 @@
         .line_    = __LINE__,                                                  \
         __VA_ARGS__                                                            \
     };                                                                         \
-    SECTION_("criterion_tests")                                                \
+    SECTION_("cr_tst")                                                         \
     const struct criterion_test IDENTIFIER_(Category, Name, meta) = {          \
         .name     = #Name,                                                     \
         .category = #Category,                                                 \
@@ -38,7 +38,7 @@
         .line_    = 0,                                                         \
         __VA_ARGS__                                                            \
     };                                                                         \
-    SECTION_("crit_suites")                                                    \
+    SECTION_("cr_sts")                                                         \
     const struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {             \
         .name     = #Name,                                                     \
         .data     = &SUITE_IDENTIFIER_(Name, extra),                           \

@@ -36,8 +36,8 @@
 #include "posix-compat.h"
 #include "abort.h"
 
-IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
-IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
+IMPL_SECTION_LIMITS(struct criterion_test, cr_tst);
+IMPL_SECTION_LIMITS(struct criterion_suite, cr_sts);
 
 // This is here to make the test suite & test sections non-empty
 TestSuite();

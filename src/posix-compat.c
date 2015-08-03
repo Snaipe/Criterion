@@ -219,7 +219,7 @@ void *get_win_section_start(const char *section) {
 
     PIMAGE_SECTION_HEADER pSecHeader = IMAGE_FIRST_SECTION(ntHeader);
     for(int i = 0; i < ntHeader->FileHeader.NumberOfSections; i++, pSecHeader++) {
-        if (!strcmp(pSecHeader->Name, section)) {
+        if (!strncmp(pSecHeader->Name, section, 8)) {
             return (void*) pSecHeader->VirtualAddress;
         }
     }
@@ -235,8 +235,8 @@ void *get_win_section_end(const char *section) {
 
     PIMAGE_SECTION_HEADER pSecHeader = IMAGE_FIRST_SECTION(ntHeader);
     for(int i = 0; i < ntHeader->FileHeader.NumberOfSections; i++, pSecHeader++) {
-        if (!strcmp(pSecHeader->Name, section)) {
-            return (char*) pSecHeader->VirtualAddress + pSecHeader->SizeOfRawData);
+        if (!strncmp(pSecHeader->Name, section, 8)) {
+            return (char*) pSecHeader->VirtualAddress + pSecHeader->SizeOfRawData;
         }
     }
     return NULL;

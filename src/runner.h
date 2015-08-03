@@ -27,19 +27,19 @@
 # include "criterion/types.h"
 # include "posix-compat.h"
 
-DECL_SECTION_LIMITS(struct criterion_test, criterion_tests);
-DECL_SECTION_LIMITS(struct criterion_suite, crit_suites);
+DECL_SECTION_LIMITS(struct criterion_test, cr_tst);
+DECL_SECTION_LIMITS(struct criterion_suite, cr_sts);
 
 struct criterion_test_set *criterion_init(void);
 
-# define FOREACH_TEST_SEC(Test)                                                \
-    for (struct criterion_test *Test = GET_SECTION_START(criterion_tests);     \
-            Test < (struct criterion_test*) GET_SECTION_END(criterion_tests);  \
+# define FOREACH_TEST_SEC(Test)                                         \
+    for (struct criterion_test *Test = GET_SECTION_START(cr_tst);       \
+            Test < (struct criterion_test*) GET_SECTION_END(cr_tst);    \
             ++Test)
 
-# define FOREACH_SUITE_SEC(Suite)                                           \
-    for (struct criterion_suite *Suite = GET_SECTION_START(crit_suites);    \
-            Suite < (struct criterion_suite*) GET_SECTION_END(crit_suites); \
+# define FOREACH_SUITE_SEC(Suite)                                       \
+    for (struct criterion_suite *Suite = GET_SECTION_START(cr_sts);     \
+            Suite < (struct criterion_suite*) GET_SECTION_END(cr_sts);  \
             ++Suite)
 
 #endif /* !CRITERION_RUNNER_H_ */
