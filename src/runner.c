@@ -27,6 +27,7 @@
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
+#include "criterion/logging.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
@@ -36,12 +37,19 @@
 #include "posix-compat.h"
 #include "abort.h"
 
+#ifdef HAVE_PCRE
+#include "extmatch.h"
+#endif
+
 IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
 IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
 
 // This is here to make the test suite & test sections non-empty
 TestSuite();
 Test(,) {};
+
+__attribute__ ((always_inline))
+static inline void nothing() {}
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -109,6 +117,7 @@ static void map_tests(struct criterion_test_set *set,
             continue;
 
         report(PRE_SUITE, s);
+        log(pre_suite, s);
 
         smart struct criterion_suite_stats *suite_stats = suite_stats_init(&s->suite);
 
@@ -124,11 +133,9 @@ static void map_tests(struct criterion_test_set *set,
         }
 
         report(POST_SUITE, suite_stats);
+        log(post_suite, suite_stats);
     }
 }
-
-__attribute__ ((always_inline))
-static inline void nothing() {}
 
 static void run_test_child(struct criterion_test *test,
                            struct criterion_suite *suite) {
@@ -197,15 +204,27 @@ static void run_test(struct criterion_global_stats *stats,
     while ((ev = worker_read_event(proc)) != NULL) {
         stat_push_event(stats, suite_stats, test_stats, ev);
         switch (ev->kind) {
-            case PRE_INIT:  report(PRE_INIT, test); break;
-            case PRE_TEST:  report(PRE_TEST, test);
-                            test_started = true;
-                            break;
-            case ASSERT:    report(ASSERT, ev->data); break;
-            case POST_TEST: report(POST_TEST, test_stats);
-                            normal_finish = true;
-                            break;
-            case POST_FINI: report(POST_FINI, test_stats); break;
+            case PRE_INIT:
+                report(PRE_INIT, test); break;
+                log(pre_init, test);
+            case PRE_TEST:
+                report(PRE_TEST, test);
+                log(pre_test, test);
+                test_started = true;
+                break;
+            case ASSERT:
+                report(ASSERT, ev->data);
+                log(assert, ev->data);
+                break;
+            case POST_TEST:
+                report(POST_TEST, test_stats);
+                log(post_test, test_stats);
+                normal_finish = true;
+                break;
+            case POST_FINI:
+                report(POST_FINI, test_stats);
+                log(post_fini, test_stats);
+                break;
         }
         sfree(ev);
     }
@@ -225,21 +244,49 @@ static void run_test(struct criterion_global_stats *stats,
         test_stats->signal = status.status;
         if (test->data->signal == 0) {
             push_event(TEST_CRASH);
+            log(test_crash, test_stats);
         } else {
             double elapsed_time = 0;
             push_event(POST_TEST, .data = &elapsed_time);
+            log(post_test, test_stats);
             push_event(POST_FINI);
+            log(post_fini, test_stats);
         }
     }
 }
+
+#ifdef HAVE_PCRE
+void disable_unmatching(struct criterion_test_set *set) {
+    FOREACH_SET(struct criterion_suite_set *s, set->suites) {
+        if ((s->suite.data && s->suite.data->disabled) || !s->tests)
+            continue;
+
+        FOREACH_SET(struct criterion_test *test, s->tests) {
+            const char *errmsg;
+            int ret = extmatch(criterion_options.pattern, test->data->identifier_, &errmsg);
+            if (ret == -10) {
+                printf("pattern error: %s\n", errmsg);
+                exit(1);
+            } else if (ret < 0) {
+                test->data->disabled = true;
+            }
+        }
+    }
+}
+#endif
 
 static int criterion_run_all_tests_impl(void) {
     if (resume_child()) // (windows only) resume from the fork
         return -1;
 
     smart struct criterion_test_set *set = criterion_init();
+#ifdef HAVE_PCRE
+    if (criterion_options.pattern)
+        disable_unmatching(set);
+#endif
 
     report(PRE_ALL, set);
+    log(pre_all, set);
 
     smart struct criterion_global_stats *stats = stats_init();
     map_tests(set, stats, run_test);
@@ -248,6 +295,7 @@ static int criterion_run_all_tests_impl(void) {
         return -1;
 
     report(POST_ALL, stats);
+    log(post_all, stats);
     return stats->tests_failed == 0;
 }
 
