@@ -211,14 +211,34 @@ bool is_current_process(s_proc_handle *proc) {
 
 #ifdef VANILLA_WIN32
 void *get_win_section_start(const char *section) {
-    char symbol[64];
-    sprintf(symbol, "g_%s_section_start", section);
-    return (void*) GetProcAddress(GetModuleHandle(NULL), symbol);
+    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER) GetModuleHandle(NULL);
+    PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((DWORD)(dosHeader) + (dosHeader->e_lfanew));
+
+    assert(dosHeader->e_magic == IMAGE_DOS_SIGNATURE);
+    assert(ntHeader->Signature == IMAGE_NT_SIGNATURE);
+
+    PIMAGE_SECTION_HEADER pSecHeader = IMAGE_FIRST_SECTION(ntHeader);
+    for(int i = 0; i < ntHeader->FileHeader.NumberOfSections; i++, pSecHeader++) {
+        if (!strcmp(pSecHeader->Name, section)) {
+            return (void*) pSecHeader->VirtualAddress;
+        }
+    }
+    return NULL;
 }
 
 void *get_win_section_end(const char *section) {
-    char symbol[64];
-    sprintf(symbol, "g_%s_section_end", section);
-    return (void*) GetProcAddress(GetModuleHandle(NULL), symbol);
+    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER) GetModuleHandle(NULL);
+    PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((DWORD)(dosHeader) + (dosHeader->e_lfanew));
+
+    assert(dosHeader->e_magic == IMAGE_DOS_SIGNATURE);
+    assert(ntHeader->Signature == IMAGE_NT_SIGNATURE);
+
+    PIMAGE_SECTION_HEADER pSecHeader = IMAGE_FIRST_SECTION(ntHeader);
+    for(int i = 0; i < ntHeader->FileHeader.NumberOfSections; i++, pSecHeader++) {
+        if (!strcmp(pSecHeader->Name, section)) {
+            return (char*) pSecHeader->VirtualAddress + pSecHeader->SizeOfRawData);
+        }
+    }
+    return NULL;
 }
 #endif
