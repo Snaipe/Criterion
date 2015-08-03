@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "posix-compat.h"
 #include "process.h"
 
@@ -219,8 +220,8 @@ void *get_win_section_start(const char *section) {
 
     PIMAGE_SECTION_HEADER pSecHeader = IMAGE_FIRST_SECTION(ntHeader);
     for(int i = 0; i < ntHeader->FileHeader.NumberOfSections; i++, pSecHeader++) {
-        if (!strncmp(pSecHeader->Name, section, 8)) {
-            return (void*) pSecHeader->VirtualAddress;
+        if (!strncmp((char*) pSecHeader->Name, section, 8)) {
+            return (char*) dosHeader + pSecHeader->VirtualAddress;
         }
     }
     return NULL;
@@ -235,8 +236,8 @@ void *get_win_section_end(const char *section) {
 
     PIMAGE_SECTION_HEADER pSecHeader = IMAGE_FIRST_SECTION(ntHeader);
     for(int i = 0; i < ntHeader->FileHeader.NumberOfSections; i++, pSecHeader++) {
-        if (!strncmp(pSecHeader->Name, section, 8)) {
-            return (char*) pSecHeader->VirtualAddress + pSecHeader->SizeOfRawData;
+        if (!strncmp((char*) pSecHeader->Name, section, 8)) {
+            return (char*) dosHeader + (size_t) pSecHeader->VirtualAddress + pSecHeader->SizeOfRawData;
         }
     }
     return NULL;

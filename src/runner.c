@@ -67,6 +67,9 @@ struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
+        if (!s->name)
+            break;
+
         struct criterion_suite_set css = {
             .suite = *s,
         };
@@ -75,6 +78,9 @@ struct criterion_test_set *criterion_init(void) {
 
     size_t nb_tests = 0;
     FOREACH_TEST_SEC(test) {
+        if (!test->category)
+            break;
+
         if (!*test->category)
             continue;
 
