@@ -122,6 +122,7 @@ endif()
 
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
+  RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )
