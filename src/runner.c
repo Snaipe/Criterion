@@ -211,8 +211,9 @@ static void run_test(struct criterion_global_stats *stats,
         stat_push_event(stats, suite_stats, test_stats, ev);
         switch (ev->kind) {
             case PRE_INIT:
-                report(PRE_INIT, test); break;
+                report(PRE_INIT, test);
                 log(pre_init, test);
+                break;
             case PRE_TEST:
                 report(PRE_TEST, test);
                 log(pre_test, test);
