@@ -36,6 +36,7 @@
 #include "timer.h"
 #include "posix-compat.h"
 #include "abort.h"
+#include "config.h"
 
 #ifdef HAVE_PCRE
 #include "extmatch.h"
