@@ -57,11 +57,11 @@ struct worker_context g_worker_context = {.test = NULL};
 
 #ifdef VANILLA_WIN32
 struct full_context {
-    struct worker_context ctx;
     struct criterion_test test;
     struct criterion_test_extra_data test_data;
     struct criterion_suite suite;
     struct criterion_test_extra_data suite_data;
+    f_worker_func func;
     struct pipe_handle pipe;
     int resumed;
 };
@@ -92,10 +92,19 @@ int resume_child(void) {
         exit(-1);
 
     local_ctx = *ctx;
-    g_worker_context = local_ctx.worker_context;
-    ctx.resumed = 1;
+    g_worker_context = (struct worker_context) {
+        &local_ctx.test,
+        &local_ctx.suite,
+        local_ctx.func,
+        &local_ctx.pipe
+    };
 
-    UmapViewOfFile(ctx);
+    local_ctx.test.data  = &local_ctx.test_data;
+    local_ctx.suite.data = &local_ctx.suite_data;
+
+    ctx->resumed = 1;
+
+    UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
 
     run_worker(&g_worker_context);
@@ -126,7 +135,7 @@ s_proc_handle *fork_process() {
             PAGE_READWRITE,
             0,
             MAPPING_SIZE,
-            g_mapping_name)
+            g_mapping_name);
 
     if (sharedMem == NULL)
         return (void *) -1;
@@ -142,33 +151,24 @@ s_proc_handle *fork_process() {
         return (void *) -1;
     }
 
-    *ctx = (struc full_context) {
-        .test      = *g_worker_context.test;
-        .test_data = *g_worker_context.test->data;
-        .suite     = *g_worker_context.suite;
-        .pipe      = *g_worker_context.pipe;
+    *ctx = (struct full_context) {
+        .test      = *g_worker_context.test,
+        .test_data = *g_worker_context.test->data,
+        .suite     = *g_worker_context.suite,
+        .func      = g_worker_context.func,
+        .pipe      = *g_worker_context.pipe,
+        .resumed   = 0,
     };
 
-    ctx.ctx = (struct worker_context) {
-        &ctx.test,
-        &ctx.suite,
-        g_worker_context.func,
-        &ctx.pipe
-    };
-
-    ctx.test.data = &ctx.test_data;
-
-    if (g_worker_context.suite->data) {
-        ctx.suite_data = *g_worker_context.suite->data;
-        ctx.suite.data = &ctx.suite_data;
-    }
+    if (g_worker_context.suite->data)
+        ctx->suite_data = *g_worker_context.suite->data;
 
     ResumeThread(info.hThread);
     CloseHandle(info.hThread);
 
-    while (!ctx.resumed); // wait until the child has initialized itself
+    while (!ctx->resumed); // wait until the child has initialized itself
 
-    UmapViewOfFile(ctx);
+    UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
 
     return unique_ptr(s_proc_handle, { info.hProcess });
