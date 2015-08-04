@@ -26,6 +26,7 @@
 
 # include <stdbool.h>
 # include <stddef.h>
+# include "common.h"
 
 struct criterion_test_extra_data {
     int sentinel_;

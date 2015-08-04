@@ -41,8 +41,8 @@
 #include "extmatch.h"
 #endif
 
-IMPL_SECTION_LIMITS(struct criterion_test, criterion_tests);
-IMPL_SECTION_LIMITS(struct criterion_suite, crit_suites);
+IMPL_SECTION_LIMITS(struct criterion_test, cr_tst);
+IMPL_SECTION_LIMITS(struct criterion_suite, cr_sts);
 
 // This is here to make the test suite & test sections non-empty
 TestSuite();
@@ -75,6 +75,9 @@ struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
+        if (!s->name)
+            break;
+
         struct criterion_suite_set css = {
             .suite = *s,
         };
@@ -83,6 +86,9 @@ struct criterion_test_set *criterion_init(void) {
 
     size_t nb_tests = 0;
     FOREACH_TEST_SEC(test) {
+        if (!test->category)
+            break;
+
         if (!*test->category)
             continue;
 
