@@ -4,7 +4,7 @@ os: Windows Server 2012
 
 init:
   - git config --global core.autocrlf input
-  - 'SET PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%APPVEYOR_BUILD_FOLDER%\lib'
+  - 'SET PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%APPVEYOR_BUILD_FOLDER%\bin'
 
 environment:
   COVERALLS_TOKEN:
