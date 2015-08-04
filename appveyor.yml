@@ -25,7 +25,7 @@ install:
   - 'set LOCAL_INSTALL=%APPVEYOR_BUILD_FOLDER%'
   - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
   - 'cd dependencies/libcsptr/build && make && make install && cd ../../../'
-  - 'mkdir build && cd build && cmake -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -G "MSYS Makefiles" ..'
+  - 'mkdir build && cd build && cmake -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
 
 build_script:
   - 'make'
