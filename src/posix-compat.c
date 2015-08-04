@@ -28,6 +28,11 @@
 # define WRITE_PROCESS_(Proc, What, Size)                           \
         WriteProcessMemory(Proc, &What, &What, Size, NULL);
 
+# include <signal.h>
+# ifndef SIGALRM
+#  define SIGALRM 14
+# endif
+
 #else
 # include <unistd.h>
 # include <sys/wait.h>
@@ -191,7 +196,7 @@ void wait_process(s_proc_handle *handle, int *status) {
     GetExitCodeProcess(handle->handle, &exit_code);
     CloseHandle(handle->handle);
 
-    int sig = 0;
+    unsigned int sig = 0;
     switch (exit_code) {
         case STATUS_FLOAT_DENORMAL_OPERAND:
         case STATUS_FLOAT_DIVIDE_BY_ZERO:
