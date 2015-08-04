@@ -14,7 +14,7 @@ before_install:
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
 - export CFLAGS="-g -O0"
 script:
-- mkdir -p build && cd $_ && cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME .. && make && make -C samples test
+- mkdir -p build && cd $_ && cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME .. && make && make test
 after_success:
 - make coveralls
 after_failure:

@@ -38,4 +38,7 @@ endforeach()
 
 foreach(script ${SCRIPTS})
     add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
+    set_property(TEST ${script} PROPERTY
+        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+    )
 endforeach()
