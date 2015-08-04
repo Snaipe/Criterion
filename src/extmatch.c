@@ -13,7 +13,7 @@ struct context {
     char old, cur;
     int eos;
     const char **errmsg;
-    jmp_buf jmp;
+    jmp_buf *jmp;
 };
 
 void transform_impl(struct context *ctx);
@@ -25,6 +25,8 @@ static inline void transform_rec(struct context *ctx) {
         .src = ctx->src,
         .old = ctx->old,
         .eos = ctx->eos,
+        .errmsg = ctx->errmsg,
+        .jmp = ctx->jmp,
     };
     transform_impl(&new_ctx);
     ctx->dst = new_ctx.dst;
@@ -154,6 +156,8 @@ void transform_impl(struct context *ctx) {
         ['('] = escape_char,
         [')'] = escape_char,
         ['|'] = escape_pipe,
+
+        [255] = NULL,
     };
     for (char c = read_char(ctx); !ctx->eos; c = read_char(ctx)) {
         f_handler handler = handlers[(unsigned char) c];
@@ -171,17 +175,19 @@ void transform_impl(struct context *ctx) {
     }
     if (ctx->depth > 0) {
         *ctx->errmsg = "mismatching parenthesis";
-        longjmp(ctx->jmp, -1); // abort operation
+        longjmp(*ctx->jmp, -1); // abort operation
     }
 }
 
 static int transform(const char *pattern, char *result, const char **errmsg) {
+    jmp_buf jmp;
     struct context ctx = {
         .src = pattern,
         .dst = result,
         .errmsg = errmsg,
+        .jmp = &jmp,
     };
-    if (!setjmp(ctx.jmp)) {
+    if (!setjmp(*ctx.jmp)) {
         copy_char(&ctx, '^');
         transform_impl(&ctx);
         copy_char(&ctx, '$');
