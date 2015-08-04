@@ -47,7 +47,7 @@ typedef const char *const msg_t;
 static msg_t msg_pre_all = "Criterion v%s\n";
 static msg_t msg_desc = "  %s\n";
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
 static msg_t msg_pre_init = "%1$s::%2$s\n";
 static msg_t msg_post_test_timed = "%1$s::%2$s: (%3$3.2fs)\n";
 static msg_t msg_post_test = "%1$s::%2$s\n";

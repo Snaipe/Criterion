@@ -29,7 +29,11 @@
 #include "criterion/options.h"
 #include "i18n.h"
 
-#define LOG_FORMAT "[%1$s%2$s%3$s] %4$s"
+#ifdef ENABLE_NLS
+# define LOG_FORMAT "[%1$s%2$s%3$s] %4$s"
+#else
+# define LOG_FORMAT "[%s%s%s] %s"
+#endif
 
 const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
     [CRITERION_LOGGING_PREFIX_DASHES]   = { "----", CRIT_FG_BLUE  },
