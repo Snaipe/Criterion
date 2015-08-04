@@ -107,6 +107,8 @@ int resume_child(void) {
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
 
+    SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+
     run_worker(&g_worker_context);
     return 1;
 #else
@@ -188,7 +190,40 @@ void wait_process(s_proc_handle *handle, int *status) {
     DWORD exit_code;
     GetExitCodeProcess(handle->handle, &exit_code);
     CloseHandle(handle->handle);
-    *status = exit_code << 8;
+
+    int sig = 0;
+    switch (exit_code) {
+        case STATUS_FLOAT_DENORMAL_OPERAND:
+        case STATUS_FLOAT_DIVIDE_BY_ZERO:
+        case STATUS_FLOAT_INEXACT_RESULT:
+        case STATUS_FLOAT_INVALID_OPERATION:
+        case STATUS_FLOAT_OVERFLOW:
+        case STATUS_FLOAT_STACK_CHECK:
+        case STATUS_FLOAT_UNDERFLOW:
+        case STATUS_INTEGER_DIVIDE_BY_ZERO:
+        case STATUS_INTEGER_OVERFLOW:           sig = SIGFPE; break;
+
+        case STATUS_ILLEGAL_INSTRUCTION:
+        case STATUS_PRIVILEGED_INSTRUCTION:
+        case STATUS_NONCONTINUABLE_EXCEPTION:   sig = SIGILL; break;
+
+        case STATUS_TIMEOUT:                    sig = SIGALRM; break;
+
+        case STATUS_ACCESS_VIOLATION:
+        case STATUS_DATATYPE_MISALIGNMENT:
+        case STATUS_ARRAY_BOUNDS_EXCEEDED:
+        case STATUS_GUARD_PAGE_VIOLATION:
+        case STATUS_IN_PAGE_ERROR:
+        case STATUS_NO_MEMORY:
+        case STATUS_INVALID_DISPOSITION:
+        case STATUS_STACK_OVERFLOW:             sig = SIGSEGV; break;
+
+        case STATUS_CONTROL_C_EXIT:             sig = SIGINT; break;
+
+        default: break;
+    }
+
+    *status = sig ? sig : exit_code << 8;
 #else
     waitpid(handle->pid, status, 0);
 #endif
