@@ -18,7 +18,7 @@ script:
 after_success:
 - make coveralls
 after_failure:
-- cat build/Testing/Temporary/LastTest.log
+- cat Testing/Temporary/LastTest.log
 env:
   global:
     secure: bzZcWjdqoTgceC40kEBucx7NuWYJPk+rxgF3UJJDXi+ijQAFYPv70p5eVsGR6rfc+XgqXCxcUFQtuL4ZVt7QEfVk1ZOJITNeHbKIeKaEYS4nX8mFf+CBeEm9bJGZ04KiQJdJu5mzzAHvXbW7roGXDGWe1Bjnk5wwA+dNUCa7H04=
