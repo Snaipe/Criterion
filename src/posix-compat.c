@@ -56,19 +56,53 @@ struct pipe_handle {
 struct worker_context g_worker_context = {.test = NULL};
 
 #ifdef VANILLA_WIN32
-static struct criterion_test            child_test;
-static struct criterion_test_extra_data child_test_data;
-static struct criterion_suite           child_suite;
-static struct criterion_test_extra_data child_suite_data;
-static struct pipe_handle               child_pipe;
+struct full_context {
+    struct worker_context ctx;
+    struct criterion_test test;
+    struct criterion_test_extra_data test_data;
+    struct criterion_suite suite;
+    struct criterion_test_extra_data suite_data;
+    struct pipe_handle pipe;
+    int resumed;
+};
+
+static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker");
+#define MAPPING_SIZE sizeof (struct full_context)
+
+static struct full_context local_ctx;
 #endif
 
 int resume_child(void) {
-    if (g_worker_context.test) {
-        run_worker(&g_worker_context);
-        return 1;
-    }
+#ifdef VANILLA_WIN32
+    HANDLE sharedMem = OpenFileMapping(
+           FILE_MAP_ALL_ACCESS,
+           FALSE,
+           g_mapping_name);
+
+    if (sharedMem == NULL)
+        return 0;
+
+    struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
+           FILE_MAP_ALL_ACCESS,
+           0,
+           0,
+           MAPPING_SIZE);
+
+    if (ctx == NULL)
+        exit(-1);
+
+    local_ctx = *ctx;
+    g_worker_context = local_ctx.worker_context;
+    ctx.resumed = 1;
+
+    UmapViewOfFile(ctx);
+    CloseHandle(sharedMem);
+
+    run_worker(&g_worker_context);
+    return 1;
+#else
     return 0;
+#endif
 }
 
 s_proc_handle *fork_process() {
@@ -86,36 +120,56 @@ s_proc_handle *fork_process() {
         return (void *) -1;
 
     // Copy context over
-    f_worker_func child_func = g_worker_context.func;
+    HANDLE sharedMem = CreateFileMapping(
+            INVALID_HANDLE_VALUE,
+            NULL,
+            PAGE_READWRITE,
+            0,
+            MAPPING_SIZE,
+            g_mapping_name)
 
-    child_test      = *g_worker_context.test;
-    child_test_data = *g_worker_context.test->data;
-    child_suite     = *g_worker_context.suite;
-    child_pipe      = *g_worker_context.pipe;
+    if (sharedMem == NULL)
+        return (void *) -1;
 
-    g_worker_context = (struct worker_context) {
-        &child_test,
-        &child_suite,
-        child_func,
-        &child_pipe
-    };
+    struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
+            FILE_MAP_ALL_ACCESS,
+            0,
+            0,
+            MAPPING_SIZE);
 
-    child_test.data  = &child_test_data;
-
-    if (g_worker_context.suite->data) {
-        child_suite_data = *g_worker_context.suite->data;
-        child_suite.data = &child_suite_data;
-        WRITE_PROCESS_(info.hProcess, child_suite_data, sizeof (child_suite_data));
+    if (ctx == NULL) {
+        CloseHandle(sharedMem);
+        return (void *) -1;
     }
 
-    WRITE_PROCESS_(info.hProcess, child_test,       sizeof (child_test));
-    WRITE_PROCESS_(info.hProcess, child_test_data,  sizeof (child_test_data));
-    WRITE_PROCESS_(info.hProcess, child_suite,      sizeof (child_suite));
-    WRITE_PROCESS_(info.hProcess, child_pipe,       sizeof (child_pipe));
-    WRITE_PROCESS_(info.hProcess, g_worker_context, sizeof (struct worker_context));
+    *ctx = (struc full_context) {
+        .test      = *g_worker_context.test;
+        .test_data = *g_worker_context.test->data;
+        .suite     = *g_worker_context.suite;
+        .pipe      = *g_worker_context.pipe;
+    };
+
+    ctx.ctx = (struct worker_context) {
+        &ctx.test,
+        &ctx.suite,
+        g_worker_context.func,
+        &ctx.pipe
+    };
+
+    ctx.test.data = &ctx.test_data;
+
+    if (g_worker_context.suite->data) {
+        ctx.suite_data = *g_worker_context.suite->data;
+        ctx.suite.data = &ctx.suite_data;
+    }
 
     ResumeThread(info.hThread);
     CloseHandle(info.hThread);
+
+    while (!ctx.resumed); // wait until the child has initialized itself
+
+    UmapViewOfFile(ctx);
+    CloseHandle(sharedMem);
 
     return unique_ptr(s_proc_handle, { info.hProcess });
 #else
