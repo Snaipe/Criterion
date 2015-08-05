@@ -147,7 +147,34 @@ is received:
         *ptr = 42;
     }
 
-This feature will of course not work on Windows.
+This feature will also work (to some extent) on Windows for the
+following signals on some exceptions:
+
+======== =====================================================================
+Signal   Triggered by
+======== =====================================================================
+SIGSEGV  STATUS_ACCESS_VIOLATION, STATUS_DATATYPE_MISALIGNMENT,
+         STATUS_ARRAY_BOUNDS_EXCEEDED, STATUS_GUARD_PAGE_VIOLATION,
+         STATUS_IN_PAGE_ERROR, STATUS_NO_MEMORY, STATUS_INVALID_DISPOSITION,
+         STATUS_STACK_OVERFLOW
+-------- ---------------------------------------------------------------------
+SIGILL   STATUS_ILLEGAL_INSTRUCTION, STATUS_PRIVILEGED_INSTRUCTION,
+         STATUS_NONCONTINUABLE_EXCEPTION
+-------- ---------------------------------------------------------------------
+SIGINT   STATUS_CONTROL_C_EXIT
+-------- ---------------------------------------------------------------------
+SIGFPE   STATUS_FLOAT_DENORMAL_OPERAND, STATUS_FLOAT_DIVIDE_BY_ZERO,
+         STATUS_FLOAT_INEXACT_RESULT, STATUS_FLOAT_INVALID_OPERATION,
+         STATUS_FLOAT_OVERFLOW, STATUS_FLOAT_STACK_CHECK,
+         STATUS_FLOAT_UNDERFLOW, STATUS_INTEGER_DIVIDE_BY_ZERO,
+         STATUS_INTEGER_OVERFLOW
+-------- ---------------------------------------------------------------------
+SIGALRM  STATUS_TIMEOUT
+======== =====================================================================
+
+See the `windows exception reference`_ for more details on each exception.
+
+.. _windows exception reference: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679356(v=vs.85).aspx
 
 Configuration reference
 ~~~~~~~~~~~~~~~~~~~~~~~
