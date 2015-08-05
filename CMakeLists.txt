@@ -9,8 +9,8 @@ add_subdirectory(samples)
 
 set(PROJECT_VERSION "1.3.1")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
-set(GettextTranslate_ALL)
-set(GettextTranslate_GMO_BINARY)
+set(GettextTranslate_ALL 1)
+set(GettextTranslate_GMO_BINARY 1)
 set(MODULE_DIR "${CMAKE_SOURCE_DIR}/.cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 
