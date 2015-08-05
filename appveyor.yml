@@ -7,7 +7,7 @@ init:
   - 'SET PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%APPVEYOR_BUILD_FOLDER%\bin;%APPVEYOR_BUILD_FOLDER%\build'
 
 environment:
-  COVERALLS_TOKEN:
+  COVERALLS_REPO_TOKEN:
     secure: 5nuCg+faxFPeppoNNcSwVobswAVFUf8ut83vw8CX/4W2y0kZkGmwEfCUxSQWiQDU
 
 clone_depth: 5
