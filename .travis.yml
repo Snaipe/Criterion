@@ -15,7 +15,7 @@ before_install:
 - export CFLAGS="-g -O0"
 script:
 - mkdir -p build
-- cd $_
+- cd build
 - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME ..
 - make
 - make test
