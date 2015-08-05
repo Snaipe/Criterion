@@ -47,7 +47,8 @@
 # define SECTION_START(Name)  g_ ## Name ## _section_start
 # define SECTION_END(Name)    g_ ## Name ## _section_end
 
-# define DECL_SECTION_LIMITS(Type, Name)                            \
+# define DECL_SECTION_LIMITS(Type, Name) DECL_SECTION_LIMITS_(Type, Name)
+# define DECL_SECTION_LIMITS_(Type, Name)                            \
     extern Type SECTION_START_(Name) SECTION_START_SUFFIX(#Name);   \
     extern Type SECTION_END_(Name)   SECTION_END_SUFFIX(#Name)
 
