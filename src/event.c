@@ -45,8 +45,10 @@ struct event *read_event(FILE *f) {
         case ASSERT: {
             const size_t assert_size = sizeof (struct criterion_assert_stats);
             unsigned char *buf = malloc(assert_size);
-            if (fread(buf, assert_size, 1, f) == 0)
+            if (fread(buf, assert_size, 1, f) == 0) {
+                free(buf);
                 return NULL;
+            }
 
             return unique_ptr(struct event,
                     .value = { .kind = kind, .data = buf },
@@ -54,8 +56,10 @@ struct event *read_event(FILE *f) {
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
-            if (fread(elapsed_time, sizeof (double), 1, f) == 0)
+            if (fread(elapsed_time, sizeof (double), 1, f) == 0) {
+                free(elapsed_time);
                 return NULL;
+            }
 
             return unique_ptr(struct event,
                     .value = { .kind = kind, .data = elapsed_time },

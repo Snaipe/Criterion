@@ -1,5 +1,5 @@
 
-Criterion
+<img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
 [![Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
@@ -31,14 +31,14 @@ the user would have with other frameworks:
   reported and tested.
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
-* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiles only with MinGW or Cygwin).
+* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiling with MinGW GCC).
 
 ## Downloads
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-osx-x86_64.tar.bz2)
-* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-win-x86_64.tar.bz2)
-* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.2.0/criterion-1.2.0-freebsd-x86_64.tar.bz2)
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-linux-x86_64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-osx-x86_64.tar.bz2)
+* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-freebsd-x86_64.tar.bz2)
+* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-windows-x86_64.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
@@ -99,8 +99,11 @@ A. I worked with CUnit and Check, and I must say that they do their job
 
 **Q. Where has this been tested?**  
 A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
-   most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, and finally
-   Windows 7 (with the MinGW and Cygwin ports of GCC).
+   most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, Windows 7 and 2K.
+
+## Credits
+
+Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/

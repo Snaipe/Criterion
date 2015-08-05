@@ -14,11 +14,12 @@
 !HEADER
 !ChangeLog
 
-!Makefile.am
-!configure.ac
-!autogen.sh
+!CMakeLists.txt
+!.cmake/*
 
+!src/config.h.in
 src/config.h
 
+build
 *~
 *.swp

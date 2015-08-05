@@ -27,6 +27,5 @@ Features
   reported and tested.
 * Progress and statistics can be followed in real time with report hooks.
 * TAP output format can be enabled with an option.
-* Runs on Linux, FreeBSD, Mac OS X, and Windows (compiles only with Cygwin
-  for the moment).
+* Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiling with MinGW GCC).
 * xUnit framework structure

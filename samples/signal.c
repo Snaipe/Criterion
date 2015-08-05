@@ -8,8 +8,9 @@ Test(simple, caught, .signal = SIGSEGV) {
     *i = 42;
 }
 
-Test(simple, wrong_signal, .signal = SIGSEGV) {
-    raise(SIGINT);
+Test(simple, wrong_signal, .signal = SIGINT) {
+    int *i = NULL;
+    *i = 42;
 }
 
 Test(simple, uncaught) {

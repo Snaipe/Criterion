@@ -1,15 +1,24 @@
 language: c
 compiler:
-  - gcc
+- gcc
+sudo: false
+addons:
+  apt:
+    packages:
+    - check
+    - gettext
+    - cmake
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install -y check gcc-4.9 gettext autopoint
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
-  - sudo pip install cpp-coveralls
+- export LOCAL_INSTALL="$HOME"
+- ".ci/install-libcsptr.sh"
+- export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
+- export CFLAGS="-g -O0"
 script:
-  - ./autogen.sh && ./configure --enable-gcov CFLAGS="-g -O0" && make && make -C samples check
+- mkdir -p build && cd $_ && cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME .. && make && make test
 after_success:
-  - coveralls --gcov gcov-4.9 --exclude samples --exclude dependencies --gcov-options '\-lp' -b .
+- make coveralls
 after_failure:
-  - cat $(find samples -iname '*.log') /dev/null
+- cat Testing/Temporary/LastTest.log
+env:
+  global:
+    secure: bzZcWjdqoTgceC40kEBucx7NuWYJPk+rxgF3UJJDXi+ijQAFYPv70p5eVsGR6rfc+XgqXCxcUFQtuL4ZVt7QEfVk1ZOJITNeHbKIeKaEYS4nX8mFf+CBeEm9bJGZ04KiQJdJu5mzzAHvXbW7roGXDGWe1Bjnk5wwA+dNUCa7H04=

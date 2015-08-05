@@ -1,0 +1,11 @@
+#ifndef CONFIG_H_IN_
+# define CONFIG_H_IN_
+
+#cmakedefine ENABLE_NLS @ENABLE_NLS@
+#cmakedefine HAVE_PCRE @HAVE_PCRE@
+
+# define LOCALEDIR "${LOCALEDIR}"
+# define PACKAGE "${PROJECT_NAME}"
+# define VERSION "${PROJECT_VERSION}"
+
+#endif /* !CONFIG_H_IN_ */

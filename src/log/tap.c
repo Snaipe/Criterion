@@ -31,6 +31,7 @@
 #include "criterion/ordered-set.h"
 #include "timer.h"
 #include "config.h"
+#include "posix-compat.h"
 
 void tap_log_pre_all(struct criterion_test_set *set) {
     size_t enabled_count = 0;
@@ -81,13 +82,22 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
             stats->elapsed_time);
     for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
         if (!asrt->passed) {
-            char *dup = strdup(*asrt->message ? asrt->message : asrt->condition), *saveptr = NULL;
+            char *dup = strdup(*asrt->message ? asrt->message : asrt->condition);
+#ifdef VANILLA_WIN32
+            char *line = strtok(dup, "\n");
+#else
+            char *saveptr = NULL;
             char *line = strtok_r(dup, "\n", &saveptr);
+#endif
             criterion_important("  %s:%u: Assertion failed: %s\n",
                     asrt->file,
                     asrt->line,
                     line);
+#ifdef VANILLA_WIN32
+            while ((line = strtok(NULL, "\n")))
+#else
             while ((line = strtok_r(NULL, "\n", &saveptr)))
+#endif
                 criterion_important("    %s\n", line);
             free(dup);
         }
