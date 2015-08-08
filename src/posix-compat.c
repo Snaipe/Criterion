@@ -360,3 +360,30 @@ void *get_win_section_end(const char *section) {
     return NULL;
 }
 #endif
+
+#ifdef __APPLE__
+# include <mach-o/getsect.h>
+# include <mach-o/dyld.h>
+
+# define BASE_IMAGE_INDEX 0
+
+static inline void *get_real_address(void *addr) {
+    if (!addr)
+        return NULL;
+
+    // We need to slide the section address to get a valid pointer
+    // because ASLR will shift the image by a random offset
+    return addr + _dyld_get_image_vmaddr_slide(BASE_IMAGE_INDEX);
+}
+
+void *get_osx_section_start(const char *section) {
+    unsigned long secsize;
+    return get_real_address(getsectdata("__DATA", section, &secsize));
+}
+
+void *get_osx_section_end(const char *section) {
+    unsigned long secsize;
+    char *section_start = getsectdata("__DATA", section, &secsize);
+    return get_real_address(section_start) + secsize;
+}
+#endif
