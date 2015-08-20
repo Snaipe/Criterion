@@ -20,7 +20,7 @@ matrix:
   fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
 
 platform:
-  - x86
+  - x86_64
 
 configuration: Release
 
