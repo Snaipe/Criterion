@@ -37,6 +37,7 @@ foreach(sample ${SAMPLES})
 
     add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample})
     set_property(TEST ${sample}_compare PROPERTY
+        ENVIRONMENT "LC_ALL=en_US.utf8"
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
     )
@@ -50,6 +51,7 @@ foreach(script ${SCRIPTS})
 
     add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${sample})
     set_property(TEST ${script}_compare PROPERTY
+        ENVIRONMENT "LC_ALL=en_US.utf8"
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
     )
