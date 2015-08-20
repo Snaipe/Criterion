@@ -34,11 +34,21 @@ foreach(sample ${SAMPLES})
     set_property(TEST ${sample} PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )
+
+    add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh ./${sample} "${CMAKE_CURRENT_LIST_DIR}")
+    set_property(TEST ${sample}_compare PROPERTY
+        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+    )
 endforeach()
 
 foreach(script ${SCRIPTS})
     add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
     set_property(TEST ${script} PROPERTY
+        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+    )
+
+    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh "${CMAKE_CURRENT_LIST_DIR}")
+    set_property(TEST ${script}_compare PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )
 endforeach()

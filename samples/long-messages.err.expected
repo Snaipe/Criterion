@@ -1,0 +1,6 @@
+[[0;34m----[0m] [0;1m/home/snaipe/workspace/c/criterion/samples/long-messages.c[0m:[0;31m4[0m: Assertion failed: This is
+[[0;34m----[0m]   A long message
+[[0;34m----[0m]   Spawning multiple lines.
+[[0;34m----[0m]   Formatting is respected.
+[[0;31mFAIL[0m] sample::long_msg: (0,00s)
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m1[0;1m | Passing: [0;32m0[0;1m | Failing: [0;31m1[0;1m | Crashing: [0;31m0[0;1m [0m
