@@ -95,4 +95,6 @@ void *get_osx_section_end(const char *section);
 #  define GET_SECTION_END(Name)   SECTION_END(Name)
 # endif
 
+const char *basename_compat(const char *str);
+
 #endif /* !POSIX_COMPAT_H_ */

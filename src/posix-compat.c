@@ -387,3 +387,11 @@ void *get_osx_section_end(const char *section) {
     return get_real_address(section_start) + secsize;
 }
 #endif
+
+const char *basename_compat(const char *str) {
+    const char *start = str;
+    for (const char *c = str; *c; ++c)
+        if ((*c == '/' || *c == '\\') && c[1])
+            start = c + 1;
+    return start;
+}

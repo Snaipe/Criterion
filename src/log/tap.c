@@ -91,7 +91,7 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
 #endif
             bool sf = criterion_options.short_filename;
             criterion_important("  %s:%u: Assertion failed: %s\n",
-                    sf ? basename(asrt->file) : asrt->file,
+                    sf ? basename_compat(asrt->file) : asrt->file,
                     asrt->line,
                     line);
 #ifdef VANILLA_WIN32
@@ -110,7 +110,7 @@ void tap_log_test_crash(struct criterion_test_stats *stats) {
     criterion_important("not ok - %s::%s unexpected signal after %s:%u\n",
             stats->test->category,
             stats->test->name,
-            sf ? basename(stats->file) : stats->file,
+            sf ? basename_compat(stats->file) : stats->file,
             stats->progress);
 }
 
