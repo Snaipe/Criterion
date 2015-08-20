@@ -164,9 +164,10 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
         char *line      = strtok_r(dup, "\n", &saveptr);
 #endif
 
+        bool sf = criterion_options.short_filename;
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_fail),
-                FG_BOLD, stats->file, RESET,
+                FG_BOLD, sf ? basename(stats->file) : stats->file, RESET,
                 FG_RED,  stats->line, RESET,
                 line);
 
@@ -181,9 +182,10 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
 }
 
 void normal_log_test_crash(struct criterion_test_stats *stats) {
+    bool sf = criterion_options.short_filename;
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_crash_line),
-            FG_BOLD, stats->file,     RESET,
+            FG_BOLD, sf ? basename(stats->file) : stats->file, RESET,
             FG_RED,  stats->progress, RESET);
     criterion_pimportant(CRITERION_PREFIX_FAIL, _(msg_test_crash),
             stats->test->category,

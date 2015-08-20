@@ -57,6 +57,8 @@
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
+    "    -S or --short-filename: only display the base "    \
+            "name of the source file on a failure\n"        \
     PATTERN_USAGE                                           \
     "    --tap: enables TAP formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
@@ -124,6 +126,7 @@ int main(int argc, char *argv[]) {
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
         {"fail-fast",       no_argument,        0, 'f'},
+        {"short-filename",  no_argument,        0, 'S'},
 #ifdef HAVE_PCRE
         {"pattern",         required_argument,  0, 'p'},
 #endif
@@ -146,6 +149,7 @@ int main(int argc, char *argv[]) {
     opt->fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0");
     opt->use_ascii         = use_ascii;
     opt->logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2");
+    opt->short_filename    = !strcmp("1", getenv("CRITERION_SHORT_FILENAME") ?: "0");
 #ifdef HAVE_PCRE
     opt->pattern           = getenv("CRITERION_TEST_PATTERN");
 #endif
@@ -155,13 +159,14 @@ int main(int argc, char *argv[]) {
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
-    for (int c; (c = getopt_long(argc, argv, "hvlf", opts, NULL)) != -1;) {
+    for (int c; (c = getopt_long(argc, argv, "hvlfS", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = atoi(optarg ?: "1"); break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'f': criterion_options.fail_fast         = true; break;
+            case 'S': criterion_options.short_filename    = true; break;
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
