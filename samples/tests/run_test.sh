@@ -13,6 +13,8 @@ else
     sh -c "$bin_dir/$*" > $out_dir/$1.out 2> $out_dir/$1.err
 fi
 
+dos2unix $out_dir/$1.err $out_dir/$1.out
+
 if [ -f $cmp_dir/$1.out.expected ] && [ "$(md5sum $out_dir/$1.out | cut -d' ' -f1)" != "$(md5sum $cmp_dir/$1.out.expected | cut -d' ' -f1)" ]; then
     diff $out_dir/$1.out $cmp_dir/$1.out.expected
     exit 255
