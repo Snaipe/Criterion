@@ -23,12 +23,17 @@ configuration: Release
 install:
   - 'set GCOV_PREFIX=%APPVEYOR_BUILD_FOLDER%'
   - 'set LOCAL_INSTALL=%APPVEYOR_BUILD_FOLDER%'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
+  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
   - 'cd dependencies/libcsptr/build && make && make install && cd ../../../'
-  - 'mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
+  - 'mkdir build && cd build'
+  - 'cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
 
 build_script:
   - 'make'
+
+after_build:
+  - 'make install'
+  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_TAG_NAME}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
 
 test_script:
   - 'make test || bash -lc "cat $APPVEYOR_BUILD_FOLDER/build/Testing/Temporary/LastTest.log"'
@@ -41,10 +46,6 @@ notifications:
   - provider: Email
     to: [franklinmathieu@gmail.com]
     on_build_status_changed: true
-
-after_build:
-  - 'make install'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; tar -cvjf criterion-${APPVEYOR_REPO_TAG_NAME}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
 
 artifacts:
   - path: '**\*.tar.bz2'
