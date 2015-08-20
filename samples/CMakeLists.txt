@@ -1,5 +1,3 @@
-project(criterion_samples)
-
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
 
 include_directories(../include)
@@ -22,10 +20,13 @@ set(SCRIPTS
   early_exit
   verbose
   list
-  pattern
   fail_fast
   help
 )
+
+if (HAVE_PCRE)
+    set(SCRIPTS ${SCRIPTS} pattern)
+endif ()
 
 foreach(sample ${SAMPLES})
     add_executable(${sample} ${sample}.c)

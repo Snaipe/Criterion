@@ -4,9 +4,6 @@ project(Criterion C)
 
 # Project setup & environment variables
 
-enable_testing()
-add_subdirectory(samples)
-
 set(PROJECT_VERSION "1.3.1")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
@@ -133,3 +130,7 @@ install(TARGETS criterion
 add_custom_target(uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
 )
+
+enable_testing()
+add_subdirectory(samples)
+
