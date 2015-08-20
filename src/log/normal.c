@@ -44,26 +44,30 @@
 
 typedef const char *const msg_t;
 
-static msg_t msg_pre_all = "Criterion v%s\n";
-static msg_t msg_desc = "  %s\n";
+// Used to mark string for gettext
+# define N_(Str) Str
+# define N_s(Str, Pl) {Str, Pl}
+
+static msg_t msg_pre_all = N_("Criterion v%s\n");
+static msg_t msg_desc = N_("  %s\n");
 
 #ifdef ENABLE_NLS
-static msg_t msg_pre_init = "%1$s::%2$s\n";
-static msg_t msg_post_test_timed = "%1$s::%2$s: (%3$3.2fs)\n";
-static msg_t msg_post_test = "%1$s::%2$s\n";
-static msg_t msg_post_suite_test = "%1$s::%2$s: Test is disabled\n";
-static msg_t msg_post_suite_suite = "%1$s::%2$s: Suite is disabled\n";
-static msg_t msg_assert_fail = "%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n";
-static msg_t msg_test_crash_line = "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n";
-static msg_t msg_test_crash = "%1$s::%2$s: CRASH!\n";
-static msg_t msg_test_other_crash = "%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n";
-static msg_t msg_pre_suite = "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n";
-static msg_t msg_pre_suite_pl = "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n";
-static msg_t msg_post_all = "%1$sSynthesis: Tested: %2$s%3$lu%4$s "
-              "| Passing: %5$s%6$lu%7$s "
-              "| Failing: %8$s%9$lu%10$s "
-              "| Crashing: %11$s%12$lu%13$s "
-              "%14$s\n";
+static msg_t msg_pre_init = N_("%1$s::%2$s\n");
+static msg_t msg_post_test_timed = N_("%1$s::%2$s: (%3$3.2fs)\n");
+static msg_t msg_post_test = N_("%1$s::%2$s\n");
+static msg_t msg_post_suite_test = N_("%1$s::%2$s: Test is disabled\n");
+static msg_t msg_post_suite_suite = N_("%1$s::%2$s: Suite is disabled\n");
+static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
+static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
+static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
+static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
+static msg_t msg_pre_suite[] = N_s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
+             "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n");
+static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
+             "| Passing: %5$s%6$lu%7$s "
+             "| Failing: %8$s%9$lu%10$s "
+             "| Crashing: %11$s%12$lu%13$s "
+             "%14$s\n");
 #else
 static msg_t msg_pre_init = "%s::%s\n";
 static msg_t msg_post_test_timed = "%s::%s: (%3.2fs)\n";
@@ -74,13 +78,13 @@ static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
-static msg_t msg_pre_suite = "Running %s%lu%s test from %s%s%s:\n";
-static msg_t msg_pre_suite_pl = "Running %s%lu%s tests from %s%s%s:\n";
+static msg_t msg_pre_suite[] = { "Running %s%lu%s test from %s%s%s:\n",
+            "Running %s%lu%s tests from %s%s%s:\n" };
 static msg_t msg_post_all = "%sSynthesis: Tested: %s%lu%s "
-              "| Passing: %s%lu%s "
-              "| Failing: %s%lu%s "
-              "| Crashing: %s%lu%s "
-              "%s\n";
+            "| Passing: %s%lu%s "
+            "| Failing: %s%lu%s "
+            "| Crashing: %s%lu%s "
+            "%s\n";
 #endif
 
 void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
@@ -160,9 +164,10 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
         char *line      = strtok_r(dup, "\n", &saveptr);
 #endif
 
+        bool sf = criterion_options.short_filename;
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_fail),
-                FG_BOLD, stats->file, RESET,
+                FG_BOLD, sf ? basename_compat(stats->file) : stats->file, RESET,
                 FG_RED,  stats->line, RESET,
                 line);
 
@@ -177,9 +182,10 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
 }
 
 void normal_log_test_crash(struct criterion_test_stats *stats) {
+    bool sf = criterion_options.short_filename;
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_crash_line),
-            FG_BOLD, stats->file,     RESET,
+            FG_BOLD, sf ? basename_compat(stats->file) : stats->file, RESET,
             FG_RED,  stats->progress, RESET);
     criterion_pimportant(CRITERION_PREFIX_FAIL, _(msg_test_crash),
             stats->test->category,
@@ -194,7 +200,7 @@ void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
 
 void normal_log_pre_suite(struct criterion_suite_set *set) {
     criterion_pinfo(CRITERION_PREFIX_EQUALS,
-            _s(msg_pre_suite, msg_pre_suite_pl, set->tests->size),
+            _s(msg_pre_suite[0], msg_pre_suite[1], set->tests->size),
             FG_BLUE, (unsigned long) set->tests->size, RESET,
             FG_GOLD, set->suite.name,  RESET);
 }

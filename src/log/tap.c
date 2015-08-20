@@ -89,8 +89,9 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
             char *saveptr = NULL;
             char *line = strtok_r(dup, "\n", &saveptr);
 #endif
+            bool sf = criterion_options.short_filename;
             criterion_important("  %s:%u: Assertion failed: %s\n",
-                    asrt->file,
+                    sf ? basename_compat(asrt->file) : asrt->file,
                     asrt->line,
                     line);
 #ifdef VANILLA_WIN32
@@ -105,10 +106,11 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
 }
 
 void tap_log_test_crash(struct criterion_test_stats *stats) {
+    bool sf = criterion_options.short_filename;
     criterion_important("not ok - %s::%s unexpected signal after %s:%u\n",
             stats->test->category,
             stats->test->name,
-            stats->file,
+            sf ? basename_compat(stats->file) : stats->file,
             stats->progress);
 }
 

@@ -268,8 +268,17 @@ foreach (GCOV_FILE ${ALL_GCOV_FILES})
 endforeach()
 
 # TODO: Enable setting these
-set(JSON_SERVICE_NAME "travis-ci")
-set(JSON_SERVICE_JOB_ID $ENV{TRAVIS_JOB_ID})
+if (NOT DEFINED ENV{CI_NAME})
+	set(JSON_SERVICE_NAME "travis-ci")
+else ()
+	set(JSON_SERVICE_NAME $ENV{CI_NAME})
+endif()
+
+if (NOT DEFINED ENV{CI_JOB_ID})
+	set(JSON_SERVICE_JOB_ID $ENV{TRAVIS_JOB_ID})
+else ()
+	set(JSON_SERVICE_JOB_ID $ENV{CI_JOB_ID})
+endif()
 set(JSON_REPO_TOKEN $ENV{COVERALLS_REPO_TOKEN})
 
 set(JSON_TEMPLATE

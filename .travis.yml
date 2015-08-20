@@ -1,24 +1,39 @@
 language: c
+os:
+- linux
+- osx
 compiler:
 - gcc
 sudo: false
-addons:
-  apt:
-    packages:
-    - check
-    - gettext
-    - cmake
 before_install:
 - export LOCAL_INSTALL="$HOME"
 - ".ci/install-libcsptr.sh"
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
 - export CFLAGS="-g -O0"
 script:
-- mkdir -p build && cd $_ && cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME .. && make && make test
+- mkdir -p build
+- cd build
+- cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG} ..
+- make
+- make test
 after_success:
 - make coveralls
 after_failure:
-- cat Testing/Temporary/LastTest.log
+- cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
 env:
   global:
     secure: bzZcWjdqoTgceC40kEBucx7NuWYJPk+rxgF3UJJDXi+ijQAFYPv70p5eVsGR6rfc+XgqXCxcUFQtuL4ZVt7QEfVk1ZOJITNeHbKIeKaEYS4nX8mFf+CBeEm9bJGZ04KiQJdJu5mzzAHvXbW7roGXDGWe1Bjnk5wwA+dNUCa7H04=
+
+before_deploy:
+- make install
+- tar -cvjf criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2 criterion-${TRAVIS_TAG}
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: d3l2Ohb2FF3tSXku1d0ASR5dntdnQ48Jyc39IEloDBxFXCselCkYruUQv6p0TA3P+Dmrz4wS7/AFlBMMsQ3XfGFVIOnITiTaGWg5fEpIf7zYsDf0zECPE0MOHMGqJMn3/SrSKdtEA4N84Q4JS7Ou+ewG65mxUDO5Ce60OoEG5JA=
+  file: criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2
+  on:
+    repo: Snaipe/Criterion
+    tags: true

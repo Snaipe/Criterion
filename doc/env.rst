@@ -18,6 +18,7 @@ Command line arguments
 * ``--no-early-exit``: The test workers shall not prematurely exit when done and
   will properly return from the main, cleaning up their process space.
   This is useful when tracking memory leaks with ``valgrind --tool=memcheck``.
+* ``-S or --short-filename``: The filenames are displayed in their short form.
 * ``--always-succeed``: The process shall exit with a status of ``0``.
 * ``--tap``: Enables the TAP (Test Anything Protocol) output format.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
@@ -59,6 +60,7 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_ENABLE_TAP``:      Same as ``--tap``.
 * ``CRITERION_FAIL_FAST``:       Same as ``--fail-fast``.
 * ``CRITERION_USE_ASCII``:       Same as ``--ascii``.
+* ``CRITERION_SHORT_FILENAME``:  Same as ``--short-filename``.
 * ``CRITERION_VERBOSITY_LEVEL``: Same as ``--verbose``. Sets the verbosity level
   to its value.
 * ``CRITERION_TEST_PATTERN``:    Same as ``--pattern``. Sets the test pattern

@@ -35,6 +35,7 @@ struct criterion_options {
     bool use_ascii;
     bool fail_fast;
     const char *pattern;
+    bool short_filename;
 };
 
 extern struct criterion_options criterion_options;

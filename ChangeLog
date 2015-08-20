@@ -1,3 +1,11 @@
+2015-08-20  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 1.3.1
+    * Fixed OS X and Windows section iterations
+    * Fixed report hooks not working on OS X and Windows
+    * Fixed duplicated output when writing in PRE_ALL to a redirected stdout/err
+    * Added -S switch to display filenames in their short version
+
 2015-08-05  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 1.3.0

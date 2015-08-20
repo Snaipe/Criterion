@@ -35,10 +35,9 @@ the user would have with other frameworks:
 
 ## Downloads
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-osx-x86_64.tar.bz2)
-* [FreeBSD (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-freebsd-x86_64.tar.bz2)
-* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.0/criterion-1.3.0-windows-x86_64.tar.bz2)
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.1/criterion-1.3.1-linux-x86_64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v1.3.1/criterion-1.3.1-osx-x86_64.tar.bz2)
+* [Windows (x86)](https://github.com/Snaipe/Criterion/releases/download/v1.3.1/criterion-1.3.1-windows-x86.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 

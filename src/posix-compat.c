@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 #include <assert.h>
 #include "posix-compat.h"
 #include "process.h"
@@ -304,7 +327,7 @@ bool is_current_process(s_proc_handle *proc) {
 #endif
 }
 
-#ifdef VANILLA_WIN32
+#ifdef _WIN32
 void *get_win_section_start(const char *section) {
     PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER) GetModuleHandle(NULL);
     PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((DWORD)(dosHeader) + (dosHeader->e_lfanew));
@@ -337,3 +360,38 @@ void *get_win_section_end(const char *section) {
     return NULL;
 }
 #endif
+
+#ifdef __APPLE__
+# include <mach-o/getsect.h>
+# include <mach-o/dyld.h>
+
+# define BASE_IMAGE_INDEX 0
+
+static inline void *get_real_address(void *addr) {
+    if (!addr)
+        return NULL;
+
+    // We need to slide the section address to get a valid pointer
+    // because ASLR will shift the image by a random offset
+    return addr + _dyld_get_image_vmaddr_slide(BASE_IMAGE_INDEX);
+}
+
+void *get_osx_section_start(const char *section) {
+    unsigned long secsize;
+    return get_real_address(getsectdata("__DATA", section, &secsize));
+}
+
+void *get_osx_section_end(const char *section) {
+    unsigned long secsize;
+    char *section_start = getsectdata("__DATA", section, &secsize);
+    return get_real_address(section_start) + secsize;
+}
+#endif
+
+const char *basename_compat(const char *str) {
+    const char *start = str;
+    for (const char *c = str; *c; ++c)
+        if ((*c == '/' || *c == '\\') && c[1])
+            start = c + 1;
+    return start;
+}
