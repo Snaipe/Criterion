@@ -327,7 +327,7 @@ bool is_current_process(s_proc_handle *proc) {
 #endif
 }
 
-#ifdef VANILLA_WIN32
+#ifdef _WIN32
 void *get_win_section_start(const char *section) {
     PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER) GetModuleHandle(NULL);
     PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((DWORD)(dosHeader) + (dosHeader->e_lfanew));

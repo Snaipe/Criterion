@@ -76,7 +76,7 @@ void wait_process(s_proc_handle *handle, int *status);
 s_proc_handle *get_current_process();
 bool is_current_process(s_proc_handle *proc);
 
-# ifdef VANILLA_WIN32
+# ifdef _WIN32
 void *get_win_section_start(const char *section);
 void *get_win_section_end(const char *section);
 #  define CR_STRINGIFY_(Param) #Param
