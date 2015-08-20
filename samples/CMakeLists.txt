@@ -35,9 +35,10 @@ foreach(sample ${SAMPLES})
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )
 
-    add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh ./${sample} "${CMAKE_CURRENT_LIST_DIR}")
+    add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample})
     set_property(TEST ${sample}_compare PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+        ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
     )
 endforeach()
 
@@ -47,8 +48,9 @@ foreach(script ${SCRIPTS})
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )
 
-    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh "${CMAKE_CURRENT_LIST_DIR}")
+    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${sample})
     set_property(TEST ${script}_compare PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+        ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
     )
 endforeach()
