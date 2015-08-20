@@ -9,6 +9,10 @@ init:
 environment:
   COVERALLS_REPO_TOKEN:
     secure: 5nuCg+faxFPeppoNNcSwVobswAVFUf8ut83vw8CX/4W2y0kZkGmwEfCUxSQWiQDU
+  CI_NAME: appveyor
+  CI_JOB_ID: $(APPVEYOR_JOB_ID)
+  LOCAL_INSTALL: $(APPVEYOR_BUILD_FOLDER)
+  GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
 
 clone_depth: 5
 
@@ -21,10 +25,14 @@ platform:
 configuration: Release
 
 install:
-  - 'set GCOV_PREFIX=%APPVEYOR_BUILD_FOLDER%'
-  - 'set LOCAL_INSTALL=%APPVEYOR_BUILD_FOLDER%'
+  # Hack to make git think it is on the tip of the repo branch
+  - 'git checkout %APPVEYOR_REPO_BRANCH%'
+  - 'git reset --hard %APPVEYOR_REPO_COMMIT%'
+  # Install libcsptr
   - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
+  # We need to manually make since the above command somehow crashes
   - 'cd dependencies/libcsptr/build && make && make install && cd ../../../'
+  # Configure project
   - 'mkdir build && cd build'
   - 'cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
 
@@ -33,7 +41,7 @@ build_script:
 
 after_build:
   - 'make install'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_TAG_NAME}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
+  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
 
 test_script:
   - 'make test || bash -lc "cat $APPVEYOR_BUILD_FOLDER/build/Testing/Temporary/LastTest.log"'
