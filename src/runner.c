@@ -296,6 +296,8 @@ static int criterion_run_all_tests_impl(void) {
     report(PRE_ALL, set);
     log(pre_all, set);
 
+    fflush(NULL); // flush everything before forking
+
     smart struct criterion_global_stats *stats = stats_init();
     map_tests(set, stats, run_test);
 
