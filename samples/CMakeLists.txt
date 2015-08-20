@@ -49,7 +49,7 @@ foreach(script ${SCRIPTS})
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )
 
-    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${sample})
+    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${script})
     set_property(TEST ${script}_compare PROPERTY
         ENVIRONMENT "LC_ALL=en_US.utf8"
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
