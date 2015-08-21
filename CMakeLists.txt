@@ -133,4 +133,5 @@ add_custom_target(uninstall
 
 enable_testing()
 add_subdirectory(samples)
+add_subdirectory(test)
 
