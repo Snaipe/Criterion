@@ -4,6 +4,7 @@ include_directories(../include)
 
 set(SAMPLES
   signal
+  exit
   report
   suites
   fixtures

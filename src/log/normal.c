@@ -61,6 +61,7 @@ static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: 
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
+static msg_t msg_test_abnormal_exit = N_("%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n");
 static msg_t msg_pre_suite[] = N_s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
              "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n");
 static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
@@ -78,6 +79,7 @@ static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
+static msg_t msg_test_abnormal_exit = "%sWarning! The test `%s::%s` exited during its setup or teardown.%s\n";
 static msg_t msg_pre_suite[] = { "Running %s%lu%s test from %s%s%s:\n",
             "Running %s%lu%s tests from %s%s%s:\n" };
 static msg_t msg_post_all = "%sSynthesis: Tested: %s%lu%s "
@@ -198,6 +200,12 @@ void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
             FG_BOLD, stats->test->category, stats->test->name, RESET);
 }
 
+void normal_log_abnormal_exit(UNUSED struct criterion_test_stats *stats) {
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _(msg_test_abnormal_exit),
+            FG_BOLD, stats->test->category, stats->test->name, RESET);
+}
+
 void normal_log_pre_suite(struct criterion_suite_set *set) {
     criterion_pinfo(CRITERION_PREFIX_EQUALS,
             _s(msg_pre_suite[0], msg_pre_suite[1], set->tests->size),
@@ -212,6 +220,7 @@ struct criterion_output_provider normal_logging = {
     .log_assert         = normal_log_assert,
     .log_test_crash     = normal_log_test_crash,
     .log_other_crash    = normal_log_other_crash,
+    .log_abnormal_exit  = normal_log_abnormal_exit,
     .log_post_test      = normal_log_post_test,
     .log_post_suite     = normal_log_post_suite,
     .log_post_all       = normal_log_post_all,

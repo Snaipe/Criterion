@@ -36,6 +36,7 @@ struct criterion_test_extra_data {
     void (*init)(void);
     void (*fini)(void);
     int signal;
+    int exit_code;
     bool disabled;
     const char *description;
     void *data;

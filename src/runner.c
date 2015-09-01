@@ -207,6 +207,7 @@ static void run_test(struct criterion_global_stats *stats,
 
     bool test_started  = false;
     bool normal_finish = false;
+    bool cleaned_up = false;
     struct event *ev;
     while ((ev = worker_read_event(proc)) != NULL) {
         stat_push_event(stats, suite_stats, test_stats, ev);
@@ -232,6 +233,7 @@ static void run_test(struct criterion_global_stats *stats,
             case POST_FINI:
                 report(POST_FINI, test_stats);
                 log(post_fini, test_stats);
+                cleaned_up = true;
                 break;
         }
         sfree(ev);
@@ -259,6 +261,30 @@ static void run_test(struct criterion_global_stats *stats,
             log(post_test, test_stats);
             push_event(POST_FINI);
             log(post_fini, test_stats);
+        }
+    } else {
+        if ((normal_finish && !cleaned_up) || !test_started) {
+            log(abnormal_exit, test_stats);
+            if (!test_started) {
+                stat_push_event(stats,
+                        suite_stats,
+                        test_stats,
+                        &(struct event) { .kind = TEST_CRASH });
+            }
+            return;
+        }
+        test_stats->exit_code = status.status;
+        if (!normal_finish) {
+            if (test->data->exit_code == 0) {
+                push_event(TEST_CRASH);
+                log(abnormal_exit, test_stats);
+            } else {
+                double elapsed_time = 0;
+                push_event(POST_TEST, .data = &elapsed_time);
+                log(post_test, test_stats);
+                push_event(POST_FINI);
+                log(post_fini, test_stats);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-08-05 11:37+0200\n"
+"POT-Creation-Date: 2015-09-01 19:06+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -75,13 +75,21 @@ msgstr ""
 "sa finalisation.%4$s\n"
 
 #: src/log/normal.c:64
+#, fuzzy, c-format
+msgid ""
+"%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n"
+msgstr ""
+"%1$sAttention! Le test `%2$s::%3$s` a quitté pendant son initialisation ou "
+"sa finalisation.%4$s\n"
+
+#: src/log/normal.c:65
 #, c-format
 msgid "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n"
 msgid_plural "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n"
 msgstr[0] "Lancement de %1$s%2$lu%3$s test dans %4$s%5$s%6$s:\n"
 msgstr[1] "Lancement de %1$s%2$lu%3$s tests dans %4$s%5$s%6$s:\n"
 
-#: src/log/normal.c:66
+#: src/log/normal.c:67
 #, c-format
 msgid ""
 "%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"

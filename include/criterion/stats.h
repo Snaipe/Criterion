@@ -44,6 +44,7 @@ struct criterion_test_stats {
     int passed_asserts;
     int failed_asserts;
     int signal;
+    int exit_code;
     float elapsed_time;
     unsigned progress;
     const char *file;

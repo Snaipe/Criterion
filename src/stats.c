@@ -162,7 +162,9 @@ static void push_post_test(s_glob_stats *stats,
                            s_test_stats *test,
                            double *ptr) {
     test->elapsed_time = *ptr;
-    if (test->failed_asserts > 0 || test->signal != test->test->data->signal) {
+    if (test->failed_asserts > 0
+            || test->signal != test->test->data->signal
+            || test->exit_code != test->test->data->exit_code) {
         test->failed = 1;
         ++stats->tests_failed;
         ++suite->tests_failed;
