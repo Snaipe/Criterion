@@ -220,6 +220,14 @@ static void run_test(struct criterion_global_stats *stats,
                 log(pre_test, test);
                 test_started = true;
                 break;
+            case THEORY_FAIL: {
+                struct criterion_theory_stats ths = {
+                    .formatted_args = (char*) ev->data,
+                    .stats = test_stats,
+                };
+                report(THEORY_FAIL, &ths);
+                log(theory_fail, &ths);
+            } break;
             case ASSERT:
                 report(ASSERT, ev->data);
                 log(assert, ev->data);

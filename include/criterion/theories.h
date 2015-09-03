@@ -41,8 +41,12 @@ void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void));
 # define TheoryDataPoints(Category, Name) \
     static struct criterion_datapoints IDENTIFIER_(Category, Name, dps)[]
 
-# define DataPoints(Type, ...) \
-    { sizeof (Type), sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type), #Type, &(Type[]) { __VA_ARGS__ } }
+# define DataPoints(Type, ...) { \
+        sizeof (Type), \
+        sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type), \
+        #Type, \
+        &(Type[]) { __VA_ARGS__ }, \
+    }
 
 struct criterion_datapoints {
     size_t size;

@@ -58,6 +58,7 @@ static msg_t msg_post_test = N_("%1$s::%2$s\n");
 static msg_t msg_post_suite_test = N_("%1$s::%2$s: Test is disabled\n");
 static msg_t msg_post_suite_suite = N_("%1$s::%2$s: Suite is disabled\n");
 static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
+static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
@@ -75,6 +76,7 @@ static msg_t msg_post_test = "%s::%s\n";
 static msg_t msg_post_suite_test = "%s::%s: Test is disabled\n";
 static msg_t msg_post_suite_suite = "%s::%s: Suite is disabled\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
+static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: %s\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
@@ -205,11 +207,20 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
             FG_GOLD, set->suite.name,  RESET);
 }
 
+void normal_log_theory_fail(struct criterion_theory_stats *stats) {
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _(msg_theory_fail), 
+            stats->stats->test->category,
+            stats->stats->test->name,
+            stats->formatted_args);
+}
+
 struct criterion_output_provider normal_logging = {
     .log_pre_all        = normal_log_pre_all,
     .log_pre_init       = normal_log_pre_init,
     .log_pre_suite      = normal_log_pre_suite,
     .log_assert         = normal_log_assert,
+    .log_theory_fail    = normal_log_theory_fail,
     .log_test_crash     = normal_log_test_crash,
     .log_other_crash    = normal_log_other_crash,
     .log_post_test      = normal_log_post_test,

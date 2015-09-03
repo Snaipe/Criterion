@@ -91,6 +91,7 @@ void stat_push_event(s_glob_stats *stats,
         push_pre_init,      // PRE_INIT
         nothing,            // PRE_TEST
         push_assert,        // ASSERT
+        nothing,            // THEORY_FAIL
         push_test_crash,    // TEST_CRASH
         push_post_test,     // POST_TEST
         nothing,            // POST_FINI

@@ -27,6 +27,7 @@
 #include <dyncall.h>
 #include <assert.h>
 #include "criterion/theories.h"
+#include "abort.h"
 
 struct criterion_theory_context {
     DCCallVM* vm;
@@ -99,6 +100,75 @@ static bool contains_word(const char *str, const char *pattern, size_t sz) {
         && (!res[sz - 1] || res[sz - 1] == ' ');
 }
 
+static bool is_string(const char *name) {
+    return !strcmp(name, "char*")
+        || !strcmp(name, "char *")
+        || !strcmp(name, "const char*")
+        || !strcmp(name, "const char *")
+        || !strcmp(name, "char const *")
+        || !strcmp(name, "char const*")
+        || !strcmp(name, "char[]")
+        || !strcmp(name, "char []")
+        || !strcmp(name, "const char[]")
+        || !strcmp(name, "const char []")
+        || !strcmp(name, "char const[]")
+        || !strcmp(name, "char const []");
+}
+
+static bool is_float(const char *name) {
+    return contains_word(name, "float", sizeof ("float"))
+        || contains_word(name, "double", sizeof ("double"));
+}
+
+static bool is_unsigned_int(const char *name) {
+    return contains_word(name, "unsigned", sizeof ("unsigned"))
+        || !strncmp(name, "uint", 4);
+}
+
+static void format_arg(char (*arg)[1024], struct criterion_datapoints *dp, void *data) {
+    if (is_float(dp->name)) {
+        if (dp->size == sizeof (float)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%g", *(float*) data);
+        } else if (dp->size == sizeof (double)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%g", *(double*) data);
+        } else if (dp->size == sizeof (long double)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%g", (double) *(long double*) data);
+        }
+    } else {
+        if (is_string(dp->name)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%s", *(char**) data);
+        } else if (dp->size == sizeof (char)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%c", *(char*) data);
+        } else if (dp->size == sizeof (short)) {
+            const char *fmt = is_unsigned_int(dp->name) ? "%hu" : "%hd";
+            snprintf(*arg, sizeof (*arg) - 1, fmt, *(short*) data);
+        } else if (dp->size == sizeof (int)) {
+            const char *fmt = is_unsigned_int(dp->name) ? "%u" : "%d";
+            snprintf(*arg, sizeof (*arg) - 1, fmt, *(int*) data);
+        } else if (dp->size == sizeof (bool)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%d", *(bool*) data);
+        } else if (dp->size == sizeof (long)) {
+            const char *fmt = is_unsigned_int(dp->name) ? "%lu" : "%ld";
+            snprintf(*arg, sizeof (*arg) - 1, fmt, *(long*) data);
+        } else if (dp->size == sizeof (long long)) {
+            const char *fmt = is_unsigned_int(dp->name) ? "%llu" : "%lld";
+            snprintf(*arg, sizeof (*arg) - 1, fmt, *(long long*) data);
+        } else if (dp->size == sizeof (void*)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%p", *(void**) data);
+        } else {
+            snprintf(*arg, sizeof (*arg) - 1, "%s", "<np>");
+        }
+    }
+}
+
+static void concat_arg(char (*msg)[4096], struct criterion_datapoints *dps, size_t *indices, size_t i) {
+    void *data = ((char*) dps[i].arr) + dps[i].size * indices[i];
+
+    char arg[1024];
+    format_arg(&arg, dps + i, data);
+    strncat(*msg, arg, sizeof (*msg) - 1);
+}
+
 void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void)) {
     struct criterion_theory_context *ctx = cr_theory_init();
 
@@ -119,7 +189,30 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                         dps[i].size,
                         ((char*) dps[i].arr) + dps[i].size * indices[i]);
             }
-            cr_theory_call(ctx, fnptr);
+
+            jmp_buf backup;
+            memcpy(backup, g_pre_test, sizeof (jmp_buf));
+            int abort = 0;
+            if (!setjmp(g_pre_test)) {
+                cr_theory_call(ctx, fnptr);
+            } else {
+                abort = 1;
+                struct {
+                    size_t len;
+                    char msg[4096];
+                } result;
+                for (size_t i = 0; i < datapoints - 1; ++i) {
+                    concat_arg(&result.msg, dps, indices, i);
+                    strncat(result.msg, ", ", sizeof (result.msg) - 1);
+                }
+                concat_arg(&result.msg, dps, indices, datapoints - 1);
+                result.len = strlen(result.msg) + 1;
+
+                send_event(THEORY_FAIL, &result, result.len + sizeof (size_t));
+            }
+            memcpy(g_pre_test, backup, sizeof (jmp_buf));
+            if (abort)
+                criterion_abort_test();
         }
 
         for (size_t i = 0; i < datapoints; ++i) {
