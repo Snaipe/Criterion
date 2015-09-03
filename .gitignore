@@ -3,6 +3,7 @@
 
 !.gitignore
 !.bumpversion.cfg
+!.ci/*
 
 !*.c
 !*.h

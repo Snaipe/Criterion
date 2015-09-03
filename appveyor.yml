@@ -27,7 +27,8 @@ configuration: Release
 install:
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
-  # Install libcsptr
+  # Install dependencies
+  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; .ci/install-dyncall.sh; true"'
   - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
   # We need to manually make since the above command somehow crashes
   - 'cd dependencies/libcsptr/build && make && make install && cd ../../../'

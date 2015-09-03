@@ -7,7 +7,7 @@ compiler:
 sudo: false
 before_install:
 - export LOCAL_INSTALL="$HOME"
-- ".ci/install-libcsptr.sh"
+- ".ci/install-dependencies.sh"
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
 - export CFLAGS="-g -O0"
 script:
