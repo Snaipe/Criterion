@@ -29,6 +29,7 @@ the user would have with other frameworks:
   unless you want to do special handling.
 * [x] Test are isolated in their own process, crashes and signals can be
   reported and tested.
+* [x] There is a support for theories alongside tests
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
 * [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiling with MinGW GCC).

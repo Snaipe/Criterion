@@ -9,5 +9,6 @@ Criterion
     starter
     hooks
     env
+    theories
     internal
     faq

@@ -176,6 +176,8 @@ See the `windows exception reference`_ for more details on each exception.
 
 .. _windows exception reference: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679356(v=vs.85).aspx
 
+.. _test-config-ref:
+
 Configuration reference
 ~~~~~~~~~~~~~~~~~~~~~~~
 
