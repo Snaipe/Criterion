@@ -13,6 +13,7 @@ set(SAMPLES
   description
   other-crashes
   simple
+  theories
 )
 
 set(SCRIPTS

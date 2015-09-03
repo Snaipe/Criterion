@@ -68,6 +68,7 @@ set(SOURCE_FILES
   src/i18n.h
   src/ordered-set.c
   src/posix-compat.c
+  src/theories.c
   src/main.c
 )
 
@@ -91,6 +92,7 @@ set(INTERFACE_FILES
   include/criterion/options.h
   include/criterion/ordered-set.h
   include/criterion/stats.h
+  include/criterion/theories.h
 )
 
 # Generate the configure file
@@ -119,6 +121,8 @@ endif()
 if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
+
+target_link_libraries(criterion dyncall_s)
 
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
