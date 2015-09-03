@@ -194,6 +194,8 @@ Parameter     Type            Description
 .disabled     bool            Disables the test.
 ------------- --------------- --------------------------------------------------------------
 .signal       int             Expect the test to raise the specified signal.
+------------- --------------- --------------------------------------------------------------
+.exit_code    int             Expect the test to exit with the specified status.
 ============= =============== ==============================================================
 
 Setting up suite-wise configuration
