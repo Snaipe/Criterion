@@ -192,15 +192,13 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
 
             jmp_buf backup;
             memcpy(backup, g_pre_test, sizeof (jmp_buf));
-            int abort = 0;
             if (!setjmp(g_pre_test)) {
                 cr_theory_call(ctx, fnptr);
             } else {
-                abort = 1;
                 struct {
                     size_t len;
                     char msg[4096];
-                } result;
+                } result = {0};
                 for (size_t i = 0; i < datapoints - 1; ++i) {
                     concat_arg(&result.msg, dps, indices, i);
                     strncat(result.msg, ", ", sizeof (result.msg) - 1);
@@ -211,8 +209,6 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                 send_event(THEORY_FAIL, &result, result.len + sizeof (size_t));
             }
             memcpy(g_pre_test, backup, sizeof (jmp_buf));
-            if (abort)
-                criterion_abort_test();
         }
 
         for (size_t i = 0; i < datapoints; ++i) {
