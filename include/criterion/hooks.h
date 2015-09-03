@@ -32,6 +32,7 @@ typedef enum {
     PRE_INIT,
     PRE_TEST,
     ASSERT,
+    THEORY_FAIL,
     TEST_CRASH,
     POST_TEST,
     POST_FINI,
@@ -54,6 +55,7 @@ typedef void (*f_report_hook)();
 # define HOOK_SECTION_PRE_INIT      cr_pri
 # define HOOK_SECTION_PRE_TEST      cr_prt
 # define HOOK_SECTION_ASSERT        cr_ast
+# define HOOK_SECTION_THEORY_FAIL   cr_thf
 # define HOOK_SECTION_TEST_CRASH    cr_tsc
 # define HOOK_SECTION_POST_TEST     cr_pot
 # define HOOK_SECTION_POST_FINI     cr_pof

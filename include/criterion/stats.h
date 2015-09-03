@@ -52,6 +52,11 @@ struct criterion_test_stats {
     struct criterion_test_stats *next;
 };
 
+struct criterion_theory_stats {
+    const char *formatted_args;
+    struct criterion_test_stats *stats;
+};
+
 struct criterion_suite_stats {
     struct criterion_suite *suite;
     struct criterion_test_stats *tests;

@@ -42,6 +42,7 @@ CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
 find_package(Libcsptr REQUIRED)
+find_package(Dyncall REQUIRED)
 
 # List sources and headers
 
@@ -68,6 +69,7 @@ set(SOURCE_FILES
   src/i18n.h
   src/ordered-set.c
   src/posix-compat.c
+  src/theories.c
   src/main.c
 )
 
@@ -91,6 +93,7 @@ set(INTERFACE_FILES
   include/criterion/options.h
   include/criterion/ordered-set.h
   include/criterion/stats.h
+  include/criterion/theories.h
 )
 
 # Generate the configure file
@@ -114,6 +117,10 @@ endif()
 
 if (LIBINTL_LIB_FOUND)
   target_link_libraries(criterion ${LIBINTL_LIBRARIES})
+endif()
+
+if (DYNCALL_FOUND)
+  target_link_libraries(criterion ${DYNCALL_LIBRARIES})
 endif()
 
 if (COVERALLS)

@@ -54,6 +54,26 @@ struct event *read_event(FILE *f) {
                     .value = { .kind = kind, .data = buf },
                     .dtor  = destroy_event);
         }
+        case THEORY_FAIL: {
+            size_t *len = malloc(sizeof (size_t));
+            if (fread(len, sizeof (size_t), 1, f) == 0) {
+                free(len);
+                return NULL;
+            }
+
+            char *buf = malloc(*len);
+            if (fread(buf, *len, 1, f) == 0) {
+                free(len);
+                free(buf);
+                return NULL;
+            }
+            free(len);
+
+            return unique_ptr(struct event,
+                    .value = { .kind = kind, .data = buf },
+                    .dtor  = destroy_event);
+
+        }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
             if (fread(elapsed_time, sizeof (double), 1, f) == 0) {
