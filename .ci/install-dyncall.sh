@@ -6,7 +6,9 @@ mkdir -p dependencies
 git clone --branch ${tag} --depth 1 ${repo} dependencies/dyncall &&
 (
     cd dependencies/dyncall &&
-    ./configure --prefix=$LOCAL_INSTALL
+    mkdir build &&
+    cd $_ &&
+    cmake -DCMAKE_INSTALL_PREFIX=$LOCAL_INSTALL "$@" .. &&
     make &&
     make install
 )
