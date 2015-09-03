@@ -42,6 +42,7 @@ CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
 find_package(Libcsptr REQUIRED)
+find_package(Dyncall REQUIRED)
 
 # List sources and headers
 
@@ -118,11 +119,13 @@ if (LIBINTL_LIB_FOUND)
   target_link_libraries(criterion ${LIBINTL_LIBRARIES})
 endif()
 
+if (DYNCALL_FOUND)
+  target_link_libraries(criterion ${DYNCALL_LIBRARIES})
+endif()
+
 if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
-
-target_link_libraries(criterion dyncall_s)
 
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
