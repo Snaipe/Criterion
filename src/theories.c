@@ -198,7 +198,8 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                 struct {
                     size_t len;
                     char msg[4096];
-                } result = {0};
+                } result = { .len = 0 };
+
                 for (size_t i = 0; i < datapoints - 1; ++i) {
                     concat_arg(&result.msg, dps, indices, i);
                     strncat(result.msg, ", ", sizeof (result.msg) - 1);
