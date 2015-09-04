@@ -5,6 +5,7 @@ project(Criterion C)
 set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 set(LIBCSPTR_DISABLE_TESTS ON)
+set(LIBCSPTR_DISABLE_COVERALLS ON)
 
 include(Submodules)
 
