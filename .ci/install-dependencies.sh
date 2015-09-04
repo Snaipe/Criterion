@@ -5,7 +5,7 @@ git submodule update --init --recursive &&
 (
     cd dependencies/dyncall &&
     mkdir build &&
-    cd $_ &&
+    cd build &&
     cmake -DCMAKE_INSTALL_PREFIX=$LOCAL_INSTALL "$@" .. &&
     make &&
     make install
@@ -14,7 +14,7 @@ git submodule update --init --recursive &&
 (
     cd dependencies/libcsptr/ &&
     mkdir build &&
-    cd $_ &&
+    cd build &&
     cmake -DCMAKE_INSTALL_PREFIX=$LOCAL_INSTALL "$@" .. &&
     make &&
     make install
