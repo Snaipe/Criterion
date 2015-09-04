@@ -30,8 +30,8 @@ script:
 - make criterion_tests
 - make test
 after_success:
-- make gcov VERBOSE=1
-- bash <(curl -s https://codecov.io/bash) -g 'dependencies/*'
+- make gcov
+- bash <(curl -s https://codecov.io/bash)
 after_failure:
 - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
 env:

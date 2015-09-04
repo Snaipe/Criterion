@@ -59,6 +59,8 @@ test_script:
 
 after_test:
    - 'make gcov'
+   - 'cd ..'
+   - 'bash -lc "find / -iname \"*.gcda\""'
    - codecov
 #after_test:
 #  - 'make coveralls'
