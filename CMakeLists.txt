@@ -170,6 +170,12 @@ install(TARGETS criterion
 
 add_custom_target(criterion_tests)
 
+file(GLOB_RECURSE GCNO_FILES "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/*.gcno")
+
+add_custom_target(gcov
+    "gcov" "-lcp" ${GCNO_FILES}
+)
+
 enable_testing()
 add_subdirectory(samples)
 add_subdirectory(test)

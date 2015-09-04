@@ -58,7 +58,7 @@ test_script:
   - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
 
 after_test:
-   - 'make coveralls_generate'
+   - 'make gcov'
    - codecov
 #after_test:
 #  - 'make coveralls'
