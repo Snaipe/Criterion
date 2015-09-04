@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Criterion C)
 
+set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 set(LIBCSPTR_DISABLE_TESTS ON)
+
+include(Submodules)
 
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
@@ -18,8 +22,6 @@ set(PROJECT_VERSION "1.3.1")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
-set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 
 set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
 

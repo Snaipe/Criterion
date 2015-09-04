@@ -27,8 +27,6 @@ configuration: Release
 install:
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
-  # Install dependencies
-  - '.ci\install-dependencies.bat'
   # Configure project
   - 'mkdir build && cd build'
   - 'cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
