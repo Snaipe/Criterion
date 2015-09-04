@@ -31,7 +31,7 @@ script:
 - make test
 after_success:
 - make coveralls
-- bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash) -g 'dependencies/*'
 after_failure:
 - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
 env:
