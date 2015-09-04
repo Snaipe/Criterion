@@ -26,6 +26,7 @@
 #include <setjmp.h>
 #include <dyncall.h>
 #include <assert.h>
+#include <limits.h>
 #include "criterion/theories.h"
 #include "abort.h"
 
@@ -51,10 +52,14 @@ void cr_theory_push_arg(struct criterion_theory_context *ctx, bool is_float, siz
             dcArgInt(ctx->vm, *(int*)ptr);
         } else if (size == sizeof (bool)) {
             dcArgBool(ctx->vm, *(bool*)ptr);
+#if INT_MAX < LONG_MAX
         } else if (size == sizeof (long)) {
             dcArgLong(ctx->vm, *(long*)ptr);
+#endif
+#if LONG_MAX < LLONG_MAX
         } else if (size == sizeof (long long)) {
             dcArgLongLong(ctx->vm, *(long long*)ptr);
+#endif
         } else if (size == sizeof (void*)) {
             dcArgPointer(ctx->vm, *(void**)ptr);
         } else {
@@ -125,36 +130,45 @@ static bool is_unsigned_int(const char *name) {
         || !strncmp(name, "uint", 4);
 }
 
+static bool is_bool(const char *name) {
+    return contains_word(name, "bool", sizeof ("bool"))
+        || contains_word(name, "_Bool", sizeof ("_Bool"));
+}
+
 static void format_arg(char (*arg)[1024], struct criterion_datapoints *dp, void *data) {
     if (is_float(dp->name)) {
         if (dp->size == sizeof (float)) {
-            snprintf(*arg, sizeof (*arg) - 1, "%g", *(float*) data);
+            snprintf(*arg, sizeof (*arg) - 1, "%gf", *(float*) data);
         } else if (dp->size == sizeof (double)) {
             snprintf(*arg, sizeof (*arg) - 1, "%g", *(double*) data);
         } else if (dp->size == sizeof (long double)) {
-            snprintf(*arg, sizeof (*arg) - 1, "%g", (double) *(long double*) data);
+            snprintf(*arg, sizeof (*arg) - 1, "%gl", (double) *(long double*) data);
         }
     } else {
         if (is_string(dp->name)) {
-            snprintf(*arg, sizeof (*arg) - 1, "%s", *(char**) data);
+            snprintf(*arg, sizeof (*arg) - 1, "\"%s\"", *(char**) data);
+        } else if (dp->size == sizeof (bool) && is_bool(dp->name)) {
+            snprintf(*arg, sizeof (*arg) - 1, "%s", (*(bool*) data) ? "true" : "false");
         } else if (dp->size == sizeof (char)) {
-            snprintf(*arg, sizeof (*arg) - 1, "%c", *(char*) data);
+            snprintf(*arg, sizeof (*arg) - 1, "'%c'", *(char*) data);
         } else if (dp->size == sizeof (short)) {
             const char *fmt = is_unsigned_int(dp->name) ? "%hu" : "%hd";
             snprintf(*arg, sizeof (*arg) - 1, fmt, *(short*) data);
         } else if (dp->size == sizeof (int)) {
             const char *fmt = is_unsigned_int(dp->name) ? "%u" : "%d";
             snprintf(*arg, sizeof (*arg) - 1, fmt, *(int*) data);
-        } else if (dp->size == sizeof (bool)) {
-            snprintf(*arg, sizeof (*arg) - 1, "%d", *(bool*) data);
+        } else if (dp->size == sizeof (void*) && strstr(dp->name, "*")) {
+            snprintf(*arg, sizeof (*arg) - 1, "%p", *(void**) data);
+#if INT_MAX < LONG_MAX
         } else if (dp->size == sizeof (long)) {
-            const char *fmt = is_unsigned_int(dp->name) ? "%lu" : "%ld";
+            const char *fmt = is_unsigned_int(dp->name) ? "%lulu" : "%ldl";
             snprintf(*arg, sizeof (*arg) - 1, fmt, *(long*) data);
+#endif
+#if LONG_MAX < LLONG_MAX
         } else if (dp->size == sizeof (long long)) {
-            const char *fmt = is_unsigned_int(dp->name) ? "%llu" : "%lld";
+            const char *fmt = is_unsigned_int(dp->name) ? "%llullu" : "%lldll";
             snprintf(*arg, sizeof (*arg) - 1, fmt, *(long long*) data);
-        } else if (dp->size == sizeof (void*)) {
-            snprintf(*arg, sizeof (*arg) - 1, "0x%p", *(void**) data);
+#endif
         } else {
             snprintf(*arg, sizeof (*arg) - 1, "%s", "<np>");
         }

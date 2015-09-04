@@ -70,6 +70,7 @@ struct my_object {
 
 TheoryDataPoints(theory, misc) = {
     DataPoints(char, 'a'),
+    DataPoints(bool, true),
     DataPoints(short, 1),
     DataPoints(int, 1),
     DataPoints(long, 1),
@@ -81,7 +82,8 @@ TheoryDataPoints(theory, misc) = {
     DataPoints(struct my_object *, &(struct my_object) {42}),
 };
 
-Theory((char c, short s, int i, long l, long long ll, float f, double d, char *str, const char *cstr, struct my_object *obj), theory, misc) {
+Theory((char c, bool b, short s, int i, long l, long long ll, float f, double d, char *str, const char *cstr, struct my_object *obj), theory, misc) {
+    cr_assert(b);
     cr_assert_eq(c, 'a');
     cr_assert_eq(s, 1);
     cr_assert_eq(i, 1);
