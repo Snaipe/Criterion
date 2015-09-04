@@ -92,4 +92,7 @@ Theory((char c, short s, int i, long l, long long ll, float f, double d, char *s
     cr_assert_strings_eq(str, "test");
     cr_assert_strings_eq(cstr, "other test");
     cr_assert_eq(obj->foo, 42);
+
+    // abort to see the formatted string of all parameters
+    cr_abort_test(NULL);
 }
