@@ -61,3 +61,35 @@ Theory((int a, int b), algebra, zero_is_absorbing) {
     cr_assume(a == 0 || b == 0);
     cr_assert_eq(0, good_mul(a, b));
 }
+
+// Testing for various parameters
+
+struct my_object {
+    int foo;
+};
+
+TheoryDataPoints(theory, misc) = {
+    DataPoints(char, 'a'),
+    DataPoints(short, 1),
+    DataPoints(int, 1),
+    DataPoints(long, 1),
+    DataPoints(long long, 1),
+    DataPoints(float, 3.14f),
+    DataPoints(double, 3.14),
+    DataPoints(char *, "test"),
+    DataPoints(const char *, "other test"),
+    DataPoints(struct my_object *, &(struct my_object) {42}),
+};
+
+Theory((char c, short s, int i, long l, long long ll, float f, double d, char *str, const char *cstr, struct my_object *obj), theory, misc) {
+    cr_assert_eq(c, 'a');
+    cr_assert_eq(s, 1);
+    cr_assert_eq(i, 1);
+    cr_assert_eq(l, 1);
+    cr_assert_eq(ll, 1);
+    cr_assert_eq(f, 3.14f);
+    cr_assert_eq(d, 3.14);
+    cr_assert_strings_eq(str, "test");
+    cr_assert_strings_eq(cstr, "other test");
+    cr_assert_eq(obj->foo, 42);
+}
