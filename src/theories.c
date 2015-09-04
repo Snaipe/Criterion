@@ -154,7 +154,7 @@ static void format_arg(char (*arg)[1024], struct criterion_datapoints *dp, void 
             const char *fmt = is_unsigned_int(dp->name) ? "%llu" : "%lld";
             snprintf(*arg, sizeof (*arg) - 1, fmt, *(long long*) data);
         } else if (dp->size == sizeof (void*)) {
-            snprintf(*arg, sizeof (*arg) - 1, "%p", *(void**) data);
+            snprintf(*arg, sizeof (*arg) - 1, "0x%p", *(void**) data);
         } else {
             snprintf(*arg, sizeof (*arg) - 1, "%s", "<np>");
         }
