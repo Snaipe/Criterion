@@ -28,11 +28,7 @@ install:
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Install dependencies
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; .ci/install-dyncall.sh -G \"MSYS Makefiles\"; true"'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; .ci/install-libcsptr.sh -G \"MSYS Makefiles\"; true"'
-  # We need to manually make since the above command somehow crashes
-  - 'cd dependencies/libcsptr/build && make && make install && cd ../../../'
-  - 'cd dependencies/dyncall/build && make && make install && cd ../../../'
+  - '.ci\install-dependencies.bat'
   # Configure project
   - 'mkdir build && cd build'
   - 'cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'

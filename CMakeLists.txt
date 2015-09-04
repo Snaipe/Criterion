@@ -2,14 +2,26 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Criterion C)
 
+set(LIBCSPTR_DISABLE_TESTS ON)
+
+add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
+add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
+
+include_directories(
+  dependencies/libcsptr/include/
+  dependencies/dyncall/dyncall/
+)
+
 # Project setup & environment variables
 
 set(PROJECT_VERSION "1.3.1")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
-set(MODULE_DIR "${CMAKE_SOURCE_DIR}/.cmake/Modules")
+set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
+
+set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
 
@@ -41,8 +53,6 @@ include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
-find_package(Libcsptr REQUIRED)
-find_package(Dyncall REQUIRED)
 
 # List sources and headers
 
@@ -99,13 +109,13 @@ set(INTERFACE_FILES
 # Generate the configure file
 
 configure_file(
-  "${CMAKE_SOURCE_DIR}/src/config.h.in"
-  "${CMAKE_SOURCE_DIR}/src/config.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h"
 )
 
-include_directories(include src ${CSPTR_INCLUDE_DIRS})
+include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
-target_link_libraries(criterion ${CSPTR_LIBRARIES})
+target_link_libraries(criterion csptr dyncall_s)
 
 if (HAVE_CLOCK_GETTIME)
   target_link_libraries(criterion rt)
@@ -117,10 +127,6 @@ endif()
 
 if (LIBINTL_LIB_FOUND)
   target_link_libraries(criterion ${LIBINTL_LIBRARIES})
-endif()
-
-if (DYNCALL_FOUND)
-  target_link_libraries(criterion ${DYNCALL_LIBRARIES})
 endif()
 
 if (COVERALLS)
