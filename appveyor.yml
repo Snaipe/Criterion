@@ -1,6 +1,6 @@
 version: 1.3.1_b{build}-{branch}
 
-os: Windows Server 2012
+os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
@@ -13,6 +13,9 @@ environment:
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
   LOCAL_INSTALL: $(APPVEYOR_BUILD_FOLDER)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
+  matrix:
+  - COMPILER: msvc
+  - COMPILER: mingw
 
 clone_depth: 5
 
@@ -29,14 +32,22 @@ install:
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Configure project
   - 'mkdir build && cd build'
-  - 'cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
+  - >
+      cmake
+      -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME%
+      -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%"
+      -DCOVERALLS=ON
+      -DCMAKE_BUILD_TYPE=Debug
+      -G "MSYS Makefiles"
+      ..
 
 build_script:
   - 'make'
 
-after_build:
+before_deploy:
   - 'make install'
   - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
+  - ps: Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2"
 
 test_script:
   - 'make test || bash -lc "cat $APPVEYOR_BUILD_FOLDER/build/Testing/Temporary/LastTest.log"'
@@ -49,9 +60,6 @@ notifications:
   - provider: Email
     to: [franklinmathieu@gmail.com]
     on_build_status_changed: true
-
-artifacts:
-  - path: '**\*.tar.bz2'
 
 deploy:
   provider: GitHub
