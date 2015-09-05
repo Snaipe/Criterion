@@ -32,6 +32,7 @@
 #include "timer.h"
 #include "config.h"
 #include "posix-compat.h"
+#include "common.h"
 
 void tap_log_pre_all(struct criterion_test_set *set) {
     size_t enabled_count = 0;
@@ -54,8 +55,7 @@ void tap_log_pre_suite(struct criterion_suite_set *set) {
             set->suite.name);
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
@@ -65,7 +65,7 @@ void tap_log_post_suite(struct criterion_suite_stats *stats) {
             criterion_important("ok - %s::%s %s # SKIP %s is disabled\n",
                     ts->test->category,
                     ts->test->name,
-                    ts->test->data->description ?: "",
+                    DEF(ts->test->data->description, ""),
                     ts->test->data->disabled ? "test" : "suite");
         }
     }
@@ -78,7 +78,7 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
             stats->failed ? "not ok" : "ok",
             stats->test->category,
             stats->test->name,
-            stats->test->data->description ?: "",
+            DEF(stats->test->data->description, ""),
             stats->elapsed_time);
     for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
         if (!asrt->passed) {

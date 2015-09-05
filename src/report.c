@@ -41,7 +41,7 @@ static inline void nothing() {}
         for (f_report_hook *hook = GET_SECTION_START(HOOK_SECTION(Kind));   \
              hook < (f_report_hook*) GET_SECTION_END(HOOK_SECTION(Kind));   \
              ++hook) {                                                      \
-            (*hook ?: nothing)(data);                                       \
+            (*hook ? *hook : nothing)(data);                                \
         }                                                                   \
     }
 

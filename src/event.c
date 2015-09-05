@@ -103,9 +103,10 @@ struct event *read_event(FILE *f) {
 }
 
 void send_event(int kind, void *data, size_t size) {
-    unsigned char buf[sizeof (int) + size];
+    unsigned char *buf = malloc(sizeof (int) + size);
     memcpy(buf, &kind, sizeof (int));
     memcpy(buf + sizeof (int), data, size);
     if (fwrite(buf, sizeof (int) + size, 1, g_event_pipe) == 0)
         abort();
+    free(buf);
 }

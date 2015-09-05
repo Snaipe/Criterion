@@ -37,6 +37,8 @@
 #include "posix-compat.h"
 #include "abort.h"
 #include "config.h"
+#include "i18n.h"
+#include "common.h"
 
 #ifdef HAVE_PCRE
 #include "extmatch.h"
@@ -49,8 +51,7 @@ IMPL_SECTION_LIMITS(struct criterion_suite, cr_sts);
 TestSuite();
 Test(,) {};
 
-__attribute__ ((always_inline))
-static inline void nothing() {}
+static INLINE void nothing() {}
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -161,14 +162,14 @@ static void run_test_child(struct criterion_test *test,
 
     send_event(PRE_INIT, NULL, 0);
     if (suite->data)
-        (suite->data->init ?: nothing)();
-    (test->data->init ?: nothing)();
+        (suite->data->init ? suite->data->init : nothing)();
+    (test->data->init ? test->data->init : nothing)();
     send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
     if (setup_abort_test()) {
         timer_start(&ts);
-        (test->test ?: nothing)();
+        (test->test ? test->test : nothing)();
     }
 
     double elapsed_time;
@@ -176,14 +177,13 @@ static void run_test_child(struct criterion_test *test,
         elapsed_time = -1;
 
     send_event(POST_TEST, &elapsed_time, sizeof (double));
-    (test->data->fini ?: nothing)();
+    (test->data->fini ? test->data->fini : nothing)();
     if (suite->data)
-        (suite->data->fini ?: nothing)();
+        (suite->data->fini ? suite->data->fini : nothing)();
     send_event(POST_FINI, NULL, 0);
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t,
+static INLINE bool is_disabled(struct criterion_test *t,
                                struct criterion_suite *s) {
 
     return t->data->disabled || (s->data && s->data->disabled);
@@ -367,6 +367,7 @@ cleanup:
 }
 
 int criterion_run_all_tests(void) {
+    init_i18n();
     set_runner_process();
     int res = criterion_run_all_tests_impl();
     unset_runner_process();

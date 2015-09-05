@@ -25,18 +25,18 @@
 #include <criterion/common.h>
 #include <criterion/ordered-set.h>
 #include <csptr/smalloc.h>
+#include "common.h"
 
 static void destroy_ordered_set(void *ptr, UNUSED void *meta) {
     sfree(((struct criterion_ordered_set *) ptr)->first);
 }
 
-__attribute__ ((always_inline))
-static inline void nothing() {}
+static INLINE void nothing() {}
 
 static void destroy_ordered_set_node(void *ptr, void *meta) {
     struct criterion_ordered_set *set = *(void **) meta;
     struct criterion_ordered_set_node *n = ptr;
-    (set->dtor ?: nothing)(n->data, NULL);
+    DEF(set->dtor, nothing)(n->data, NULL);
     sfree(((struct criterion_ordered_set_node *) ptr)->next);
 }
 

@@ -1,8 +1,7 @@
 #include "i18n.h"
 
-#if ENABLE_NLS
-__attribute__ ((constructor))
 void init_i18n(void) {
+#if ENABLE_NLS
     bindtextdomain (PACKAGE, LOCALEDIR);
-}
 #endif
+}

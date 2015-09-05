@@ -25,6 +25,7 @@
 #include <csptr/smalloc.h>
 #include "criterion/common.h"
 #include "stats.h"
+#include "common.h"
 
 #include <assert.h>
 
@@ -130,8 +131,7 @@ static void push_pre_suite(s_glob_stats *stats,
     ++stats->nb_suites;
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t,
+static INLINE bool is_disabled(struct criterion_test *t,
                                struct criterion_suite *s) {
 
     return t->data->disabled || (s->data && s->data->disabled);

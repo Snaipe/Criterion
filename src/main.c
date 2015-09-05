@@ -31,6 +31,7 @@
 #include <csptr/smalloc.h>
 #include "runner.h"
 #include "config.h"
+#include "common.h"
 
 #if ENABLE_NLS
 # include <libintl.h>
@@ -137,8 +138,8 @@ int main(int argc, char *argv[]) {
         {0,                 0,                  0,  0 }
     };
 
-    bool use_ascii = !strcmp("1", getenv("CRITERION_USE_ASCII")      ?: "0")
-                  || !strcmp("dumb", getenv("TERM") ?: "dumb");
+    bool use_ascii = !strcmp("1", DEF(getenv("CRITERION_USE_ASCII"), "0"))
+                  || !strcmp("dumb", DEF(getenv("TERM"), "dumb"));
 
     setlocale(LC_ALL, "");
 #if ENABLE_NLS
@@ -146,24 +147,24 @@ int main(int argc, char *argv[]) {
 #endif
 
     struct criterion_options *opt = &criterion_options;
-    opt->always_succeed    = !strcmp("1", getenv("CRITERION_ALWAYS_SUCCEED") ?: "0");
-    opt->no_early_exit     = !strcmp("1", getenv("CRITERION_NO_EARLY_EXIT")  ?: "0");
-    opt->fail_fast         = !strcmp("1", getenv("CRITERION_FAIL_FAST")      ?: "0");
+    opt->always_succeed    = !strcmp("1", DEF(getenv("CRITERION_ALWAYS_SUCCEED"), "0"));
+    opt->no_early_exit     = !strcmp("1", DEF(getenv("CRITERION_NO_EARLY_EXIT") , "0"));
+    opt->fail_fast         = !strcmp("1", DEF(getenv("CRITERION_FAIL_FAST")     , "0"));
     opt->use_ascii         = use_ascii;
-    opt->logging_threshold = atoi(getenv("CRITERION_VERBOSITY_LEVEL") ?: "2");
-    opt->short_filename    = !strcmp("1", getenv("CRITERION_SHORT_FILENAME") ?: "0");
+    opt->logging_threshold = atoi(DEF(getenv("CRITERION_VERBOSITY_LEVEL"), "2"));
+    opt->short_filename    = !strcmp("1", DEF(getenv("CRITERION_SHORT_FILENAME"), "0"));
 #ifdef HAVE_PCRE
     opt->pattern           = getenv("CRITERION_TEST_PATTERN");
 #endif
 
-    bool use_tap = !strcmp("1", getenv("CRITERION_ENABLE_TAP") ?: "0");
+    bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
 
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
     for (int c; (c = getopt_long(argc, argv, "hvlfS", opts, NULL)) != -1;) {
         switch (c) {
-            case 'b': criterion_options.logging_threshold = atoi(optarg ?: "1"); break;
+            case 'b': criterion_options.logging_threshold = atoi(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
