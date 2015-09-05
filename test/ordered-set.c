@@ -1,4 +1,4 @@
-#include <csptr/smart_ptr.h>
+#include <csptr/smalloc.h>
 
 #include "criterion/criterion.h"
 #include "criterion/ordered-set.h"
@@ -14,7 +14,7 @@ int compare_lt(void *a, void *b) {
 }
 
 Test(ordered_set, contract_lt) {
-    smart struct criterion_ordered_set *set = new_ordered_set(compare_lt, NULL);
+    struct criterion_ordered_set *set = new_ordered_set(compare_lt, NULL);
 
     insert_ordered_set(set, &(int[1]) { 1 }, sizeof (int));
     insert_ordered_set(set, &(int[1]) { 8 }, sizeof (int));
@@ -26,10 +26,12 @@ Test(ordered_set, contract_lt) {
             cr_assert_lt(*prev, *e);
         prev = e;
     }
+
+    sfree(set);
 }
 
 Test(ordered_set, contract_gt) {
-    smart struct criterion_ordered_set *set = new_ordered_set(compare_gt, NULL);
+    struct criterion_ordered_set *set = new_ordered_set(compare_gt, NULL);
 
     insert_ordered_set(set, &(int[1]) { 1 }, sizeof (int));
     insert_ordered_set(set, &(int[1]) { 8 }, sizeof (int));
@@ -41,4 +43,6 @@ Test(ordered_set, contract_gt) {
             cr_assert_gt(*prev, *e);
         prev = e;
     }
+
+    sfree(set);
 }
