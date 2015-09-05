@@ -47,6 +47,8 @@
 #ifdef _MSC_VER
 struct criterion_test  SECTION_START_(cr_tst);
 struct criterion_suite SECTION_START_(cr_sts);
+struct criterion_test  SECTION_STOP_(cr_tst);
+struct criterion_suite SECTION_STOP_(cr_sts);
 #endif
 
 IMPL_SECTION_LIMITS(struct criterion_test, cr_tst);
