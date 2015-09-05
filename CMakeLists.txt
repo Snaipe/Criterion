@@ -53,13 +53,13 @@ endif()
 
 # Find dependencies
 
-#find_package(Gettext)
-#find_package(Libintl)
-#if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
-#  include(GettextTranslate)
-#  add_subdirectory(po)
-#  set(ENABLE_NLS 1)
-#endif ()
+find_package(Gettext)
+find_package(Libintl)
+if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
+  include(GettextTranslate)
+  add_subdirectory(po)
+  set(ENABLE_NLS 1)
+endif ()
 
 include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
