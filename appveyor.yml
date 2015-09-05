@@ -41,8 +41,6 @@ install:
         cmake `
             -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% `
             -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" `
-            -DCOVERALLS=ON `
-            -DCMAKE_BUILD_TYPE=Debug `
             -G "$generator" `
             ..
 
