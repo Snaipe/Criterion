@@ -1,4 +1,6 @@
-set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
+endif ()
 
 include_directories(../include)
 
