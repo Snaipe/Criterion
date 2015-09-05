@@ -186,7 +186,7 @@ static void concat_arg(char (*msg)[4096], struct criterion_datapoints *dps, size
 void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void)) {
     struct criterion_theory_context *ctx = cr_theory_init();
 
-    size_t indices[datapoints];
+    size_t *indices = malloc(datapoints);
     memset(indices, 0, datapoints * sizeof (size_t));
 
     bool has_next = true;
@@ -237,5 +237,6 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
         }
     }
 
+    free(indices);
     cr_theory_free(ctx);
 }
