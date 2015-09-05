@@ -17,6 +17,11 @@ include_directories(
   dependencies/dyncall/dyncall/
 )
 
+if (MSVC)
+  add_subdirectory(dependencies/wingetopt/ EXCLUDE_FROM_ALL)
+  include_directories(dependencies/wingetopt/src/)
+endif ()
+
 # Project setup & environment variables
 
 set(PROJECT_VERSION "1.3.1")
