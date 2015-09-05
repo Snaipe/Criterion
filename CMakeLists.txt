@@ -29,7 +29,6 @@ set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
 
-set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
 add_definitions(-DCRITERION_BUILDING_DLL=1)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
@@ -161,10 +160,6 @@ install(TARGETS criterion
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
-)
-
-add_custom_target(uninstall
-    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
 )
 
 enable_testing()
