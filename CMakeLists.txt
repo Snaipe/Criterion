@@ -125,6 +125,10 @@ include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
 target_link_libraries(criterion csptr dyncall_s)
 
+if (MSVC)
+  target_link_libraries(criterion wingetopt)
+endif ()
+
 if (HAVE_CLOCK_GETTIME)
   target_link_libraries(criterion rt)
 endif()
