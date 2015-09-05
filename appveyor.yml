@@ -32,25 +32,41 @@ install:
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Configure project
   - 'mkdir build && cd build'
-  - >
-      cmake
-      -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME%
-      -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%"
-      -DCOVERALLS=ON
-      -DCMAKE_BUILD_TYPE=Debug
-      -G "MSYS Makefiles"
-      ..
+  - ps: |
+        if ($env:Compiler -eq "mingw") {
+            $generator = "MSYS Makefiles"
+        } else {
+            $generator = "Visual Studio 14 2015"
+        }
+        cmake `
+            -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% `
+            -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" `
+            -DCOVERALLS=ON `
+            -DCMAKE_BUILD_TYPE=Debug `
+            -G "$generator" `
+            ..
 
 build_script:
-  - 'make'
+  - ps: |
+        if ($env:Compiler -eq "mingw") {
+            make
+        } else {
+            msbuild /m:4 /p:Configuration=Debug:Config Criterion.sln
+        }
 
 before_deploy:
-  - 'make install'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
-  - ps: Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2"
+  - ps: |
+        if ($env:Compiler -eq "mingw") {
+            make install
+            bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"
+            Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2"
+        }
 
 test_script:
-  - 'make test || bash -lc "cat $APPVEYOR_BUILD_FOLDER/build/Testing/Temporary/LastTest.log"'
+  - ps: |
+        if ($env:Compiler -eq "mingw") {
+            make test || type Testing/Temporary/LastTest.log
+        }
 
 #after_test:
 #  - 'make coveralls'
