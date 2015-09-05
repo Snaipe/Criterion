@@ -50,7 +50,7 @@ build_script:
         if ($env:Compiler -eq "mingw") {
             make
         } else {
-            msbuild /m:4 /p:Configuration=Debug:Config Criterion.sln
+            msbuild /m:4 /p:Configuration=Debug /p:Platform=Win32 Criterion.sln
         }
 
 before_deploy:
