@@ -24,18 +24,50 @@
 #ifndef CRITERION_COMMON_H_
 # define CRITERION_COMMON_H_
 
+# define CR_EXPAND(x) x
+
+# if defined(_MSC_VER)
+#  if _MSC_VER < 1900
+#   error \
+        Your version of MSVC++ is too old, please compile your tests using  \
+        a c99 compiler, like MinGW or MSVC 14.0+ (Included in visual studio \
+        2015)
+#  endif
+# endif
+
+# ifndef CR_IS_MSVC
+#  ifdef _MSC_VER
+#   define CR_IS_MSVC _MSC_VER
+#  else
+#   define CR_IS_MSVC 0
+#  endif
+# endif
+
 # ifdef __APPLE__
 #  define SECTION_START_PREFIX       __first
 #  define SECTION_END_PREFIX         __last
 #  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
 #  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
 #  define SECTION_(Name)             __attribute__((section("__DATA," Name)))
+#  define SECTION_SUFFIX_
+# elif CR_IS_MSVC
+#  define SECTION_START_PREFIX       __start
+#  define SECTION_END_PREFIX         __stop
+#  define SECTION_START_SUFFIX(Name)
+#  define SECTION_END_SUFFIX(Name)
+#  define SECTION_(Name)                    \
+    __pragma(data_seg(push))                \
+    __pragma(section(Name, read))           \
+    __declspec(allocate(Name))
+#  define SECTION_SUFFIX_                   \
+    __pragma(data_seg(pop))
 # else
 #  define SECTION_START_PREFIX       __start
 #  define SECTION_END_PREFIX         __stop
 #  define SECTION_START_SUFFIX(Name)
 #  define SECTION_END_SUFFIX(Name)
 #  define SECTION_(Name)             __attribute__((section(Name)))
+#  define SECTION_SUFFIX_
 # endif
 
 # define MAKE_IDENTIFIER_(Prefix, Id) MAKE_IDENTIFIER__(Prefix, Id)
@@ -56,8 +88,16 @@
     Type *const SECTION_START(Name) = &SECTION_START_(Name);    \
     Type *const SECTION_END(Name)   = &SECTION_END_(Name)
 
-# define UNUSED __attribute__((unused))
-# define NORETURN __attribute__((noreturn))
+# ifdef __GNUC__
+#  define UNUSED __attribute__((unused))
+#  define NORETURN __attribute__((noreturn))
+# elif CR_IS_MSVC
+#  define UNUSED
+#  define NORETURN __declspec(noreturn)
+# else
+#  define UNUSED
+#  define NORETURN
+# endif
 
 # ifdef _WIN32
 #  define SIZE_T_FORMAT "%Iu"
