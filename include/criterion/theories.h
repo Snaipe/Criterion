@@ -69,15 +69,15 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
 # define CR_VAARG_ID(Suffix, Category, Name, ...) \
     IDENTIFIER_(Category, Name, Suffix)
 
-# define Theory(Args, ...)                                          \
-    void CR_VAARG_ID(theory, __VA_ARGS__,)Args;                     \
-    Test_(__VA_ARGS__, .sentinel_ = 0) {                            \
-        cr_theory_main(                                             \
-                CR_VAARG_ID(dps, __VA_ARGS__,),                     \
-                CR_NB_DATAPOINTS(CR_VAARG_ID(dps, __VA_ARGS__,)),   \
-                (void(*)(void)) CR_VAARG_ID(theory, __VA_ARGS__,)   \
-            );                                                      \
-    }                                                               \
-    void CR_VAARG_ID(theory, __VA_ARGS__,)Args
+# define Theory(Args, ...)                                                      \
+    void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args;                      \
+    CR_EXPAND(Test_(__VA_ARGS__, .sentinel_ = 0)) {                             \
+        cr_theory_main(                                                         \
+                CR_EXPAND(CR_VAARG_ID(dps, __VA_ARGS__,)),                      \
+                CR_NB_DATAPOINTS(CR_EXPAND(CR_VAARG_ID(dps, __VA_ARGS__,))),    \
+                (void(*)(void)) CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))    \
+            );                                                                  \
+    }                                                                           \
+    void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args
 
 #endif /* !CRITERION_THEORIES_H_ */

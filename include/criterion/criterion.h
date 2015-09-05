@@ -36,7 +36,7 @@
 # define SUITE_IDENTIFIER_(Name, Suffix) \
     suite_ ## Name ## _ ## Suffix
 
-# define Test(...) Test_(__VA_ARGS__, .sentinel_ = 0)
+# define Test(...) CR_EXPAND(Test_(__VA_ARGS__, .sentinel_ = 0))
 # define Test_(Category, Name, ...)                                            \
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) = {    \
@@ -51,10 +51,10 @@
         .category = #Category,                                                 \
         .test     = IDENTIFIER_(Category, Name, impl),                         \
         .data     = &IDENTIFIER_(Category, Name, extra)                        \
-    };                                                                         \
+    } SECTION_SUFFIX_;                                                         \
     TEST_PROTOTYPE_(Category, Name)
 
-# define TestSuite(...) TestSuite_(__VA_ARGS__, .sentinel_ = 0)
+# define TestSuite(...) CR_EXPAND(TestSuite_(__VA_ARGS__, .sentinel_ = 0))
 # define TestSuite_(Name, ...)                                                 \
     struct criterion_test_extra_data SUITE_IDENTIFIER_(Name, extra) = {        \
         .file_    = __FILE__,                                                  \
@@ -65,7 +65,7 @@
     const struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {             \
         .name     = #Name,                                                     \
         .data     = &SUITE_IDENTIFIER_(Name, extra),                           \
-    }
+    } SECTION_SUFFIX_
 
 int criterion_run_all_tests(void);
 
