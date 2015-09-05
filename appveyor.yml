@@ -15,7 +15,13 @@ environment:
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
   matrix:
   - COMPILER: msvc
+    BUILD_TARGET: all_build
+    TEST_TARGET: run_tests
+    INSTALL_TARGET: install
   - COMPILER: mingw
+    BUILD_TARGET: all
+    TEST_TARGET: test
+    INSTALL_TARGET: install
 
 clone_depth: 5
 
@@ -47,26 +53,20 @@ install:
 
 build_script:
   - ps: |
-        if ($env:Compiler -eq "mingw") {
-            make
-        } else {
-            msbuild /m:4 /p:Configuration=Debug /p:Platform=Win32 Criterion.sln
-        }
+        cmake --build . --target $env:BUILD_TARGET
 
 before_deploy:
   - ps: |
         if ($env:Compiler -eq "mingw") {
-            make install
+            cmake --build . --target $env:INSTALL_TARGET
             bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"
             Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2"
         }
 
 test_script:
   - ps: |
-        if ($env:Compiler -eq "mingw") {
-            try { make test }
-            catch { type Testing/Temporary/LastTest.log }
-        }
+        try { cmake --build . --target $env:TEST_TARGET }
+        catch { type Testing/Temporary/LastTest.log }
 
 #after_test:
 #  - 'make coveralls'
