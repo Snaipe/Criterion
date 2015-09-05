@@ -136,6 +136,12 @@ if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
 
+if (WIN32)
+    set_target_properties(criterion PROPERTIES LINK_FLAGS
+        "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libcriterion.def")
+    install(FILES ${LIBRARY_OUTPUT_PATH}/libcriterion.def DESTINATION lib)
+endif ()
+
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
   RUNTIME DESTINATION bin
