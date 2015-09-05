@@ -64,7 +64,8 @@ before_deploy:
 test_script:
   - ps: |
         if ($env:Compiler -eq "mingw") {
-            make test || type Testing/Temporary/LastTest.log
+            try { make test }
+            catch { type Testing/Temporary/LastTest.log }
         }
 
 #after_test:
