@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <string.h>
 #include <criterion/common.h>
 #include <criterion/ordered-set.h>
-#include <csptr/smart_ptr.h>
+#include <csptr/smalloc.h>
 
 static void destroy_ordered_set(void *ptr, UNUSED void *meta) {
     sfree(((struct criterion_ordered_set *) ptr)->first);
@@ -42,9 +43,14 @@ static void destroy_ordered_set_node(void *ptr, void *meta) {
 struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
                                               f_destructor dtor) {
 
-    return unique_ptr(struct criterion_ordered_set,
-            .value = { .cmp = cmp, .dtor = dtor },
-            .dtor  = destroy_ordered_set);
+    struct criterion_ordered_set *newset = smalloc(
+            .size = sizeof (struct criterion_ordered_set),
+            .dtor = destroy_ordered_set
+        );
+
+    struct criterion_ordered_set data = { .cmp = cmp, .dtor = dtor };
+    memcpy(newset, &data, sizeof (struct criterion_ordered_set));
+    return newset;
 }
 
 void *insert_ordered_set(struct criterion_ordered_set *l,

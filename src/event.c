@@ -23,7 +23,8 @@
  */
 
 #include <stdio.h>
-#include <csptr/smart_ptr.h>
+#include <string.h>
+#include <csptr/smalloc.h>
 #include "criterion/stats.h"
 #include "criterion/common.h"
 #include "criterion/hooks.h"
@@ -50,9 +51,12 @@ struct event *read_event(FILE *f) {
                 return NULL;
             }
 
-            return unique_ptr(struct event,
-                    .value = { .kind = kind, .data = buf },
-                    .dtor  = destroy_event);
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .kind = kind, .data = buf };
+            return ev;
         }
         case THEORY_FAIL: {
             size_t *len = malloc(sizeof (size_t));
@@ -69,10 +73,12 @@ struct event *read_event(FILE *f) {
             }
             free(len);
 
-            return unique_ptr(struct event,
-                    .value = { .kind = kind, .data = buf },
-                    .dtor  = destroy_event);
-
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .kind = kind, .data = buf };
+            return ev;
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
@@ -81,12 +87,18 @@ struct event *read_event(FILE *f) {
                 return NULL;
             }
 
-            return unique_ptr(struct event,
-                    .value = { .kind = kind, .data = elapsed_time },
-                    .dtor  = destroy_event);
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .kind = kind, .data = elapsed_time };
+            return ev;
         }
-        default:
-            return unique_ptr(struct event, { .kind = kind, .data = NULL });
+        default: {
+            struct event *ev = smalloc(sizeof (struct event));
+            *ev = (struct event) { .kind = kind, .data = NULL };
+            return ev;
+        }
     }
 }
 

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <locale.h>
 #include <getopt.h>
-#include <csptr/smart_ptr.h>
+#include <csptr/smalloc.h>
 #include "runner.h"
 #include "config.h"
 
@@ -90,7 +90,7 @@ bool is_disabled(struct criterion_suite *s, struct criterion_test *t) {
 }
 
 int list_tests(bool unicode) {
-    smart struct criterion_test_set *set = criterion_init();
+    struct criterion_test_set *set = criterion_init();
 
     const char *node = unicode ? UTF8_TREE_NODE : ASCII_TREE_NODE;
     const char *join = unicode ? UTF8_TREE_JOIN : ASCII_TREE_JOIN;
@@ -114,6 +114,8 @@ int list_tests(bool unicode) {
                     is_disabled(&s->suite, t) ? " (disabled)" : "");
         }
     }
+
+    sfree(set);
     return 0;
 }
 

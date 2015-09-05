@@ -23,7 +23,7 @@
  */
 #include <stdlib.h>
 #include <stdbool.h>
-#include <csptr/smart_ptr.h>
+#include <csptr/smalloc.h>
 
 #include "criterion/types.h"
 #include "criterion/options.h"
@@ -76,7 +76,7 @@ void run_worker(struct worker_context *ctx) {
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
                                   f_worker_func func) {
-    smart s_pipe_handle *pipe = stdpipe();
+    s_pipe_handle *pipe = stdpipe();
     if (pipe == NULL)
         abort();
 
@@ -86,17 +86,26 @@ struct process *spawn_test_worker(struct criterion_test *test,
         .func = func,
         .pipe = pipe
     };
+
+    struct process *ptr = NULL;
+
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
-        return NULL;
+        goto cleanup;
     } else if (proc == NULL) {
         run_worker(&g_worker_context);
-        return NULL;
+        goto cleanup;
     }
 
-    return unique_ptr(struct process,
-            .value = { .proc = proc, .in = pipe_in(pipe) },
-            .dtor  = close_process);
+    ptr = smalloc(
+            .size = sizeof (struct process),
+            .kind = UNIQUE,
+            .dtor = close_process);
+
+    *ptr = (struct process) { .proc = proc, .in = pipe_in(pipe) };
+cleanup:
+    sfree(pipe);
+    return ptr;
 }
 
 struct process_status wait_proc(struct process *proc) {
