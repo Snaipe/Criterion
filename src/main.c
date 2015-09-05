@@ -120,7 +120,7 @@ int list_tests(bool unicode) {
     return 0;
 }
 
-int main(int argc, char *argv[]) {
+CR_API int main(int argc, char *argv[]) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"version",         no_argument,        0, 'v'},
