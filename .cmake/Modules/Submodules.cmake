@@ -10,8 +10,6 @@ set(GIT_SUBMODULES libcsptr dyncall)
 
 ### set each submodules's commit or tag that is to be checked out
 ### (leave empty if you want master)
-set(GIT_SUBMODULE_VERSION_libcsptr 5bf0ad5)
-set(GIT_SUBMODULE_VERSION_dyncall  68c57f6)
 
 ### First, get all submodules in
 if(${GIT_SUBMODULES_CHECKOUT_QUIET})
