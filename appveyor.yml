@@ -39,6 +39,7 @@ install:
             $generator = "Visual Studio 14 2015"
         }
         cmake `
+            -Wno-dev `
             -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% `
             -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" `
             -G "$generator" `
