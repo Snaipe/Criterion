@@ -44,6 +44,11 @@
 #include "extmatch.h"
 #endif
 
+#ifdef _MSC_VER
+struct criterion_test  SECTION_START_(cr_tst);
+struct criterion_suite SECTION_START_(cr_sts);
+#endif
+
 IMPL_SECTION_LIMITS(struct criterion_test, cr_tst);
 IMPL_SECTION_LIMITS(struct criterion_suite, cr_sts);
 

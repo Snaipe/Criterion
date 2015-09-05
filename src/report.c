@@ -45,6 +45,20 @@ static inline void nothing() {}
         }                                                                   \
     }
 
+#ifdef _MSC_VER
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_ALL));
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_SUITE));
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_INIT));
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_TEST));
+f_report_hook SECTION_START_(HOOK_SECTION(ASSERT));
+f_report_hook SECTION_START_(HOOK_SECTION(THEORY_FAIL));
+f_report_hook SECTION_START_(HOOK_SECTION(TEST_CRASH));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_TEST));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_FINI));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_SUITE));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_ALL));
+#endif
+
 IMPL_CALL_REPORT_HOOKS(PRE_ALL);
 IMPL_CALL_REPORT_HOOKS(PRE_SUITE);
 IMPL_CALL_REPORT_HOOKS(PRE_INIT);
