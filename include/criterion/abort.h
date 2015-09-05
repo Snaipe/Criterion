@@ -26,6 +26,6 @@
 
 # include "common.h"
 
-NORETURN void criterion_abort_test(void);
+CR_API NORETURN void criterion_abort_test(void);
 
 #endif /* !CRITERION_ABORT_H_ */

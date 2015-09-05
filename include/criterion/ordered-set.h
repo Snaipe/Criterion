@@ -50,10 +50,10 @@ struct criterion_test_set {
     size_t tests;
 };
 
-struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
+CR_API struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
                                               void (*dtor)(void *, void *));
 
-void *insert_ordered_set(struct criterion_ordered_set *l,
+CR_API void *insert_ordered_set(struct criterion_ordered_set *l,
                          void *ptr,
                          size_t size);
 

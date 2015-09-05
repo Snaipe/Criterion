@@ -30,6 +30,7 @@ set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
 
 set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
+add_definitions(-DCRITERION_BUILDING_DLL=1)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
 

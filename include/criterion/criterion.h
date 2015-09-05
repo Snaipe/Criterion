@@ -67,6 +67,6 @@
         .data     = &SUITE_IDENTIFIER_(Name, extra),                           \
     } SECTION_SUFFIX_
 
-int criterion_run_all_tests(void);
+CR_API int criterion_run_all_tests(void);
 
 #endif /* !CRITERION_H_ */
