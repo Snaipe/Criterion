@@ -44,13 +44,13 @@ endif()
 
 # Find dependencies
 
-find_package(Gettext)
-find_package(Libintl)
-if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
-  include(GettextTranslate)
-  add_subdirectory(po)
-  set(ENABLE_NLS 1)
-endif ()
+#find_package(Gettext)
+#find_package(Libintl)
+#if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
+#  include(GettextTranslate)
+#  add_subdirectory(po)
+#  set(ENABLE_NLS 1)
+#endif ()
 
 include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
@@ -138,8 +138,8 @@ endif()
 
 if (WIN32)
     set_target_properties(criterion PROPERTIES LINK_FLAGS
-        "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libcriterion.def")
-    install(FILES ${LIBRARY_OUTPUT_PATH}/libcriterion.def DESTINATION lib)
+        "-Wl,--output-def,${CMAKE_CURRENT_BINARY_DIR}/libcriterion.def")
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libcriterion.def DESTINATION lib)
 endif ()
 
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
