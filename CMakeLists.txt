@@ -31,13 +31,15 @@ set(GettextTranslate_GMO_BINARY 1)
 
 add_definitions(-DCRITERION_BUILDING_DLL=1)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+endif ()
 
 if (MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 endif ()
 
-if (WIN32)
+if (WIN32 AND NOT MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
 endif()
 
