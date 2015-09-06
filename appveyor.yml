@@ -18,10 +18,12 @@ environment:
     BUILD_TARGET: all
     TEST_TARGET: test
     INSTALL_TARGET: install
+    GENERATOR: "MSYS Makefiles"
   - COMPILER: msvc
     BUILD_TARGET: all_build
     TEST_TARGET: run_tests
     INSTALL_TARGET: install
+    GENERATOR: "Visual Studio 14 2015"
 
 clone_depth: 5
 
@@ -38,18 +40,13 @@ install:
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Configure project
   - 'mkdir build && cd build'
-  - ps: |
-        if ($env:Compiler -eq "mingw") {
-            $generator = "MSYS Makefiles"
-        } else {
-            $generator = "Visual Studio 14 2015"
-        }
-        cmake `
-            -Wno-dev `
-            "-DCMAKE_INSTALL_PREFIX=criterion-$env:APPVEYOR_REPO_TAG_NAME" `
-            "-DCMAKE_PREFIX_PATH=$env:LOCAL_INSTALL" `
-            -G "$generator" `
-            ..
+  - >
+      cmake
+      -Wno-dev
+      -DCMAKE_INSTALL_PREFIX="criterion-%APPVEYOR_REPO_TAG_NAME%"
+      -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%"
+      -G "%GENERATOR%"
+      ..
 
 build_script:
   - cmake --build . --target %BUILD_TARGET%
