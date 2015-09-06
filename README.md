@@ -2,7 +2,8 @@
 <img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
-[![Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
+[![Unix Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/Snaipe/Criterion?svg=true)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
 [![Coverage Status](https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=bleeding)](https://coveralls.io/r/Snaipe/Criterion?branch=bleeding) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
 [![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
@@ -32,7 +33,7 @@ the user would have with other frameworks:
 * [x] There is a support for theories alongside tests
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
-* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiling with MinGW GCC).
+* [x] Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiling with MinGW GCC and Visaul Studio 2015+).
 
 ## Downloads
 
