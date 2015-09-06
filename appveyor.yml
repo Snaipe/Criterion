@@ -58,7 +58,7 @@ before_deploy:
   - ps: |
         if ($env:Compiler -eq "mingw") {
             cmake --build . --target $env:INSTALL_TARGET
-            bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"
+            7z a "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2" "criterion-$env:APPVEYOR_REPO_TAG_NAME"
             Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2"
         }
 
