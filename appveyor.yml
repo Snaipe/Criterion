@@ -14,13 +14,13 @@ environment:
   LOCAL_INSTALL: $(APPVEYOR_BUILD_FOLDER)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
   matrix:
-  - COMPILER: msvc
-    BUILD_TARGET: all_build
-    TEST_TARGET: run_tests
-    INSTALL_TARGET: install
   - COMPILER: mingw
     BUILD_TARGET: all
     TEST_TARGET: test
+    INSTALL_TARGET: install
+  - COMPILER: msvc
+    BUILD_TARGET: all_build
+    TEST_TARGET: run_tests
     INSTALL_TARGET: install
 
 clone_depth: 5
