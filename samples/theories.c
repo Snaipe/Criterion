@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#pragma warning(disable : 4090)
+#endif
+
 #include <criterion/theories.h>
 #include <limits.h>
 

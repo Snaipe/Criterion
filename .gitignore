@@ -16,6 +16,7 @@
 !HEADER
 !ChangeLog
 
+CMakeFiles/
 !CMakeLists.txt
 !.cmake/*
 
