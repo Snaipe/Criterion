@@ -26,9 +26,10 @@
 
 # include <stddef.h>
 # include <stdio.h>
+# include "common.h"
 
 extern FILE *g_event_pipe;
 
-void send_event(int kind, void *data, size_t size);
+CR_API void send_event(int kind, void *data, size_t size);
 
 #endif /* !CRITERION_EVENT_H_ */

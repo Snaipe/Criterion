@@ -34,8 +34,7 @@
 #include "config.h"
 #include "i18n.h"
 #include "posix-compat.h"
-
-#define USED __attribute__ ((used))
+#include "common.h"
 
 #ifdef VANILLA_WIN32
 // fallback to strtok on windows since strtok_s is not available everywhere
@@ -119,8 +118,7 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t,
+static INLINE bool is_disabled(struct criterion_test *t,
                                struct criterion_suite *s) {
     return t->data->disabled || (s->data && s->data->disabled);
 }

@@ -13,4 +13,6 @@
         dngettext(PACKAGE, String, Plural, (Quantity))
 # endif
 
+void init_i18n(void);
+
 #endif /* !I18N_H_ */

@@ -76,13 +76,13 @@ extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 # define CRITERION_PREFIX_PASS   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_PASS  ])
 # define CRITERION_PREFIX_FAIL   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_FAIL  ])
 
-void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
+CR_API void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
 
 FORMAT(printf, 3, 4)
-void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...);
+CR_API void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...);
 
 FORMAT(printf, 2, 3)
-void criterion_log(enum criterion_logging_level level, const char *msg, ...);
+CR_API void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 
 # define criterion_info(...) criterion_log(CRITERION_INFO, __VA_ARGS__)
 # define criterion_important(...) criterion_log(CRITERION_IMPORTANT, __VA_ARGS__)

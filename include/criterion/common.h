@@ -111,4 +111,29 @@
 #  define FORMAT(Archetype, Index, Ftc)
 # endif
 
+# if defined _WIN32 || defined __CYGWIN__
+#  ifdef CRITERION_BUILDING_DLL
+#   ifdef __GNUC__
+#    define CR_API __attribute__ ((dllexport))
+#   else
+#    define CR_API __declspec(dllexport)
+#   endif
+#  else
+#   ifdef __GNUC__
+#    define CR_API __attribute__ ((dllimport))
+#   else
+#    define CR_API __declspec(dllimport)
+#   endif
+#  endif
+#  define CR_LOCAL
+# else
+#  if __GNUC__ >= 4
+#   define CR_API __attribute__ ((visibility ("default")))
+#   define CR_LOCAL  __attribute__ ((visibility ("hidden")))
+#  else
+#   define CR_API
+#   define CR_LOCAL
+#  endif
+# endif
+
 #endif /* !CRITERION_COMMON_H_ */

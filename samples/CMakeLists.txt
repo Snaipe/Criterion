@@ -1,4 +1,6 @@
-set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
+endif ()
 
 include_directories(../include)
 
@@ -38,13 +40,17 @@ foreach(sample ${SAMPLES})
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )
 
-    add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample})
-    set_property(TEST ${sample}_compare PROPERTY
-        ENVIRONMENT "LC_ALL=en_US.utf8"
-        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-        ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
-    )
+    if (NOT MSVC) # we disable the scripted tests when building with MSVC
+        add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample})
+        set_property(TEST ${sample}_compare PROPERTY
+            ENVIRONMENT "LC_ALL=en_US.utf8"
+            ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+            ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
+        )
+    endif ()
 endforeach()
+
+if (NOT MSVC) # we disable the scripted tests when building with MSVC
 
 foreach(script ${SCRIPTS})
     add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
@@ -59,3 +65,5 @@ foreach(script ${SCRIPTS})
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
     )
 endforeach()
+
+endif()

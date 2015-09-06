@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include "criterion/common.h"
+#include "common.h"
 
 struct context {
     int depth;
@@ -107,20 +108,20 @@ static int is_eos(struct context *ctx) {
 
 static inline void handle_special(struct context *ctx, handler_arg strs[5]) {
     if (peek_char(ctx) == '(') {
-        if ((strs[0].validator ?: inactive)(ctx))
+        if (DEF(strs[0].validator, inactive)(ctx))
             copy_str(ctx, strs[0].str);
         dup_char(ctx);
-        if ((strs[1].validator ?: inactive)(ctx))
+        if (DEF(strs[1].validator, inactive)(ctx))
             copy_str(ctx, strs[1].str);
 
         transform_rec(ctx);
 
-        if ((strs[2].validator ?: inactive)(ctx))
+        if (DEF(strs[2].validator, inactive)(ctx))
             copy_str(ctx,strs[2].str);
         copy_char(ctx, ')');
-        if ((strs[3].validator ?: inactive)(ctx))
+        if (DEF(strs[3].validator, inactive)(ctx))
             copy_str(ctx, strs[3].str);
-    } else if ((strs[4].validator ?: inactive)(ctx)) {
+    } else if (DEF(strs[4].validator, inactive)(ctx)) {
         copy_str(ctx, strs[4].str);
     }
 }
@@ -191,7 +192,7 @@ void transform_impl(struct context *ctx) {
         if (c == ')' && ctx->depth > 0)
             return;
 
-        (handler ?: copy_char)(ctx, c);
+        (handler ? handler : copy_char)(ctx, c);
 
         if (ctx->eos)
             return;

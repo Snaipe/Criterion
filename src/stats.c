@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <csptr/smart_ptr.h>
+#include <string.h>
+#include <csptr/smalloc.h>
 #include "criterion/common.h"
 #include "stats.h"
+#include "common.h"
 
 #include <assert.h>
 
@@ -48,7 +50,12 @@ static void destroy_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_glob_stats *stats_init(void) {
-    return unique_ptr(s_glob_stats, .dtor = destroy_stats);
+    s_glob_stats *stats = smalloc(
+            .size = sizeof (s_glob_stats),
+            .dtor = destroy_stats
+        );
+    *stats = (s_glob_stats) { .suites = NULL };
+    return stats;
 }
 
 static void destroy_suite_stats(void *ptr, UNUSED void *meta) {
@@ -60,9 +67,13 @@ static void destroy_suite_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_suite_stats *suite_stats_init(struct criterion_suite *s) {
-    return shared_ptr(s_suite_stats, {
-                .suite = s,
-            }, destroy_suite_stats);
+    s_suite_stats *stats = smalloc(
+            .size = sizeof (s_suite_stats),
+            .kind = SHARED,
+            .dtor = destroy_suite_stats
+        );
+    *stats = (s_suite_stats) { .suite = s };
+    return stats;
 }
 
 static void destroy_test_stats(void *ptr, UNUSED void *meta) {
@@ -74,11 +85,17 @@ static void destroy_test_stats(void *ptr, UNUSED void *meta) {
 }
 
 s_test_stats *test_stats_init(struct criterion_test *t) {
-    return shared_ptr(s_test_stats, {
-                .test = t,
-                .progress = t->data->line_,
-                .file = t->data->file_
-            }, destroy_test_stats);
+    s_test_stats *stats = smalloc(
+            .size = sizeof (s_test_stats),
+            .kind = SHARED,
+            .dtor = destroy_test_stats
+        );
+    *stats = (s_test_stats) {
+            .test = t,
+            .progress = t->data->line_,
+            .file = t->data->file_
+    };
+    return stats;
 }
 
 void stat_push_event(s_glob_stats *stats,
@@ -114,8 +131,7 @@ static void push_pre_suite(s_glob_stats *stats,
     ++stats->nb_suites;
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t,
+static INLINE bool is_disabled(struct criterion_test *t,
                                struct criterion_suite *s) {
 
     return t->data->disabled || (s->data && s->data->disabled);
@@ -140,7 +156,9 @@ static void push_assert(s_glob_stats *stats,
                         s_suite_stats *suite,
                         s_test_stats *test,
                         s_assert_stats *data) {
-    s_assert_stats *dup = unique_ptr(s_assert_stats, (*data));
+    s_assert_stats *dup = smalloc(sizeof (s_assert_stats));
+    memcpy(dup, data, sizeof (s_assert_stats));
+
     dup->next = test->asserts;
     test->asserts = dup;
 

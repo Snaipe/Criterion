@@ -64,6 +64,10 @@ Test(asserts, array) {
     int arr1[] = {1, 2, 3, 4};
     int arr2[] = {4, 3, 2, 1};
 
+    cr_assert_arrays_eq(arr1, arr1, 4);
+    cr_assert_arrays_neq(arr1, arr2, 4);
+
+#ifdef __GNUC__
     struct dummy_struct s1[] = {{4, 2}, {2, 4}};
     struct dummy_struct s2[2];
     memset(s2, 0xFF, sizeof(s2));
@@ -72,9 +76,7 @@ Test(asserts, array) {
     s2[1].a = 2;
     s2[1].b = 4;
 
-    cr_assert_arrays_eq(arr1, arr1, 4);
-    cr_assert_arrays_neq(arr1, arr2, 4);
-
     cr_assert_arrays_neq(s1, s2, 2);
     cr_assert_arrays_eq_cmp(s1, s2, 2, eq_dummy);
+#endif
 }

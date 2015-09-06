@@ -63,7 +63,7 @@
 # include <sys/fcntl.h>
 #endif
 
-#include <csptr/smart_ptr.h>
+#include <csptr/smalloc.h>
 
 struct proc_handle {
 #ifdef VANILLA_WIN32
@@ -201,14 +201,19 @@ s_proc_handle *fork_process() {
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
 
-    return unique_ptr(s_proc_handle, { info.hProcess });
+    s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
+    *handle = (s_proc_handle) { info.hProcess };
+    return handle;
 #else
     pid_t pid = fork();
     if (pid == -1)
         return (void *) -1;
     if (pid == 0)
         return NULL;
-    return unique_ptr(s_proc_handle, { pid });
+
+    s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
+    *handle = (s_proc_handle) { pid };
+    return handle;
 #endif
 }
 
@@ -294,6 +299,7 @@ FILE *pipe_out(s_pipe_handle *p) {
 }
 
 s_pipe_handle *stdpipe() {
+    s_pipe_handle *handle = smalloc(sizeof (s_pipe_handle));
 #ifdef VANILLA_WIN32
     HANDLE fhs[2];
     SECURITY_ATTRIBUTES attr = {
@@ -302,21 +308,25 @@ s_pipe_handle *stdpipe() {
     };
     if (!CreatePipe(fhs, fhs + 1, &attr, 0))
         return NULL;
-    return unique_ptr(s_pipe_handle, {{ fhs[0], fhs[1] }});
+    *handle = (s_pipe_handle) {{ fhs[0], fhs[1] }};
+    return handle;
 #else
     int fds[2] = { -1, -1 };
     if (pipe(fds) == -1)
         return NULL;
-    return unique_ptr(s_pipe_handle, {{ fds[0], fds[1] }});
+    *handle = (s_pipe_handle) {{ fds[0], fds[1] }};
+    return handle;
 #endif
 }
 
 s_proc_handle *get_current_process() {
+    s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
 #ifdef VANILLA_WIN32
-    return unique_ptr(s_proc_handle, { GetCurrentProcess() });
+    *handle = (s_proc_handle) { GetCurrentProcess() };
 #else
-    return unique_ptr(s_proc_handle, { getpid() });
+    *handle = (s_proc_handle) { getpid() };
 #endif
+    return handle;
 }
 
 bool is_current_process(s_proc_handle *proc) {

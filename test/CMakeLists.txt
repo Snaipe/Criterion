@@ -1,4 +1,6 @@
-set(CMAKE_C_FLAGS "-std=gnu99 -Wall -Wextra")
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS "-std=gnu99 -Wall -Wextra")
+endif ()
 
 include_directories(../include ../src)
 

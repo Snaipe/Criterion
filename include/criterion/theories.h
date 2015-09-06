@@ -29,14 +29,14 @@
 
 struct criterion_theory_context;
 
-struct criterion_theory_context* cr_theory_init(void);
-void cr_theory_push_arg(struct criterion_theory_context *ctx, bool is_float, size_t size, void *ptr);
-void cr_theory_free(struct criterion_theory_context *ctx);
-void cr_theory_abort(void);
-int cr_theory_mark(void);
+CR_API struct criterion_theory_context* cr_theory_init(void);
+CR_API void cr_theory_push_arg(struct criterion_theory_context *ctx, bool is_float, size_t size, void *ptr);
+CR_API void cr_theory_free(struct criterion_theory_context *ctx);
+CR_API void cr_theory_abort(void);
+CR_API int cr_theory_mark(void);
 
-void cr_theory_reset(struct criterion_theory_context *ctx);
-void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void));
+CR_API void cr_theory_reset(struct criterion_theory_context *ctx);
+CR_API void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void));
 
 # define TheoryDataPoints(Category, Name) \
     static struct criterion_datapoints IDENTIFIER_(Category, Name, dps)[]
@@ -64,7 +64,7 @@ struct criterion_datapoints {
             cr_theory_abort(); \
     } while (0);
 
-void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
+CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
 
 # define CR_VAARG_ID(Suffix, Category, Name, ...) \
     IDENTIFIER_(Category, Name, Suffix)

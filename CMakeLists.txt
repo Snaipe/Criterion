@@ -17,6 +17,11 @@ include_directories(
   dependencies/dyncall/dyncall/
 )
 
+if (MSVC)
+  add_subdirectory(dependencies/wingetopt/ EXCLUDE_FROM_ALL)
+  include_directories(dependencies/wingetopt/src/)
+endif ()
+
 # Project setup & environment variables
 
 set(PROJECT_VERSION "1.3.1")
@@ -24,11 +29,17 @@ set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
 
-set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS ON)
+add_definitions(-DCRITERION_BUILDING_DLL=1)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+endif ()
 
-if (WIN32)
+if (MSVC)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+endif ()
+
+if (WIN32 AND NOT MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
 endif()
 
@@ -44,13 +55,13 @@ endif()
 
 # Find dependencies
 
-#find_package(Gettext)
-#find_package(Libintl)
-#if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
-#  include(GettextTranslate)
-#  add_subdirectory(po)
-#  set(ENABLE_NLS 1)
-#endif ()
+find_package(Gettext)
+find_package(Libintl)
+if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
+  include(GettextTranslate)
+  add_subdirectory(po)
+  set(ENABLE_NLS 1)
+endif ()
 
 include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
@@ -120,6 +131,10 @@ include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
 target_link_libraries(criterion csptr dyncall_s)
 
+if (MSVC)
+  target_link_libraries(criterion wingetopt)
+endif ()
+
 if (HAVE_CLOCK_GETTIME)
   target_link_libraries(criterion rt)
 endif()
@@ -136,21 +151,11 @@ if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
 
-if (WIN32)
-    set_target_properties(criterion PROPERTIES LINK_FLAGS
-        "-Wl,--output-def,${CMAKE_CURRENT_BINARY_DIR}/libcriterion.def")
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libcriterion.def DESTINATION lib)
-endif ()
-
 install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
 install(TARGETS criterion
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
-)
-
-add_custom_target(uninstall
-    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
 )
 
 enable_testing()

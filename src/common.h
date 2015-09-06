@@ -21,11 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_ABORT_H_
-# define CRITERION_ABORT_H_
+#ifndef COMMON_H_
+# define COMMON_H_
 
-# include "common.h"
+#ifdef __GNUC__
+# define INLINE __attribute__((always_inline)) inline
+#elif defined(_MSC_VER)
+# define INLINE __forceinline
+#else
+# define INLINE
+#endif
 
-CR_API NORETURN void criterion_abort_test(void);
+# define DEF(X, Y) ((X) ? (X) : (Y))
 
-#endif /* !CRITERION_ABORT_H_ */
+#endif /* !COMMON_H_ */

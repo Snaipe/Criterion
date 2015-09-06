@@ -1,6 +1,6 @@
 version: 1.3.1_b{build}-{branch}
 
-os: Windows Server 2012
+os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
@@ -13,6 +13,17 @@ environment:
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
   LOCAL_INSTALL: $(APPVEYOR_BUILD_FOLDER)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
+  matrix:
+  - COMPILER: mingw
+    BUILD_TARGET: all
+    TEST_TARGET: test
+    INSTALL_TARGET: install
+    GENERATOR: "MSYS Makefiles"
+  - COMPILER: msvc
+    BUILD_TARGET: all_build
+    TEST_TARGET: run_tests
+    INSTALL_TARGET: install
+    GENERATOR: "Visual Studio 14 2015"
 
 clone_depth: 5
 
@@ -29,17 +40,36 @@ install:
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Configure project
   - 'mkdir build && cd build'
-  - 'cmake -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" ..'
+  - >
+      cmake
+      -Wno-dev
+      -DCMAKE_INSTALL_PREFIX="criterion-%APPVEYOR_REPO_TAG_NAME%"
+      -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%"
+      -G "%GENERATOR%"
+      ..
 
 build_script:
-  - 'make'
+  - cmake --build . --target %BUILD_TARGET%
+  - ps: |
+        # HACK: We need to copy criterion.dll into the binary directory
+        if ($env:Compiler -eq "msvc") {
+            Copy-Item Debug/criterion.dll samples/Debug/
+            Copy-Item Debug/criterion.dll test/Debug/
+        }
 
-after_build:
-  - 'make install'
-  - 'bash -lc "cd $APPVEYOR_BUILD_FOLDER; tar -cvjf criterion-${APPVEYOR_REPO_BRANCH}-windows-${PLATFORM}.tar.bz2 -C build criterion-${APPVEYOR_REPO_TAG_NAME}"'
+before_deploy:
+  - ps: |
+        if ($env:Compiler -eq "mingw" -and !$env:APPVEYOR_REPO_TAG_NAME) {
+            cmake --build . --target $env:INSTALL_TARGET
+            7z a -ttar "criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar" "criterion-$env:APPVEYOR_REPO_TAG_NAME"
+            7z a -tbzip2 "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2" "criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar"
+            Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2"
+        }
 
 test_script:
-  - 'make test || bash -lc "cat $APPVEYOR_BUILD_FOLDER/build/Testing/Temporary/LastTest.log"'
+  - ps: |
+        try { cmake --build . --target $env:TEST_TARGET }
+        catch { type Testing/Temporary/LastTest.log }
 
 #after_test:
 #  - 'make coveralls'
@@ -49,9 +79,6 @@ notifications:
   - provider: Email
     to: [franklinmathieu@gmail.com]
     on_build_status_changed: true
-
-artifacts:
-  - path: '**\*.tar.bz2'
 
 deploy:
   provider: GitHub
