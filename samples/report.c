@@ -15,10 +15,12 @@ ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
             stats->passed_asserts, stats->failed_asserts, stats->passed_asserts + stats->failed_asserts);
 }
 
-ReportHook(PRE_ALL)() {
+ReportHook(PRE_ALL)(struct criterion_test_set *tests) {
+    (void) tests;
     puts("criterion_init");
 }
 
-ReportHook(POST_ALL)() {
+ReportHook(POST_ALL)(struct criterion_global_stats *stats) {
+    (void) stats;
     puts("criterion_fini");
 }

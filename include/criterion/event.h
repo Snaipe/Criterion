@@ -24,12 +24,21 @@
 #ifndef CRITERION_EVENT_H_
 # define CRITERION_EVENT_H_
 
-# include <stddef.h>
-# include <stdio.h>
+# ifdef __cplusplus
+#  include <cstddef>
+#  include <cstdio>
+# else
+#  include <stddef.h>
+#  include <stdio.h>
+# endif
 # include "common.h"
+
+CR_BEGIN_C_API
 
 extern FILE *g_event_pipe;
 
 CR_API void send_event(int kind, void *data, size_t size);
+
+CR_END_C_API
 
 #endif /* !CRITERION_EVENT_H_ */

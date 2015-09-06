@@ -24,8 +24,13 @@
 #ifndef CRITERION_LOGGING_H_
 # define CRITERION_LOGGING_H_
 
-# include <stdbool.h>
-# include <stdarg.h>
+# ifdef __cplusplus
+#  include <cstdarg>
+using std::va_list;
+# else
+#  include <stdbool.h>
+#  include <stdarg.h>
+# endif
 # include "common.h"
 # include "ordered-set.h"
 # include "stats.h"
@@ -66,6 +71,8 @@ struct criterion_prefix_data {
 #  define FG_BLUE  CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
 #  define RESET    CRIT_COLOR_NORMALIZE(CRIT_RESET)
 # endif
+
+CR_BEGIN_C_API
 
 extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 
@@ -108,6 +115,8 @@ struct criterion_output_provider {
 
 extern struct criterion_output_provider normal_logging;
 extern struct criterion_output_provider tap_logging;
+
+CR_END_C_API
 
 #define NORMAL_LOGGING (&normal_logging)
 #define TAP_LOGGING    (&tap_logging)

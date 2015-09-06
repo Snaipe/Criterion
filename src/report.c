@@ -83,15 +83,15 @@ IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_SUITE);
 IMPL_CALL_REPORT_HOOKS(POST_ALL);
 
-ReportHook(PRE_ALL)() {}
-ReportHook(PRE_SUITE)() {}
-ReportHook(PRE_INIT)() {}
-ReportHook(PRE_TEST)() {}
-ReportHook(ASSERT)() {}
-ReportHook(THEORY_FAIL)() {}
-ReportHook(TEST_CRASH)() {}
-ReportHook(POST_TEST)() {}
-ReportHook(POST_FINI)() {}
-ReportHook(POST_SUITE)() {}
-ReportHook(POST_ALL)() {}
+ReportHook(PRE_ALL)(UNUSED struct criterion_test_set *arg) {}
+ReportHook(PRE_SUITE)(UNUSED struct criterion_suite_set *arg) {}
+ReportHook(PRE_INIT)(UNUSED struct criterion_test *arg) {}
+ReportHook(PRE_TEST)(UNUSED struct criterion_test *arg) {}
+ReportHook(ASSERT)(UNUSED struct criterion_assert_stats *arg) {}
+ReportHook(THEORY_FAIL)(UNUSED struct criterion_theory_stats *arg) {}
+ReportHook(TEST_CRASH)(UNUSED struct criterion_test_stats *arg) {}
+ReportHook(POST_TEST)(UNUSED struct criterion_test_stats *arg) {}
+ReportHook(POST_FINI)(UNUSED struct criterion_test_stats *arg) {}
+ReportHook(POST_SUITE)(UNUSED struct criterion_suite_stats *arg) {}
+ReportHook(POST_ALL)(UNUSED struct criterion_global_stats *arg) {}
 

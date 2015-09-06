@@ -40,15 +40,7 @@ struct criterion_ordered_set_node {
     char data[0];
 };
 
-struct criterion_suite_set {
-    struct criterion_suite suite;
-    struct criterion_ordered_set *tests;
-};
-
-struct criterion_test_set {
-    struct criterion_ordered_set *suites;
-    size_t tests;
-};
+CR_BEGIN_C_API
 
 CR_API struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
                                               void (*dtor)(void *, void *));
@@ -56,6 +48,8 @@ CR_API struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
 CR_API void *insert_ordered_set(struct criterion_ordered_set *l,
                          void *ptr,
                          size_t size);
+
+CR_END_C_API
 
 # define FOREACH_SET(Elt, Set)                                              \
     for (struct criterion_ordered_set_node *n = Set->first; n; n = n->next) \

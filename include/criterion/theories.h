@@ -27,6 +27,8 @@
 # include <stddef.h>
 # include "criterion.h"
 
+CR_BEGIN_C_API
+
 struct criterion_theory_context;
 
 CR_API struct criterion_theory_context* cr_theory_init(void);
@@ -113,5 +115,7 @@ CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, 
             );                                                                  \
     }                                                                           \
     void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args
+
+CR_END_C_API
 
 #endif /* !CRITERION_THEORIES_H_ */

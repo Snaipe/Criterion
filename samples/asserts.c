@@ -6,8 +6,6 @@ Test(asserts, base) {
 
     cr_assert(true, "Assertions may take failure messages");
 
-    cr_assert(true, .msg = "You can use explicit named arguments");
-
     cr_expect(false, "assert is fatal, expect isn't");
     cr_assert(false, "This assert runs");
     cr_assert(false, "This does not");

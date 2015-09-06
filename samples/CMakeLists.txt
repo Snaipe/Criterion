@@ -1,5 +1,6 @@
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
+  set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -pedantic")
 endif ()
 
 include_directories(../include)
@@ -36,6 +37,13 @@ foreach(sample ${SAMPLES})
     add_executable(${sample} ${sample}.c)
     target_link_libraries(${sample} criterion)
     add_test(${sample} ${sample})
+    set_property(TEST ${sample} PROPERTY
+        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+    )
+
+    add_executable(${sample}_cpp ${sample}.cc)
+    target_link_libraries(${sample}_cpp criterion)
+    add_test(${sample}_cpp ${sample}_cpp)
     set_property(TEST ${sample} PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
     )

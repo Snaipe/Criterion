@@ -24,8 +24,13 @@
 #ifndef CRITERION_TYPES_H_
 # define CRITERION_TYPES_H_
 
-# include <stdbool.h>
-# include <stddef.h>
+# ifdef __cplusplus
+#  include <cstddef>
+using std::size_t;
+# else
+#  include <stdbool.h>
+#  include <stddef.h>
+# endif
 # include "common.h"
 
 struct criterion_test_extra_data {
@@ -52,6 +57,18 @@ struct criterion_test {
 struct criterion_suite {
     const char *name;
     struct criterion_test_extra_data *data;
+};
+
+struct criterion_ordered_set;
+
+struct criterion_suite_set {
+    struct criterion_suite suite;
+    struct criterion_ordered_set *tests;
+};
+
+struct criterion_test_set {
+    struct criterion_ordered_set *suites;
+    size_t tests;
 };
 
 typedef void (*f_worker_func)(struct criterion_test *, struct criterion_suite *);
