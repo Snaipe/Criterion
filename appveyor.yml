@@ -59,11 +59,11 @@ build_script:
 
 before_deploy:
   - ps: |
-        if ($env:Compiler -eq "mingw") {
+        if ($env:Compiler -eq "mingw" -and !$env:APPVEYOR_REPO_TAG_NAME) {
             cmake --build . --target $env:INSTALL_TARGET
             7z a -ttar "criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar" "criterion-$env:APPVEYOR_REPO_TAG_NAME"
-            7z a -tbzip2 "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2" "criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar"
-            Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar.bz2"
+            7z a -tbzip2 "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2" "criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar"
+            Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2"
         }
 
 test_script:
