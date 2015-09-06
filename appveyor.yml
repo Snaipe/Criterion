@@ -52,8 +52,7 @@ install:
             ..
 
 build_script:
-  - ps: |
-        cmake --build . --target $env:BUILD_TARGET
+  - cmake --build . --target %BUILD_TARGET%
 
 before_deploy:
   - ps: |
