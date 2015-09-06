@@ -1,7 +1,7 @@
 #!/bin/sh
-./simple --tap --always-succeed
-./signal --tap --always-succeed
-./asserts --tap --always-succeed
-./more-suites --tap --always-succeed
-./long-messages --tap --always-succeed
-./description --tap --always-succeed
+./simple.c.bin --tap --always-succeed
+./signal.c.bin --tap --always-succeed
+./asserts.c.bin --tap --always-succeed
+./more-suites.c.bin --tap --always-succeed
+./long-messages.c.bin --tap --always-succeed
+./description.c.bin --tap --always-succeed

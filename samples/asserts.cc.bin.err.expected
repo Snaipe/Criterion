@@ -1,0 +1,6 @@
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m9[0m: Assertion failed: assert is fatal, expect isn't
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m10[0m: Assertion failed: This assert runs
+[[0;31mFAIL[0m] asserts::base: (0.00s)
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m18[0m: Assertion failed: The conditions for this test were not met.
+[[0;31mFAIL[0m] asserts::old_school: (0.00s)
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m6[0;1m | Passing: [0;32m4[0;1m | Failing: [0;31m2[0;1m | Crashing: [0;31m0[0;1m [0m

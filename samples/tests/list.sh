@@ -1,3 +1,3 @@
 #!/bin/sh
-./simple --list
-./simple --list --ascii
+./simple.c.bin --list
+./simple.c.bin --list --ascii

@@ -1,2 +1,2 @@
 #!/bin/sh
-./simple --verbose --always-succeed
+./simple.c.bin --verbose --always-succeed
