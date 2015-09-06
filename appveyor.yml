@@ -53,6 +53,12 @@ install:
 
 build_script:
   - cmake --build . --target %BUILD_TARGET%
+  - ps: |
+        # HACK: We need to copy criterion.dll into the binary directory
+        if ($env:Compiler -eq "msvc") {
+            Copy-Item Debug/criterion.dll samples/Debug/
+            Copy-Item Debug/criterion.dll test/Debug/
+        }
 
 before_deploy:
   - ps: |
