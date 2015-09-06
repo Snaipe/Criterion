@@ -48,6 +48,8 @@ foreach(sample ${SAMPLES})
     )
 endforeach()
 
+if (NOT MSVC) # we disable the scripted tests when building with MSVC
+
 foreach(script ${SCRIPTS})
     add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
     set_property(TEST ${script} PROPERTY
@@ -61,3 +63,5 @@ foreach(script ${SCRIPTS})
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
     )
 endforeach()
+
+endif()
