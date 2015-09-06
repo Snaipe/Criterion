@@ -46,8 +46,8 @@ install:
         }
         cmake `
             -Wno-dev `
-            -DCMAKE_INSTALL_PREFIX=criterion-%APPVEYOR_REPO_TAG_NAME% `
-            -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%" `
+            "-DCMAKE_INSTALL_PREFIX=criterion-$env:APPVEYOR_REPO_TAG_NAME" `
+            "-DCMAKE_PREFIX_PATH=$env:LOCAL_INSTALL" `
             -G "$generator" `
             ..
 
