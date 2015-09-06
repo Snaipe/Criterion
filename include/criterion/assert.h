@@ -80,8 +80,11 @@ struct criterion_assert_args {
 
 // Common asserts
 
-# define cr_abort_test(Message) \
-    cr_assert(0, (Message))
+# define cr_abort_test(Message)                                                \
+    do {                                                                       \
+        const char *msg = (Message);                                           \
+        cr_assert(0, msg ? msg : "The conditions for this test were not met.");\
+    } while (0)
 
 # define cr_assert(...) CR_EXPAND(cr_assert_(__VA_ARGS__, 0))
 
