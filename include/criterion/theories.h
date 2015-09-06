@@ -64,6 +64,40 @@ struct criterion_datapoints {
             cr_theory_abort(); \
     } while (0);
 
+# define cr_assume_not(Condition) cr_assume(!(Condition))
+
+# define cr_assume_op_(Op, Actual, Expected) cr_assume((Actual) Op (Expected))
+# define cr_assume_eq(Actual, Expected)  cr_assume_op_(==, Actual, Expected)
+# define cr_assume_neq(Actual, Expected) cr_assume_op_(!=, Actual, Expected)
+# define cr_assume_gt(Actual, Expected)  cr_assume_op_(>, Actual, Expected)
+# define cr_assume_geq(Actual, Expected) cr_assume_op_(>=, Actual, Expected)
+# define cr_assume_lt(Actual, Expected)  cr_assume_op_(<, Actual, Expected)
+# define cr_assume_leq(Actual, Expected) cr_assume_op_(<=, Actual, Expected)
+
+# define cr_assume_null(Value)     cr_assume_eq(Value, NULL)
+# define cr_assume_not_null(Value) cr_assume_neq(Value, NULL)
+
+# define cr_assume_float_eq(Actual, Expected, Epsilon)  \
+    cr_assume((Expected) - (Actual) <= (Epsilon)        \
+           && (Actual) - (Expected) <= (Epsilon))
+
+# define cr_assume_float_neq(Actual, Expected, Epsilon) \
+    cr_assume((Expected) - (Actual) > (Epsilon)         \
+           || (Actual) - (Expected) > (Epsilon))
+
+# define cr_assume_strings_op_(Op, Actual, Expected) \
+    cr_assume(strcmp((Actual), (Expected)) Op 0)
+
+# define cr_assume_strings_eq(Actual, Expected)  cr_assume_strings_op_(==, Actual, Expected)
+# define cr_assume_strings_neq(Actual, Expected) cr_assume_strings_op_(!=, Actual, Expected)
+# define cr_assume_strings_lt(Actual, Expected)  cr_assume_strings_op_(<, Actual, Expected)
+# define cr_assume_strings_leq(Actual, Expected) cr_assume_strings_op_(<=, Actual, Expected)
+# define cr_assume_strings_gt(Actual, Expected)  cr_assume_strings_op_(>, Actual, Expected)
+# define cr_assume_strings_geq(Actual, Expected) cr_assume_strings_op_(>=, Actual, Expected)
+
+# define cr_assume_arrays_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
+# define cr_assume_arrays_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
+
 CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
 
 # define CR_VAARG_ID(Suffix, Category, Name, ...) \
