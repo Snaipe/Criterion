@@ -34,6 +34,10 @@
 #include "posix-compat.h"
 #include "common.h"
 
+#ifdef _MSC_VER
+# define strdup _strdup
+#endif
+
 void tap_log_pre_all(struct criterion_test_set *set) {
     size_t enabled_count = 0;
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {

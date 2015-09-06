@@ -29,17 +29,37 @@
 
 #include <assert.h>
 
-static void nothing() {};
-static void push_pre_suite();
-static void push_pre_init();
-static void push_assert();
-static void push_post_test();
-static void push_test_crash();
-
 typedef struct criterion_global_stats s_glob_stats;
 typedef struct criterion_suite_stats  s_suite_stats;
 typedef struct criterion_test_stats   s_test_stats;
 typedef struct criterion_assert_stats s_assert_stats;
+
+static void push_pre_suite(s_glob_stats *stats,
+		           s_suite_stats *sstats,
+		           s_test_stats *tstats,
+		           void *data);
+static void push_pre_init(s_glob_stats *stats,
+		           s_suite_stats *sstats,
+		           s_test_stats *tstats,
+		           void *data);
+static void push_assert(s_glob_stats *stats,
+		           s_suite_stats *sstats,
+		           s_test_stats *tstats,
+		           void *data);
+static void push_post_test(s_glob_stats *stats,
+		           s_suite_stats *sstats,
+		           s_test_stats *tstats,
+		           void *data);
+static void push_test_crash(s_glob_stats *stats,
+		           s_suite_stats *sstats,
+		           s_test_stats *tstats,
+		           void *data);
+
+static void nothing(UNUSED s_glob_stats *stats,
+		    UNUSED s_suite_stats *sstats,
+		    UNUSED s_test_stats *tstats,
+		    UNUSED void *data) {
+};
 
 static void destroy_stats(void *ptr, UNUSED void *meta) {
     s_glob_stats *stats = ptr;
@@ -98,11 +118,13 @@ s_test_stats *test_stats_init(struct criterion_test *t) {
     return stats;
 }
 
+typedef void (*f_handle)(s_glob_stats *, s_suite_stats *, s_test_stats *, void *);
+
 void stat_push_event(s_glob_stats *stats,
                      s_suite_stats *suite,
                      s_test_stats *test,
                      struct event *data) {
-    static void (*const handles[])(s_glob_stats *, s_suite_stats *, s_test_stats *, void *) = {
+    static const f_handle handles[] = {
         nothing,            // PRE_ALL
         push_pre_suite,     // PRE_SUITE
         push_pre_init,      // PRE_INIT
@@ -155,7 +177,10 @@ static void push_pre_init(s_glob_stats *stats,
 static void push_assert(s_glob_stats *stats,
                         s_suite_stats *suite,
                         s_test_stats *test,
-                        s_assert_stats *data) {
+                        void *ptr) {
+
+    s_assert_stats *data = ptr;
+
     s_assert_stats *dup = smalloc(sizeof (s_assert_stats));
     memcpy(dup, data, sizeof (s_assert_stats));
 
@@ -179,8 +204,10 @@ static void push_assert(s_glob_stats *stats,
 static void push_post_test(s_glob_stats *stats,
                            s_suite_stats *suite,
                            s_test_stats *test,
-                           double *ptr) {
-    test->elapsed_time = *ptr;
+                           void *ptr) {
+    double *data = ptr;
+
+    test->elapsed_time = (float) *data;
     if (test->failed_asserts > 0
             || test->signal != test->test->data->signal
             || test->exit_code != test->test->data->exit_code) {

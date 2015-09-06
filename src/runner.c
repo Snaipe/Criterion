@@ -169,14 +169,14 @@ static void run_test_child(struct criterion_test *test,
 
     send_event(PRE_INIT, NULL, 0);
     if (suite->data)
-        (suite->data->init ? suite->data->init : nothing)();
-    (test->data->init ? test->data->init : nothing)();
+        suite->data->init ? suite->data->init() : nothing();
+    test->data->init ? test->data->init() : nothing();
     send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
     if (setup_abort_test()) {
         timer_start(&ts);
-        (test->test ? test->test : nothing)();
+        test->test ? test->test() : nothing();
     }
 
     double elapsed_time;
@@ -184,9 +184,9 @@ static void run_test_child(struct criterion_test *test,
         elapsed_time = -1;
 
     send_event(POST_TEST, &elapsed_time, sizeof (double));
-    (test->data->fini ? test->data->fini : nothing)();
+    test->data->fini ? test->data->fini() : nothing();
     if (suite->data)
-        (suite->data->fini ? suite->data->fini : nothing)();
+        suite->data->fini ? suite->data->fini() : nothing();
     send_event(POST_FINI, NULL, 0);
 }
 

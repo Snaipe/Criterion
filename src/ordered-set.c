@@ -31,7 +31,7 @@ static void destroy_ordered_set(void *ptr, UNUSED void *meta) {
     sfree(((struct criterion_ordered_set *) ptr)->first);
 }
 
-static INLINE void nothing() {}
+static INLINE void nothing(UNUSED void *ptr, UNUSED void *meta) {}
 
 static void destroy_ordered_set_node(void *ptr, void *meta) {
     struct criterion_ordered_set *set = *(void **) meta;

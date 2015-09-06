@@ -9,6 +9,10 @@ set(LIBCSPTR_DISABLE_COVERALLS ON)
 
 include(Submodules)
 
+if (MSVC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+endif ()
+
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
 

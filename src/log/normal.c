@@ -41,6 +41,10 @@
 # define strtok_r(str, delim, saveptr) strtok(str, delim)
 #endif
 
+#ifdef _MSC_VER
+# define strdup _strdup
+#endif
+
 typedef const char *const msg_t;
 
 // Used to mark string for gettext

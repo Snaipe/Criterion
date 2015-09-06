@@ -52,12 +52,12 @@ struct criterion_prefix_data {
 # ifdef CRITERION_LOGGING_COLORS
 #  define CRIT_COLOR_NORMALIZE(Str) (criterion_options.use_ascii ? "" : Str)
 
-#  define CRIT_FG_BOLD  "\e[0;1m"
-#  define CRIT_FG_RED   "\e[0;31m"
-#  define CRIT_FG_GREEN "\e[0;32m"
-#  define CRIT_FG_GOLD  "\e[0;33m"
-#  define CRIT_FG_BLUE  "\e[0;34m"
-#  define CRIT_RESET    "\e[0m"
+#  define CRIT_FG_BOLD  "\33[0;1m"
+#  define CRIT_FG_RED   "\33[0;31m"
+#  define CRIT_FG_GREEN "\33[0;32m"
+#  define CRIT_FG_GOLD  "\33[0;33m"
+#  define CRIT_FG_BLUE  "\33[0;34m"
+#  define CRIT_RESET    "\33[0m"
 
 #  define FG_BOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
 #  define FG_RED   CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
