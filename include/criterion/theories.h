@@ -37,7 +37,7 @@ using std::size_t;
 template <typename... T>
 constexpr size_t criterion_va_num__(const T &...) {
     return sizeof...(T);
-};
+}
 # endif
 
 CR_BEGIN_C_API
