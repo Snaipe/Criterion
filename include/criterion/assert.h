@@ -86,15 +86,21 @@ struct criterion_assert_args {
         cr_assert(0, msg ? msg : "The conditions for this test were not met.");\
     } while (0)
 
-# define cr_assert(...) CR_EXPAND(cr_assert_(__VA_ARGS__, 0))
+# ifdef __cplusplus
+#  define CR_SENTINEL 0
+# else
+#  define CR_SENTINEL .sentinel_ = 0
+# endif
 
-# define cr_expect(...) CR_EXPAND(cr_expect_(__VA_ARGS__, 0))
+# define cr_assert(...) CR_EXPAND(cr_assert_(__VA_ARGS__, CR_SENTINEL))
+
+# define cr_expect(...) CR_EXPAND(cr_expect_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_(Condition, ...) CR_EXPAND(cr_assert_impl(FATAL,  Condition, __VA_ARGS__))
 # define cr_expect_(Condition, ...) CR_EXPAND(cr_assert_impl(NORMAL, Condition, __VA_ARGS__))
 
-# define cr_assert_not(...) CR_EXPAND(cr_assert_not_(__VA_ARGS__, 0))
-# define cr_expect_not(...) CR_EXPAND(cr_expect_not_(__VA_ARGS__, 0))
+# define cr_assert_not(...) CR_EXPAND(cr_assert_not_(__VA_ARGS__, CR_SENTINEL))
+# define cr_expect_not(...) CR_EXPAND(cr_expect_not_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_not_(Condition, ...) \
     CR_EXPAND(cr_assert_impl(FATAL,  !(Condition), __VA_ARGS__))
@@ -108,46 +114,46 @@ struct criterion_assert_args {
 # define cr_expect_op_(Op, Actual, Expected, ...) \
     CR_EXPAND(cr_assert_impl(NORMAL, (Actual) Op (Expected), __VA_ARGS__))
 
-# define cr_assert_eq(...) CR_EXPAND(cr_assert_op_(==, __VA_ARGS__, 0))
-# define cr_expect_eq(...) CR_EXPAND(cr_expect_op_(==, __VA_ARGS__, 0))
+# define cr_assert_eq(...) CR_EXPAND(cr_assert_op_(==, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_eq(...) CR_EXPAND(cr_expect_op_(==, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_neq(...) CR_EXPAND(cr_assert_op_(!=, __VA_ARGS__, 0))
-# define cr_expect_neq(...) CR_EXPAND(cr_expect_op_(!=, __VA_ARGS__, 0))
+# define cr_assert_neq(...) CR_EXPAND(cr_assert_op_(!=, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_neq(...) CR_EXPAND(cr_expect_op_(!=, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_lt(...) CR_EXPAND(cr_assert_op_(<, __VA_ARGS__, 0))
-# define cr_expect_lt(...) CR_EXPAND(cr_expect_op_(<, __VA_ARGS__, 0))
+# define cr_assert_lt(...) CR_EXPAND(cr_assert_op_(<, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_lt(...) CR_EXPAND(cr_expect_op_(<, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_gt(...) CR_EXPAND(cr_assert_op_(>, __VA_ARGS__, 0))
-# define cr_expect_gt(...) CR_EXPAND(cr_expect_op_(>, __VA_ARGS__, 0))
+# define cr_assert_gt(...) CR_EXPAND(cr_assert_op_(>, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_gt(...) CR_EXPAND(cr_expect_op_(>, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_leq(...) CR_EXPAND(cr_assert_op_(<=, __VA_ARGS__, 0))
-# define cr_expect_leq(...) CR_EXPAND(cr_expect_op_(<=, __VA_ARGS__, 0))
+# define cr_assert_leq(...) CR_EXPAND(cr_assert_op_(<=, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_leq(...) CR_EXPAND(cr_expect_op_(<=, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_geq(...) CR_EXPAND(cr_assert_op_(>=, __VA_ARGS__, 0))
-# define cr_expect_geq(...) CR_EXPAND(cr_expect_op_(>=, __VA_ARGS__, 0))
+# define cr_assert_geq(...) CR_EXPAND(cr_assert_op_(>=, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_geq(...) CR_EXPAND(cr_expect_op_(>=, __VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_null_(Value, ...) \
     CR_EXPAND(cr_assert_impl(FATAL,  (Value) == NULL, __VA_ARGS__))
 # define cr_expect_null_(Value, ...) \
     CR_EXPAND(cr_assert_impl(NORMAL, (Value) == NULL, __VA_ARGS__))
 
-# define cr_assert_null(...) CR_EXPAND(cr_assert_null_(__VA_ARGS__, 0))
-# define cr_expect_null(...) CR_EXPAND(cr_expect_null_(__VA_ARGS__, 0))
+# define cr_assert_null(...) CR_EXPAND(cr_assert_null_(__VA_ARGS__, CR_SENTINEL))
+# define cr_expect_null(...) CR_EXPAND(cr_expect_null_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_not_null_(Value, ...) \
     CR_EXPAND(cr_assert_impl(FATAL,  (Value) != NULL, __VA_ARGS__))
 # define cr_expect_not_null_(Value, ...) \
     CR_EXPAND(cr_assert_impl(NORMAL, (Value) != NULL, __VA_ARGS__))
 
-# define cr_assert_not_null(...) CR_EXPAND(cr_assert_not_null_(__VA_ARGS__, 0))
-# define cr_expect_not_null(...) CR_EXPAND(cr_expect_not_null_(__VA_ARGS__, 0))
+# define cr_assert_not_null(...) CR_EXPAND(cr_assert_not_null_(__VA_ARGS__, CR_SENTINEL))
+# define cr_expect_not_null(...) CR_EXPAND(cr_expect_not_null_(__VA_ARGS__, CR_SENTINEL))
 
 // Floating-point asserts
 
 # define cr_assert_float_eq(...) \
-    CR_EXPAND(cr_assert_float_eq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_assert_float_eq_(__VA_ARGS__, CR_SENTINEL))
 # define cr_expect_float_eq(...) \
-    CR_EXPAND(cr_expect_float_eq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_expect_float_eq_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_float_eq_(Actual, Expected, Epsilon, ...) \
     CR_EXPAND(cr_assert_impl(FATAL,  (Expected) - (Actual) <= (Epsilon)  \
@@ -159,9 +165,9 @@ struct criterion_assert_args {
                 __VA_ARGS__))
 
 # define cr_assert_float_neq(...) \
-    CR_EXPAND(cr_assert_float_neq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_assert_float_neq_(__VA_ARGS__, CR_SENTINEL))
 # define cr_expect_float_neq(...) \
-    CR_EXPAND(cr_expect_float_neq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_expect_float_neq_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_float_neq_(Actual, Expected, Epsilon, ...) \
     CR_EXPAND(cr_assert_impl(FATAL,  (Expected) - (Actual) > (Epsilon)  \
@@ -180,38 +186,38 @@ struct criterion_assert_args {
     CR_EXPAND(cr_assert_impl(NORMAL, strcmp((Actual), (Expected)) Op 0, __VA_ARGS__))
 
 # define cr_assert_strings_eq(...) \
-    CR_EXPAND(cr_assert_strings_(==, __VA_ARGS__, 0))
+    CR_EXPAND(cr_assert_strings_(==, __VA_ARGS__, CR_SENTINEL))
 # define cr_expect_strings_eq(...) \
-    CR_EXPAND(cr_expect_strings_(==, __VA_ARGS__, 0))
+    CR_EXPAND(cr_expect_strings_(==, __VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_strings_neq(...) \
-    CR_EXPAND(cr_assert_strings_(!=, __VA_ARGS__, 0))
+    CR_EXPAND(cr_assert_strings_(!=, __VA_ARGS__, CR_SENTINEL))
 # define cr_expect_strings_neq(...) \
-    CR_EXPAND(cr_expect_strings_(!=, __VA_ARGS__, 0))
+    CR_EXPAND(cr_expect_strings_(!=, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_strings_gt(...) CR_EXPAND(cr_assert_strings_(>, __VA_ARGS__, 0))
-# define cr_expect_strings_gt(...) CR_EXPAND(cr_expect_strings_(>, __VA_ARGS__, 0))
+# define cr_assert_strings_gt(...) CR_EXPAND(cr_assert_strings_(>, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_strings_gt(...) CR_EXPAND(cr_expect_strings_(>, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_strings_lt(...) CR_EXPAND(cr_assert_strings_(<, __VA_ARGS__, 0))
-# define cr_expect_strings_lt(...) CR_EXPAND(cr_expect_strings_(<, __VA_ARGS__, 0))
+# define cr_assert_strings_lt(...) CR_EXPAND(cr_assert_strings_(<, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_strings_lt(...) CR_EXPAND(cr_expect_strings_(<, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_strings_leq(...) CR_EXPAND(cr_assert_strings_(<=, __VA_ARGS__, 0))
-# define cr_expect_strings_leq(...) CR_EXPAND(cr_expect_strings_(<=, __VA_ARGS__, 0))
+# define cr_assert_strings_leq(...) CR_EXPAND(cr_assert_strings_(<=, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_strings_leq(...) CR_EXPAND(cr_expect_strings_(<=, __VA_ARGS__, CR_SENTINEL))
 
-# define cr_assert_strings_geq(...) CR_EXPAND(cr_assert_strings_(>=, __VA_ARGS__, 0))
-# define cr_expect_strings_geq(...) CR_EXPAND(cr_expect_strings_(>=, __VA_ARGS__, 0))
+# define cr_assert_strings_geq(...) CR_EXPAND(cr_assert_strings_(>=, __VA_ARGS__, CR_SENTINEL))
+# define cr_expect_strings_geq(...) CR_EXPAND(cr_expect_strings_(>=, __VA_ARGS__, CR_SENTINEL))
 
 // Array asserts
 
 # define cr_assert_arrays_eq(...) \
-    CR_EXPAND(cr_assert_arrays_eq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_assert_arrays_eq_(__VA_ARGS__, CR_SENTINEL))
 # define cr_expect_arrays_eq(...) \
-    CR_EXPAND(cr_expect_arrays_eq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_expect_arrays_eq_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_arrays_neq(...) \
-    CR_EXPAND(cr_assert_arrays_neq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_assert_arrays_neq_(__VA_ARGS__, CR_SENTINEL))
 # define cr_expect_arrays_neq(...) \
-    CR_EXPAND(cr_expect_arrays_neq_(__VA_ARGS__, 0))
+    CR_EXPAND(cr_expect_arrays_neq_(__VA_ARGS__, CR_SENTINEL))
 
 # define cr_assert_arrays_eq_(A, B, Size, ...)                    \
     CR_EXPAND(cr_assert_impl(FATAL, !memcmp((A), (B), (Size)),    \
@@ -251,9 +257,9 @@ struct criterion_assert_args {
     } while (0)
 
 #  define cr_assert_arrays_eq_cmp(...) \
-    cr_assert_arrays_eq_cmp_(__VA_ARGS__, 0)
+    cr_assert_arrays_eq_cmp_(__VA_ARGS__, CR_SENTINEL)
 #  define cr_expect_arrays_eq_cmp(...) \
-    cr_expect_arrays_eq_cmp_(__VA_ARGS__, 0)
+    cr_expect_arrays_eq_cmp_(__VA_ARGS__, CR_SENTINEL)
 
 #  define cr_assert_arrays_neq_cmp_(A, B, Size, Cmp, ...)               \
     do {                                                                \
@@ -270,9 +276,9 @@ struct criterion_assert_args {
     } while (0)
 
 #  define cr_assert_arrays_neq_cmp(...) \
-    cr_assert_arrays_eq_cmp_(__VA_ARGS__, 0)
+    cr_assert_arrays_eq_cmp_(__VA_ARGS__, CR_SENTINEL)
 #  define cr_expect_arrays_neq_cmp(...) \
-    cr_expect_arrays_eq_cmp_(__VA_ARGS__, 0)
+    cr_expect_arrays_eq_cmp_(__VA_ARGS__, CR_SENTINEL)
 # endif /* !__GNUC__ */
 
 // The section below is here for backward compatibility purposes.
