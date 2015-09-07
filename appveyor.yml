@@ -4,7 +4,7 @@ os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
-  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\bin;%APPVEYOR_BUILD_FOLDER%\build'
+  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build'
 
 environment:
   COVERALLS_REPO_TOKEN:
@@ -15,14 +15,8 @@ environment:
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
   matrix:
   - COMPILER: mingw
-    BUILD_TARGET: all
-    TEST_TARGET: test
-    INSTALL_TARGET: install
     GENERATOR: "MSYS Makefiles"
   - COMPILER: msvc
-    BUILD_TARGET: all_build
-    TEST_TARGET: run_tests
-    INSTALL_TARGET: install
     GENERATOR: "Visual Studio 14 2015"
 
 clone_depth: 5
@@ -46,7 +40,7 @@ install:
       ..
 
 build_script:
-  - cmake --build . --target %BUILD_TARGET%
+  - cmake --build .
   - ps: |
         # HACK: We need to copy criterion.dll into the binary directory
         if ($env:Compiler -eq "msvc") {
@@ -57,16 +51,14 @@ build_script:
 before_deploy:
   - ps: |
         if ($env:Compiler -eq "mingw" -and !$env:APPVEYOR_REPO_TAG_NAME) {
-            cmake --build . --target $env:INSTALL_TARGET
+            cmake --build . --target install
             7z a -ttar "criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar" "criterion-$env:APPVEYOR_REPO_TAG_NAME"
             7z a -tbzip2 "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2" "criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar"
             Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2"
         }
 
 test_script:
-  - ps: |
-        try { cmake --build . --target $env:TEST_TARGET }
-        catch { type Testing/Temporary/LastTest.log }
+  - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
 
 #after_test:
 #  - 'make coveralls'
