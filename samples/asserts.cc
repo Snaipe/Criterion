@@ -74,7 +74,7 @@ Test(asserts, array) {
     s2[1].a = 2;
     s2[1].b = 4;
 
-    cr_assert_arrays_neq(s1, s2, 2);
+    // cr_assert_arrays_eq(s1, s2, 2); not guaranteed to work on structs.
     cr_assert_arrays_eq_cmp(s1, s2, 2, eq_dummy);
 #endif
 }
