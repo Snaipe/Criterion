@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
 [![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
 
-A dead-simple, yet extensible, C unit testing framework.
+A dead-simple, yet extensible, C and C++ unit testing framework.
 
 ![Screencast](./doc/screencast.gif)
 
@@ -24,12 +24,14 @@ This gives the user great control, at the unfortunate cost of simplicity.
 Criterion follows the KISS principle, while keeping the control
 the user would have with other frameworks:
 
+* [x] C99 and C++11 compatible.
 * [x] Tests are automatically registered when declared.
 * [x] Implements a xUnit framework structure.
 * [x] A default entry point is provided, no need to declare a main
   unless you want to do special handling.
 * [x] Test are isolated in their own process, crashes and signals can be
   reported and tested.
+* [x] Unified interface between C and C++: include the criterion header and it *just* works.
 * [x] There is a support for theories alongside tests
 * [x] Progress and statistics can be followed in real time with report hooks.
 * [x] TAP output format can be enabled with an option.
@@ -89,7 +91,7 @@ be merged.
 
 ## F.A.Q.
 
-**Q. What's wrong with other test frameworks?**  
+**Q. What's wrong with other C test frameworks?**  
 A. I worked with CUnit and Check, and I must say that they do their job
    very well -- the only thing that bugs me is that setting up a test
    suite from scratch is a pain, it should really be simpler. Most

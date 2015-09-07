@@ -6,6 +6,7 @@
 !.ci/*
 
 !*.c
+!*.cc
 !*.h
 !*.rst
 !samples/tests/*.sh

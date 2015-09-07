@@ -1,0 +1,3 @@
+[[0;34m----[0m] [0;1mWarning! The test `misc::setup_crash` crashed during its setup or teardown.[0m
+[[0;34m----[0m] [0;1mWarning! The test `misc::teardown_crash` crashed during its setup or teardown.[0m
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m2[0;1m | Passing: [0;32m1[0;1m | Failing: [0;31m1[0;1m | Crashing: [0;31m1[0;1m [0m
