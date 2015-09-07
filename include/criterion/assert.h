@@ -71,7 +71,7 @@ struct criterion_assert_args {
         struct criterion_assert_args args = {                               \
             CR_EXPAND(CR_VA_SKIP(__VA_ARGS__))                              \
         };                                                                  \
-        int passed = !!(CR_EXPAND(CR_GET_CONDITION(__VA_ARGS__)));          \
+        bool passed = !!(CR_EXPAND(CR_GET_CONDITION(__VA_ARGS__)));         \
         struct criterion_assert_stats stat;                                 \
         CR_ZERO_FILL(stat);                                                 \
         stat.kind = (Kind);                                                 \
