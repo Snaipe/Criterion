@@ -99,6 +99,7 @@ set(SOURCE_FILES
   src/posix-compat.c
   src/theories.c
   src/main.c
+  src/entry.c
 )
 
 if (PCRE_FOUND)

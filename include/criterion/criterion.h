@@ -79,6 +79,7 @@
 CR_BEGIN_C_API
 
 CR_API int criterion_run_all_tests(void);
+CR_API int criterion_initialize(int argc, char *argv[], bool handle_unknown_arg);
 
 CR_END_C_API
 

@@ -22,13 +22,13 @@
  * THE SOFTWARE.
  */
 #define _GNU_SOURCE
-#include <criterion/criterion.h>
-#include <criterion/options.h>
-#include <criterion/ordered-set.h>
 #include <stdio.h>
 #include <locale.h>
 #include <getopt.h>
 #include <csptr/smalloc.h>
+#include "criterion/criterion.h"
+#include "criterion/options.h"
+#include "criterion/ordered-set.h"
 #include "runner.h"
 #include "config.h"
 #include "common.h"
@@ -120,7 +120,7 @@ int list_tests(bool unicode) {
     return 0;
 }
 
-CR_API int main(int argc, char *argv[]) {
+CR_API int criterion_initialize(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"version",         no_argument,        0, 'v'},
@@ -176,8 +176,8 @@ CR_API int main(int argc, char *argv[]) {
             case 't': use_tap = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
-            case 'h':
-            default : do_print_usage = true; break;
+            case 'h': do_print_usage = true; break;
+            default : do_print_usage = handle_unknown_arg; break;
         }
     }
     if (use_tap)
@@ -189,5 +189,5 @@ CR_API int main(int argc, char *argv[]) {
     if (do_list_tests)
         return list_tests(!criterion_options.use_ascii);
 
-    return !criterion_run_all_tests();
+    return 1;
 }

@@ -34,11 +34,34 @@ fail_fast           bool                               True iff the test runner 
 pattern             const char *                       The pattern of the tests that should be executed
 =================== ================================== ==============================================================
 
+if you want criterion to provide its own default CLI parameters and environment
+variables handling, you can also call ``criterion_initialize(int argc, char *argv[], bool handle_unknown_arg)``
+with the proper ``argc/argv``. ``handle_unknown_arg``, if set to true, is here
+to tell criterion to print its usage when an unknown CLI parameter is encountered.
+If you want to add your own parameters, you should set it to false.
+
+The function returns 0 if the main should exit immediately, and 1 if it should
+continue.
+
 Starting the test runner
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The test runner can be called with ``criterion_run_all_tests``. The function
 returns 0 if one test or more failed, 1 otherwise.
+
+Example main
+~~~~~~~~~~~~
+
+.. code-block:: c
+
+    #include <criterion/criterion.h>
+
+    int main(int argc, char *argv[]) {
+        if (!criterion_initialize(argc, argv, true))
+            return 0;
+
+        return !criterion_run_all_tests();
+    }
 
 Implementing your own output provider
 -------------------------------------
