@@ -58,7 +58,7 @@
 #  define SECTION_END_PREFIX         __last
 #  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
 #  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
-#  define SECTION_(Name)             CR_ATTRIBUTE(section("__DATA," Name)
+#  define SECTION_(Name)             CR_ATTRIBUTE(section("__DATA," Name))
 #  define SECTION_SUFFIX_
 # elif CR_IS_MSVC
 #  define SECTION_START_PREFIX       __start
