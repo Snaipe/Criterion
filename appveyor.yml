@@ -27,6 +27,7 @@ platform:
 configuration: Release
 
 install:
+  - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Configure project
@@ -34,7 +35,7 @@ install:
   - >
       cmake
       -Wno-dev
-      -DCMAKE_INSTALL_PREFIX="criterion-%APPVEYOR_REPO_TAG_NAME%"
+      -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
       -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%"
       -G "%GENERATOR%"
       ..
@@ -50,12 +51,11 @@ build_script:
 
 before_deploy:
   - ps: |
-        if ($env:Compiler -eq "mingw" -and !$env:APPVEYOR_REPO_TAG_NAME) {
-            cmake --build . --target install
-            7z a -ttar "criterion-$env:APPVEYOR_REPO_BRANCH-windows-$env:PLATFORM.tar" "criterion-$env:APPVEYOR_REPO_TAG_NAME"
-            7z a -tbzip2 "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2" "criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar"
-            Push-AppveyorArtifact "../criterion-$env:APPVEYOR_REPO_TAG_NAME-windows-$env:PLATFORM.tar.bz2"
-        }
+        $archive = "criterion-$env:RELEASE_NAME-windows-$env:COMPILER-$env:PLATFORM"
+        cmake --build . --target install
+        7z a -ttar "$archive.tar" "criterion-$env:RELEASE_NAME"
+        7z a -tbzip2 "../$archive.tar.bz2" "$archive.tar"
+        Push-AppveyorArtifact "../$archive.tar.bz2"
 
 test_script:
   - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
@@ -73,7 +73,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: MnZZQeoxBVnpV9GSSvVok5Je0/N2d/fzG4+ITw95/tYSgZ8rleBV23a5sCwAea3r
-  artifact: 'criterion-$(APPVEYOR_REPO_TAG_NAME)-windows-$(PLATFORM).tar.bz2'
+  artifact: 'criterion-$(RELEASE_NAME)-windows-$(COMPILER)-$(PLATFORM).tar.bz2'
   draft: false
   prerelease: false
   on:
