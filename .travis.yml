@@ -17,6 +17,7 @@ addons:
     - g++-4.9
 
 before_install:
+- export GCOV="gcov-4.9"
 - export LOCAL_INSTALL="$HOME"
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
 - export CFLAGS="-g -O0"
