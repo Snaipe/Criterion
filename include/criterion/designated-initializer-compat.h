@@ -103,11 +103,11 @@
 # define CRITERION_APPLY_64(Macro, Prefix, Head, ...) Macro(Prefix, Head) CR_EXPAND(CRITERION_APPLY_63(Macro, Prefix, __VA_ARGS__))
 # define CRITERION_APPLY_65(Macro, Prefix, Head, ...) Macro(Prefix, Head) CR_EXPAND(CRITERION_APPLY_64(Macro, Prefix, __VA_ARGS__))
 
-# define CRITERION_APPLY__(Macro, Prefix, n, ...) CR_EXPAND(CRITERION_APPLY_##n(Macro, Prefix, __VA_ARGS__))
+# define CRITERION_APPLY__(Macro, Prefix, n, ...) CR_EXPAND(CRITERION_APPLY_##n(Macro, Prefix, __VA_ARGS__,))
 # define CRITERION_APPLY_(Macro, n, Prefix, ...) CR_EXPAND(CRITERION_APPLY__(Macro, Prefix, n, __VA_ARGS__))
 # define CRITERION_APPLY(Macro, ...) CR_EXPAND(CRITERION_APPLY_(Macro, CRITERION_ARG_LENGTH(__VA_ARGS__), __VA_ARGS__))
 
-# define CRITERION_ADD_PREFIX_ONCE(Prefix, Field, ...) Prefix Field;
+# define CRITERION_ADD_PREFIX_ONCE(Prefix, Field) Prefix Field;
 # define CRITERION_ADD_PREFIX(...) \
     CR_EXPAND(CRITERION_APPLY(CRITERION_ADD_PREFIX_ONCE, __VA_ARGS__))
 

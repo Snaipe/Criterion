@@ -1,6 +1,6 @@
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
-  set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -pedantic")
 endif ()
 
 include_directories(../include)
