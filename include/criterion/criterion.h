@@ -54,7 +54,7 @@
             __VA_ARGS__                                                        \
         ));                                                                    \
     SECTION_("cr_tst")                                                         \
-    const struct criterion_test IDENTIFIER_(Category, Name, meta) = {          \
+    struct criterion_test IDENTIFIER_(Category, Name, meta) = {                \
         #Name,                                                                 \
         #Category,                                                             \
         IDENTIFIER_(Category, Name, impl),                                     \
@@ -71,7 +71,7 @@
             __VA_ARGS__                                                        \
         ));                                                                    \
     SECTION_("cr_sts")                                                         \
-    const struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {             \
+    struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {                   \
         #Name,                                                                 \
         &SUITE_IDENTIFIER_(Name, extra),                                       \
     } SECTION_SUFFIX_

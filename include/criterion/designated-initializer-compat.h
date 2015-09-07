@@ -114,6 +114,7 @@
 # ifdef __cplusplus
 #  define CRITERION_MAKE_STRUCT(Type, ...) [&]() {      \
         Type t;                                         \
+        std::memset(&t, 0, sizeof (t));                 \
         CR_EXPAND(CRITERION_ADD_PREFIX(t, __VA_ARGS__)) \
         return t;                                       \
     }()
