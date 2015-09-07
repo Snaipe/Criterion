@@ -30,6 +30,7 @@ set(SAMPLES
   description.cc
   other-crashes.cc
   simple.cc
+  theories.cc
 )
 
 set(SCRIPTS

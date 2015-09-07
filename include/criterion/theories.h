@@ -24,8 +24,21 @@
 #ifndef CRITERION_THEORIES_H_
 # define CRITERION_THEORIES_H_
 
-# include <stddef.h>
+# ifdef __cplusplus
+#  include <cstddef>
+using std::size_t;
+# else
+#  include <stddef.h>
+# endif
+
 # include "criterion.h"
+
+# ifdef __cplusplus
+template <typename... T>
+constexpr size_t criterion_va_num__(const T &...) {
+    return sizeof...(T);
+};
+# endif
 
 CR_BEGIN_C_API
 
@@ -43,11 +56,19 @@ CR_API void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(v
 # define TheoryDataPoints(Category, Name) \
     static struct criterion_datapoints IDENTIFIER_(Category, Name, dps)[]
 
+# ifdef __cplusplus
+#  define CR_TH_VA_NUM(Type, ...)     criterion_va_num__(__VA_ARGS__)
+#  define CR_TH_TEMP_ARRAY(Type, ...) []() { static Type arr[] = { __VA_ARGS__ }; return &arr; }()
+# else
+#  define CR_TH_VA_NUM(Type, ...) sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type)
+#  define CR_TH_TEMP_ARRAY(Type, ...) &(Type[]) { __VA_ARGS__ }
+# endif
+
 # define DataPoints(Type, ...) { \
         sizeof (Type), \
-        sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type), \
+        CR_EXPAND(CR_TH_VA_NUM(Type, __VA_ARGS__)), \
         #Type, \
-        &(Type[]) { __VA_ARGS__ }, \
+        CR_EXPAND(CR_TH_TEMP_ARRAY(Type, __VA_ARGS__)), \
     }
 
 struct criterion_datapoints {
