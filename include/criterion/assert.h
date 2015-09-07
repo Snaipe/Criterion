@@ -60,6 +60,12 @@ struct criterion_assert_args {
 # define CR_GET_CONDITION_STR(Condition, ...) #Condition
 # define CR_VA_SKIP(_, ...) __VA_ARGS__
 
+# ifndef __cplusplus
+#  define CR_ZERO_FILL(Arg) memset(&(Arg), 0, sizeof (Arg))
+# else
+#  define CR_ZERO_FILL(Arg) std::memset(&(Arg), 0, sizeof (Arg))
+# endif
+
 # define cr_assert_impl(Kind, ...)                                          \
     do {                                                                    \
         struct criterion_assert_args args = {                               \
@@ -67,6 +73,7 @@ struct criterion_assert_args {
         };                                                                  \
         int passed = !!(CR_EXPAND(CR_GET_CONDITION(__VA_ARGS__)));          \
         struct criterion_assert_stats stat;                                 \
+        CR_ZERO_FILL(stat);                                                 \
         stat.kind = (Kind);                                                 \
         stat.condition = CR_EXPAND(CR_GET_CONDITION_STR(__VA_ARGS__));      \
         stat.message = args.msg ? args.msg : "";                            \
