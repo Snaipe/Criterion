@@ -2,13 +2,25 @@ language: c
 os:
 - linux
 - osx
+
 compiler:
-- gcc
+- gcc-4.9
+
 sudo: false
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.9
+    - g++-4.9
+
 before_install:
 - export LOCAL_INSTALL="$HOME"
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
 - export CFLAGS="-g -O0"
+- export CXX="g++-4.9"
 script:
 - mkdir -p build
 - cd build
