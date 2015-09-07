@@ -1,4 +1,6 @@
 #include <criterion/criterion.h>
+#include <exception>
+#include <new>
 
 Test(asserts, base) {
     cr_assert(true);
@@ -77,4 +79,9 @@ Test(asserts, array) {
     // cr_assert_arrays_eq(s1, s2, 2); not guaranteed to work on structs.
     cr_assert_arrays_eq_cmp(s1, s2, 2, eq_dummy);
 #endif
+}
+
+Test(asserts, exception) {
+    cr_assert_throw(throw std::exception(), std::exception);
+    cr_assert_throw(throw std::exception(), std::bad_alloc);
 }

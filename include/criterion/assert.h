@@ -288,6 +288,34 @@ struct criterion_assert_args {
     cr_expect_arrays_eq_cmp_(__VA_ARGS__, CR_SENTINEL)
 # endif /* !__GNUC__ */
 
+# ifdef __cplusplus
+#  define cr_assert_throw(...) CR_EXPAND(cr_assert_throw_(__VA_ARGS__, CR_SENTINEL))
+#  define cr_assert_throw_(Statement, Exception, ...)  \
+    try {                                               \
+        Statement;                                      \
+    } catch (Exception &ex) {                           \
+    } catch (...) { CR_EXPAND(cr_assert_impl(FATAL, 0, __VA_ARGS__)); }
+
+#  define cr_assert_no_throw(...) CR_EXPAND(cr_assert_not_throw_(__VA_ARGS__, CR_SENTINEL))
+#  define cr_assert_no_throw_(Statement, Exception, ...)      \
+    try {                                                       \
+        Statement;                                              \
+    } catch (Exception &ex) { CR_EXPAND(cr_assert_impl(FATAL, 0, __VA_ARGS__)); }
+
+#  define cr_expect_throw(...) CR_EXPAND(cr_expect_throw_(__VA_ARGS__, CR_SENTINEL))
+#  define cr_expect_throw_(Statement, Exception, ...)  \
+    try {                                               \
+        Statement;                                      \
+    } catch (Exception &ex) {                           \
+    } catch (...) { CR_EXPAND(cr_assert_impl(NORMAL, 0, __VA_ARGS__)); }
+
+#  define cr_expect_no_throw(...) CR_EXPAND(cr_expect_not_throw_(__VA_ARGS__, CR_SENTINEL))
+#  define cr_expect_no_throw_(Statement, Exception, ...)      \
+    try {                                                       \
+        Statement;                                              \
+    } catch (Exception &ex) { CR_EXPAND(cr_assert_impl(NORMAL, 0, __VA_ARGS__)); }
+# endif
+
 // The section below is here for backward compatibility purposes.
 // It shall be removed in the text major version of Criterion
 # ifndef CRITERION_NO_COMPAT
