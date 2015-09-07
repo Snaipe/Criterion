@@ -102,3 +102,20 @@ Theory((char c, bool b, short s, int i, long l, long long ll, float f, double d,
     // abort to see the formatted string of all parameters
     cr_abort_test(NULL);
 }
+
+// Manually generate datapoints
+
+TheoryDataPoints(theory, gen) = {
+    DataPoints(int, 0), // placeholder
+};
+
+static void generate_datapoints(void) {
+    static int arr[] = {1, 2, 3, 4, 5};
+    TheoryDataPoint(theory, gen)[0].len = 5;
+    TheoryDataPoint(theory, gen)[0].arr = &arr;
+}
+
+Theory((int i), theory, gen, .init = generate_datapoints) {
+    (void) i;
+    cr_abort_test(NULL); // we fail to display the parameter
+}

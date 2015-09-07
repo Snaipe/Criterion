@@ -56,6 +56,9 @@ CR_API void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(v
 # define TheoryDataPoints(Category, Name) \
     static struct criterion_datapoints IDENTIFIER_(Category, Name, dps)[]
 
+# define TheoryDataPoint(Category, Name) \
+    (IDENTIFIER_(Category, Name, dps))
+
 # ifdef __cplusplus
 #  define CR_TH_VA_NUM(Type, ...)     criterion_va_num__(__VA_ARGS__)
 #  define CR_TH_TEMP_ARRAY(Type, ...) []() { static Type arr[] = { __VA_ARGS__ }; return &arr; }()
