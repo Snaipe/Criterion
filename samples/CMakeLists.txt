@@ -21,7 +21,6 @@ set(SAMPLES
 
   signal.cc
   exit.cc
-  report.cc
   suites.cc
   fixtures.cc
   asserts.cc
@@ -31,6 +30,10 @@ set(SAMPLES
   other-crashes.cc
   simple.cc
 )
+
+if (NOT WIN32 OR MSVC)
+  set(SAMPLES ${SAMPLES} report.cc)
+endif ()
 
 set(SCRIPTS
   tap_test
