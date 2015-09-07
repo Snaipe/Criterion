@@ -91,7 +91,9 @@ typedef void (*f_report_hook)();
 # define ReportHook(Kind)                                                      \
     HOOK_PROTOTYPE_(HOOK_PARAM_TYPE(Kind));                                    \
     SECTION_(HOOK_SECTION_STRINGIFY(Kind))                                     \
-    const f_report_hook HOOK_IDENTIFIER_(func) = (f_report_hook) HOOK_IDENTIFIER_(impl); \
+    const f_report_hook HOOK_IDENTIFIER_(func) =                               \
+        (f_report_hook) HOOK_IDENTIFIER_(impl)                                 \
+    SECTION_SUFFIX_; \
     HOOK_PROTOTYPE_
 
 #endif /* !CRITERION_HOOKS_H_ */
