@@ -352,14 +352,7 @@ struct criterion_test_set *criterion_initialize(void) {
     if (resume_child()) // (windows only) resume from the fork
         exit(0);
 
-    struct criterion_test_set *set = criterion_init();
-
-    #ifdef HAVE_PCRE
-    if (criterion_options.pattern)
-        disable_unmatching(set);
-    #endif
-
-    return set;
+    return criterion_init();
 }
 
 void criterion_finalize(struct criterion_test_set *set) {
@@ -389,6 +382,11 @@ cleanup:
 }
 
 int criterion_run_all_tests(struct criterion_test_set *set) {
+    #ifdef HAVE_PCRE
+    if (criterion_options.pattern)
+        disable_unmatching(set);
+    #endif
+
     set_runner_process();
     int res = criterion_run_all_tests_impl(set);
     unset_runner_process();
