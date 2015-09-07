@@ -80,6 +80,20 @@ static void dtor_test_set(void *ptr, UNUSED void *meta) {
     sfree(t->suites);
 }
 
+void criterion_register_test(struct criterion_test_set *set,
+                                    struct criterion_test *test) {
+
+    struct criterion_suite_set css = {
+        .suite = { .name = test->category },
+    };
+    struct criterion_suite_set *s = insert_ordered_set(set->suites, &css, sizeof (css));
+    if (!s->tests)
+        s->tests = new_ordered_set(cmp_test, NULL);
+
+    insert_ordered_set(s->tests, test, sizeof(*test));
+    ++set->tests;
+}
+
 struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
@@ -93,25 +107,6 @@ struct criterion_test_set *criterion_init(void) {
         insert_ordered_set(suites, &css, sizeof (css));
     }
 
-    size_t nb_tests = 0;
-    FOREACH_TEST_SEC(test) {
-        if (!test->category)
-            break;
-
-        if (!*test->category)
-            continue;
-
-        struct criterion_suite_set css = {
-            .suite = { .name = test->category },
-        };
-        struct criterion_suite_set *s = insert_ordered_set(suites, &css, sizeof (css));
-        if (!s->tests)
-            s->tests = new_ordered_set(cmp_test, NULL);
-
-        insert_ordered_set(s->tests, test, sizeof(*test));
-        ++nb_tests;
-    }
-
     struct criterion_test_set *set = smalloc(
             .size = sizeof (struct criterion_test_set),
             .dtor = dtor_test_set
@@ -119,8 +114,18 @@ struct criterion_test_set *criterion_init(void) {
 
     *set = (struct criterion_test_set) {
         suites,
-        nb_tests,
+        0,
     };
+
+    FOREACH_TEST_SEC(test) {
+        if (!test->category)
+            break;
+
+        if (!*test->category)
+            continue;
+
+        criterion_register_test(set, test);
+    }
 
     return set;
 }
@@ -341,16 +346,27 @@ void disable_unmatching(struct criterion_test_set *set) {
 }
 #endif
 
-static int criterion_run_all_tests_impl(void) {
+struct criterion_test_set *criterion_initialize(void) {
+    init_i18n();
+
     if (resume_child()) // (windows only) resume from the fork
-        return -1;
+        exit(0);
 
     struct criterion_test_set *set = criterion_init();
-#ifdef HAVE_PCRE
+
+    #ifdef HAVE_PCRE
     if (criterion_options.pattern)
         disable_unmatching(set);
-#endif
+    #endif
 
+    return set;
+}
+
+void criterion_finalize(struct criterion_test_set *set) {
+    sfree(set);
+}
+
+static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     report(PRE_ALL, set);
     log(pre_all, set);
 
@@ -368,19 +384,14 @@ static int criterion_run_all_tests_impl(void) {
     log(post_all, stats);
 
 cleanup:
-    sfree(set);
     sfree(stats);
     return result;
 }
 
-int criterion_run_all_tests(void) {
-    init_i18n();
+int criterion_run_all_tests(struct criterion_test_set *set) {
     set_runner_process();
-    int res = criterion_run_all_tests_impl();
+    int res = criterion_run_all_tests_impl(set);
     unset_runner_process();
-
-    if (res == -1) // if this is the test worker terminating
-        exit(0);
 
     return criterion_options.always_succeed || res;
 }

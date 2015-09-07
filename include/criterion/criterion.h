@@ -78,8 +78,12 @@
 
 CR_BEGIN_C_API
 
-CR_API int criterion_run_all_tests(void);
-CR_API int criterion_initialize(int argc, char *argv[], bool handle_unknown_arg);
+CR_API struct criterion_test_set *criterion_initialize(void);
+CR_API void criterion_finalize(struct criterion_test_set *tests);
+CR_API int criterion_run_all_tests(struct criterion_test_set *tests);
+CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg);
+CR_API void criterion_register_test(struct criterion_test_set *tests,
+                                    struct criterion_test *test);
 
 CR_END_C_API
 

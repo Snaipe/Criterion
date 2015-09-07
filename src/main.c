@@ -120,7 +120,7 @@ int list_tests(bool unicode) {
     return 0;
 }
 
-CR_API int criterion_initialize(int argc, char *argv[], bool handle_unknown_arg) {
+int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"version",         no_argument,        0, 'v'},
