@@ -63,28 +63,28 @@ struct criterion_assert_args {
 #  define CR_STDN
 # endif
 
-# define CR_INIT_STATS_(BufSize, MsgVar, ...) CR_EXPAND(                    \
-    do {                                                                    \
-        const char *default_msg = "" CR_VA_HEAD(__VA_ARGS__);               \
-        char *formatted_msg = NULL;                                         \
-        int msglen = cr_asprintf(&formatted_msg, "" CR_VA_TAIL(__VA_ARGS__));\
-        MsgVar = formatted_msg && *formatted_msg ?                          \
-            formatted_msg : default_msg;                                    \
-                                                                            \
-        if (!formatted_msg || !*formatted_msg)                              \
-            msglen = strlen(default_msg);                                   \
-                                                                            \
-        BufSize = sizeof(struct criterion_assert_stats)                     \
-                  + sizeof (size_t) + msglen + 1;                           \
-                                                                            \
-        char *buf = (char*) CR_STDN malloc(BufSize);                        \
-        stat = (struct criterion_assert_stats*) buf;                        \
-        CR_STDN memset(buf, 0, sizeof (struct criterion_assert_stats));     \
-        buf += sizeof (struct criterion_assert_stats);                      \
-        *((size_t*) buf) = msglen + 1;                                      \
-        buf += sizeof (size_t);                                             \
-        CR_STDN strcpy(buf, MsgVar);                                        \
-        CR_STDN free(formatted_msg);                                        \
+# define CR_INIT_STATS_(BufSize, MsgVar, ...) CR_EXPAND(                       \
+    do {                                                                       \
+        const char *default_msg = "" CR_VA_HEAD(__VA_ARGS__);                  \
+        char *formatted_msg = NULL;                                            \
+        int msglen = cr_asprintf(&formatted_msg, "" CR_VA_TAIL(__VA_ARGS__));  \
+        MsgVar = formatted_msg && *formatted_msg ?                             \
+            formatted_msg : default_msg;                                       \
+                                                                               \
+        if (!formatted_msg || !*formatted_msg)                                 \
+            msglen = strlen(default_msg);                                      \
+                                                                               \
+        BufSize = sizeof(struct criterion_assert_stats)                        \
+                  + sizeof (size_t) + msglen + 1;                              \
+                                                                               \
+        char *buf = (char*) CR_STDN malloc(BufSize);                           \
+        stat = (struct criterion_assert_stats*) buf;                           \
+        CR_STDN memset(buf, 0, sizeof (struct criterion_assert_stats));        \
+        buf += sizeof (struct criterion_assert_stats);                         \
+        *((size_t*) buf) = msglen + 1;                                         \
+        buf += sizeof (size_t);                                                \
+        CR_STDN strcpy(buf, MsgVar);                                           \
+        CR_STDN free(formatted_msg);                                           \
     } while (0))
 
 # define CR_FAIL_ABORT_ criterion_abort_test
@@ -130,50 +130,61 @@ struct criterion_assert_args {
 # define cr_assert_fail(...) CR_EXPAND(cr_fail(CR_FAIL_ABORT_,     __VA_ARGS__))
 # define cr_expect_fail(...) CR_EXPAND(cr_fail(CR_FAIL_CONTINUES_, __VA_ARGS__))
 
-# define cr_assert(...) CR_EXPAND(cr_assert_impl( \
-            CR_FAIL_ABORT_, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            dummy, \
-            CR_STR(CR_VA_HEAD(__VA_ARGS__)), \
-            CR_VA_TAIL(__VA_ARGS__)))
+# define cr_assert(...)                             \
+    CR_EXPAND(cr_assert_impl(                       \
+            CR_FAIL_ABORT_,                         \
+            CR_VA_HEAD(__VA_ARGS__),                \
+            dummy,                                  \
+            CR_STR(CR_VA_HEAD(__VA_ARGS__)),        \
+            CR_VA_TAIL(__VA_ARGS__)                 \
+    ))
 
-# define cr_expect(...) CR_EXPAND(cr_assert_impl( \
-            CR_FAIL_CONTINUES_, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            dummy, \
-            CR_STR(CR_VA_HEAD(__VA_ARGS__)), \
-            CR_VA_TAIL(__VA_ARGS__)))
+# define cr_expect(...)                             \
+    CR_EXPAND(cr_assert_impl(                       \
+            CR_FAIL_CONTINUES_,                     \
+            CR_VA_HEAD(__VA_ARGS__),                \
+            dummy,                                  \
+            CR_STR(CR_VA_HEAD(__VA_ARGS__)),        \
+            CR_VA_TAIL(__VA_ARGS__)                 \
+    ))
 
-# define cr_assert_not(...) CR_EXPAND(cr_assert_impl( \
-            CR_FAIL_ABORT_, \
-            !(CR_VA_HEAD(__VA_ARGS__)), \
-            dummy, \
-            CR_STR(!(CR_VA_HEAD(__VA_ARGS__))), \
-            CR_VA_TAIL(__VA_ARGS__)))
+# define cr_assert_not(...)                         \
+    CR_EXPAND(cr_assert_impl(                       \
+            CR_FAIL_ABORT_,                         \
+            !(CR_VA_HEAD(__VA_ARGS__)),             \
+            dummy,                                  \
+            CR_STR(!(CR_VA_HEAD(__VA_ARGS__))),     \
+            CR_VA_TAIL(__VA_ARGS__)                 \
+    ))
 
-# define cr_expect_not(...) CR_EXPAND(cr_assert_impl( \
-            CR_FAIL_CONTINUES_, \
-            !(CR_VA_HEAD(__VA_ARGS__)), \
-            dummy, \
-            CR_STR(!(CR_VA_HEAD(__VA_ARGS__))), \
-            CR_VA_TAIL(__VA_ARGS__)))
+# define cr_expect_not(...)                         \
+    CR_EXPAND(cr_assert_impl(                       \
+            CR_FAIL_CONTINUES_,                     \
+            !(CR_VA_HEAD(__VA_ARGS__)),             \
+            dummy,                                  \
+            CR_STR(!(CR_VA_HEAD(__VA_ARGS__))),     \
+            CR_VA_TAIL(__VA_ARGS__)                 \
+    ))
 
 // Common binary assertions
 
-# define cr_assert_op_(Fail, Op, Actual, Expected, ...) CR_EXPAND(cr_assert_impl(  \
-            Fail, \
-            (Actual) Op (Expected), \
-            dummy, \
-            CR_STR((Actual) Op (Expected)), \
-            __VA_ARGS__ \
-            ))
+# define cr_assert_op_(Fail, Op, Actual, Expected, ...) \
+    CR_EXPAND(cr_assert_impl(                           \
+            Fail,                                       \
+            (Actual) Op (Expected),                     \
+            dummy,                                      \
+            CR_STR((Actual) Op (Expected)),             \
+            __VA_ARGS__                                 \
+    ))
 
-# define cr_assert_op_va_(Fail, Op, ...) CR_EXPAND(cr_assert_op_( \
-            Fail, \
-            Op, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)), \
-            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))))
+# define cr_assert_op_va_(Fail, Op, ...)            \
+    CR_EXPAND(cr_assert_op_(                        \
+            Fail,                                   \
+            Op,                                     \
+            CR_VA_HEAD(__VA_ARGS__),                \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),    \
+            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))     \
+    ))
 
 # define cr_assert_eq(...) CR_EXPAND(cr_assert_op_va_(CR_FAIL_ABORT_,      ==, __VA_ARGS__))
 # define cr_expect_eq(...) CR_EXPAND(cr_assert_op_va_(CR_FAIL_CONTINUES_,  ==, __VA_ARGS__))
@@ -209,23 +220,23 @@ struct criterion_assert_args {
 # define cr_assert_float_neq_op_(Actual, Expected, Epsilon) \
     (Expected) - (Actual) > (Epsilon) || (Actual) - (Expected) > (Epsilon)
 
-# define cr_assert_float_op_(Fail, Op, Actual, Expected, Epsilon, ...) \
-    CR_EXPAND(cr_assert_impl(  \
-            Fail, \
-            Op(Actual, Expected, Epsilon), \
-            dummy, \
-            CR_STR(Op(Actual, Expected, Epsilon)), \
-            __VA_ARGS__ \
+# define cr_assert_float_op_(Fail, Op, Actual, Expected, Epsilon, ...)  \
+    CR_EXPAND(cr_assert_impl(                                           \
+            Fail,                                                       \
+            Op(Actual, Expected, Epsilon),                              \
+            dummy,                                                      \
+            CR_STR(Op(Actual, Expected, Epsilon)),                      \
+            __VA_ARGS__                                                 \
     ))
 
-# define cr_assert_float_op_va_(Fail, Op, ...) \
-    CR_EXPAND(cr_assert_float_op_( \
-            Fail, \
-            Op, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)), \
-            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))), \
-            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))) \
+# define cr_assert_float_op_va_(Fail, Op, ...)                  \
+    CR_EXPAND(cr_assert_float_op_(                              \
+            Fail,                                               \
+            Op,                                                 \
+            CR_VA_HEAD(__VA_ARGS__),                            \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
+            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),    \
+            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))     \
     ))
 
 # define cr_assert_float_eq(...) CR_EXPAND(cr_assert_float_op_va_(CR_FAIL_ABORT_,     cr_assert_float_eq_op_, __VA_ARGS__))
@@ -236,21 +247,21 @@ struct criterion_assert_args {
 
 // String assertions
 
-# define cr_assert_str_op_empty_(Fail, Op, Value, ...) \
-    CR_EXPAND(cr_assert_impl(  \
-            Fail, \
-            (Value)[0] Op '\0', \
-            dummy, \
-            CR_STR(Value is empty.), \
-            __VA_ARGS__ \
+# define cr_assert_str_op_empty_(Fail, Op, Value, ...)  \
+    CR_EXPAND(cr_assert_impl(                           \
+            Fail,                                       \
+            (Value)[0] Op '\0',                         \
+            dummy,                                      \
+            CR_STR(Value is empty.),                    \
+            __VA_ARGS__                                 \
     ))
 
-# define cr_assert_str_op_empty_va_(Fail, Op, ...) \
-    CR_EXPAND(cr_assert_str_op_empty_( \
-            Fail, \
-            Op, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            CR_VA_TAIL(__VA_ARGS__) \
+# define cr_assert_str_op_empty_va_(Fail, Op, ...)      \
+    CR_EXPAND(cr_assert_str_op_empty_(                  \
+            Fail,                                       \
+            Op,                                         \
+            CR_VA_HEAD(__VA_ARGS__),                    \
+            CR_VA_TAIL(__VA_ARGS__)                     \
     ))
 
 # define cr_assert_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
@@ -260,21 +271,21 @@ struct criterion_assert_args {
 # define cr_expect_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, !=, __VA_ARGS__))
 
 # define cr_assert_str_op_(Fail, Op, Actual, Expected, ...) \
-    CR_EXPAND(cr_assert_impl(  \
-            Fail, \
-            CR_STDN strcmp((Actual), (Expected)) Op 0, \
-            dummy, \
-            CR_STR((as strings) (Actual) Op (Expected)), \
-            __VA_ARGS__ \
+    CR_EXPAND(cr_assert_impl(                               \
+            Fail,                                           \
+            CR_STDN strcmp((Actual), (Expected)) Op 0,      \
+            dummy,                                          \
+            CR_STR((as strings) (Actual) Op (Expected)),    \
+            __VA_ARGS__                                     \
     ))
 
-# define cr_assert_str_op_va_(Fail, Op, ...) \
-    CR_EXPAND(cr_assert_str_op_( \
-            Fail, \
-            Op, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)), \
-            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)) \
+# define cr_assert_str_op_va_(Fail, Op, ...)        \
+    CR_EXPAND(cr_assert_str_op_(                    \
+            Fail,                                   \
+            Op,                                     \
+            CR_VA_HEAD(__VA_ARGS__),                \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),    \
+            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))     \
     ))
 
 # define cr_assert_str_eq(...) CR_EXPAND(cr_assert_str_op_va_(CR_FAIL_ABORT_,      ==, __VA_ARGS__))
@@ -300,20 +311,20 @@ struct criterion_assert_args {
 # define cr_assert_mem_op_(Fail, Op, Actual, Expected, Size, ...)   \
     CR_EXPAND(cr_assert_impl(                                       \
             Fail,                                                   \
-            CR_STDN memcmp((Actual), (Expected), (Size)) Op 0,         \
+            CR_STDN memcmp((Actual), (Expected), (Size)) Op 0,      \
             dummy,                                                  \
             CR_STR((Actual)[0 .. Size] Op (Expected)[0 .. Size]),   \
             __VA_ARGS__                                             \
     ))
 
-# define cr_assert_mem_op_va_(Fail, Op, ...) \
-    CR_EXPAND(cr_assert_mem_op_( \
-            Fail, \
-            Op, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)), \
-            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))), \
-            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))) \
+# define cr_assert_mem_op_va_(Fail, Op, ...)                    \
+    CR_EXPAND(cr_assert_mem_op_(                                \
+            Fail,                                               \
+            Op,                                                 \
+            CR_VA_HEAD(__VA_ARGS__),                            \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
+            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),    \
+            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))     \
     ))
 
 # define cr_assert_arr_eq(...) CR_EXPAND(cr_assert_mem_op_va_(CR_FAIL_ABORT_,      ==, __VA_ARGS__))
@@ -351,15 +362,15 @@ struct criterion_assert_args {
         ));                                                                 \
     } while (0)
 
-#  define cr_assert_arr_op_cmp_va_(Fail, Op, ...) \
-    CR_EXPAND(cr_assert_arr_op_cmp_( \
-            Fail, \
-            Op, \
-            CR_VA_HEAD(__VA_ARGS__), \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)), \
-            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))), \
-            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))), \
-            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))) \
+#  define cr_assert_arr_op_cmp_va_(Fail, Op, ...)                           \
+    CR_EXPAND(cr_assert_arr_op_cmp_(                                        \
+            Fail,                                                           \
+            Op,                                                             \
+            CR_VA_HEAD(__VA_ARGS__),                                        \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                            \
+            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),                \
+            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))),    \
+            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))))     \
     ))
 
 #  define cr_assert_arr_eq_cmp(...) CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_,      ==, __VA_ARGS__))
