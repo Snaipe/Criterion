@@ -48,45 +48,8 @@ parameter, and an optional failure message:
         cr_assert(strlen("") == 0);
     }
 
-On top of those, more assertions are available for common operations:
-
-* ``cr_assert_null(Ptr, [Message])``: passes if Ptr is NULL.
-* ``cr_assert_eq(Actual, Expected, [Message])``: passes if Actual == Expected.
-* ``cr_assert_lt(Actual, Expected, [Message])``: passes if Actual < Expected.
-* ``cr_assert_leq(Actual, Expected, [Message])``: passes if Actual <= Expected.
-* ``cr_assert_gt(Actual, Expected, [Message])``: passes if Actual > Expected.
-* ``cr_assert_geq(Actual, Expected, [Message])``: passes if Actual >= Expected.
-* ``cr_assert_float_eq(Actual, Expected, Epsilon, [Message])``:
-  passes if Actual == Expected with an error of Epsilon.
-* ``cr_assert_arrays_eq(Actual, Expected, Size, [Message])``:
-  passes if all elements of Actual (from 0 to Size - 1) are equals to those
-  of Expected.
-* ``cr_assert_arrays_eq_cmp(Actual, Expected, Size, Cmp, [Message])``:
-  Same as ``arrays_eq`` but equality is defined by the result of the binary
-  Cmp function.
-
-Equality and lexical comparison assertions are also available for strings:
-
-* ``cr_assert_strings_eq(Actual, Expected, [Message])``
-* ``cr_assert_strings_lt(Actual, Expected, [Message])``
-* ``cr_assert_strings_leq(Actual, Expected, [Message])``
-* ``cr_assert_strings_gt(Actual, Expected, [Message])``
-* ``cr_assert_strings_geq(Actual, Expected, [Message])``
-
-And some assertions have a logical negative counterpart:
-
-* ``cr_assert_not(Condition, [Message])``
-* ``cr_assert_not_null(Ptr, [Message])``
-* ``cr_assert_neq(Actual, Unexpected, [Message])``
-* ``cr_assert_float_neq(Actual, Unexpected, Epsilon, [Message])``
-* ``cr_assert_strings_neq(Actual, Unexpected, [Message])``
-* ``cr_assert_arrays_neq(Actual, Unexpected, Size, [Message])``
-* ``cr_assert_arrays_neq_cmp(Actual, Unexpected, Size, Cmp, [Message])``
-
-Of course, every ``assert`` has an ``expect`` counterpart.
-
-Please note that ``arrays_(n)eq`` assertions should not be used on padded
-structures -- please use ``arrays_(n)eq_cmp`` instead.
+On top of those, more assertions are available for common operations. See
+:ref:`assertions-ref` for a complete list.
 
 Configuring tests
 -----------------

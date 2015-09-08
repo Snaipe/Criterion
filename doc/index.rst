@@ -7,6 +7,7 @@ Criterion
     intro
     setup
     starter
+    assert
     hooks
     env
     theories
