@@ -18,7 +18,6 @@ set(SAMPLES
   other-crashes.c
   simple.c
   theories.c
-  tests/failmessages.c
 
   signal.cc
   exit.cc
@@ -47,23 +46,27 @@ if (HAVE_PCRE)
     set(SCRIPTS ${SCRIPTS} pattern)
 endif ()
 
-foreach(sample ${SAMPLES})
-    add_executable(${sample}.bin ${sample})
-    target_link_libraries(${sample}.bin criterion)
-    add_test(${sample} ${sample}.bin)
-    set_property(TEST ${sample} PROPERTY
-        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-    )
-
-    if (NOT MSVC) # we disable the scripted tests when building with MSVC
-        add_test(${sample}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample}.bin)
-        set_property(TEST ${sample}_compare PROPERTY
-            ENVIRONMENT "LC_ALL=en_US.utf8"
+macro(add_samples DIR_ SAMPLES_)
+    foreach(sample ${SAMPLES_})
+        add_executable(${sample}.bin ${sample})
+        target_link_libraries(${sample}.bin criterion)
+        add_test(${sample} ${sample}.bin)
+        set_property(TEST ${sample} PROPERTY
             ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-            ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
         )
-    endif ()
-endforeach()
+
+        if (NOT MSVC) # we disable the scripted tests when building with MSVC
+            add_test(${sample}_compare sh ${DIR_}/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample}.bin)
+            set_property(TEST ${sample}_compare PROPERTY
+                ENVIRONMENT "LC_ALL=en_US.utf8"
+                ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+                ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
+            )
+        endif ()
+    endforeach()
+endmacro()
+
+add_samples("${CMAKE_CURRENT_LIST_DIR}/tests" "${SAMPLES}")
 
 if (NOT MSVC) # we disable the scripted tests when building with MSVC
 
@@ -82,3 +85,5 @@ foreach(script ${SCRIPTS})
 endforeach()
 
 endif()
+
+add_subdirectory(tests)
