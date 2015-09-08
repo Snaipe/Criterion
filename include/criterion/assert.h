@@ -90,6 +90,12 @@ struct criterion_assert_args {
 # define CR_FAIL_ABORT_ criterion_abort_test
 # define CR_FAIL_CONTINUES_ criterion_continue_test
 
+# ifdef __GNUC__
+// We disable the format-zero-length warning because we use the validity of
+// asprintf(out, "") for empty assertion messages
+#  pragma GCC diagnostic ignored "-Wformat-zero-length"
+# endif
+
 # define cr_assert_impl(Fail, Condition, ...)                               \
     do {                                                                    \
         bool passed = !!(Condition);                                        \
@@ -97,7 +103,6 @@ struct criterion_assert_args {
         const char *msg = NULL;                                             \
         size_t bufsize;                                                     \
                                                                             \
-        _Pragma("GCC diagnostic ignored \"-Wformat-zero-length\"")          \
         struct criterion_assert_stats *stat;                                \
         CR_EXPAND(CR_INIT_STATS_(bufsize, msg, CR_VA_TAIL(__VA_ARGS__)));   \
         stat->passed = passed;                                              \
