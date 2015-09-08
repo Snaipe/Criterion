@@ -231,6 +231,29 @@ struct criterion_assert_args {
 
 // String assertions
 
+# define cr_assert_str_op_empty_(Fail, Op, Value, ...) \
+    CR_EXPAND(cr_assert_impl(  \
+            Fail, \
+            (Value)[0] Op '\0', \
+            dummy, \
+            CR_STR(Value is empty.), \
+            __VA_ARGS__ \
+    ))
+
+# define cr_assert_str_op_empty_va_(Fail, Op, ...) \
+    CR_EXPAND(cr_assert_str_op_empty_( \
+            Fail, \
+            Op, \
+            CR_VA_HEAD(__VA_ARGS__), \
+            CR_VA_TAIL(__VA_ARGS__) \
+    ))
+
+# define cr_assert_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
+# define cr_expect_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
+
+# define cr_assert_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, !=, __VA_ARGS__))
+# define cr_expect_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, !=, __VA_ARGS__))
+
 # define cr_assert_str_op_(Fail, Op, Actual, Expected, ...) \
     CR_EXPAND(cr_assert_impl(  \
             Fail, \
