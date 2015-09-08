@@ -21,16 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_ABORT_H_
-# define CRITERION_ABORT_H_
 
-# include "common.h"
+#include <limits.h>
+#include <stdlib.h>
+#include "criterion/asprintf-compat.h"
 
-CR_BEGIN_C_API
+int asprintf(char **strp, const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    int res = vasprintf(strp, fmt, ap);
+    va_end(ap);
+    return res;
+}
 
-CR_API NORETURN void criterion_abort_test(void);
-CR_API CR_INLINE void criterion_continue_test(void) {}
+int vasprintf(char **strp, const char *fmt, va_list ap) {
+    va_list vl;
+    va_copy(vl, ap);
 
-CR_END_C_API
+    int size = vsnprintf(0, 0, fmt, vl);
+    int res = -1;
 
-#endif /* !CRITERION_ABORT_H_ */
+    if (size < 0 || size >= INT_MAX) {
+        goto cleanup;
+    }
+
+    char *str = malloc(size + 1);
+    if (str) {
+        int res2 = vsnprintf(str, size + 1, fmt, ap);
+        if (res2 < 0 || res2 > size) {
+            free(str);
+            goto cleanup;
+        }
+        *strp = str;
+        res = res2;
+    }
+
+cleanup:
+    va_end(vl);
+    return res;
+}

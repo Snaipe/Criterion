@@ -160,8 +160,7 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
-        char *dup       = strdup(*stats->message ? stats->message
-                                                 : stats->condition);
+        char *dup       = strdup(*stats->message ? stats->message : "");
 
 #ifdef VANILLA_WIN32
         char *line      = strtok(dup, "\n");

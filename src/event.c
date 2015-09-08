@@ -37,6 +37,12 @@ void destroy_event(void *ptr, UNUSED void *meta) {
     free(ev->data);
 }
 
+void destroy_assert_event(void *ptr, UNUSED void *meta) {
+    struct event *ev = ptr;
+    free((void*) ((struct criterion_assert_stats *) ev)->message);
+    free(ev->data);
+}
+
 struct event *read_event(FILE *f) {
     unsigned kind;
     if (fread(&kind, sizeof (unsigned), 1, f) == 0)
@@ -45,18 +51,36 @@ struct event *read_event(FILE *f) {
     switch (kind) {
         case ASSERT: {
             const size_t assert_size = sizeof (struct criterion_assert_stats);
-            unsigned char *buf = malloc(assert_size);
-            if (fread(buf, assert_size, 1, f) == 0) {
-                free(buf);
-                return NULL;
-            }
+            struct criterion_assert_stats *buf = NULL;
+            size_t *len = NULL;
+            char *msg = NULL;
+
+            buf = malloc(assert_size);
+            if (fread(buf, assert_size, 1, f) == 0)
+                goto fail_assert;
+
+            len = malloc(sizeof (size_t));
+            if (fread(len, sizeof (size_t), 1, f) == 0)
+                goto fail_assert;
+
+            msg = malloc(*len);
+            if (fread(buf, *len, 1, f) == 0)
+                goto fail_assert;
+
+            buf->message = msg;
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
-                    .dtor = destroy_event
+                    .dtor = destroy_assert_event
                 );
             *ev = (struct event) { .kind = kind, .data = buf };
             return ev;
+
+fail_assert:
+            free(len);
+            free(buf);
+            free(msg);
+            return NULL;
         }
         case THEORY_FAIL: {
             size_t *len = malloc(sizeof (size_t));

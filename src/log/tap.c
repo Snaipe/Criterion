@@ -86,7 +86,7 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
             stats->elapsed_time);
     for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
         if (!asrt->passed) {
-            char *dup = strdup(*asrt->message ? asrt->message : asrt->condition);
+            char *dup = strdup(*asrt->message ? asrt->message : "");
 #ifdef VANILLA_WIN32
             char *line = strtok(dup, "\n");
 #else

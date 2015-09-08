@@ -110,6 +110,12 @@ if (PCRE_FOUND)
   set(HAVE_PCRE 1)
 endif ()
 
+if ("${CMAKE_SYSTEM_NAME}" EQUAL "Linux")
+  set (SOURCE_FILES ${SOURCE_FILES}
+    src/asprintf.c
+  )
+endif ()
+
 set(INTERFACE_FILES
   include/criterion/assert.h
   include/criterion/abort.h
@@ -123,6 +129,7 @@ set(INTERFACE_FILES
   include/criterion/ordered-set.h
   include/criterion/stats.h
   include/criterion/theories.h
+  include/criterion/asprintf-compat.h
 )
 
 # Generate the configure file

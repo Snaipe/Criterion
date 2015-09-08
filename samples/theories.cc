@@ -103,12 +103,12 @@ Theory((char c, bool b, short s, int i, long l, long long ll, float f, double d,
     cr_assert_eq(ll, 1);
     cr_assert_eq(f, 3.14f);
     cr_assert_eq(d, 3.14);
-    cr_assert_strings_eq(str, "test");
-    cr_assert_strings_eq(cstr, "other test");
+    cr_assert_str_eq(str, "test");
+    cr_assert_str_eq(cstr, "other test");
     cr_assert_eq(obj->foo, 42);
 
     // abort to see the formatted string of all parameters
-    cr_abort_test(NULL);
+    cr_assert_fail();
 }
 
 // Manually generate datapoints
@@ -125,5 +125,5 @@ static void generate_datapoints(void) {
 
 Theory((int i), theory, gen, .init = generate_datapoints) {
     (void) i;
-    cr_abort_test(NULL); // we fail to display the parameter
+    cr_assert_fail(); // we fail to display the parameter
 }
