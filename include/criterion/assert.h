@@ -67,7 +67,7 @@ struct criterion_assert_args {
     do {                                                                    \
         const char *default_msg = "" CR_VA_HEAD(__VA_ARGS__);               \
         char *formatted_msg = NULL;                                         \
-        int msglen = asprintf(&formatted_msg, "" CR_VA_TAIL(__VA_ARGS__));  \
+        int msglen = cr_asprintf(&formatted_msg, "" CR_VA_TAIL(__VA_ARGS__));\
         MsgVar = formatted_msg && *formatted_msg ?                          \
             formatted_msg : default_msg;                                    \
                                                                             \

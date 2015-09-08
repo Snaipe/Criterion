@@ -24,30 +24,20 @@
 #ifndef CRITERION_ASPRINTF_COMPAT_H_
 # define CRITERION_ASPRINTF_COMPAT_H_
 
-# ifdef __UNIX__
-#  define _GNU_SOURCE 1
-# endif
-
 # ifdef __cplusplus
 #  include <cstdarg>
 # else
 #  include <stdarg.h>
 # endif
 
-# ifdef __UNIX__
-#  include <stdio.h>
-# else
-
-#  include "common.h"
+# include "common.h"
 
 CR_BEGIN_C_API
 
 FORMAT(printf, 2, 3)
-CR_API int asprintf(char **strp, const char *fmt, ...) CR_NOTHROW;
-CR_API int vasprintf(char **strp, const char *fmt, va_list ap) CR_NOTHROW;
+CR_API int cr_asprintf(char **strp, const char *fmt, ...);
+CR_API int cr_vasprintf(char **strp, const char *fmt, va_list ap);
 
 CR_END_C_API
-
-# endif
 
 #endif /* !CRITERION_ASPRINTF_COMPAT_H_ */

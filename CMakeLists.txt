@@ -98,6 +98,7 @@ set(SOURCE_FILES
   src/ordered-set.c
   src/posix-compat.c
   src/theories.c
+  src/asprintf.c
   src/main.c
   src/entry.c
 )
@@ -108,12 +109,6 @@ if (PCRE_FOUND)
     src/extmatch.h
   )
   set(HAVE_PCRE 1)
-endif ()
-
-if ("${CMAKE_SYSTEM_NAME}" EQUAL "Linux")
-  set (SOURCE_FILES ${SOURCE_FILES}
-    src/asprintf.c
-  )
 endif ()
 
 set(INTERFACE_FILES

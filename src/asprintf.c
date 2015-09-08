@@ -24,17 +24,18 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "criterion/asprintf-compat.h"
 
-int asprintf(char **strp, const char *fmt, ...) {
+int cr_asprintf(char **strp, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    int res = vasprintf(strp, fmt, ap);
+    int res = cr_vasprintf(strp, fmt, ap);
     va_end(ap);
     return res;
 }
 
-int vasprintf(char **strp, const char *fmt, va_list ap) {
+int cr_vasprintf(char **strp, const char *fmt, va_list ap) {
     va_list vl;
     va_copy(vl, ap);
 
