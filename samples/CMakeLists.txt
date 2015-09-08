@@ -18,6 +18,7 @@ set(SAMPLES
   other-crashes.c
   simple.c
   theories.c
+  tests/failmessages.c
 
   signal.cc
   exit.cc
