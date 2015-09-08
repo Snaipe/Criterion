@@ -68,9 +68,10 @@ struct criterion_assert_args {
         const char *default_msg = "" CR_VA_HEAD(__VA_ARGS__);               \
         char *formatted_msg = NULL;                                         \
         int msglen = asprintf(&formatted_msg, "" CR_VA_TAIL(__VA_ARGS__));  \
-        MsgVar = formatted_msg ? formatted_msg : default_msg;               \
+        MsgVar = formatted_msg && *formatted_msg ?                          \
+            formatted_msg : default_msg;                                    \
                                                                             \
-        if (!formatted_msg)                                                 \
+        if (!formatted_msg || !*formatted_msg)                              \
             msglen = strlen(default_msg);                                   \
                                                                             \
         BufSize = sizeof(struct criterion_assert_stats)                     \
@@ -78,10 +79,9 @@ struct criterion_assert_args {
                                                                             \
         char *buf = (char*) CR_STDN malloc(BufSize);                        \
         stat = (struct criterion_assert_stats*) buf;                        \
-                                                                            \
         CR_STDN memset(buf, 0, sizeof (struct criterion_assert_stats));     \
         buf += sizeof (struct criterion_assert_stats);                      \
-        *((size_t*) buf) = msglen;                                          \
+        *((size_t*) buf) = msglen + 1;                                      \
         buf += sizeof (size_t);                                             \
         CR_STDN strcpy(buf, MsgVar);                                        \
         CR_STDN free(formatted_msg);                                        \

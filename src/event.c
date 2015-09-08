@@ -39,7 +39,7 @@ void destroy_event(void *ptr, UNUSED void *meta) {
 
 void destroy_assert_event(void *ptr, UNUSED void *meta) {
     struct event *ev = ptr;
-    free((void*) ((struct criterion_assert_stats *) ev)->message);
+    free((void*) ((struct criterion_assert_stats *) ev->data)->message);
     free(ev->data);
 }
 
@@ -52,19 +52,18 @@ struct event *read_event(FILE *f) {
         case ASSERT: {
             const size_t assert_size = sizeof (struct criterion_assert_stats);
             struct criterion_assert_stats *buf = NULL;
-            size_t *len = NULL;
             char *msg = NULL;
 
             buf = malloc(assert_size);
             if (fread(buf, assert_size, 1, f) == 0)
                 goto fail_assert;
 
-            len = malloc(sizeof (size_t));
-            if (fread(len, sizeof (size_t), 1, f) == 0)
+            size_t len = 0;
+            if (fread(&len, sizeof (size_t), 1, f) == 0)
                 goto fail_assert;
 
-            msg = malloc(*len);
-            if (fread(buf, *len, 1, f) == 0)
+            msg = malloc(len);
+            if (fread(msg, len, 1, f) == 0)
                 goto fail_assert;
 
             buf->message = msg;
@@ -77,25 +76,20 @@ struct event *read_event(FILE *f) {
             return ev;
 
 fail_assert:
-            free(len);
             free(buf);
             free(msg);
             return NULL;
         }
         case THEORY_FAIL: {
-            size_t *len = malloc(sizeof (size_t));
-            if (fread(len, sizeof (size_t), 1, f) == 0) {
-                free(len);
+            size_t len = 0;
+            if (fread(&len, sizeof (size_t), 1, f) == 0)
                 return NULL;
-            }
 
-            char *buf = malloc(*len);
-            if (fread(buf, *len, 1, f) == 0) {
-                free(len);
+            char *buf = malloc(len);
+            if (fread(buf, len, 1, f) == 0) {
                 free(buf);
                 return NULL;
             }
-            free(len);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
