@@ -415,7 +415,7 @@ struct criterion_assert_args {
 #  define cr_assert_throw_(Fail, Statement, Exception, ...)                 \
     try {                                                                   \
         Statement;                                                          \
-    } catch (Exception &ex) {                                               \
+    } catch (Exception const &) {                                           \
     } catch (...) { CR_EXPAND(cr_fail(Fail, CR_VA_TAIL(__VA_ARGS__))); }
 
 #  define cr_assert_throw_va_(...)                  \
@@ -433,7 +433,7 @@ struct criterion_assert_args {
 #  define cr_assert_no_throw_(Fail, Statement, Exception, ...)                      \
     try {                                                                           \
         Statement;                                                                  \
-    } catch (Exception &ex) { CR_EXPAND(cr_fail(Fail, CR_VA_TAIL(__VA_ARGS__))); }
+    } catch (Exception const &) { CR_EXPAND(cr_fail(Fail, CR_VA_TAIL(__VA_ARGS__))); }
 
 #  define cr_assert_no_throw_va_(...)               \
     CR_EXPAND(cr_assert_no_throw_(                  \
