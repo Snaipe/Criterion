@@ -464,21 +464,26 @@ struct criterion_assert_args {
 // It shall be removed in the next major version of Criterion
 # ifndef CRITERION_NO_COMPAT
 
-#  define CRITERION_ASSERT_DEPRECATED_(Name) CRITERION_ASSERT_DEPRECATED__(    \
-        message                                                                \
-        "The `" #Name "` macro is deprecated, "                                \
-        "please use `cr_" #Name "` instead."                                   \
+#  define CRITERION_ASSERT_DEPRECATED_(Name) CRITERION_ASSERT_DEPRECATED__( \
+        message                                                             \
+        ("The `" #Name "` macro is deprecated, "                            \
+        "please use `cr_" #Name "` instead.")                               \
     )
 
 #  define CRITERION_ASSERT_DEPRECATED_B(Name, Newname) \
     CRITERION_ASSERT_DEPRECATED__(                     \
         message                                        \
-        "The `" #Name "` macro is deprecated, "        \
-        "please use `" #Newname "` instead."           \
+        ("The `" #Name "` macro is deprecated, "       \
+        "please use `" #Newname "` instead.")          \
     )
 
+# ifdef _MSC_VER
+#  define CRITERION_ASSERT_DEPRECATED__(Msg) \
+    __pragma(Msg)
+# else
 #  define CRITERION_ASSERT_DEPRECATED__(Msg) \
     _Pragma(#Msg)
+# endif
 
 #  ifndef assert
 #   define assert(...) CRITERION_ASSERT_DEPRECATED_(assert) cr_assert(__VA_ARGS__)
