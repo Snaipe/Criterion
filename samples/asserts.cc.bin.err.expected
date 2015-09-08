@@ -1,8 +1,11 @@
-[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m11[0m: Assertion failed: assert is fatal, expect isn't
-[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m12[0m: Assertion failed: This assert runs
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m83[0m: Assertion failed: The expression (&s1)[0 .. 2] == (&s2)[0 .. 2] is false.
+[[0;31mFAIL[0m] asserts::array: (0.00s)
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m13[0m: Assertion failed: assert is fatal, expect isn't
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m14[0m: Assertion failed: This assert runs
 [[0;31mFAIL[0m] asserts::base: (0.00s)
-[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m86[0m: Assertion failed: 0
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m89[0m: Assertion failed: The conditions for this assertion were not met.
 [[0;31mFAIL[0m] asserts::exception: (0.00s)
-[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m20[0m: Assertion failed: The conditions for this test were not met.
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m19[0m: Assertion failed: You can fail an assertion with a message from anywhere
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m20[0m: Assertion failed: The conditions for this assertion were not met.
 [[0;31mFAIL[0m] asserts::old_school: (0.00s)
-[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m7[0;1m | Passing: [0;32m4[0;1m | Failing: [0;31m3[0;1m | Crashing: [0;31m0[0;1m [0m
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m7[0;1m | Passing: [0;32m3[0;1m | Failing: [0;31m4[0;1m | Crashing: [0;31m0[0;1m [0m

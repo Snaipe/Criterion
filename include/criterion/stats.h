@@ -27,8 +27,6 @@
 # include "types.h"
 
 struct criterion_assert_stats {
-    int kind;
-    const char *condition;
     const char *message;
     bool passed;
     unsigned line;

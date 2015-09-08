@@ -24,8 +24,6 @@
 #ifndef CRITERION_COMMON_H_
 # define CRITERION_COMMON_H_
 
-# define CR_EXPAND(x) x
-
 # if defined(_MSC_VER)
 #  if _MSC_VER < 1900
 #   error \
@@ -101,12 +99,15 @@
 # ifdef __GNUC__
 #  define UNUSED CR_ATTRIBUTE(unused)
 #  define NORETURN CR_ATTRIBUTE(noreturn)
+#  define CR_INLINE CR_ATTRIBUTE(always_inline) inline
 # elif CR_IS_MSVC
 #  define UNUSED
 #  define NORETURN __declspec(noreturn)
+#  define CR_INLINE __forceinline
 # else
 #  define UNUSED
 #  define NORETURN
+#  define CR_INLINE inline
 # endif
 
 # ifdef _WIN32

@@ -98,6 +98,7 @@ set(SOURCE_FILES
   src/ordered-set.c
   src/posix-compat.c
   src/theories.c
+  src/asprintf.c
   src/main.c
   src/entry.c
 )
@@ -123,6 +124,7 @@ set(INTERFACE_FILES
   include/criterion/ordered-set.h
   include/criterion/stats.h
   include/criterion/theories.h
+  include/criterion/asprintf-compat.h
 )
 
 # Generate the configure file

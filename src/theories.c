@@ -23,6 +23,7 @@
  */
 #include <stdbool.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <setjmp.h>
 #include <dyncall.h>
 #include <assert.h>

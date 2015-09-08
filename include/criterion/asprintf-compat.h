@@ -21,16 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_ABORT_H_
-# define CRITERION_ABORT_H_
+#ifndef CRITERION_ASPRINTF_COMPAT_H_
+# define CRITERION_ASPRINTF_COMPAT_H_
+
+# ifdef __cplusplus
+#  include <cstdarg>
+# else
+#  include <stdarg.h>
+# endif
 
 # include "common.h"
 
 CR_BEGIN_C_API
 
-CR_API NORETURN void criterion_abort_test(void);
-CR_INLINE static void criterion_continue_test(void) {}
+FORMAT(printf, 2, 3)
+CR_API int cr_asprintf(char **strp, const char *fmt, ...);
+CR_API int cr_vasprintf(char **strp, const char *fmt, va_list ap);
 
 CR_END_C_API
 
-#endif /* !CRITERION_ABORT_H_ */
+#endif /* !CRITERION_ASPRINTF_COMPAT_H_ */
