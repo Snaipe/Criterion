@@ -4,7 +4,7 @@ os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
-  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build'
+  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug'
 
 environment:
   COVERALLS_REPO_TOKEN:
@@ -42,12 +42,6 @@ install:
 
 build_script:
   - cmake --build .
-  - ps: |
-        # HACK: We need to copy criterion.dll into the binary directory
-        if ($env:Compiler -eq "msvc") {
-            Copy-Item Debug/criterion.dll samples/Debug/
-            Copy-Item Debug/criterion.dll test/Debug/
-        }
 
 before_deploy:
   - ps: |
