@@ -39,4 +39,6 @@ be merged.
     |- po/: Translation files, i18n stuff
     |- test/: Unit tests for libcriterion
     `- samples/: Sample files
+        |- outputs/: Expected output files for the current samples
         `- tests/: Internal regression tests
+            `- outputs/: Expected output files for the regression tests

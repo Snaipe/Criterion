@@ -7,28 +7,22 @@ include_directories(../include)
 
 set(SAMPLES
   signal.c
-  exit.c
   report.c
   suites.c
   fixtures.c
   asserts.c
   more-suites.c
-  long-messages.c
   description.c
-  other-crashes.c
   simple.c
   theories.c
 
   signal.cc
-  exit.cc
   report.cc
   suites.cc
   fixtures.cc
   asserts.cc
   more-suites.cc
-  long-messages.cc
   description.cc
-  other-crashes.cc
   simple.cc
   theories.cc
 )
@@ -56,7 +50,7 @@ macro(add_samples DIR_ SAMPLES_)
         )
 
         if (NOT MSVC) # we disable the scripted tests when building with MSVC
-            add_test(${sample}_compare sh ${DIR_}/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . . ${sample}.bin)
+            add_test(${sample}_compare sh ${DIR_}/run_test.sh "${CMAKE_CURRENT_LIST_DIR}/out_dir" . . ${sample}.bin)
             set_property(TEST ${sample}_compare PROPERTY
                 ENVIRONMENT "LC_ALL=en_US.utf8"
                 ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
