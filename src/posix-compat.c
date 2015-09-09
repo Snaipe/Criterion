@@ -91,7 +91,7 @@ struct full_context {
     struct criterion_test_extra_data suite_data;
     f_worker_func func;
     struct pipe_handle pipe;
-    int resumed;
+    volatile int resumed;
 };
 
 static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker");
