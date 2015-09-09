@@ -27,6 +27,7 @@ script:
 - cd build
 - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG} ..
 - make
+- make criterion_tests
 - make test
 after_success:
 - make coveralls

@@ -40,9 +40,13 @@ if (HAVE_PCRE)
     set(SCRIPTS ${SCRIPTS} pattern)
 endif ()
 
+add_custom_target(criterion_samples)
+add_dependencies(criterion_tests criterion_samples)
+
 macro(add_samples DIR_ SAMPLES_)
     foreach(sample ${SAMPLES_})
-        add_executable(${sample}.bin ${sample})
+        add_executable(${sample}.bin EXCLUDE_FROM_ALL ${sample})
+        add_dependencies(criterion_samples ${sample}.bin)
         target_link_libraries(${sample}.bin criterion)
         add_test(${sample} ${sample}.bin)
         set_property(TEST ${sample} PROPERTY

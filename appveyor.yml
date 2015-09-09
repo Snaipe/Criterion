@@ -52,6 +52,7 @@ before_deploy:
         Push-AppveyorArtifact "../$archive.tar.bz2"
 
 test_script:
+  - cmake --build . --target criterion_tests
   - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
 
 #after_test:

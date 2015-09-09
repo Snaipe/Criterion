@@ -167,7 +167,8 @@ install(TARGETS criterion
   ARCHIVE DESTINATION lib
 )
 
+add_custom_target(criterion_tests)
+
 enable_testing()
 add_subdirectory(samples)
 add_subdirectory(test)
-

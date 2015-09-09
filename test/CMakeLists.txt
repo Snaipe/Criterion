@@ -8,7 +8,9 @@ set(TEST_SOURCES
     ordered-set.c
 )
 
-add_executable(test_criterion ${TEST_SOURCES})
-target_link_libraries(test_criterion criterion)
+add_executable(criterion_unit_tests EXCLUDE_FROM_ALL ${TEST_SOURCES})
+target_link_libraries(criterion_unit_tests criterion)
 
-add_test(test_criterion test_criterion)
+add_dependencies(criterion_tests criterion_unit_tests)
+
+add_test(criterion_unit_tests criterion_unit_tests)
