@@ -4,13 +4,18 @@
 !.gitignore
 !.bumpversion.cfg
 !.ci/*
+!.cmake/*
+
+!dev/*
+!doc/*
 
 !*.c
 !*.cc
 !*.h
 !*.rst
-!samples/tests/*.sh
 !*.po
+!*.in
+!samples/tests/*.sh
 !samples/*.expected
 
 !LICENSE
@@ -19,11 +24,10 @@
 
 CMakeFiles/
 !CMakeLists.txt
-!.cmake/*
 
-!src/config.h.in
 src/config.h
-
 build
+
 *~
 *.swp
+.*.swp
