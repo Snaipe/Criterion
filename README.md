@@ -2,6 +2,8 @@
 <img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
+[![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Unix Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/Snaipe/Criterion?svg=true&branch=bleeding)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
 [![Coverage Status](https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=bleeding)](https://coveralls.io/r/Snaipe/Criterion?branch=bleeding) 
