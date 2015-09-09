@@ -248,21 +248,21 @@ static int transform(const char *pattern, char *result, const char **errmsg) {
  * We must now find the maximal length L such as ∀s, L >= length(T(s))
  *
  * It is immediately apparent that the largest string will depend on the number
- * of occurrences of '!()'. Hence, let u be a string that is a repeating
- * sequence of '!()' padded by '.' to a multiple of 3,
+ * of occurrences of '!()'. Hence, ∀s, let u(s) be a string that is a repeating
+ * sequence of '!()' padded by at most two '.', such as length(u(s)) == length(s),
  *
- * let N = floor(length(u) / 3),
- * let Q = length(u) mod 3,
+ * let N = floor(length(u(s)) / 3),
+ * let Q = length(u(s)) mod 3,
  * hence num('!()') = N.
  *
- * ∀s | lenght(s) = length(u),
- *     length(T(s)) <= length(T(u))
- *                  <= length(u)            | the original length
+ * ∀s | lenght(s) = length(u(s)),
+ *     length(T(s)) <= length(T(u(s)))
+ *                  <= length(u(s))         | the original length
  *                      + 4 * N             | the expansion of all '!()'
  *                      + Q * diff('.')     | the expansion of Q '.'
  *                  <= 3 * N + Q + 4 * N + Q
  *                  <= 7 * N + 4
- *                  <= 7 * floor(length(u) / 3) + 4
+ *                  <= 7 * floor(length(u(s)) / 3) + 4
  *                  <= 7 * floor(length(s) / 3) + 4
  *
  */
