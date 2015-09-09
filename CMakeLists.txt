@@ -125,6 +125,8 @@ set(INTERFACE_FILES
   include/criterion/stats.h
   include/criterion/theories.h
   include/criterion/asprintf-compat.h
+  include/criterion/designated-initializer-compat.h
+  include/criterion/preprocess.h
 )
 
 # Generate the configure file
