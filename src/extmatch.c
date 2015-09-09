@@ -271,7 +271,7 @@ static inline size_t max_length(size_t len) {
 }
 
 int extmatch(const char *pattern, const char *string, const char **errmsg) {
-    char regex[max_length(strlen(pattern))];
+    char regex[max_length(strlen(pattern)) + 1];
     if (transform(pattern, regex, errmsg) != -1) {
         int erroffset;
         pcre *preg = pcre_compile(regex, 0, errmsg, &erroffset, NULL);
