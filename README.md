@@ -45,12 +45,14 @@ the user would have with other frameworks:
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
-## Documentation
+## Developer Resources
+
+### Documentation
 
 An online documentation is available on [ReadTheDocs][online-docs]
 ([PDF][pdf-docs] | [Zip][zip-docs] | [Epub][epub-docs])
 
-## Samples
+### Samples
 
 Sample tests can be found in the [sample directory][samples].
 
@@ -60,6 +62,10 @@ Sample tests can be found in the [sample directory][samples].
 * [Adding test fixtures][sample-fixtures]
 * [Tests with signals][sample-signal]
 * [Using report hooks][sample-report]
+
+### Getting help
+
+Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## F.A.Q.
 
