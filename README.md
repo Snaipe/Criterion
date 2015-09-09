@@ -67,6 +67,10 @@ Sample tests can be found in the [sample directory][samples].
 
 Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+### Misc
+
+* [CMake find module for Criterion][find-module]
+
 ## F.A.Q.
 
 **Q. What's wrong with other C test frameworks?**  
@@ -98,3 +102,5 @@ Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
 [sample-fixtures]: ./samples/fixtures.c
 [sample-signal]: ./samples/signal.c
 [sample-report]: ./samples/report.c
+
+[find-module]: ./dev/FindCriterion.cmake
