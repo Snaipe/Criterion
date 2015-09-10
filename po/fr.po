@@ -106,7 +106,7 @@ msgstr ""
 
 #: src/i18n.c:13
 msgid "The conditions for this assertion were not met."
-msgstr "Les conditions de cette assertions n'ont pas été remplies."
+msgstr "Les conditions de cette assertion n'ont pas été remplies."
 
 #: src/i18n.c:14
 #, c-format
