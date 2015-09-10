@@ -13,6 +13,10 @@
         dngettext(PACKAGE, String, Plural, (Quantity))
 # endif
 
+// Used to mark string for gettext
+# define N_(Str) Str
+# define N_s(Str, Pl) {Str, Pl}
+
 void init_i18n(void);
 
 #endif /* !I18N_H_ */

@@ -47,10 +47,6 @@
 
 typedef const char *const msg_t;
 
-// Used to mark string for gettext
-# define N_(Str) Str
-# define N_s(Str, Pl) {Str, Pl}
-
 static msg_t msg_pre_all = N_("Criterion v%s\n");
 static msg_t msg_desc = N_("  %s\n");
 

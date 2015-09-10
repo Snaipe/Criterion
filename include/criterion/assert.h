@@ -53,6 +53,22 @@ struct criterion_assert_args {
 #endif
 };
 
+enum criterion_assert_messages {
+    CRITERION_ASSERT_MSG_FAIL,
+    CRITERION_ASSERT_MSG_EXPR_FALSE,
+    CRITERION_ASSERT_MSG_EXPR_AS_STRINGS_FALSE,
+    CRITERION_ASSERT_MSG_IS_NULL,
+    CRITERION_ASSERT_MSG_IS_NOT_NULL,
+    CRITERION_ASSERT_MSG_IS_EMPTY,
+    CRITERION_ASSERT_MSG_IS_NOT_EMPTY,
+};
+
+CR_BEGIN_C_API
+
+CR_API char *translate_assert_msg(int msg_index, ...);
+
+CR_END_C_API
+
 # define CR_GET_CONDITION(Condition, ...) Condition
 # define CR_GET_CONDITION_STR(Condition, ...) #Condition
 # define CR_VA_SKIP(_, ...) __VA_ARGS__
@@ -63,16 +79,26 @@ struct criterion_assert_args {
 #  define CR_STDN
 # endif
 
+# define CR_TRANSLATE_DEF_MSG__(Arg) \
+    CR_EXPAND Arg
+
+# define CR_TRANSLATE_DEF_MSG_(...)                                         \
+    CR_EXPAND(translate_assert_msg(                                         \
+            CR_VA_HEAD(__VA_ARGS__),                                        \
+            "" CR_TRANSLATE_DEF_MSG__(CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)))  \
+    ))
+
 # define CR_INIT_STATS_(BufSize, MsgVar, ...) CR_EXPAND(                       \
     do {                                                                       \
-        const char *default_msg = "" CR_VA_HEAD(__VA_ARGS__);                  \
+        char *def_msg = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));         \
         char *formatted_msg = NULL;                                            \
-        int msglen = cr_asprintf(&formatted_msg, "" CR_VA_TAIL(__VA_ARGS__));  \
+        int msglen = cr_asprintf(&formatted_msg,                               \
+                "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                       \
         MsgVar = formatted_msg && *formatted_msg ?                             \
-            formatted_msg : default_msg;                                       \
+            formatted_msg : def_msg;                                           \
                                                                                \
         if (!formatted_msg || !*formatted_msg)                                 \
-            msglen = strlen(default_msg);                                      \
+            msglen = strlen(def_msg);                                          \
                                                                                \
         BufSize = sizeof(struct criterion_assert_stats)                        \
                   + sizeof (size_t) + msglen + 1;                              \
@@ -84,7 +110,7 @@ struct criterion_assert_args {
         *((size_t*) buf) = msglen + 1;                                         \
         buf += sizeof (size_t);                                                \
         CR_STDN strcpy(buf, MsgVar);                                           \
-        CR_STDN free(formatted_msg);                                           \
+        CR_STDN free(MsgVar);                                                  \
     } while (0))
 
 # define CR_FAIL_ABORT_ criterion_abort_test
@@ -100,7 +126,7 @@ struct criterion_assert_args {
     do {                                                                    \
         bool passed = !!(Condition);                                        \
                                                                             \
-        const char *msg = NULL;                                             \
+        char *msg = NULL;                                                   \
         size_t bufsize;                                                     \
                                                                             \
         struct criterion_assert_stats *stat;                                \
@@ -123,7 +149,8 @@ struct criterion_assert_args {
             Fail,                                               \
             0,                                                  \
             dummy,                                              \
-            "The conditions for this assertion were not met.",  \
+            CRITERION_ASSERT_MSG_FAIL,                          \
+            (),                                                 \
             __VA_ARGS__                                         \
     ))
 
@@ -135,7 +162,8 @@ struct criterion_assert_args {
             CR_FAIL_ABORT_,                                                 \
             CR_VA_HEAD(__VA_ARGS__),                                        \
             dummy,                                                          \
-            "The expression " CR_STR(CR_VA_HEAD(__VA_ARGS__)) " is false.", \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                                \
+            (CR_STR(CR_VA_HEAD(__VA_ARGS__))),                              \
             CR_VA_TAIL(__VA_ARGS__)                                         \
     ))
 
@@ -144,7 +172,8 @@ struct criterion_assert_args {
             CR_FAIL_CONTINUES_,                                             \
             CR_VA_HEAD(__VA_ARGS__),                                        \
             dummy,                                                          \
-            "The expression " CR_STR(CR_VA_HEAD(__VA_ARGS__)) " is false.", \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                                \
+            (CR_STR(CR_VA_HEAD(__VA_ARGS__))),                              \
             CR_VA_TAIL(__VA_ARGS__)                                         \
     ))
 
@@ -153,7 +182,8 @@ struct criterion_assert_args {
             CR_FAIL_ABORT_,                                                    \
             !(CR_VA_HEAD(__VA_ARGS__)),                                        \
             dummy,                                                             \
-            "The expression " CR_STR(!(CR_VA_HEAD(__VA_ARGS__))) " is false.", \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                                   \
+            (CR_STR(!(CR_VA_HEAD(__VA_ARGS__)))),                              \
             CR_VA_TAIL(__VA_ARGS__)                                            \
     ))
 
@@ -162,7 +192,8 @@ struct criterion_assert_args {
             CR_FAIL_CONTINUES_,                                                \
             !(CR_VA_HEAD(__VA_ARGS__)),                                        \
             dummy,                                                             \
-            "The expression " CR_STR(!(CR_VA_HEAD(__VA_ARGS__))) " is false.", \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                                   \
+            (CR_STR(!(CR_VA_HEAD(__VA_ARGS__)))),                              \
             CR_VA_TAIL(__VA_ARGS__)                                            \
     ))
 
@@ -173,7 +204,8 @@ struct criterion_assert_args {
             Fail,                                                           \
             (Actual) Op (Expected),                                         \
             dummy,                                                          \
-            "The expression " CR_STR((Actual) Op (Expected)) " is false.",  \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                                \
+            (CR_STR((Actual) Op (Expected))),                               \
             __VA_ARGS__                                                     \
     ))
 
@@ -206,29 +238,30 @@ struct criterion_assert_args {
 
 // Common unary assertions
 
-# define cr_assert_null_op_(Fail, Op, Not, Value, ...)  \
+# define cr_assert_null_op_(Fail, Op, Msg, Value, ...)  \
     CR_EXPAND(cr_assert_impl(                           \
             Fail,                                       \
             (Value) Op NULL,                            \
             dummy,                                      \
-            CR_STR(Value) " is" Not " null.",           \
+            Msg,                                        \
+            (CR_STR(Value)),                            \
             __VA_ARGS__                                 \
     ))
 
-# define cr_assert_null_op_va_(Fail, Op, Not, ...)      \
+# define cr_assert_null_op_va_(Fail, Op, Msg, ...)      \
     CR_EXPAND(cr_assert_null_op_(                       \
             Fail,                                       \
             Op,                                         \
-            Not,                                        \
+            Msg,                                        \
             CR_VA_HEAD(__VA_ARGS__),                    \
             CR_VA_TAIL(__VA_ARGS__)                     \
     ))
 
-# define cr_assert_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_ABORT_,     ==, " not", __VA_ARGS__))
-# define cr_expect_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_CONTINUES_, ==, " not", __VA_ARGS__))
+# define cr_assert_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_ABORT_,     ==, CRITERION_ASSERT_MSG_IS_NOT_NULL, __VA_ARGS__))
+# define cr_expect_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_CONTINUES_, ==, CRITERION_ASSERT_MSG_IS_NOT_NULL, __VA_ARGS__))
 
-# define cr_assert_not_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_ABORT_,     !=, "", __VA_ARGS__))
-# define cr_expect_not_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_CONTINUES_, !=, "", __VA_ARGS__))
+# define cr_assert_not_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_ABORT_,     !=, CRITERION_ASSERT_MSG_IS_NULL, __VA_ARGS__))
+# define cr_expect_not_null(...) CR_EXPAND(cr_assert_null_op_va_(CR_FAIL_CONTINUES_, !=, CRITERION_ASSERT_MSG_IS_NULL, __VA_ARGS__))
 
 // Floating-point assertions
 
@@ -243,7 +276,8 @@ struct criterion_assert_args {
             Fail,                                                              \
             Op(Actual, Expected, Epsilon),                                     \
             dummy,                                                             \
-            "The expression " CR_STR(Op(Actual, Expected, Epsilon)) " is false.", \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                                   \
+            (CR_STR(Op(Actual, Expected, Epsilon))),                           \
             __VA_ARGS__                                                        \
     ))
 
@@ -265,37 +299,38 @@ struct criterion_assert_args {
 
 // String assertions
 
-# define cr_assert_str_op_empty_(Fail, Op, Not, Value, ...) \
+# define cr_assert_str_op_empty_(Fail, Op, Msg, Value, ...) \
     CR_EXPAND(cr_assert_impl(                               \
             Fail,                                           \
             (Value)[0] Op '\0',                             \
             dummy,                                          \
-            CR_STR(Value) " is" Not " empty.",              \
+            Msg,                                            \
+            (CR_STR(Value)),                                \
             __VA_ARGS__                                     \
     ))
 
-# define cr_assert_str_op_empty_va_(Fail, Op, Not, ...) \
+# define cr_assert_str_op_empty_va_(Fail, Op, Msg, ...) \
     CR_EXPAND(cr_assert_str_op_empty_(                  \
             Fail,                                       \
             Op,                                         \
-            Not,                                        \
+            Msg,                                        \
             CR_VA_HEAD(__VA_ARGS__),                    \
             CR_VA_TAIL(__VA_ARGS__)                     \
     ))
 
-# define cr_assert_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, ==, " not", __VA_ARGS__))
-# define cr_expect_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_CONTINUES_, ==, " not", __VA_ARGS__))
+# define cr_assert_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, ==, CRITERION_ASSERT_MSG_IS_NOT_EMPTY, __VA_ARGS__))
+# define cr_expect_str_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_CONTINUES_, ==, CRITERION_ASSERT_MSG_IS_NOT_EMPTY, __VA_ARGS__))
 
-# define cr_assert_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, !=, "", __VA_ARGS__))
-# define cr_expect_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_CONTINUES_, !=, "", __VA_ARGS__))
+# define cr_assert_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_ABORT_, !=, CRITERION_ASSERT_MSG_IS_EMPTY, __VA_ARGS__))
+# define cr_expect_str_not_empty(...) CR_EXPAND(cr_assert_str_op_empty_va_(CR_FAIL_CONTINUES_, !=, CRITERION_ASSERT_MSG_IS_EMPTY, __VA_ARGS__))
 
 # define cr_assert_str_op_(Fail, Op, Actual, Expected, ...) \
     CR_EXPAND(cr_assert_impl(                               \
             Fail,                                           \
             CR_STDN strcmp((Actual), (Expected)) Op 0,      \
             dummy,                                          \
-            "The expression (as strings) "                  \
-                CR_STR((Actual) Op (Expected)) " is false", \
+            CRITERION_ASSERT_MSG_EXPR_AS_STRINGS_FALSE,     \
+            (CR_STR((Actual) Op (Expected))),               \
             __VA_ARGS__                                     \
     ))
 
@@ -333,9 +368,8 @@ struct criterion_assert_args {
             Fail,                                                       \
             CR_STDN memcmp((Actual), (Expected), (Size)) Op 0,          \
             dummy,                                                      \
-            "The expression "                                           \
-                CR_STR((Actual)[0 .. Size] Op (Expected)[0 .. Size])    \
-                "is false.",                                            \
+            CRITERION_ASSERT_MSG_EXPR_FALSE,                            \
+            (CR_STR((Actual)[0 .. Size] Op (Expected)[0 .. Size])),     \
             __VA_ARGS__                                                 \
     ))
 
@@ -379,9 +413,8 @@ struct criterion_assert_args {
                 Fail,                                                       \
                 order Op 0,                                                 \
                 dummy,                                                      \
-                "The expression "                                           \
-                    CR_STR((Actual)[0 .. Size] Op (Expected)[0 .. Size])    \
-                    " is false.",                                           \
+                CRITERION_ASSERT_MSG_EXPR_FALSE,                            \
+                (CR_STR((Actual)[0 .. Size] Op (Expected)[0 .. Size])),     \
                 __VA_ARGS__                                                 \
         ));                                                                 \
     } while (0)
