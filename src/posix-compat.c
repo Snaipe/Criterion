@@ -460,7 +460,7 @@ void cr_redirect(int fd_kind, s_pipe_handle *pipe, int fd_index) {
     cr_std_fd fd = get_std_fd(fd_kind);
 #ifdef VANILLA_WIN32
     CloseHandle(GetStdHandle(fd));
-    SetStdHandle(fd, pipe->fds[fd_index]);
+    SetStdHandle(fd, pipe->fhs[fd_index]);
 #else
     close(fd);
     dup2(fd, pipe->fds[fd_index]);
