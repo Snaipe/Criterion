@@ -25,6 +25,13 @@
 # define CRITERION_REDIRECT_H_
 
 # include "common.h"
+# include "assert.h"
+
+# ifdef __cplusplus
+#  include <cstdio>
+# else
+#  include <stdio.h>
+# endif
 
 CR_BEGIN_C_API
 
@@ -32,10 +39,38 @@ CR_API void cr_redirect_stdout(void);
 CR_API void cr_redirect_stderr(void);
 CR_API void cr_redirect_stdin(void);
 
-CR_API FILE* cr_get_redirected_stdout(void);
-CR_API FILE* cr_get_redirected_stderr(void);
-CR_API FILE* cr_get_redirected_stdin(void);
+CR_API CR_STDN FILE* cr_get_redirected_stdout(void);
+CR_API CR_STDN FILE* cr_get_redirected_stderr(void);
+CR_API CR_STDN FILE* cr_get_redirected_stdin(void);
+
+CR_API int cr_file_match_str(CR_STDN FILE* f, const char *str);
 
 CR_END_C_API
+
+# define cr_assert_redir_op_(Fail, Fun, Op, File, Str, ...)     \
+    CR_EXPAND(cr_assert_impl(                                   \
+            Fail,                                               \
+            !(Fun((File), (Str)) Op 0),                         \
+            dummy,                                              \
+            CRITERION_ASSERT_MSG_FILE_STR_MATCH,                \
+            (CR_STR(File), Str),                                \
+            __VA_ARGS__                                         \
+    ))
+
+# define cr_assert_redir_op_va_(Fail, Fun, Op, ...)             \
+    CR_EXPAND(cr_assert_redir_op_(                              \
+            Fail,                                               \
+            Fun,                                                \
+            Op,                                                 \
+            CR_VA_HEAD(__VA_ARGS__),                            \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
+            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))                 \
+    ))
+
+# define cr_assert_file_contents_match_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, __VA_ARGS__))
+# define cr_expect_file_contents_match_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, __VA_ARGS__))
+
+# define cr_assert_file_contents_not_match_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, __VA_ARGS__))
+# define cr_expect_file_contents_not_match_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, __VA_ARGS__))
 
 #endif /* !CRITERION_REDIRECT_H_ */

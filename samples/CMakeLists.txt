@@ -15,6 +15,7 @@ set(SAMPLES
   description.c
   simple.c
   theories.c
+  redirect.c
 
   signal.cc
   report.cc

@@ -33,6 +33,7 @@
 # endif
 
 # define CR_EXPAND(x) x
+# define CR_IDENTITY(...) __VA_ARGS__
 
 # define CR_STR(x) CR_EXPAND(CR_STR_(x))
 # define CR_STR_(x) #x
