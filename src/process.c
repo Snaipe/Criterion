@@ -62,7 +62,7 @@ struct event *worker_read_event(struct process *proc) {
 
 void run_worker(struct worker_context *ctx) {
     fclose(stdin);
-    g_event_pipe = pipe_out(ctx->pipe);
+    g_event_pipe = pipe_out(ctx->pipe, 1);
 
     ctx->func(ctx->test, ctx->suite);
     fclose(g_event_pipe);
@@ -102,7 +102,7 @@ struct process *spawn_test_worker(struct criterion_test *test,
             .kind = UNIQUE,
             .dtor = close_process);
 
-    *ptr = (struct process) { .proc = proc, .in = pipe_in(pipe) };
+    *ptr = (struct process) { .proc = proc, .in = pipe_in(pipe, 1) };
 cleanup:
     sfree(pipe);
     return ptr;
