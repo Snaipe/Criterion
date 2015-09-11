@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-Test(redirect, stdout) {
+Test(redirect, test_stdout) {
     cr_redirect_stdout();
 
     fprintf(stdout, "foo");
