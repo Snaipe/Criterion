@@ -580,7 +580,6 @@ FILE* cr_get_redirected_stdin(void) {
 int cr_file_match_str(FILE* f, const char *str) {
     size_t len = strlen(str);
 
-    fputs(str, stderr);
     char buf[512];
     size_t read;
     int matches = 0;
