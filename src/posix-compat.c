@@ -25,6 +25,7 @@
 #include "posix-compat.h"
 #include "process.h"
 #include "criterion/assert.h"
+#include "criterion/redirect.h"
 
 #ifdef VANILLA_WIN32
 # define VC_EXTRALEAN
