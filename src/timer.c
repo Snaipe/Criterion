@@ -1,6 +1,9 @@
 #include <errno.h>
 #include <inttypes.h>
+#include <stdlib.h>
 #include "timer.h"
+#include "criterion/common.h"
+#include "posix-compat.h"
 
 #define GIGA 1000000000
 
@@ -17,6 +20,7 @@ extern __attribute__ ((weak)) int clock_gettime(clockid_t, struct timespec *);
 #elif defined(__APPLE__)
 # include <mach/clock.h>
 # include <mach/mach.h>
+# include <pthread.h>
 #elif defined(_WIN32) || defined(__CYGWIN__)
 # define VC_EXTRALEAN
 # define WIN32_LEAN_AND_MEAN
@@ -80,4 +84,64 @@ int timer_end(double *time, struct timespec_compat *state) {
 
     *time = (last.tv_sec - state->tv_sec) + (last.tv_nsec - state->tv_nsec) / (double) GIGA;
     return 1;
+}
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+void win_raise_timeout(UNUSED HWND hwnd, 
+        UNUSED UINT uMsg, 
+        UNUSED UINT_PTR idEvent, 
+        UNUSED DWORD dwTime) {
+    RaiseException(CR_EXCEPTION_TIMEOUT, EXCEPTION_NONCONTINUABLE, 0, NULL);
+}
+#endif
+
+#if defined(__APPLE__)
+void *wait_and_raise(void *ptr) {
+    uint64_t *nanos = ptr;
+    struct timespec elapsed = {
+        .tv_sec = *nanos / GIGA,
+        .tv_nsec = *nanos % GIGA,
+    };
+    free(nanos);
+    if (!nanosleep(&elapsed, NULL))
+        raise(SIGPROF);
+    return NULL;
+}
+#endif
+
+int setup_timeout(uint64_t nanos) {
+#if   defined(__APPLE__)
+    uint64_t *nanos_copy = malloc(sizeof (uint64_t));
+    *nanos_copy = nanos;
+
+    pthread_t thread;
+    int res = pthread_create(&thread, NULL, wait_and_raise, nanos_copy);
+
+    return res ? -1 : 0;
+#elif defined(_WIN32) || defined(__CYGWIN__)
+    return SetTimer(NULL, 0, nanos / 1000000, (TIMERPROC) win_raise_timeout) ? 0 : -1;
+#elif defined(__unix__)
+    if (!can_measure_time()) {
+        errno = ENOTSUP;
+        return -1;
+    }
+
+    timer_t timer;
+    int res = timer_create(CLOCK_MONOTONIC, &(struct sigevent) {
+            .sigev_notify = SIGEV_SIGNAL,
+            .sigev_signo  = SIGPROF,
+        }, &timer);
+
+    if (res == -1)
+        return res;
+
+    struct itimerspec schedule = {
+        .it_value = { .tv_sec = nanos / GIGA, .tv_nsec = (nanos % GIGA) }
+    };
+
+    return timer_settime(timer, 0, &schedule, NULL);
+#else
+    errno = ENOTSUP;
+    return -1;
+#endif
 }

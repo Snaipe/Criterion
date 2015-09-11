@@ -172,6 +172,11 @@ static void map_tests(struct criterion_test_set *set,
 static void run_test_child(struct criterion_test *test,
                            struct criterion_suite *suite) {
 
+    if (suite->data && suite->data->timeout != 0 && test->data->timeout == 0)
+        setup_timeout((uint64_t) (suite->data->timeout * 1e9));
+    else if (test->data->timeout != 0)
+        setup_timeout((uint64_t) (test->data->timeout * 1e9));
+
     send_event(PRE_INIT, NULL, 0);
     if (suite->data)
         (suite->data->init ? suite->data->init : nothing)();
@@ -274,6 +279,17 @@ static void run_test(struct criterion_global_stats *stats,
 
     struct process_status status = wait_proc(proc);
     if (status.kind == SIGNAL) {
+        if (status.status == SIGPROF) {
+            test_stats->timed_out = true;
+            double elapsed_time = test->data->timeout;
+            if (elapsed_time == 0 && suite->data)
+                elapsed_time = suite->data->timeout;
+            push_event(POST_TEST, .data = &elapsed_time);
+            push_event(POST_FINI);
+            log(test_timeout, test_stats);
+            goto cleanup;
+        }
+
         if (normal_finish || !test_started) {
             log(other_crash, test_stats);
             if (!test_started) {

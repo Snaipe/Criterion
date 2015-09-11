@@ -209,15 +209,20 @@ static void push_post_test(s_glob_stats *stats,
 
     test->elapsed_time = (float) *data;
     if (test->failed_asserts > 0
+            || test->timed_out
             || test->signal != test->test->data->signal
             || test->exit_code != test->test->data->exit_code) {
         test->failed = 1;
+    }
+
+    if (test->failed) {
         ++stats->tests_failed;
         ++suite->tests_failed;
     } else {
         ++stats->tests_passed;
         ++suite->tests_passed;
     }
+
 }
 
 static void push_test_crash(s_glob_stats *stats,
