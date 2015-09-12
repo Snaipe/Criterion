@@ -428,9 +428,9 @@ static s_pipe_handle stderr_redir;
 static s_pipe_handle stdin_redir;
 
 enum criterion_std_fd {
-    CR_STDIN,
-    CR_STDOUT,
-    CR_STDERR
+    CR_STDIN = 0,
+    CR_STDOUT = 1,
+    CR_STDERR = 2,
 };
 
 enum criterion_pipe_end {
@@ -523,15 +523,19 @@ void cr_redirect(int fd_kind, s_pipe_handle *pipe, int fd_index, int noblock) {
 
     cr_std_fd fd = get_std_fd(fd_kind);
 #ifdef VANILLA_WIN32
-    CloseHandle(GetStdHandle(fd));
+    int stdfd = _open_osfhandle((intptr_t) pipe->fhs[fd_index], fd_kind == 0 ? _O_RDONLY : _O_WRONLY);
+    if (stdfd == -1)
+        cr_assert_fail("Could not redirect standard file descriptor.");
+
+    fflush(get_std_file(fd_kind));
+
     _close(fd_kind);
     SetStdHandle(fd, pipe->fhs[fd_index]);
 
-    fflush(NULL);
-    FILE *stdf = fd_kind == 0 ? pipe_in(pipe, 0) : pipe_out(pipe, 0);
-    if (stdf == NULL)
-        cr_assert_fail("Could not redirect standard file descriptor.");
-    _dup2(_fileno(stdf), fd_kind);
+    _dup2(stdfd, fd_kind);
+    _close(stdfd);
+
+    setvbuf(get_std_file(fd_kind), NULL, _IONBF, 0);
 #else
     close(fd);
     dup2(pipe->fds[fd_index], fd);
