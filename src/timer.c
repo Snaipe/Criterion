@@ -87,11 +87,11 @@ int timer_end(double *time, struct timespec_compat *state) {
 }
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-void win_raise_timeout(UNUSED HWND hwnd, 
-        UNUSED UINT uMsg, 
-        UNUSED UINT_PTR idEvent, 
-        UNUSED DWORD dwTime) {
-    RaiseException(CR_EXCEPTION_TIMEOUT, EXCEPTION_NONCONTINUABLE, 0, NULL);
+DWORD WINAPI win_raise_timeout(LPVOID ptr) {
+    uint64_t *nanos = (uint64_t*) ptr;
+    Sleep(*nanos / 1000000);
+    TerminateProcess(GetCurrentProcess(), CR_EXCEPTION_TIMEOUT);
+    return 0;
 }
 #endif
 
@@ -119,7 +119,14 @@ int setup_timeout(uint64_t nanos) {
 
     return res ? -1 : 0;
 #elif defined(_WIN32) || defined(__CYGWIN__)
-    return SetTimer(NULL, 0, nanos / 1000000, (TIMERPROC) win_raise_timeout) ? 0 : -1;
+    uint64_t *nanos_copy = malloc(sizeof (uint64_t));
+    *nanos_copy = nanos;
+
+    HANDLE thread = CreateThread(NULL, 0, win_raise_timeout, nanos_copy, 0, NULL);
+    if (thread == NULL)
+        return -1;
+    CloseHandle(thread);
+    return 0;
 #elif defined(__unix__)
     if (!can_measure_time()) {
         errno = ENOTSUP;
