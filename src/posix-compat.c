@@ -465,22 +465,19 @@ FILE* get_std_file(int fd_kind) {
 
 int make_redirect_pipe(s_pipe_handle *handle, int id, int noblock) {
 #ifdef VANILLA_WIN32
-    static char pipe_name[256] = {0};
-
     HANDLE fhs[2];
     SECURITY_ATTRIBUTES attr = {
         .nLength = sizeof (SECURITY_ATTRIBUTES),
         .bInheritHandle = TRUE
     };
-    if (!pipe_name[0]) {
-        snprintf(pipe_name, sizeof (pipe_name),
-                "\\\\.\\pipe\\criterion_%lu_%d", GetCurrentProcessId(), id);
-    }
+    char pipe_name[256] = {0};
+    snprintf(pipe_name, sizeof (pipe_name),
+        "\\\\.\\pipe\\criterion_%lu_%d", GetCurrentProcessId(), id);
     fhs[0] = CreateNamedPipe(pipe_name,
-            PIPE_ACCESS_DUPLEX,
-            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE
-                              | (noblock ? PIPE_NOWAIT : PIPE_WAIT),
-            PIPE_UNLIMITED_INSTANCES,
+            PIPE_ACCESS_INBOUND,
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE
+                           | (noblock ? PIPE_NOWAIT : PIPE_WAIT),
+            1,
             4096 * 4,
             4096 * 4,
             0,
@@ -490,7 +487,7 @@ int make_redirect_pipe(s_pipe_handle *handle, int id, int noblock) {
         return 0;
 
     fhs[1] = CreateFile(pipe_name,
-            GENERIC_READ | GENERIC_WRITE,
+            GENERIC_WRITE,
             0,
             &attr,
             OPEN_EXISTING,
@@ -521,7 +518,7 @@ int make_redirect_pipe(s_pipe_handle *handle, int id, int noblock) {
 
 void cr_redirect(int fd_kind, s_pipe_handle *pipe, int fd_index, int noblock) {
     fflush(get_std_file(fd_kind));
-    if (make_redirect_pipe(pipe, fd_kind, noblock) < 0)
+    if (!make_redirect_pipe(pipe, fd_kind, noblock))
         cr_assert_fail("Could not redirect standard file descriptor.");
 
     cr_std_fd fd = get_std_fd(fd_kind);
