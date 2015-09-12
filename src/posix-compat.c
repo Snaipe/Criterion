@@ -524,7 +524,14 @@ void cr_redirect(int fd_kind, s_pipe_handle *pipe, int fd_index, int noblock) {
     cr_std_fd fd = get_std_fd(fd_kind);
 #ifdef VANILLA_WIN32
     CloseHandle(GetStdHandle(fd));
+    _close(fd_kind);
     SetStdHandle(fd, pipe->fhs[fd_index]);
+
+    fflush(NULL);
+    FILE *stdf = fd_kind == 0 ? pipe_in(pipe, 0) : pipe_out(pipe, 0);
+    if (stdf == NULL)
+        cr_assert_fail("Could not redirect standard file descriptor.");
+    _dup2(_fileno(stdf), fd_kind);
 #else
     close(fd);
     dup2(pipe->fds[fd_index], fd);
