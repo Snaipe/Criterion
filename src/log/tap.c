@@ -118,10 +118,17 @@ void tap_log_test_crash(struct criterion_test_stats *stats) {
             stats->progress);
 }
 
+void tap_log_test_timeout(struct criterion_test_stats *stats) {
+    criterion_important("not ok - %s::%s timed out\n",
+            stats->test->category,
+            stats->test->name);
+}
+
 struct criterion_output_provider tap_logging = {
-    .log_pre_all    = tap_log_pre_all,
-    .log_pre_suite  = tap_log_pre_suite,
-    .log_test_crash = tap_log_test_crash,
-    .log_post_test  = tap_log_post_test,
-    .log_post_suite = tap_log_post_suite,
+    .log_pre_all        = tap_log_pre_all,
+    .log_pre_suite      = tap_log_pre_suite,
+    .log_test_crash     = tap_log_test_crash,
+    .log_test_timeout   = tap_log_test_timeout,
+    .log_post_test      = tap_log_post_test,
+    .log_post_suite     = tap_log_post_suite,
 };

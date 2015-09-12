@@ -104,6 +104,7 @@ struct criterion_output_provider {
     void (*log_pre_test     )(struct criterion_test *test);
     void (*log_assert       )(struct criterion_assert_stats *stats);
     void (*log_theory_fail  )(struct criterion_theory_stats *stats);
+    void (*log_test_timeout )(struct criterion_test_stats *stats);
     void (*log_test_crash   )(struct criterion_test_stats *stats);
     void (*log_other_crash  )(struct criterion_test_stats *stats);
     void (*log_abnormal_exit)(struct criterion_test_stats *stats);

@@ -52,9 +52,6 @@
         WriteProcessMemory(Proc, &What, &What, Size, NULL);
 
 # include <signal.h>
-# ifndef SIGALRM
-#  define SIGALRM 14
-# endif
 
 #else
 # include <unistd.h>
@@ -240,7 +237,7 @@ void wait_process(s_proc_handle *handle, int *status) {
         case STATUS_PRIVILEGED_INSTRUCTION:
         case STATUS_NONCONTINUABLE_EXCEPTION:   sig = SIGILL; break;
 
-        case STATUS_TIMEOUT:                    sig = SIGALRM; break;
+        case CR_EXCEPTION_TIMEOUT:              sig = SIGPROF; break;
 
         case STATUS_ACCESS_VIOLATION:
         case STATUS_DATATYPE_MISALIGNMENT:

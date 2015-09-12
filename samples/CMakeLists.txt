@@ -15,6 +15,7 @@ set(SAMPLES
   description.c
   simple.c
   theories.c
+  timeout.c
 
   signal.cc
   report.cc

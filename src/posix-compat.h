@@ -43,6 +43,9 @@
 #  define WTERMSIG(Status)    ((Status) & 0x7F)
 #  define WIFEXITED(Status)   (WTERMSIG(Status) == 0)
 #  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
+
+#  define SIGPROF 27
+#  define CR_EXCEPTION_TIMEOUT 0xC0001042
 # else
 #  include <sys/wait.h>
 # endif

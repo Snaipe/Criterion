@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-09-10 03:35+0200\n"
+"POT-Creation-Date: 2015-09-11 16:47+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -60,18 +60,23 @@ msgstr ""
 "  La théorie %1$s::%2$s a échoué avec les paramètres suivants: (%3$s)\n"
 
 #: src/log/normal.c:61
+#, fuzzy, c-format
+msgid "%1$s::%2$s: Timed out.\n"
+msgstr "%1$s::%2$s: Délai expiré.\n"
+
+#: src/log/normal.c:62
 #, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n"
 msgstr ""
 "%1$s%2$s%3$s:%4$s%5$u%6$s: Un signal inattendu a été reçu après cette "
 "ligne!\n"
 
-#: src/log/normal.c:62
+#: src/log/normal.c:63
 #, c-format
 msgid "%1$s::%2$s: CRASH!\n"
 msgstr "%1$s::%2$s: PLANTAGE!\n"
 
-#: src/log/normal.c:63
+#: src/log/normal.c:64
 #, fuzzy, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown."
@@ -80,7 +85,7 @@ msgstr ""
 "%1$sAttention! Le test `%2$s::%3$s` a planté pendant son initialisation ou "
 "sa finalisation.%4$s\n"
 
-#: src/log/normal.c:64
+#: src/log/normal.c:65
 #, fuzzy, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n"
@@ -88,14 +93,14 @@ msgstr ""
 "%1$sAttention! Le test `%2$s::%3$s` a quitté pendant son initialisation ou "
 "sa finalisation.%4$s\n"
 
-#: src/log/normal.c:65
+#: src/log/normal.c:66
 #, c-format
 msgid "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n"
 msgid_plural "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n"
 msgstr[0] "Lancement de %1$s%2$lu%3$s test dans %4$s%5$s%6$s:\n"
 msgstr[1] "Lancement de %1$s%2$lu%3$s tests dans %4$s%5$s%6$s:\n"
 
-#: src/log/normal.c:67
+#: src/log/normal.c:68
 #, c-format
 msgid ""
 "%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"
