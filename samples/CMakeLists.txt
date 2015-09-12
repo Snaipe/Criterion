@@ -26,6 +26,7 @@ set(SAMPLES
   description.cc
   simple.cc
   theories.cc
+  redirect.cc
 )
 
 set(SCRIPTS
