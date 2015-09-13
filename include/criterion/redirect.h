@@ -94,7 +94,9 @@ namespace criterion {
 #  endif
             , file(f)
         {
+#  ifdef __GNUC__
             std::ios::rdbuf(&*fbuf);
+#  endif
         }
 
         void close(void) {
@@ -122,7 +124,9 @@ namespace criterion {
 #  endif
             , file(f)
         {
+#  ifdef __GNUC__
             std::ios::rdbuf(&*fbuf);
+#  endif
         }
 
         void close(void) {
