@@ -11,12 +11,12 @@
 [[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m15[0m: Assertion failed: The expression (2) - (2) > (0.1) || (2) - (2) > (0.1) is false.
 [[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m17[0m: Assertion failed: "foo" is not empty.
 [[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m18[0m: Assertion failed: "" is empty.
-[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m19[0m: Assertion failed: The expression (as strings) ("abc") == ("abd") is false
-[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m20[0m: Assertion failed: The expression (as strings) ("abc") != ("abc") is false
-[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m21[0m: Assertion failed: The expression (as strings) ("abc") < ("aba") is false
-[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m22[0m: Assertion failed: The expression (as strings) ("abc") <= ("aba") is false
-[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m23[0m: Assertion failed: The expression (as strings) ("abc") > ("abd") is false
-[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m24[0m: Assertion failed: The expression (as strings) ("abc") >= ("abd") is false
+[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m19[0m: Assertion failed: The expression (as strings) ("abc") == ("abd") is false.
+[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m20[0m: Assertion failed: The expression (as strings) ("abc") != ("abc") is false.
+[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m21[0m: Assertion failed: The expression (as strings) ("abc") < ("aba") is false.
+[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m22[0m: Assertion failed: The expression (as strings) ("abc") <= ("aba") is false.
+[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m23[0m: Assertion failed: The expression (as strings) ("abc") > ("abd") is false.
+[[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m24[0m: Assertion failed: The expression (as strings) ("abc") >= ("abd") is false.
 [[0;31mFAIL[0m] messages::default: (0.00s)
 [[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m28[0m: Assertion failed: foo bar
 [[0;34m----[0m] [0;1mfailmessages.c[0m:[0;31m29[0m: Assertion failed: foo bar
