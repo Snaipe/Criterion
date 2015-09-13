@@ -70,8 +70,8 @@ extern struct worker_context g_worker_context;
 int resume_child(void);
 
 s_pipe_handle *stdpipe();
-FILE *pipe_in(s_pipe_handle *p);
-FILE *pipe_out(s_pipe_handle *p);
+FILE *pipe_in(s_pipe_handle *p, int do_close);
+FILE *pipe_out(s_pipe_handle *p, int do_close);
 
 s_proc_handle *fork_process();
 void wait_process(s_proc_handle *handle, int *status);

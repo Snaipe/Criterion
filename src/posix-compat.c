@@ -24,6 +24,8 @@
 #include <assert.h>
 #include "posix-compat.h"
 #include "process.h"
+#include "criterion/assert.h"
+#include "criterion/redirect.h"
 
 #ifdef VANILLA_WIN32
 # define VC_EXTRALEAN
@@ -259,15 +261,17 @@ void wait_process(s_proc_handle *handle, int *status) {
 #endif
 }
 
-FILE *pipe_in(s_pipe_handle *p) {
+FILE *pipe_in(s_pipe_handle *p, int do_close) {
 #ifdef VANILLA_WIN32
-    CloseHandle(p->fhs[1]);
+    if (do_close)
+        CloseHandle(p->fhs[1]);
     int fd = _open_osfhandle((intptr_t) p->fhs[0], _O_RDONLY);
     if (fd == -1)
         return NULL;
     FILE *in = _fdopen(fd, "r");
 #else
-    close(p->fds[1]);
+    if (do_close)
+        close(p->fds[1]);
     FILE *in = fdopen(p->fds[0], "r");
 #endif
     if (!in)
@@ -277,15 +281,17 @@ FILE *pipe_in(s_pipe_handle *p) {
     return in;
 }
 
-FILE *pipe_out(s_pipe_handle *p) {
+FILE *pipe_out(s_pipe_handle *p, int do_close) {
 #ifdef VANILLA_WIN32
-    CloseHandle(p->fhs[0]);
+    if (do_close)
+        CloseHandle(p->fhs[0]);
     int fd = _open_osfhandle((intptr_t) p->fhs[1], _O_WRONLY);
     if (fd == -1)
         return NULL;
     FILE *out = _fdopen(fd, "w");
 #else
-    close(p->fds[0]);
+    if (do_close)
+        close(p->fds[0]);
     FILE *out = fdopen(p->fds[1], "w");
 #endif
     if (!out)
@@ -295,8 +301,7 @@ FILE *pipe_out(s_pipe_handle *p) {
     return out;
 }
 
-s_pipe_handle *stdpipe() {
-    s_pipe_handle *handle = smalloc(sizeof (s_pipe_handle));
+int stdpipe_stack(s_pipe_handle *out) {
 #ifdef VANILLA_WIN32
     HANDLE fhs[2];
     SECURITY_ATTRIBUTES attr = {
@@ -304,16 +309,22 @@ s_pipe_handle *stdpipe() {
         .bInheritHandle = TRUE
     };
     if (!CreatePipe(fhs, fhs + 1, &attr, 0))
-        return NULL;
-    *handle = (s_pipe_handle) {{ fhs[0], fhs[1] }};
-    return handle;
+        return -1;
+    *out = (s_pipe_handle) {{ fhs[0], fhs[1] }};
 #else
     int fds[2] = { -1, -1 };
     if (pipe(fds) == -1)
-        return NULL;
-    *handle = (s_pipe_handle) {{ fds[0], fds[1] }};
-    return handle;
+        return -1;
+    *out = (s_pipe_handle) {{ fds[0], fds[1] }};
 #endif
+    return 0;
+}
+
+s_pipe_handle *stdpipe() {
+    s_pipe_handle *handle = smalloc(sizeof (s_pipe_handle));
+    if (stdpipe_stack(handle) < 0)
+        return NULL;
+    return handle;
 }
 
 s_proc_handle *get_current_process() {
@@ -401,4 +412,195 @@ const char *basename_compat(const char *str) {
         if ((*c == '/' || *c == '\\') && c[1])
             start = c + 1;
     return start;
+}
+
+#ifdef VANILLA_WIN32
+typedef DWORD cr_std_fd;
+#else
+typedef int cr_std_fd;
+#endif
+
+static s_pipe_handle stdout_redir;
+static s_pipe_handle stderr_redir;
+static s_pipe_handle stdin_redir;
+
+enum criterion_std_fd {
+    CR_STDIN = 0,
+    CR_STDOUT = 1,
+    CR_STDERR = 2,
+};
+
+enum criterion_pipe_end {
+    PIPE_READ = 0,
+    PIPE_WRITE = 1,
+};
+
+cr_std_fd get_std_fd(int fd_kind) {
+    static int kinds[] = {
+#ifdef VANILLA_WIN32
+        [CR_STDIN]  = STD_INPUT_HANDLE,
+        [CR_STDOUT] = STD_OUTPUT_HANDLE,
+        [CR_STDERR] = STD_ERROR_HANDLE,
+#else
+        [CR_STDIN]  = STDIN_FILENO,
+        [CR_STDOUT] = STDOUT_FILENO,
+        [CR_STDERR] = STDERR_FILENO,
+#endif
+    };
+
+    return kinds[fd_kind];
+}
+
+FILE* get_std_file(int fd_kind) {
+    switch (fd_kind) {
+        case CR_STDIN:  return stdin;
+        case CR_STDOUT: return stdout;
+        case CR_STDERR: return stderr;
+    }
+    return NULL;
+}
+
+int make_redirect_pipe(s_pipe_handle *handle, int id, int noblock) {
+#ifdef VANILLA_WIN32
+    HANDLE fhs[2];
+    SECURITY_ATTRIBUTES attr = {
+        .nLength = sizeof (SECURITY_ATTRIBUTES),
+        .bInheritHandle = TRUE
+    };
+    char pipe_name[256] = {0};
+    snprintf(pipe_name, sizeof (pipe_name),
+        "\\\\.\\pipe\\criterion_%lu_%d", GetCurrentProcessId(), id);
+    fhs[0] = CreateNamedPipe(pipe_name,
+            PIPE_ACCESS_INBOUND,
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE
+                           | (noblock ? PIPE_NOWAIT : PIPE_WAIT),
+            1,
+            4096 * 4,
+            4096 * 4,
+            0,
+            &attr);
+
+    if (fhs[0] == INVALID_HANDLE_VALUE)
+        return 0;
+
+    fhs[1] = CreateFile(pipe_name,
+            GENERIC_WRITE,
+            0,
+            &attr,
+            OPEN_EXISTING,
+            0,
+            NULL);
+
+    if (fhs[1] == INVALID_HANDLE_VALUE) {
+        CloseHandle(fhs[0]);
+        return 0;
+    }
+
+    *handle = (s_pipe_handle) {{ fhs[0], fhs[1] }};
+#else
+    (void) id;
+
+    int fds[2] = { -1, -1 };
+    if (pipe(fds) == -1)
+        return 0;
+
+    if (noblock)
+        for (int i = 0; i < 2; ++i)
+            fcntl(fds[i], F_SETFL, fcntl(fds[i], F_GETFL) | O_NONBLOCK);
+
+    *handle = (s_pipe_handle) {{ fds[0], fds[1] }};
+#endif
+    return 1;
+}
+
+void cr_redirect(int fd_kind, s_pipe_handle *pipe, int fd_index, int noblock) {
+    fflush(get_std_file(fd_kind));
+    if (!make_redirect_pipe(pipe, fd_kind, noblock))
+        cr_assert_fail("Could not redirect standard file descriptor.");
+
+    cr_std_fd fd = get_std_fd(fd_kind);
+#ifdef VANILLA_WIN32
+    int stdfd = _open_osfhandle((intptr_t) pipe->fhs[fd_index], fd_kind == 0 ? _O_RDONLY : _O_WRONLY);
+    if (stdfd == -1)
+        cr_assert_fail("Could not redirect standard file descriptor.");
+
+    fflush(get_std_file(fd_kind));
+
+    _close(fd_kind);
+    SetStdHandle(fd, pipe->fhs[fd_index]);
+
+    _dup2(stdfd, fd_kind);
+    _close(stdfd);
+
+    setvbuf(get_std_file(fd_kind), NULL, _IONBF, 0);
+#else
+    close(fd);
+    dup2(pipe->fds[fd_index], fd);
+    close(pipe->fds[fd_index]);
+#endif
+}
+
+void cr_redirect_stdout(void) {
+    cr_redirect(CR_STDOUT, &stdout_redir, PIPE_WRITE, 1);
+}
+
+void cr_redirect_stderr(void) {
+    cr_redirect(CR_STDERR, &stderr_redir, PIPE_WRITE, 1);
+}
+
+void cr_redirect_stdin(void) {
+    cr_redirect(CR_STDIN, &stdin_redir, PIPE_READ, 0);
+}
+
+FILE* cr_get_redirected_stdout(void) {
+    static FILE *f;
+    if (!f) {
+        f = pipe_in(&stdout_redir, 0);
+        if (!f)
+            cr_assert_fail("Could not get redirected stdout read end.");
+    }
+    return f;
+}
+
+FILE* cr_get_redirected_stderr(void) {
+    static FILE *f;
+    if (!f) {
+        f = pipe_in(&stderr_redir, 0);
+        if (!f)
+            cr_assert_fail("Could not get redirected stderr read end.");
+    }
+    return f;
+}
+
+FILE* cr_get_redirected_stdin(void) {
+    static FILE *f;
+    if (!f) {
+        f = pipe_out(&stdin_redir, 0);
+        if (!f)
+            cr_assert_fail("Could not get redirected stdin write end.");
+    }
+    return f;
+}
+
+int cr_file_match_str(FILE* f, const char *str) {
+    size_t len = strlen(str);
+
+    char buf[512];
+    size_t read;
+    int matches = 0;
+    while ((read = fread(buf, 1, sizeof (buf), f)) > 0) {
+        matches = !strncmp(buf, str, read);
+        if (!matches || read > len) {
+            matches = 0;
+            break;
+        }
+
+        len -= read;
+        str += read;
+    }
+
+    // consume the rest of what's available
+    while (fread(buf, 1, sizeof (buf), f) > 0);
+
+    return matches;
 }

@@ -16,6 +16,7 @@ set(SAMPLES
   simple.c
   theories.c
   timeout.c
+  redirect.c
 
   signal.cc
   report.cc
@@ -26,6 +27,7 @@ set(SAMPLES
   description.cc
   simple.cc
   theories.cc
+  redirect.cc
 )
 
 set(SCRIPTS

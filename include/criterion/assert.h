@@ -61,6 +61,7 @@ enum criterion_assert_messages {
     CRITERION_ASSERT_MSG_IS_NOT_NULL,
     CRITERION_ASSERT_MSG_IS_EMPTY,
     CRITERION_ASSERT_MSG_IS_NOT_EMPTY,
+    CRITERION_ASSERT_MSG_FILE_STR_MATCH,
 };
 
 CR_BEGIN_C_API
@@ -80,7 +81,7 @@ CR_END_C_API
 # endif
 
 # define CR_TRANSLATE_DEF_MSG__(Arg) \
-    CR_EXPAND Arg
+    CR_IDENTITY Arg
 
 # define CR_TRANSLATE_DEF_MSG_(...)                                         \
     CR_EXPAND(translate_assert_msg(                                         \

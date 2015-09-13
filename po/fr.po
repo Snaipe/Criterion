@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-09-11 16:47+0200\n"
+"POT-Creation-Date: 2015-09-13 13:10+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -142,3 +142,10 @@ msgstr "%s est vide."
 #, c-format
 msgid "%s is not empty."
 msgstr "%s n'est pas vide."
+
+#: src/i18n.c:22
+#, c-format
+msgid "The file contents of %1$s does not match the string \"%2$s\"."
+msgstr ""
+"Le contenu du fichier %1$s ne correspond pas à la chaine de caractères \"%2$s"
+"\"."

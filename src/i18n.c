@@ -17,6 +17,12 @@ char *translate_assert_msg(int msg_index, ...) {
         [CRITERION_ASSERT_MSG_IS_NOT_NULL] = N_("%s is not null."),
         [CRITERION_ASSERT_MSG_IS_EMPTY] = N_("%s is empty."),
         [CRITERION_ASSERT_MSG_IS_NOT_EMPTY] = N_("%s is not empty."),
+
+#ifdef ENABLE_NLS
+        [CRITERION_ASSERT_MSG_FILE_STR_MATCH] = N_("The file contents of %1$s does not match the string \"%2$s\"."),
+#else
+        [CRITERION_ASSERT_MSG_FILE_STR_MATCH] = "The file contents of %s does not match the string \"%s\".",
+#endif
     };
 
     va_list vl;
