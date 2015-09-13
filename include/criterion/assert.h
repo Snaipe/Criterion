@@ -94,11 +94,14 @@ CR_END_C_API
         char *formatted_msg = NULL;                                            \
         int msglen = cr_asprintf(&formatted_msg,                               \
                 "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                       \
-        MsgVar = formatted_msg && *formatted_msg ?                             \
-            formatted_msg : def_msg;                                           \
-                                                                               \
-        if (!formatted_msg || !*formatted_msg)                                 \
+        if (formatted_msg && *formatted_msg) {                                 \
+            MsgVar = formatted_msg;                                            \
+            CR_STDN free(def_msg);                                             \
+        } else {                                                               \
+            MsgVar = def_msg;                                                  \
             msglen = strlen(def_msg);                                          \
+            CR_STDN free(formatted_msg);                                       \
+        }                                                                      \
                                                                                \
         BufSize = sizeof(struct criterion_assert_stats)                        \
                   + sizeof (size_t) + msglen + 1;                              \
