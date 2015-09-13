@@ -57,7 +57,7 @@ macro(add_samples DIR_ SAMPLES_)
         )
 
         if (NOT MSVC) # we disable the scripted tests when building with MSVC
-            add_test(${sample}_compare sh ${DIR_}/run_test.sh "${CMAKE_CURRENT_LIST_DIR}/out_dir" . . ${sample}.bin)
+            add_test(${sample}_compare sh ${DIR_}/run_test.sh "${CMAKE_CURRENT_LIST_DIR}/outputs" . . ${sample}.bin)
             set_property(TEST ${sample}_compare PROPERTY
                 ENVIRONMENT "LC_ALL=en_US.utf8"
                 ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
