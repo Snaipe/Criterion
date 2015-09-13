@@ -38,6 +38,13 @@
 # define CR_STR(x) CR_EXPAND(CR_STR_(x))
 # define CR_STR_(x) #x
 
+# define CR_VA_REPL_TAIL2(Repl, ...) CR_EXPAND(CR_VA_REPL_TAIL2_HELPER(Repl, CR_VA_REPL_TAIL2_SELECT(__VA_ARGS__), __VA_ARGS__))
+
+# define CR_VA_REPL_TAIL2_HELPER(Repl, N, ...)  CR_EXPAND(CR_VA_REPL_TAIL2_HELPER_(Repl, N, __VA_ARGS__))
+# define CR_VA_REPL_TAIL2_HELPER_(Repl, N, ...) CR_EXPAND(CR_VA_REPL_TAIL2_HELPER_##N(Repl, __VA_ARGS__))
+# define CR_VA_REPL_TAIL2_HELPER_1(Repl, ...) Repl
+# define CR_VA_REPL_TAIL2_HELPER_2(Repl, ...) CR_IDENTITY(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))
+
 # define CR_VA_TAIL(...) CR_EXPAND(CR_VA_TAIL_HELPER(CR_VA_TAIL_SELECT(__VA_ARGS__), __VA_ARGS__))
 
 # define CR_VA_TAIL_HELPER(N, ...)  CR_EXPAND(CR_VA_TAIL_HELPER_(N, __VA_ARGS__))
@@ -60,6 +67,15 @@
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
         2, 2, 1, _))
+
+# define CR_VA_REPL_TAIL2_SELECT(...) CR_EXPAND(CR_VA_TAIL_SELECT64(__VA_ARGS__, \
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \
+        1, 1, 1, _))
 
 # define CR_VA_TAIL_SELECT64( \
         _01, _02, _03, _04, _05, _06, _07, _08, _09, _10, \

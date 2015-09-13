@@ -36,6 +36,9 @@ int cr_asprintf(char **strp, const char *fmt, ...) {
 }
 
 int cr_vasprintf(char **strp, const char *fmt, va_list ap) {
+    if (!fmt)
+        return 0;
+
     va_list vl;
     va_copy(vl, ap);
 

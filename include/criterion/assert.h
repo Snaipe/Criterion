@@ -89,12 +89,12 @@ CR_END_C_API
             "" CR_TRANSLATE_DEF_MSG__(CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)))  \
     ))
 
-# define CR_INIT_STATS_(BufSize, MsgVar, ...) CR_EXPAND(                       \
+# define CR_INIT_STATS_(BufSize, MsgVar, ...)                                  \
     do {                                                                       \
         char *def_msg = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));         \
         char *formatted_msg = NULL;                                            \
         int msglen = cr_asprintf(&formatted_msg,                               \
-                "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                       \
+            CR_EXPAND(CR_VA_REPL_TAIL2("", __VA_ARGS__)));                     \
         if (formatted_msg && *formatted_msg) {                                 \
             MsgVar = formatted_msg;                                            \
             CR_STDN free(def_msg);                                             \
@@ -115,7 +115,7 @@ CR_END_C_API
         buf += sizeof (size_t);                                                \
         CR_STDN strcpy(buf, MsgVar);                                           \
         CR_STDN free(MsgVar);                                                  \
-    } while (0))
+    } while (0)
 
 # define CR_FAIL_ABORT_ criterion_abort_test
 # define CR_FAIL_CONTINUES_ criterion_continue_test
@@ -134,7 +134,7 @@ CR_END_C_API
         size_t bufsize;                                                     \
                                                                             \
         struct criterion_assert_stats *stat;                                \
-        CR_EXPAND(CR_INIT_STATS_(bufsize, msg, CR_VA_TAIL(__VA_ARGS__)));   \
+        CR_INIT_STATS_(bufsize, msg, CR_EXPAND(CR_VA_TAIL(__VA_ARGS__)));   \
         stat->passed = passed;                                              \
         stat->file = __FILE__;                                              \
         stat->line = __LINE__;                                              \
