@@ -29,6 +29,12 @@
 
 # ifdef __cplusplus
 #  include <cstdio>
+#  include <memory>
+#  include <fstream>
+
+#  ifdef __GNUC__
+#   include <ext/stdio_filebuf.h>
+#  endif
 # else
 #  include <stdio.h>
 # endif
@@ -72,5 +78,103 @@ CR_END_C_API
 
 # define cr_assert_file_contents_not_match_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, __VA_ARGS__))
 # define cr_expect_file_contents_not_match_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, __VA_ARGS__))
+
+# ifdef __cplusplus
+namespace criterion {
+
+    template <typename CharT>
+    class basic_ofstream : public std::basic_ofstream<CharT> {
+    public:
+        basic_ofstream(FILE* f)
+#  ifdef __GNUC__
+            : std::ofstream()
+            , fbuf(new ::__gnu_cxx::stdio_filebuf<CharT>(f, std::ios::out))
+#  else
+            : std::ofstream(f)
+#  endif
+            , file(f)
+        {
+            std::ios::rdbuf(&*fbuf);
+        }
+
+        void close(void) {
+            std::basic_ofstream<CharT>::flush();
+            std::basic_ofstream<CharT>::close();
+            std::fclose(file);
+        }
+
+    private:
+#  ifdef __GNUC__
+        std::unique_ptr<::__gnu_cxx::stdio_filebuf<CharT>> fbuf;
+#  endif
+        std::FILE* file;
+    };
+
+    template <typename CharT>
+    class basic_ifstream : public std::basic_ifstream<CharT> {
+    public:
+        basic_ifstream(FILE* f)
+#  ifdef __GNUC__
+            : std::ifstream()
+            , fbuf(new ::__gnu_cxx::stdio_filebuf<CharT>(f, std::ios::in))
+#  else
+            : std::ifstream(f)
+#  endif
+            , file(f)
+        {
+            std::ios::rdbuf(&*fbuf);
+        }
+
+        void close(void) {
+            std::basic_ifstream<CharT>::flush();
+            std::basic_ifstream<CharT>::close();
+            std::fclose(file);
+        }
+
+    private:
+#  ifdef __GNUC__
+        std::unique_ptr<::__gnu_cxx::stdio_filebuf<CharT>> fbuf;
+#  endif
+        std::FILE* file;
+    };
+
+    template <typename CharT>
+    struct get_redirected_out_stream_ {
+        static inline basic_ofstream<CharT>& call(std::FILE* f) {
+            static std::unique_ptr<basic_ofstream<CharT>> stream;
+
+            if (!stream)
+                stream.reset(new basic_ofstream<CharT>(f));
+            return *stream;
+        }
+
+    };
+
+    template <typename CharT>
+    struct get_redirected_in_stream_ {
+        static inline basic_ifstream<CharT>& call(std::FILE* f) {
+            static std::unique_ptr<basic_ifstream<CharT>> stream;
+            if (!stream)
+                stream.reset(new basic_ifstream<CharT>(f));
+            return *stream;
+        }
+    };
+
+    using ofstream = basic_ofstream<char>;
+    using ifstream = basic_ifstream<char>;
+
+    static inline ofstream& get_redirected_cin(void) {
+        return get_redirected_out_stream_<char>::call(cr_get_redirected_stdin());
+    }
+
+    static inline ifstream& get_redirected_cout(void) {
+        return get_redirected_in_stream_<char>::call(cr_get_redirected_stdout());
+    }
+
+    static inline ifstream& get_redirected_cerr(void) {
+        return get_redirected_in_stream_<char>::call(cr_get_redirected_stderr());
+    }
+}
+# endif
 
 #endif /* !CRITERION_REDIRECT_H_ */

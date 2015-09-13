@@ -6,6 +6,10 @@
 #include <fstream>
 #include <cctype>
 
+#ifdef __GNUC__
+# include <ext/stdio_filebuf.h>
+#endif
+
 // Testing stdout/stderr
 
 void redirect_all_std(void) {
@@ -14,16 +18,13 @@ void redirect_all_std(void) {
 }
 
 Test(redirect, test_outputs, .init = redirect_all_std) {
-    std::FILE* f_stdout = cr_get_redirected_stdout();
-
     std::cout << "foo" << std::flush;
+    std::cerr << "bar" << std::flush;
 
+    std::FILE* f_stdout = cr_get_redirected_stdout();
     cr_assert_file_contents_match_str(f_stdout, "foo");
 
     std::FILE* f_stderr = cr_get_redirected_stderr();
-
-    std::cerr << "bar" << std::flush;
-
     cr_assert_file_contents_match_str(f_stderr, "bar");
 }
 
@@ -43,8 +44,7 @@ void rot13_io(void) {
 }
 
 Test(redirect, rot13, .init = cr_redirect_stdout) {
-    std::FILE* f_stdin = cr_get_redirected_stdin();
-    std::ofstream f_cin(f_stdin);
+    auto& f_cin = criterion::get_redirected_cin();
 
     f_cin << "the quick brown fox jumps over the lazy dog";
     f_cin.close();
