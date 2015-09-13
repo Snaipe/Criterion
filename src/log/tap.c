@@ -119,9 +119,10 @@ void tap_log_test_crash(struct criterion_test_stats *stats) {
 }
 
 void tap_log_test_timeout(struct criterion_test_stats *stats) {
-    criterion_important("not ok - %s::%s timed out\n",
+    criterion_important("not ok - %s::%s timed out (%3.2fs)\n",
             stats->test->category,
-            stats->test->name);
+            stats->test->name,
+            stats->elapsed_time);
 }
 
 struct criterion_output_provider tap_logging = {

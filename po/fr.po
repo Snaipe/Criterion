@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-09-13 13:10+0200\n"
+"POT-Creation-Date: 2015-09-13 14:51+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -61,8 +61,8 @@ msgstr ""
 
 #: src/log/normal.c:61
 #, fuzzy, c-format
-msgid "%1$s::%2$s: Timed out.\n"
-msgstr "%1$s::%2$s: Délai expiré.\n"
+msgid "%1$s::%2$s: Timed out. (%3$3.2fs)\n"
+msgstr "%1$s::%2$s: Délai expiré. (%3$3.2fs)\n"
 
 #: src/log/normal.c:62
 #, c-format
