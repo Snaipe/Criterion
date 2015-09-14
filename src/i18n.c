@@ -17,6 +17,9 @@ char *translate_assert_msg(int msg_index, ...) {
         [CRITERION_ASSERT_MSG_IS_NOT_NULL] = N_("%s is not null."),
         [CRITERION_ASSERT_MSG_IS_EMPTY] = N_("%s is empty."),
         [CRITERION_ASSERT_MSG_IS_NOT_EMPTY] = N_("%s is not empty."),
+        [CRITERION_ASSERT_MSG_ANY_THROW] = N_("The statement `%s` did not throw any exception."),
+        [CRITERION_ASSERT_MSG_NONE_THROW] = N_("The statement `%s` threw some exception."),
+
 #ifdef ENABLE_NLS
         [CRITERION_ASSERT_MSG_FILE_STR_MATCH] = N_("The file contents of %1$s does not match the string \"%2$s\"."),
         [CRITERION_ASSERT_MSG_THROW] = N_("The statement `%1$s` did throw an instance of the `%2$s` exception."),

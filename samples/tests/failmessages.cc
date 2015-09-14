@@ -26,6 +26,8 @@ Test(messages, default) {
 
     cr_expect_throw(throw std::exception(), std::bad_alloc);
     cr_expect_no_throw(throw std::exception(), std::exception);
+    cr_expect_any_throw({});
+    cr_expect_none_throw(throw std::exception());
 }
 
 Test(messages, user) {
@@ -53,4 +55,6 @@ Test(messages, user) {
 
     cr_expect_throw(throw std::exception(), std::bad_alloc, "foo %s", "bar");
     cr_expect_no_throw(throw std::exception(), std::exception, "foo %s", "bar");
+    cr_expect_any_throw({}, "foo %s", "bar");
+    cr_expect_none_throw(throw std::exception(), "foo %s", "bar");
 }

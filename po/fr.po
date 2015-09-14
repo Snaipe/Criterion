@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-09-14 02:01+0200\n"
+"POT-Creation-Date: 2015-09-14 02:33+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -143,19 +143,29 @@ msgstr "%s est vide."
 msgid "%s is not empty."
 msgstr "%s n'est pas vide."
 
+#: src/i18n.c:20
+#, fuzzy, c-format
+msgid "The statement `%s` did not throw any exception."
+msgstr "L'instruction `%s` n'a pas levé d'exception."
+
 #: src/i18n.c:21
+#, fuzzy, c-format
+msgid "The statement `%s` threw some exception."
+msgstr "L'instruction `%1$s` a levé une exception."
+
+#: src/i18n.c:24
 #, c-format
 msgid "The file contents of %1$s does not match the string \"%2$s\"."
 msgstr ""
 "Le contenu du fichier %1$s ne correspond pas à la chaine de caractères \"%2$s"
 "\"."
 
-#: src/i18n.c:22
+#: src/i18n.c:25
 #, c-format
 msgid "The statement `%1$s` did throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` a levé une instance de l'exception `%2$s`."
 
-#: src/i18n.c:23
+#: src/i18n.c:26
 #, c-format
 msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` n'a pas levé d'instance de l'exception `%2$s`."

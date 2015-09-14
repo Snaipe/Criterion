@@ -3,7 +3,7 @@
 [[0;34m----[0m] [0;1masserts.cc[0m:[0;31m13[0m: Assertion failed: assert is fatal, expect isn't
 [[0;34m----[0m] [0;1masserts.cc[0m:[0;31m14[0m: Assertion failed: This assert runs
 [[0;31mFAIL[0m] asserts::base: (0.00s)
-[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m89[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m] [0;1masserts.cc[0m:[0;31m89[0m: Assertion failed: The statement `throw std::exception()` did throw an instance of the `std::bad_alloc` exception.
 [[0;31mFAIL[0m] asserts::exception: (0.00s)
 [[0;34m----[0m] [0;1masserts.cc[0m:[0;31m19[0m: Assertion failed: You can fail an assertion with a message from anywhere
 [[0;34m----[0m] [0;1masserts.cc[0m:[0;31m20[0m: Assertion failed: The conditions for this assertion were not met.
