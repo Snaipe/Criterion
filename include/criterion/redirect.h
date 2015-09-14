@@ -79,6 +79,18 @@ CR_END_C_API
 # define cr_assert_file_contents_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, __VA_ARGS__))
 # define cr_expect_file_contents_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, __VA_ARGS__))
 
+# define cr_assert_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_expect_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+
+# define cr_assert_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_expect_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+
+# define cr_assert_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_expect_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+
+# define cr_assert_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_expect_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+
 # ifdef __cplusplus
 namespace criterion {
 
