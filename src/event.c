@@ -23,7 +23,8 @@
  */
 
 #include <stdio.h>
-#include <csptr/smart_ptr.h>
+#include <string.h>
+#include <csptr/smalloc.h>
 #include "criterion/stats.h"
 #include "criterion/common.h"
 #include "criterion/hooks.h"
@@ -36,6 +37,12 @@ void destroy_event(void *ptr, UNUSED void *meta) {
     free(ev->data);
 }
 
+void destroy_assert_event(void *ptr, UNUSED void *meta) {
+    struct event *ev = ptr;
+    free((void*) ((struct criterion_assert_stats *) ev->data)->message);
+    free(ev->data);
+}
+
 struct event *read_event(FILE *f) {
     unsigned kind;
     if (fread(&kind, sizeof (unsigned), 1, f) == 0)
@@ -44,15 +51,52 @@ struct event *read_event(FILE *f) {
     switch (kind) {
         case ASSERT: {
             const size_t assert_size = sizeof (struct criterion_assert_stats);
-            unsigned char *buf = malloc(assert_size);
-            if (fread(buf, assert_size, 1, f) == 0) {
+            struct criterion_assert_stats *buf = NULL;
+            char *msg = NULL;
+
+            buf = malloc(assert_size);
+            if (fread(buf, assert_size, 1, f) == 0)
+                goto fail_assert;
+
+            size_t len = 0;
+            if (fread(&len, sizeof (size_t), 1, f) == 0)
+                goto fail_assert;
+
+            msg = malloc(len);
+            if (fread(msg, len, 1, f) == 0)
+                goto fail_assert;
+
+            buf->message = msg;
+
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_assert_event
+                );
+            *ev = (struct event) { .kind = kind, .data = buf };
+            return ev;
+
+fail_assert:
+            free(buf);
+            free(msg);
+            return NULL;
+        }
+        case THEORY_FAIL: {
+            size_t len = 0;
+            if (fread(&len, sizeof (size_t), 1, f) == 0)
+                return NULL;
+
+            char *buf = malloc(len);
+            if (fread(buf, len, 1, f) == 0) {
                 free(buf);
                 return NULL;
             }
 
-            return unique_ptr(struct event,
-                    .value = { .kind = kind, .data = buf },
-                    .dtor  = destroy_event);
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .kind = kind, .data = buf };
+            return ev;
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
@@ -61,19 +105,26 @@ struct event *read_event(FILE *f) {
                 return NULL;
             }
 
-            return unique_ptr(struct event,
-                    .value = { .kind = kind, .data = elapsed_time },
-                    .dtor  = destroy_event);
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .kind = kind, .data = elapsed_time };
+            return ev;
         }
-        default:
-            return unique_ptr(struct event, { .kind = kind, .data = NULL });
+        default: {
+            struct event *ev = smalloc(sizeof (struct event));
+            *ev = (struct event) { .kind = kind, .data = NULL };
+            return ev;
+        }
     }
 }
 
 void send_event(int kind, void *data, size_t size) {
-    unsigned char buf[sizeof (int) + size];
+    unsigned char *buf = malloc(sizeof (int) + size);
     memcpy(buf, &kind, sizeof (int));
     memcpy(buf + sizeof (int), data, size);
     if (fwrite(buf, sizeof (int) + size, 1, g_event_pipe) == 0)
         abort();
+    free(buf);
 }

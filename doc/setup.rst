@@ -4,28 +4,39 @@ Setup
 Prerequisites
 -------------
 
-Currently, this library only works under \*nix systems.
+The library is supported on Linux, OS X, FreeBSD, and Windows.
 
-To compile the static library and its dependencies, GCC 4.6+ is needed.
+The following compilers are supported to compile both the library and the tests:
+* GCC 4.9+
+* Clang 3.4+
+* MSVC 14+ (Included in Visual Studio 2015 or later)
 
-To use the static library, any GNU-C compatible compiler will suffice
-(GCC, Clang/LLVM, ICC, MinGW-GCC, ...).
-
-Installation
-------------
+Building from source
+--------------------
 
 .. code-block:: bash
 
-    $ git clone https://github.com/Snaipe/Criterion.git && cd Criterion
-    $ LOCAL_INSTALL=/usr .ci/install-libcsptr.sh
-    $ mkdir build && cd $_ && cmake -DCMAKE_INSTALL_PATH=/usr ..
-    $ make && sudo make install
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ cmake --build .
+
+Installing the library and language files (Linux, OS X, FreeBSD)
+----------------------------------------------------------------
+
+From the build directory created above, run with an elevated shell:
+
+.. code-block:: bash
+
+    $ make install
 
 Usage
 -----
 
-Given a test file named test.c, compile it with `-lcriterion`:
+To compile your tests with Criterion, you need to make sure to:
 
-.. code-block:: bash
+1. Add the include directory to the header search path
+2. Install the library to your library search path
+3. Link Criterion to your executable.
 
-    $ gcc -o test test.c -lcriterion
+This should be all you need.

@@ -41,29 +41,57 @@ static inline void nothing() {}
         for (f_report_hook *hook = GET_SECTION_START(HOOK_SECTION(Kind));   \
              hook < (f_report_hook*) GET_SECTION_END(HOOK_SECTION(Kind));   \
              ++hook) {                                                      \
-            (*hook ?: nothing)(data);                                       \
+            (*hook ? *hook : nothing)(data);                                \
         }                                                                   \
     }
+
+#ifdef _MSC_VER
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_ALL));
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_SUITE));
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_INIT));
+f_report_hook SECTION_START_(HOOK_SECTION(PRE_TEST));
+f_report_hook SECTION_START_(HOOK_SECTION(ASSERT));
+f_report_hook SECTION_START_(HOOK_SECTION(THEORY_FAIL));
+f_report_hook SECTION_START_(HOOK_SECTION(TEST_CRASH));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_TEST));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_FINI));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_SUITE));
+f_report_hook SECTION_START_(HOOK_SECTION(POST_ALL));
+
+f_report_hook SECTION_END_(HOOK_SECTION(PRE_ALL));
+f_report_hook SECTION_END_(HOOK_SECTION(PRE_SUITE));
+f_report_hook SECTION_END_(HOOK_SECTION(PRE_INIT));
+f_report_hook SECTION_END_(HOOK_SECTION(PRE_TEST));
+f_report_hook SECTION_END_(HOOK_SECTION(ASSERT));
+f_report_hook SECTION_END_(HOOK_SECTION(THEORY_FAIL));
+f_report_hook SECTION_END_(HOOK_SECTION(TEST_CRASH));
+f_report_hook SECTION_END_(HOOK_SECTION(POST_TEST));
+f_report_hook SECTION_END_(HOOK_SECTION(POST_FINI));
+f_report_hook SECTION_END_(HOOK_SECTION(POST_SUITE));
+f_report_hook SECTION_END_(HOOK_SECTION(POST_ALL));
+#endif
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL);
 IMPL_CALL_REPORT_HOOKS(PRE_SUITE);
 IMPL_CALL_REPORT_HOOKS(PRE_INIT);
 IMPL_CALL_REPORT_HOOKS(PRE_TEST);
 IMPL_CALL_REPORT_HOOKS(ASSERT);
+IMPL_CALL_REPORT_HOOKS(THEORY_FAIL);
 IMPL_CALL_REPORT_HOOKS(TEST_CRASH);
 IMPL_CALL_REPORT_HOOKS(POST_TEST);
 IMPL_CALL_REPORT_HOOKS(POST_FINI);
 IMPL_CALL_REPORT_HOOKS(POST_SUITE);
 IMPL_CALL_REPORT_HOOKS(POST_ALL);
 
-ReportHook(PRE_ALL)() {}
-ReportHook(PRE_SUITE)() {}
-ReportHook(PRE_INIT)() {}
-ReportHook(PRE_TEST)() {}
-ReportHook(ASSERT)() {}
-ReportHook(TEST_CRASH)() {}
-ReportHook(POST_TEST)() {}
-ReportHook(POST_FINI)() {}
-ReportHook(POST_SUITE)() {}
-ReportHook(POST_ALL)() {}
+ReportHook(PRE_ALL)(UNUSED struct criterion_test_set *arg) {}
+ReportHook(PRE_SUITE)(UNUSED struct criterion_suite_set *arg) {}
+ReportHook(PRE_INIT)(UNUSED struct criterion_test *arg) {}
+ReportHook(PRE_TEST)(UNUSED struct criterion_test *arg) {}
+ReportHook(ASSERT)(UNUSED struct criterion_assert_stats *arg) {}
+ReportHook(THEORY_FAIL)(UNUSED struct criterion_theory_stats *arg) {}
+ReportHook(TEST_CRASH)(UNUSED struct criterion_test_stats *arg) {}
+ReportHook(POST_TEST)(UNUSED struct criterion_test_stats *arg) {}
+ReportHook(POST_FINI)(UNUSED struct criterion_test_stats *arg) {}
+ReportHook(POST_SUITE)(UNUSED struct criterion_suite_stats *arg) {}
+ReportHook(POST_ALL)(UNUSED struct criterion_global_stats *arg) {}
 

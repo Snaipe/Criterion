@@ -27,8 +27,6 @@
 # include "types.h"
 
 struct criterion_assert_stats {
-    int kind;
-    const char *condition;
     const char *message;
     bool passed;
     unsigned line;
@@ -44,11 +42,18 @@ struct criterion_test_stats {
     int passed_asserts;
     int failed_asserts;
     int signal;
+    int exit_code;
     float elapsed_time;
+    bool timed_out;
     unsigned progress;
     const char *file;
 
     struct criterion_test_stats *next;
+};
+
+struct criterion_theory_stats {
+    const char *formatted_args;
+    struct criterion_test_stats *stats;
 };
 
 struct criterion_suite_stats {

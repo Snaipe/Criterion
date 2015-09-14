@@ -38,6 +38,10 @@ struct criterion_options {
     bool short_filename;
 };
 
+CR_BEGIN_C_API
+
 extern struct criterion_options criterion_options;
+
+CR_END_C_API
 
 #endif /*!CRITERION_OPTIONS_H_ */

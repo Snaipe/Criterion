@@ -32,6 +32,11 @@
 #include "timer.h"
 #include "config.h"
 #include "posix-compat.h"
+#include "common.h"
+
+#ifdef _MSC_VER
+# define strdup _strdup
+#endif
 
 void tap_log_pre_all(struct criterion_test_set *set) {
     size_t enabled_count = 0;
@@ -54,8 +59,7 @@ void tap_log_pre_suite(struct criterion_suite_set *set) {
             set->suite.name);
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
+static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
@@ -65,7 +69,7 @@ void tap_log_post_suite(struct criterion_suite_stats *stats) {
             criterion_important("ok - %s::%s %s # SKIP %s is disabled\n",
                     ts->test->category,
                     ts->test->name,
-                    ts->test->data->description ?: "",
+                    DEF(ts->test->data->description, ""),
                     ts->test->data->disabled ? "test" : "suite");
         }
     }
@@ -78,11 +82,11 @@ void tap_log_post_test(struct criterion_test_stats *stats) {
             stats->failed ? "not ok" : "ok",
             stats->test->category,
             stats->test->name,
-            stats->test->data->description ?: "",
+            DEF(stats->test->data->description, ""),
             stats->elapsed_time);
     for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
         if (!asrt->passed) {
-            char *dup = strdup(*asrt->message ? asrt->message : asrt->condition);
+            char *dup = strdup(*asrt->message ? asrt->message : "");
 #ifdef VANILLA_WIN32
             char *line = strtok(dup, "\n");
 #else
@@ -114,10 +118,18 @@ void tap_log_test_crash(struct criterion_test_stats *stats) {
             stats->progress);
 }
 
+void tap_log_test_timeout(struct criterion_test_stats *stats) {
+    criterion_important("not ok - %s::%s timed out (%3.2fs)\n",
+            stats->test->category,
+            stats->test->name,
+            stats->elapsed_time);
+}
+
 struct criterion_output_provider tap_logging = {
-    .log_pre_all    = tap_log_pre_all,
-    .log_pre_suite  = tap_log_pre_suite,
-    .log_test_crash = tap_log_test_crash,
-    .log_post_test  = tap_log_post_test,
-    .log_post_suite = tap_log_post_suite,
+    .log_pre_all        = tap_log_pre_all,
+    .log_pre_suite      = tap_log_pre_suite,
+    .log_test_crash     = tap_log_test_crash,
+    .log_test_timeout   = tap_log_test_timeout,
+    .log_post_test      = tap_log_post_test,
+    .log_post_suite     = tap_log_post_suite,
 };

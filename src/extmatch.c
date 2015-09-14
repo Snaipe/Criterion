@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include "criterion/common.h"
+#include "common.h"
 
 struct context {
     int depth;
@@ -107,20 +108,20 @@ static int is_eos(struct context *ctx) {
 
 static inline void handle_special(struct context *ctx, handler_arg strs[5]) {
     if (peek_char(ctx) == '(') {
-        if ((strs[0].validator ?: inactive)(ctx))
+        if (DEF(strs[0].validator, inactive)(ctx))
             copy_str(ctx, strs[0].str);
         dup_char(ctx);
-        if ((strs[1].validator ?: inactive)(ctx))
+        if (DEF(strs[1].validator, inactive)(ctx))
             copy_str(ctx, strs[1].str);
 
         transform_rec(ctx);
 
-        if ((strs[2].validator ?: inactive)(ctx))
+        if (DEF(strs[2].validator, inactive)(ctx))
             copy_str(ctx,strs[2].str);
         copy_char(ctx, ')');
-        if ((strs[3].validator ?: inactive)(ctx))
+        if (DEF(strs[3].validator, inactive)(ctx))
             copy_str(ctx, strs[3].str);
-    } else if ((strs[4].validator ?: inactive)(ctx)) {
+    } else if (DEF(strs[4].validator, inactive)(ctx)) {
         copy_str(ctx, strs[4].str);
     }
 }
@@ -191,7 +192,7 @@ void transform_impl(struct context *ctx) {
         if (c == ')' && ctx->depth > 0)
             return;
 
-        (handler ?: copy_char)(ctx, c);
+        (handler ? handler : copy_char)(ctx, c);
 
         if (ctx->eos)
             return;
@@ -247,21 +248,21 @@ static int transform(const char *pattern, char *result, const char **errmsg) {
  * We must now find the maximal length L such as ∀s, L >= length(T(s))
  *
  * It is immediately apparent that the largest string will depend on the number
- * of occurrences of '!()'. Hence, let u be a string that is a repeating
- * sequence of '!()' padded by '.' to a multiple of 3,
+ * of occurrences of '!()'. Hence, ∀s, let u(s) be a string that is a repeating
+ * sequence of '!()' padded by at most two '.', such as length(u(s)) == length(s),
  *
- * let N = floor(length(u) / 3),
- * let Q = length(u) mod 3,
+ * let N = floor(length(u(s)) / 3),
+ * let Q = length(u(s)) mod 3,
  * hence num('!()') = N.
  *
- * ∀s | lenght(s) = length(u),
- *     length(T(s)) <= length(T(u))
- *                  <= length(u)            | the original length
+ * ∀s | lenght(s) = length(u(s)),
+ *     length(T(s)) <= length(T(u(s)))
+ *                  <= length(u(s))         | the original length
  *                      + 4 * N             | the expansion of all '!()'
  *                      + Q * diff('.')     | the expansion of Q '.'
  *                  <= 3 * N + Q + 4 * N + Q
  *                  <= 7 * N + 4
- *                  <= 7 * floor(length(u) / 3) + 4
+ *                  <= 7 * floor(length(u(s)) / 3) + 4
  *                  <= 7 * floor(length(s) / 3) + 4
  *
  */
@@ -270,7 +271,7 @@ static inline size_t max_length(size_t len) {
 }
 
 int extmatch(const char *pattern, const char *string, const char **errmsg) {
-    char regex[max_length(strlen(pattern))];
+    char regex[max_length(strlen(pattern)) + 1];
     if (transform(pattern, regex, errmsg) != -1) {
         int erroffset;
         pcre *preg = pcre_compile(regex, 0, errmsg, &erroffset, NULL);

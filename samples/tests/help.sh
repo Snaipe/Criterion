@@ -1,3 +1,3 @@
 #!/bin/sh
-./simple --help
-./simple --version
+./simple.c.bin --help
+./simple.c.bin --version

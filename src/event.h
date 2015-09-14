@@ -25,6 +25,9 @@
 # define EVENT_H_
 
 # include "criterion/event.h"
+# include <stdio.h>
+
+extern FILE *g_event_pipe;
 
 struct event {
     int kind;

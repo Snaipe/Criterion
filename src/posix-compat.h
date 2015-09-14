@@ -43,6 +43,9 @@
 #  define WTERMSIG(Status)    ((Status) & 0x7F)
 #  define WIFEXITED(Status)   (WTERMSIG(Status) == 0)
 #  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
+
+#  define SIGPROF 27
+#  define CR_EXCEPTION_TIMEOUT 0xC0001042
 # else
 #  include <sys/wait.h>
 # endif
@@ -67,8 +70,8 @@ extern struct worker_context g_worker_context;
 int resume_child(void);
 
 s_pipe_handle *stdpipe();
-FILE *pipe_in(s_pipe_handle *p);
-FILE *pipe_out(s_pipe_handle *p);
+FILE *pipe_in(s_pipe_handle *p, int do_close);
+FILE *pipe_out(s_pipe_handle *p, int do_close);
 
 s_proc_handle *fork_process();
 void wait_process(s_proc_handle *handle, int *status);

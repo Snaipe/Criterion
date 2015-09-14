@@ -2,19 +2,32 @@ language: c
 os:
 - linux
 - osx
+
 compiler:
-- gcc
+- gcc-4.9
+
 sudo: false
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.9
+    - g++-4.9
+
 before_install:
+- export GCOV="gcov-4.9"
 - export LOCAL_INSTALL="$HOME"
-- ".ci/install-libcsptr.sh"
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
 - export CFLAGS="-g -O0"
+- export CXX="g++-4.9"
 script:
 - mkdir -p build
 - cd build
 - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG} ..
 - make
+- make criterion_tests
 - make test
 after_success:
 - make coveralls

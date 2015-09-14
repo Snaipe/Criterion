@@ -1,3 +1,26 @@
+2015-09-14  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.0.0
+    * Breaking: ABI incompatibility with prior versions of criterion. You
+      **must** recompile your tests.
+    * Breaking: cr_abort_test(NULL) does not compile anymore.
+    * Change: Changed all assertion macros to accept a printf format string as a
+      message.
+    * Change: Made the API C++11-compatible.
+    * Change: Made the library ISO C compliant. You can now compile the library
+      with VC 14+.
+    * Addition: Added support for theories.
+    * Addition: Added ability to test the exit status of a test.
+    * Addition: Added C++11 throw assertions.
+    * Addition: Added assert message localization.
+    * Addition: Added test timeouts.
+    * Addition: Added test standard i/o redirection & file comparison assertions.
+    * Removal: Removed the deprecated prefixless assertion macros
+    * Deprecation: Deprecated cr_abort_test.
+    * Deprecation: cr_{assert,expect}_strings_* and cr_{assert,expect}_arrays_*
+      are deprecated in favor of cr_{assert,expect}_str_* and 
+      cr_{assert,expect}_arr_* respectively.
+
 2015-08-20  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 1.3.1

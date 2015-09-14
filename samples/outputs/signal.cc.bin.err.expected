@@ -1,0 +1,4 @@
+[[0;34m----[0m] [0;1msignal.cc[0m:[0;31m16[0m: Unexpected signal caught below this line!
+[[0;31mFAIL[0m] simple::uncaught: CRASH!
+[[0;31mFAIL[0m] simple::wrong_signal: (0.00s)
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m3[0;1m | Passing: [0;32m1[0;1m | Failing: [0;31m2[0;1m | Crashing: [0;31m1[0;1m [0m
