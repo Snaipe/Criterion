@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 1.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-09-14 02:33+0200\n"
+"POT-Creation-Date: 2015-09-14 04:12+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -161,11 +161,16 @@ msgstr ""
 "\"."
 
 #: src/i18n.c:25
+#, fuzzy, c-format
+msgid "The file contents of %1$s does not match the contents of %2$s."
+msgstr "Le contenu du fichier %1$s ne correspond pas au contenu de %2$s."
+
+#: src/i18n.c:26
 #, c-format
 msgid "The statement `%1$s` did throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` a levé une instance de l'exception `%2$s`."
 
-#: src/i18n.c:26
+#: src/i18n.c:27
 #, c-format
 msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` n'a pas levé d'instance de l'exception `%2$s`."

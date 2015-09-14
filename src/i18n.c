@@ -22,10 +22,12 @@ char *translate_assert_msg(int msg_index, ...) {
 
 #ifdef ENABLE_NLS
         [CRITERION_ASSERT_MSG_FILE_STR_MATCH] = N_("The file contents of %1$s does not match the string \"%2$s\"."),
+        [CRITERION_ASSERT_MSG_FILE_MATCH] = N_("The file contents of %1$s does not match the contents of %2$s."),
         [CRITERION_ASSERT_MSG_THROW] = N_("The statement `%1$s` did throw an instance of the `%2$s` exception."),
         [CRITERION_ASSERT_MSG_NO_THROW] = N_("The statement `%1$s` did not throw an instance of the `%2$s` exception."),
 #else
         [CRITERION_ASSERT_MSG_FILE_STR_MATCH] = "The file contents of %s does not match the string \"%s\".",
+        [CRITERION_ASSERT_MSG_FILE_MATCH] = "The file contents of %s does not match the contents of %s.",
         [CRITERION_ASSERT_MSG_THROW] = "The statement `%s` did throw an instance of the `%s` exception.",
         [CRITERION_ASSERT_MSG_NO_THROW] = "The statement `%s` did not throw an instance of the `%s` exception.",
 #endif
