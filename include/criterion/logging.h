@@ -24,8 +24,13 @@
 #ifndef CRITERION_LOGGING_H_
 # define CRITERION_LOGGING_H_
 
-# include <stdbool.h>
-# include <stdarg.h>
+# ifdef __cplusplus
+#  include <cstdarg>
+using std::va_list;
+# else
+#  include <stdbool.h>
+#  include <stdarg.h>
+# endif
 # include "common.h"
 # include "ordered-set.h"
 # include "stats.h"
@@ -52,12 +57,12 @@ struct criterion_prefix_data {
 # ifdef CRITERION_LOGGING_COLORS
 #  define CRIT_COLOR_NORMALIZE(Str) (criterion_options.use_ascii ? "" : Str)
 
-#  define CRIT_FG_BOLD  "\e[0;1m"
-#  define CRIT_FG_RED   "\e[0;31m"
-#  define CRIT_FG_GREEN "\e[0;32m"
-#  define CRIT_FG_GOLD  "\e[0;33m"
-#  define CRIT_FG_BLUE  "\e[0;34m"
-#  define CRIT_RESET    "\e[0m"
+#  define CRIT_FG_BOLD  "\33[0;1m"
+#  define CRIT_FG_RED   "\33[0;31m"
+#  define CRIT_FG_GREEN "\33[0;32m"
+#  define CRIT_FG_GOLD  "\33[0;33m"
+#  define CRIT_FG_BLUE  "\33[0;34m"
+#  define CRIT_RESET    "\33[0m"
 
 #  define FG_BOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
 #  define FG_RED   CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
@@ -66,6 +71,8 @@ struct criterion_prefix_data {
 #  define FG_BLUE  CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
 #  define RESET    CRIT_COLOR_NORMALIZE(CRIT_RESET)
 # endif
+
+CR_BEGIN_C_API
 
 extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 
@@ -76,13 +83,13 @@ extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 # define CRITERION_PREFIX_PASS   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_PASS  ])
 # define CRITERION_PREFIX_FAIL   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_FAIL  ])
 
-void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
+CR_API void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
 
 FORMAT(printf, 3, 4)
-void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...);
+CR_API void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...);
 
 FORMAT(printf, 2, 3)
-void criterion_log(enum criterion_logging_level level, const char *msg, ...);
+CR_API void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 
 # define criterion_info(...) criterion_log(CRITERION_INFO, __VA_ARGS__)
 # define criterion_important(...) criterion_log(CRITERION_IMPORTANT, __VA_ARGS__)
@@ -91,21 +98,26 @@ void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 # define criterion_pimportant(...) criterion_plog(CRITERION_IMPORTANT, __VA_ARGS__)
 
 struct criterion_output_provider {
-    void (*log_pre_all    )(struct criterion_test_set *set);
-    void (*log_pre_suite  )(struct criterion_suite_set *set);
-    void (*log_pre_init   )(struct criterion_test *test);
-    void (*log_pre_test   )(struct criterion_test *test);
-    void (*log_assert     )(struct criterion_assert_stats *stats);
-    void (*log_test_crash )(struct criterion_test_stats *stats);
-    void (*log_other_crash)(struct criterion_test_stats *stats);
-    void (*log_post_test  )(struct criterion_test_stats *stats);
-    void (*log_post_fini  )(struct criterion_test_stats *stats);
-    void (*log_post_suite )(struct criterion_suite_stats *stats);
-    void (*log_post_all   )(struct criterion_global_stats *stats);
+    void (*log_pre_all      )(struct criterion_test_set *set);
+    void (*log_pre_suite    )(struct criterion_suite_set *set);
+    void (*log_pre_init     )(struct criterion_test *test);
+    void (*log_pre_test     )(struct criterion_test *test);
+    void (*log_assert       )(struct criterion_assert_stats *stats);
+    void (*log_theory_fail  )(struct criterion_theory_stats *stats);
+    void (*log_test_timeout )(struct criterion_test_stats *stats);
+    void (*log_test_crash   )(struct criterion_test_stats *stats);
+    void (*log_other_crash  )(struct criterion_test_stats *stats);
+    void (*log_abnormal_exit)(struct criterion_test_stats *stats);
+    void (*log_post_test    )(struct criterion_test_stats *stats);
+    void (*log_post_fini    )(struct criterion_test_stats *stats);
+    void (*log_post_suite   )(struct criterion_suite_stats *stats);
+    void (*log_post_all     )(struct criterion_global_stats *stats);
 };
 
 extern struct criterion_output_provider normal_logging;
 extern struct criterion_output_provider tap_logging;
+
+CR_END_C_API
 
 #define NORMAL_LOGGING (&normal_logging)
 #define TAP_LOGGING    (&tap_logging)

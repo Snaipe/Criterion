@@ -1,2 +1,2 @@
 #!/bin/sh
-./simple --fail-fast --always-succeed
+./simple.c.bin --fail-fast --always-succeed

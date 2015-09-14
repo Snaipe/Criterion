@@ -21,10 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <setjmp.h>
 #include "abort.h"
 
-static jmp_buf g_pre_test;
+jmp_buf g_pre_test;
 
 int setup_abort_test(void) {
     return !setjmp(g_pre_test);

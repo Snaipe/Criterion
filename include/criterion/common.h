@@ -24,18 +24,58 @@
 #ifndef CRITERION_COMMON_H_
 # define CRITERION_COMMON_H_
 
+# if defined(_MSC_VER)
+#  if _MSC_VER < 1900
+#   error \
+        Your version of MSVC++ is too old, please compile your tests using  \
+        a c99 compiler, like MinGW or MSVC 14.0+ (Included in visual studio \
+        2015)
+#  endif
+# endif
+
+# ifndef CR_IS_MSVC
+#  ifdef _MSC_VER
+#   define CR_IS_MSVC _MSC_VER
+#  else
+#   define CR_IS_MSVC 0
+#  endif
+# endif
+
+# ifdef __cplusplus
+#  define CR_ATTRIBUTE(Arg) [[gnu::Arg]]
+#  define CR_BEGIN_C_API extern "C" {
+#  define CR_END_C_API }
+# else
+#  define CR_ATTRIBUTE(Arg) __attribute__((Arg))
+#  define CR_BEGIN_C_API
+#  define CR_END_C_API
+# endif
+
 # ifdef __APPLE__
 #  define SECTION_START_PREFIX       __first
 #  define SECTION_END_PREFIX         __last
 #  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
 #  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
-#  define SECTION_(Name)             __attribute__((section("__DATA," Name)))
+#  define SECTION_(Name)             CR_ATTRIBUTE(section("__DATA," Name))
+#  define SECTION_SUFFIX_
+# elif CR_IS_MSVC
+#  define SECTION_START_PREFIX       __start
+#  define SECTION_END_PREFIX         __stop
+#  define SECTION_START_SUFFIX(Name)
+#  define SECTION_END_SUFFIX(Name)
+#  define SECTION_(Name)                    \
+    __pragma(data_seg(push))                \
+    __pragma(section(Name, read))           \
+    __declspec(allocate(Name))
+#  define SECTION_SUFFIX_                   \
+    __pragma(data_seg(pop))
 # else
 #  define SECTION_START_PREFIX       __start
 #  define SECTION_END_PREFIX         __stop
 #  define SECTION_START_SUFFIX(Name)
 #  define SECTION_END_SUFFIX(Name)
-#  define SECTION_(Name)             __attribute__((section(Name)))
+#  define SECTION_(Name)             CR_ATTRIBUTE(section(Name))
+#  define SECTION_SUFFIX_
 # endif
 
 # define MAKE_IDENTIFIER_(Prefix, Id) MAKE_IDENTIFIER__(Prefix, Id)
@@ -56,8 +96,19 @@
     Type *const SECTION_START(Name) = &SECTION_START_(Name);    \
     Type *const SECTION_END(Name)   = &SECTION_END_(Name)
 
-# define UNUSED __attribute__((unused))
-# define NORETURN __attribute__((noreturn))
+# ifdef __GNUC__
+#  define UNUSED CR_ATTRIBUTE(unused)
+#  define NORETURN CR_ATTRIBUTE(noreturn)
+#  define CR_INLINE CR_ATTRIBUTE(always_inline) inline
+# elif CR_IS_MSVC
+#  define UNUSED
+#  define NORETURN __declspec(noreturn)
+#  define CR_INLINE __forceinline
+# else
+#  define UNUSED
+#  define NORETURN
+#  define CR_INLINE inline
+# endif
 
 # ifdef _WIN32
 #  define SIZE_T_FORMAT "%Iu"
@@ -66,9 +117,34 @@
 # endif
 
 # ifdef __GNUC__
-#  define FORMAT(Archetype, Index, Ftc) __attribute__((format(Archetype, Index, Ftc)))
+#  define FORMAT(Archetype, Index, Ftc) CR_ATTRIBUTE(format(Archetype, Index, Ftc))
 # else
 #  define FORMAT(Archetype, Index, Ftc)
+# endif
+
+# if defined _WIN32 || defined __CYGWIN__
+#  ifdef CRITERION_BUILDING_DLL
+#   ifdef __GNUC__
+#    define CR_API CR_ATTRIBUTE(dllexport)
+#   else
+#    define CR_API __declspec(dllexport)
+#   endif
+#  else
+#   ifdef __GNUC__
+#    define CR_API CR_ATTRIBUTE(dllimport)
+#   else
+#    define CR_API __declspec(dllimport)
+#   endif
+#  endif
+#  define CR_LOCAL
+# else
+#  if __GNUC__ >= 4
+#   define CR_API   CR_ATTRIBUTE(visibility("default"))
+#   define CR_LOCAL CR_ATTRIBUTE(visibility("hidden"))
+#  else
+#   define CR_API
+#   define CR_LOCAL
+#  endif
 # endif
 
 #endif /* !CRITERION_COMMON_H_ */

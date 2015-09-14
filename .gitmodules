@@ -1,0 +1,9 @@
+[submodule "dependencies/libcsptr"]
+	path = dependencies/libcsptr
+	url = https://github.com/Snaipe/libcsptr.git
+[submodule "dependencies/dyncall"]
+	path = dependencies/dyncall
+	url = https://github.com/Snaipe/dyncall.git
+[submodule "dependencies/wingetopt"]
+	path = dependencies/wingetopt
+	url = https://github.com/alex85k/wingetopt.git

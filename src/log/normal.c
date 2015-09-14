@@ -34,19 +34,18 @@
 #include "config.h"
 #include "i18n.h"
 #include "posix-compat.h"
-
-#define USED __attribute__ ((used))
+#include "common.h"
 
 #ifdef VANILLA_WIN32
 // fallback to strtok on windows since strtok_s is not available everywhere
 # define strtok_r(str, delim, saveptr) strtok(str, delim)
 #endif
 
-typedef const char *const msg_t;
+#ifdef _MSC_VER
+# define strdup _strdup
+#endif
 
-// Used to mark string for gettext
-# define N_(Str) Str
-# define N_s(Str, Pl) {Str, Pl}
+typedef const char *const msg_t;
 
 static msg_t msg_pre_all = N_("Criterion v%s\n");
 static msg_t msg_desc = N_("  %s\n");
@@ -58,9 +57,12 @@ static msg_t msg_post_test = N_("%1$s::%2$s\n");
 static msg_t msg_post_suite_test = N_("%1$s::%2$s: Test is disabled\n");
 static msg_t msg_post_suite_suite = N_("%1$s::%2$s: Suite is disabled\n");
 static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
+static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
+static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
+static msg_t msg_test_abnormal_exit = N_("%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n");
 static msg_t msg_pre_suite[] = N_s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
              "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n");
 static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
@@ -75,9 +77,12 @@ static msg_t msg_post_test = "%s::%s\n";
 static msg_t msg_post_suite_test = "%s::%s: Test is disabled\n";
 static msg_t msg_post_suite_suite = "%s::%s: Suite is disabled\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
+static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: %s\n";
+static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
+static msg_t msg_test_abnormal_exit = "%sWarning! The test `%s::%s` exited during its setup or teardown.%s\n";
 static msg_t msg_pre_suite[] = { "Running %s%lu%s test from %s%s%s:\n",
             "Running %s%lu%s tests from %s%s%s:\n" };
 static msg_t msg_post_all = "%sSynthesis: Tested: %s%lu%s "
@@ -115,8 +120,7 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
-__attribute__((always_inline))
-static inline bool is_disabled(struct criterion_test *t,
+static INLINE bool is_disabled(struct criterion_test *t,
                                struct criterion_suite *s) {
     return t->data->disabled || (s->data && s->data->disabled);
 }
@@ -154,8 +158,7 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
-        char *dup       = strdup(*stats->message ? stats->message
-                                                 : stats->condition);
+        char *dup       = strdup(*stats->message ? stats->message : "");
 
 #ifdef VANILLA_WIN32
         char *line      = strtok(dup, "\n");
@@ -198,6 +201,12 @@ void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
             FG_BOLD, stats->test->category, stats->test->name, RESET);
 }
 
+void normal_log_abnormal_exit(UNUSED struct criterion_test_stats *stats) {
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _(msg_test_abnormal_exit),
+            FG_BOLD, stats->test->category, stats->test->name, RESET);
+}
+
 void normal_log_pre_suite(struct criterion_suite_set *set) {
     criterion_pinfo(CRITERION_PREFIX_EQUALS,
             _s(msg_pre_suite[0], msg_pre_suite[1], set->tests->size),
@@ -205,13 +214,32 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
             FG_GOLD, set->suite.name,  RESET);
 }
 
+void normal_log_theory_fail(struct criterion_theory_stats *stats) {
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _(msg_theory_fail), 
+            stats->stats->test->category,
+            stats->stats->test->name,
+            stats->formatted_args);
+}
+
+void normal_log_test_timeout(UNUSED struct criterion_test_stats *stats) {
+    criterion_pimportant(CRITERION_PREFIX_FAIL,
+            _(msg_test_timeout),
+            stats->test->category,
+            stats->test->name,
+            stats->elapsed_time);
+}
+
 struct criterion_output_provider normal_logging = {
     .log_pre_all        = normal_log_pre_all,
     .log_pre_init       = normal_log_pre_init,
     .log_pre_suite      = normal_log_pre_suite,
     .log_assert         = normal_log_assert,
+    .log_theory_fail    = normal_log_theory_fail,
+    .log_test_timeout   = normal_log_test_timeout,
     .log_test_crash     = normal_log_test_crash,
     .log_other_crash    = normal_log_other_crash,
+    .log_abnormal_exit  = normal_log_abnormal_exit,
     .log_post_test      = normal_log_post_test,
     .log_post_suite     = normal_log_post_suite,
     .log_post_all       = normal_log_post_all,

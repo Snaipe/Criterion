@@ -37,6 +37,7 @@ DECL_CALL_REPORT_HOOKS(PRE_SUITE);
 DECL_CALL_REPORT_HOOKS(PRE_INIT);
 DECL_CALL_REPORT_HOOKS(PRE_TEST);
 DECL_CALL_REPORT_HOOKS(ASSERT);
+DECL_CALL_REPORT_HOOKS(THEORY_FAIL);
 DECL_CALL_REPORT_HOOKS(TEST_CRASH);
 DECL_CALL_REPORT_HOOKS(POST_TEST);
 DECL_CALL_REPORT_HOOKS(POST_FINI);
@@ -44,6 +45,8 @@ DECL_CALL_REPORT_HOOKS(POST_SUITE);
 DECL_CALL_REPORT_HOOKS(POST_ALL);
 
 #define log(Type, Arg) \
-    (criterion_options.output_provider->log_ ## Type ?: nothing)(Arg);
+    log_(criterion_options.output_provider->log_ ## Type, Arg);
+#define log_(Log, Arg) \
+    (Log ? Log(Arg) : nothing());
 
 #endif /* !REPORT_H_ */

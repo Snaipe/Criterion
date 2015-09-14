@@ -1,22 +1,49 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Criterion C)
+project(Criterion C CXX)
+
+set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
+set(LIBCSPTR_DISABLE_TESTS ON)
+set(LIBCSPTR_DISABLE_COVERALLS ON)
+
+include(Submodules)
+
+if (MSVC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+endif ()
+
+add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
+add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
+
+include_directories(
+  dependencies/libcsptr/include/
+  dependencies/dyncall/dyncall/
+)
+
+if (MSVC)
+  add_subdirectory(dependencies/wingetopt/ EXCLUDE_FROM_ALL)
+  include_directories(dependencies/wingetopt/src/)
+endif ()
 
 # Project setup & environment variables
 
-enable_testing()
-add_subdirectory(samples)
-
-set(PROJECT_VERSION "1.3.1")
+set(PROJECT_VERSION "2.0.0")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
-set(MODULE_DIR "${CMAKE_SOURCE_DIR}/.cmake/Modules")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+add_definitions(-DCRITERION_BUILDING_DLL=1)
 
-if (WIN32)
+if (NOT MSVC)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+endif ()
+
+if (MSVC)
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+endif ()
+
+if (WIN32 AND NOT MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
 endif()
 
@@ -44,7 +71,6 @@ include(CheckLibraryExists)
 CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 
 find_package(PCRE)
-find_package(Libcsptr REQUIRED)
 
 # List sources and headers
 
@@ -71,7 +97,11 @@ set(SOURCE_FILES
   src/i18n.h
   src/ordered-set.c
   src/posix-compat.c
+  src/theories.c
+  src/asprintf.c
+  src/file.c
   src/main.c
+  src/entry.c
 )
 
 if (PCRE_FOUND)
@@ -94,18 +124,26 @@ set(INTERFACE_FILES
   include/criterion/options.h
   include/criterion/ordered-set.h
   include/criterion/stats.h
+  include/criterion/theories.h
+  include/criterion/asprintf-compat.h
+  include/criterion/designated-initializer-compat.h
+  include/criterion/preprocess.h
 )
 
 # Generate the configure file
 
 configure_file(
-  "${CMAKE_SOURCE_DIR}/src/config.h.in"
-  "${CMAKE_SOURCE_DIR}/src/config.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h"
 )
 
-include_directories(include src ${CSPTR_INCLUDE_DIRS})
+include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
-target_link_libraries(criterion ${CSPTR_LIBRARIES})
+target_link_libraries(criterion csptr dyncall_s)
+
+if (MSVC)
+  target_link_libraries(criterion wingetopt)
+endif ()
 
 if (HAVE_CLOCK_GETTIME)
   target_link_libraries(criterion rt)
@@ -130,6 +168,8 @@ install(TARGETS criterion
   ARCHIVE DESTINATION lib
 )
 
-add_custom_target(uninstall
-    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
-)
+add_custom_target(criterion_tests)
+
+enable_testing()
+add_subdirectory(samples)
+add_subdirectory(test)

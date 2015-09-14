@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: criterion 1.0.0\n"
+"Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-08-05 11:37+0200\n"
+"POT-Creation-Date: 2015-09-14 04:12+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -18,54 +18,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/log/normal.c:51
+#: src/log/normal.c:50
 #, c-format
 msgid "Criterion v%s\n"
 msgstr "Criterion v%s\n"
 
-#: src/log/normal.c:52
+#: src/log/normal.c:51
 #, c-format
 msgid "  %s\n"
 msgstr "  %s\n"
 
-#: src/log/normal.c:55 src/log/normal.c:57
+#: src/log/normal.c:54 src/log/normal.c:56
 #, c-format
 msgid "%1$s::%2$s\n"
 msgstr "%1$s::%2$s\n"
 
-#: src/log/normal.c:56
+#: src/log/normal.c:55
 #, fuzzy, c-format
 msgid "%1$s::%2$s: (%3$3.2fs)\n"
 msgstr "%1$s::%2$s: (%3$3.2fs)\n"
 
-#: src/log/normal.c:58
+#: src/log/normal.c:57
 #, c-format
 msgid "%1$s::%2$s: Test is disabled\n"
 msgstr "%1$s::%2$s: Le test est désactivé\n"
 
-#: src/log/normal.c:59
+#: src/log/normal.c:58
 #, c-format
 msgid "%1$s::%2$s: Suite is disabled\n"
 msgstr "%1$s::%2$s: La suite est désactivée\n"
 
-#: src/log/normal.c:60
+#: src/log/normal.c:59
 #, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n"
 msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Échec d'assertion: %7$s\n"
 
+#: src/log/normal.c:60
+#, fuzzy, c-format
+msgid "  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n"
+msgstr ""
+"  La théorie %1$s::%2$s a échoué avec les paramètres suivants: (%3$s)\n"
+
 #: src/log/normal.c:61
+#, fuzzy, c-format
+msgid "%1$s::%2$s: Timed out. (%3$3.2fs)\n"
+msgstr "%1$s::%2$s: Délai expiré. (%3$3.2fs)\n"
+
+#: src/log/normal.c:62
 #, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n"
 msgstr ""
 "%1$s%2$s%3$s:%4$s%5$u%6$s: Un signal inattendu a été reçu après cette "
 "ligne!\n"
 
-#: src/log/normal.c:62
+#: src/log/normal.c:63
 #, c-format
 msgid "%1$s::%2$s: CRASH!\n"
 msgstr "%1$s::%2$s: PLANTAGE!\n"
 
-#: src/log/normal.c:63
+#: src/log/normal.c:64
 #, fuzzy, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown."
@@ -74,14 +85,22 @@ msgstr ""
 "%1$sAttention! Le test `%2$s::%3$s` a planté pendant son initialisation ou "
 "sa finalisation.%4$s\n"
 
-#: src/log/normal.c:64
+#: src/log/normal.c:65
+#, fuzzy, c-format
+msgid ""
+"%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n"
+msgstr ""
+"%1$sAttention! Le test `%2$s::%3$s` a quitté pendant son initialisation ou "
+"sa finalisation.%4$s\n"
+
+#: src/log/normal.c:66
 #, c-format
 msgid "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n"
 msgid_plural "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n"
 msgstr[0] "Lancement de %1$s%2$lu%3$s test dans %4$s%5$s%6$s:\n"
 msgstr[1] "Lancement de %1$s%2$lu%3$s tests dans %4$s%5$s%6$s:\n"
 
-#: src/log/normal.c:66
+#: src/log/normal.c:68
 #, c-format
 msgid ""
 "%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"
@@ -89,3 +108,69 @@ msgid ""
 msgstr ""
 "%1$sSynthèse: Testés: %2$s%3$lu%4$s | Validés: %5$s%6$lu%7$s | Échoués: %8$s"
 "%9$lu%10$s | Plantages: %11$s%12$lu%13$s %14$s\n"
+
+#: src/i18n.c:13
+msgid "The conditions for this assertion were not met."
+msgstr "Les conditions de cette assertion n'ont pas été remplies."
+
+#: src/i18n.c:14
+#, c-format
+msgid "The expression %s is false."
+msgstr "L'expression %s est fausse."
+
+#: src/i18n.c:15
+#, c-format
+msgid "The expression (as strings) %s is false."
+msgstr "L'expression (en tant que chaînes de caractères) %s est fausse."
+
+#: src/i18n.c:16
+#, c-format
+msgid "%s is null."
+msgstr "%s est nul."
+
+#: src/i18n.c:17
+#, c-format
+msgid "%s is not null."
+msgstr "%s n'est pas nul."
+
+#: src/i18n.c:18
+#, c-format
+msgid "%s is empty."
+msgstr "%s est vide."
+
+#: src/i18n.c:19
+#, c-format
+msgid "%s is not empty."
+msgstr "%s n'est pas vide."
+
+#: src/i18n.c:20
+#, fuzzy, c-format
+msgid "The statement `%s` did not throw any exception."
+msgstr "L'instruction `%s` n'a pas levé d'exception."
+
+#: src/i18n.c:21
+#, fuzzy, c-format
+msgid "The statement `%s` threw some exception."
+msgstr "L'instruction `%1$s` a levé une exception."
+
+#: src/i18n.c:24
+#, c-format
+msgid "The file contents of %1$s does not match the string \"%2$s\"."
+msgstr ""
+"Le contenu du fichier %1$s ne correspond pas à la chaine de caractères \"%2$s"
+"\"."
+
+#: src/i18n.c:25
+#, fuzzy, c-format
+msgid "The file contents of %1$s does not match the contents of %2$s."
+msgstr "Le contenu du fichier %1$s ne correspond pas au contenu de %2$s."
+
+#: src/i18n.c:26
+#, c-format
+msgid "The statement `%1$s` did throw an instance of the `%2$s` exception."
+msgstr "L'instruction `%1$s` a levé une instance de l'exception `%2$s`."
+
+#: src/i18n.c:27
+#, c-format
+msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
+msgstr "L'instruction `%1$s` n'a pas levé d'instance de l'exception `%2$s`."

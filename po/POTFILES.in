@@ -1,2 +1,3 @@
 # List of source files which contain translatable strings.
 src/log/normal.c
+src/i18n.c
