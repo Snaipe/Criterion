@@ -22,10 +22,10 @@ Test(redirect, test_outputs, .init = redirect_all_std) {
     std::cerr << "bar" << std::flush;
 
     std::FILE* f_stdout = cr_get_redirected_stdout();
-    cr_assert_file_contents_match_str(f_stdout, "foo");
+    cr_assert_file_contents_eq_str(f_stdout, "foo");
 
     std::FILE* f_stderr = cr_get_redirected_stderr();
-    cr_assert_file_contents_match_str(f_stderr, "bar");
+    cr_assert_file_contents_eq_str(f_stderr, "bar");
 }
 
 // Testing general I/O with sample command-line rot13
@@ -52,5 +52,5 @@ Test(redirect, rot13, .init = cr_redirect_stdout) {
     rot13_io();
 
     std::FILE* f_stdout = cr_get_redirected_stdout();
-    cr_assert_file_contents_match_str(f_stdout, "gur dhvpx oebja sbk whzcf bire gur ynml qbt");
+    cr_assert_file_contents_eq_str(f_stdout, "gur dhvpx oebja sbk whzcf bire gur ynml qbt");
 }
