@@ -4,6 +4,7 @@ set(SAMPLES
   long-messages.c
   other-crashes.c
 
+  failmessages.cc
   exit.cc
   long-messages.cc
   other-crashes.cc

@@ -53,6 +53,7 @@ struct criterion_assert_args {
 #endif
 };
 
+// Do NOT reorder unless you want to break the ABI
 enum criterion_assert_messages {
     CRITERION_ASSERT_MSG_FAIL,
     CRITERION_ASSERT_MSG_EXPR_FALSE,
@@ -62,6 +63,8 @@ enum criterion_assert_messages {
     CRITERION_ASSERT_MSG_IS_EMPTY,
     CRITERION_ASSERT_MSG_IS_NOT_EMPTY,
     CRITERION_ASSERT_MSG_FILE_STR_MATCH,
+    CRITERION_ASSERT_MSG_THROW,
+    CRITERION_ASSERT_MSG_NO_THROW,
 };
 
 CR_BEGIN_C_API
@@ -484,36 +487,60 @@ CR_END_C_API
 
 # ifdef __cplusplus
 
-#  define cr_assert_throw_(Fail, Statement, Exception, ...)                 \
-    try {                                                                   \
-        Statement;                                                          \
-    } catch (Exception const &) {                                           \
-    } catch (...) { CR_EXPAND(cr_fail(Fail, CR_VA_TAIL(__VA_ARGS__))); }
+#  define cr_assert_throw_abort_(Fail, Msg, Statement, Exception, ...)  \
+    CR_EXPAND(cr_assert_impl(                                           \
+            Fail,                                                       \
+            0,                                                          \
+            dummy,                                                      \
+            Msg,                                                        \
+            (CR_STR(Statement), CR_STR(Exception)),                     \
+            CR_VA_TAIL(__VA_ARGS__)                                     \
+    ))
 
-#  define cr_assert_throw_va_(...)                  \
-    CR_EXPAND(cr_assert_throw_(                     \
-            CR_VA_HEAD(__VA_ARGS__),                \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),    \
-            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),    \
-            dummy,                                  \
-            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))     \
+#  define cr_assert_throw_(Fail, Statement, Exception, ...)             \
+    try {                                                               \
+        Statement;                                                      \
+    } catch (Exception const &) {                                       \
+    } catch (...) {                                                     \
+        CR_EXPAND(cr_assert_throw_abort_(                               \
+                Fail,                                                   \
+                CRITERION_ASSERT_MSG_THROW,                             \
+                Statement,                                              \
+                Exception,                                              \
+                __VA_ARGS__));                                          \
+    }
+
+#  define cr_assert_throw_va_(...)                                      \
+    CR_EXPAND(cr_assert_throw_(                                         \
+            CR_VA_HEAD(__VA_ARGS__),                                    \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                        \
+            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),            \
+            dummy,                                                      \
+            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))             \
     ))
 
 #  define cr_assert_throw(...) CR_EXPAND(cr_assert_throw_va_(CR_FAIL_ABORT_,     __VA_ARGS__))
 #  define cr_expect_throw(...) CR_EXPAND(cr_assert_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
 
-#  define cr_assert_no_throw_(Fail, Statement, Exception, ...)                      \
-    try {                                                                           \
-        Statement;                                                                  \
-    } catch (Exception const &) { CR_EXPAND(cr_fail(Fail, CR_VA_TAIL(__VA_ARGS__))); }
+#  define cr_assert_no_throw_(Fail, Statement, Exception, ...)          \
+    try {                                                               \
+        Statement;                                                      \
+    } catch (Exception const &) {                                       \
+        CR_EXPAND(cr_assert_throw_abort_(                               \
+                Fail,                                                   \
+                CRITERION_ASSERT_MSG_NO_THROW,                          \
+                Statement,                                              \
+                Exception,                                              \
+                __VA_ARGS__));                                          \
+    }
 
-#  define cr_assert_no_throw_va_(...)                           \
-    CR_EXPAND(cr_assert_no_throw_(                              \
-            CR_VA_HEAD(__VA_ARGS__),                            \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
-            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),    \
-            dummy,                                              \
-            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))     \
+#  define cr_assert_no_throw_va_(...)                                   \
+    CR_EXPAND(cr_assert_no_throw_(                                      \
+            CR_VA_HEAD(__VA_ARGS__),                                    \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                        \
+            CR_VA_HEAD(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))),            \
+            dummy,                                                      \
+            CR_VA_TAIL(CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)))             \
     ))
 
 #  define cr_assert_no_throw(...) CR_EXPAND(cr_assert_no_throw_va_(CR_FAIL_ABORT_,     __VA_ARGS__))
