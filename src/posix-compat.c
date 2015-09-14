@@ -581,26 +581,3 @@ FILE* cr_get_redirected_stdin(void) {
     }
     return f;
 }
-
-int cr_file_match_str(FILE* f, const char *str) {
-    size_t len = strlen(str);
-
-    char buf[512];
-    size_t read;
-    int matches = 0;
-    while ((read = fread(buf, 1, sizeof (buf), f)) > 0) {
-        matches = !strncmp(buf, str, read);
-        if (!matches || read > len) {
-            matches = 0;
-            break;
-        }
-
-        len -= read;
-        str += read;
-    }
-
-    // consume the rest of what's available
-    while (fread(buf, 1, sizeof (buf), f) > 0);
-
-    return matches;
-}
