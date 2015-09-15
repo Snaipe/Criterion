@@ -4,7 +4,6 @@ os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
-  - 'SET PATH=C:\Python34-x64;C:\Python34-x64\Scripts;%PATH%'
   - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug'
 
 environment:
@@ -29,7 +28,6 @@ configuration: Release
 
 install:
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
-  - pip install codecov
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
   # Configure project
@@ -57,11 +55,6 @@ test_script:
   - cmake --build . --target criterion_tests
   - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
 
-after_test:
-   - 'make gcov'
-   - 'cd ..'
-   - 'bash -lc "find / -iname \"*.gcda\""'
-   - codecov
 #after_test:
 #  - 'make coveralls'
 
