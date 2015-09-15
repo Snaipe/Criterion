@@ -1,11 +1,13 @@
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "-std=gnu99 -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra")
 endif ()
 
 include_directories(../include ../src)
 
 set(TEST_SOURCES
     ordered-set.c
+    redirect.cc
 )
 
 add_executable(criterion_unit_tests EXCLUDE_FROM_ALL ${TEST_SOURCES})

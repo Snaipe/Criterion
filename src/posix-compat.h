@@ -47,6 +47,7 @@
 #  define SIGPROF 27
 #  define CR_EXCEPTION_TIMEOUT 0xC0001042
 # else
+#  include <sys/param.h>
 #  include <sys/wait.h>
 # endif
 

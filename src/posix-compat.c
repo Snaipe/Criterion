@@ -21,7 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define _GNU_SOURCE 1
 #include <assert.h>
+#include <errno.h>
+#include <stdint.h>
 #include "posix-compat.h"
 #include "process.h"
 #include "criterion/assert.h"
@@ -580,4 +583,155 @@ FILE* cr_get_redirected_stdin(void) {
             cr_assert_fail("Could not get redirected stdin write end.");
     }
     return f;
+}
+
+#if defined(BSD) || defined(__unix__)
+
+# ifdef BSD
+typedef int cr_count;
+typedef int cr_retcount;
+typedef fpos_t cr_off;
+# else
+typedef size_t cr_count;
+typedef ssize_t cr_retcount;
+typedef off64_t cr_off;
+# endif
+
+struct memfile {
+    size_t size;
+    size_t region_size;
+    size_t cur;
+    size_t max_size;
+    char *mem;
+};
+
+static inline size_t size_safe_add(size_t size, size_t cur, cr_off off) {
+    cur = cur < SIZE_MAX - off ? cur + off : SIZE_MAX;
+    return cur < size ? cur : size;
+}
+
+static inline size_t off_safe_add(size_t size, size_t cur, cr_off off) {
+    if (off >= 0)
+        cur = cur < SIZE_MAX - off ? cur + off : SIZE_MAX;
+    else
+        cur = cur > (size_t) -off ? cur + off : 0;
+    return cur < size ? cur : size;
+}
+
+# define errno_return(Errno, Val)   \
+    do {                            \
+        errno = (Errno);            \
+        return (Val);               \
+    } while (0)
+
+static cr_retcount mock_file_read(void *cookie, char *buf, cr_count count) {
+    struct memfile *mf = cookie;
+# ifdef BSD
+    if (count < 0)
+        errno_return(EINVAL, (cr_retcount) -1);
+# endif
+    if (mf->cur >= mf->size || count == 0)
+        return 0;
+
+    size_t end = size_safe_add(mf->size, mf->cur, count);
+    count = end - mf->cur;
+    memcpy(buf, mf->mem + mf->cur, count);
+    mf->cur = end;
+    return count;
+}
+
+static cr_retcount mock_file_write(void *cookie, const char *buf, cr_count count) {
+    struct memfile *mf = cookie;
+# ifdef BSD
+    if (count < 0)
+        errno_return(EINVAL, (cr_retcount) -1);
+# endif
+    if (count == 0)
+        return 0;
+
+    if (mf->cur >= mf->max_size)
+        errno_return(EIO, (cr_retcount) -1);
+
+    size_t end = size_safe_add(mf->max_size, mf->cur, count);
+    if (mf->size < end)
+        mf->size = end;
+    count = end - mf->cur;
+
+    if (mf->size > mf->region_size) {
+        while (mf->size > mf->region_size)
+            mf->region_size = mf->region_size * 3 / 2;
+        char *newptr = realloc(mf->mem, mf->region_size);
+        if (!newptr)
+            errno_return(EIO, (cr_retcount) -1);
+        mf->mem = newptr;
+    }
+    memcpy(mf->mem + mf->cur, buf, count);
+    mf->cur = end;
+    return count;
+}
+
+# ifdef BSD
+static cr_off mock_file_seek(void *cookie, cr_off off, int whence) {
+    struct memfile *mf = cookie;
+    switch (whence) {
+        case SEEK_SET: return (mf->cur = off);
+        case SEEK_CUR: return (mf->cur = off_safe_add(mf->size, mf->cur, off));
+        case SEEK_END: return (mf->cur = off_safe_add(mf->size, mf->size, off));
+        default: break;
+    }
+    errno = EINVAL;
+    return (off_t) -1;
+}
+# else
+static int mock_file_seek(void *cookie, cr_off *off, int whence) {
+    struct memfile *mf = cookie;
+    switch (whence) {
+        case SEEK_SET: mf->cur = *off; break;
+        case SEEK_CUR: *off = (mf->cur = off_safe_add(mf->size, mf->cur, *off)); break;
+        case SEEK_END: *off = (mf->cur = off_safe_add(mf->size, mf->size, *off)); break;
+        default: errno = EINVAL; return -1;
+    }
+    return 0;
+}
+# endif
+
+static int mock_file_close(void *cookie) {
+    struct memfile *mf = cookie;
+    free(mf->mem);
+    free(cookie);
+    return 0;
+}
+#endif
+
+FILE *cr_mock_file_size(size_t max_size) {
+#if defined(__unix__) || defined(BSD)
+    struct memfile *cookie = malloc(sizeof (struct memfile));
+    *cookie = (struct memfile) {
+        .max_size = max_size,
+        .region_size = 4096,
+        .mem = malloc(4096),
+    };
+
+    FILE *f;
+# ifdef __unix__
+    f = fopencookie(cookie, "w+", (cookie_io_functions_t) {
+        .read  = mock_file_read,
+        .write = mock_file_write,
+        .seek  = mock_file_seek,
+        .close = mock_file_close,
+    });
+# else
+    f = funopen(cookie,
+            mock_file_read,
+            mock_file_write,
+            mock_file_seek,
+            mock_file_close);
+# endif
+    return f;
+#else
+    (void) max_size;
+
+    // fallback to tmpfile()
+   return tmpfile();
+#endif
 }
