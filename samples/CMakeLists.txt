@@ -54,6 +54,7 @@ macro(add_samples DIR_ SAMPLES_)
         add_test(${sample} ${sample}.bin)
         set_property(TEST ${sample} PROPERTY
             ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+            ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
         )
 
         if (NOT MSVC) # we disable the scripted tests when building with MSVC
@@ -62,6 +63,7 @@ macro(add_samples DIR_ SAMPLES_)
                 ENVIRONMENT "LC_ALL=en_US.utf8"
                 ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
                 ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
+                ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
             )
         endif ()
     endforeach()
