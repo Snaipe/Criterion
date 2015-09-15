@@ -5,6 +5,7 @@
 // set a timeout for I/O tests
 TestSuite(redirect, .timeout = 0.1);
 
+#if __GNUC__ >= 5
 Test(redirect, mock) {
     auto fmock = criterion::mock_file();
 
@@ -15,6 +16,20 @@ Test(redirect, mock) {
     fmock >> contents;
 
     cr_assert_eq(contents, "Hello");
+}
+#endif
+
+Test(redirect, mock_c) {
+    std::FILE* fmock = cr_mock_file_size(4096);
+
+    std::fprintf(fmock, "Hello");
+    std::fflush(fmock);
+    std::rewind(fmock);
+
+    char contents[sizeof ("Hello")] = {0};
+    fgets(contents, sizeof (contents), fmock);
+
+    cr_assert_str_eq(contents, "Hello");
 }
 
 Test(redirect, stdout_) {
