@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <iostream>
+#include <string>
 
 // set a timeout for I/O tests
 TestSuite(redirect, .timeout = 0.1);
