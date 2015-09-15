@@ -170,6 +170,13 @@ install(TARGETS criterion
 
 add_custom_target(criterion_tests)
 
+add_custom_target(gcov
+    "${CMAKE_COMMAND}"
+        -DSOURCE_FILES="${SOURCE_FILES}"
+        -DCOV_PATH="${CMAKE_CURRENT_BINARY_DIR}"
+        -P "${CMAKE_MODULE_PATH}/Gcov.cmake"
+)
+
 enable_testing()
 add_subdirectory(samples)
 add_subdirectory(test)
