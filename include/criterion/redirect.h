@@ -33,7 +33,15 @@
 #  include <fstream>
 
 #  ifdef __GNUC__
+#   if defined(__MINGW32__) || defined(__MINGW64__)
+#    define off_t _off_t
+#    define off64_t _off64_t
+#   endif
 #   include <ext/stdio_sync_filebuf.h>
+#   if defined(__MINGW32__) || defined(__MINGW64__)
+#    undef off_t
+#    undef off64_t
+#   endif
 #  endif
 # else
 #  include <stdio.h>
