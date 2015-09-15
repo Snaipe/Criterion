@@ -77,6 +77,7 @@ foreach(script ${SCRIPTS})
     add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
     set_property(TEST ${script} PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
+        ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
     )
 
     add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${script})
@@ -84,6 +85,7 @@ foreach(script ${SCRIPTS})
         ENVIRONMENT "LC_ALL=en_US.utf8"
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
+        ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
     )
 endforeach()
 
