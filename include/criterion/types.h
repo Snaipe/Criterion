@@ -44,7 +44,7 @@ struct criterion_test_extra_data {
     int exit_code;
     bool disabled;
     const char *description;
-    float timeout;
+    double timeout;
     void *data;
 };
 
