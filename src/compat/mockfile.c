@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 #define _GNU_SOURCE 1
-#include "internal.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include "internal.h"
 
 #if defined(BSD) || defined(__unix__)
 

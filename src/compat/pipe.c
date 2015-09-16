@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <csptr/smalloc.h>
 
+#include "criterion/assert.h"
 #include "pipe.h"
 #include "internal.h"
 
