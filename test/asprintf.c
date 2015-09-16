@@ -60,6 +60,6 @@ Theory((struct format_test *fmt), asprintf, valid) {
 
 Test(asprintf, invalid) {
     char *actual;
-    cr_expect_eq(cr_asprintf(&actual, "%"), -1);
+    cr_expect_lt(cr_asprintf(&actual, "%"), 0);
 }
 #endif

@@ -28,20 +28,20 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "criterion/logging.h"
+#include "compat/time.h"
+#include "compat/posix.h"
+#include "string/i18n.h"
+#include "io/event.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
-#include "event.h"
-#include "process.h"
-#include "timer.h"
-#include "posix-compat.h"
+#include "worker.h"
 #include "abort.h"
 #include "config.h"
-#include "i18n.h"
 #include "common.h"
 
 #ifdef HAVE_PCRE
-#include "extmatch.h"
+#include "string/extmatch.h"
 #endif
 
 #ifdef _MSC_VER

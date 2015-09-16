@@ -28,9 +28,9 @@
 #include "criterion/types.h"
 #include "criterion/options.h"
 #include "criterion/redirect.h"
-#include "process.h"
-#include "event.h"
-#include "posix-compat.h"
+#include "io/event.h"
+#include "compat/posix.h"
+#include "worker.h"
 
 struct process {
     s_proc_handle *proc;

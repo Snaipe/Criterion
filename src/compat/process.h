@@ -21,25 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef COMPAT_PROCESS_H_
+# define COMPAT_PROCESS_H_
 
 # include "criterion/types.h"
-# include "posix-compat.h"
 
-DECL_SECTION_LIMITS(struct criterion_test, cr_tst);
-DECL_SECTION_LIMITS(struct criterion_suite, cr_sts);
+struct proc_handle;
+typedef struct proc_handle s_proc_handle;
 
-struct criterion_test_set *criterion_init(void);
+struct worker_context {
+    struct criterion_test *test;
+    struct criterion_suite *suite;
+    f_worker_func func;
+    struct pipe_handle *pipe;
+};
 
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test *Test = GET_SECTION_START(cr_tst);       \
-            Test < (struct criterion_test*) GET_SECTION_END(cr_tst);    \
-            ++Test)
+extern struct worker_context g_worker_context;
 
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite *Suite = GET_SECTION_START(cr_sts);     \
-            Suite < (struct criterion_suite*) GET_SECTION_END(cr_sts);  \
-            ++Suite)
+int resume_child(void);
 
-#endif /* !CRITERION_RUNNER_H_ */
+s_proc_handle *fork_process();
+void wait_process(s_proc_handle *handle, int *status);
+
+s_proc_handle *get_current_process();
+bool is_current_process(s_proc_handle *proc);
+
+#endif /* !COMPAT_PROCESS_H_ */

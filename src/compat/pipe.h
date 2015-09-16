@@ -21,18 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef STATS_H_
-# define STATS_H_
+#ifndef PIPE_H_
+# define PIPE_H_
 
-# include "criterion/stats.h"
-# include "event.h"
+# include "common.h"
 
-struct criterion_global_stats *stats_init(void);
-struct criterion_test_stats *test_stats_init(struct criterion_test *t);
-struct criterion_suite_stats *suite_stats_init(struct criterion_suite *s);
-void stat_push_event(struct criterion_global_stats *stats,
-                     struct criterion_suite_stats *suite,
-                     struct criterion_test_stats *test,
-                     struct event *data);
+struct pipe_handle;
+typedef struct pipe_handle s_pipe_handle;
 
-#endif /* !STATS_H_ */
+enum pipe_end {
+    PIPE_READ = 0,
+    PIPE_WRITE = 1,
+};
+
+enum criterion_std_fd {
+    CR_STDIN = 0,
+    CR_STDOUT = 1,
+    CR_STDERR = 2,
+};
+
+s_pipe_handle *stdpipe();
+FILE *pipe_in(s_pipe_handle *p, int do_close);
+FILE *pipe_out(s_pipe_handle *p, int do_close);
+
+int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
+void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
+
+INLINE FILE* get_std_file(int fd_kind) {
+    switch (fd_kind) {
+        case CR_STDIN:  return stdin;
+        case CR_STDOUT: return stdout;
+        case CR_STDERR: return stderr;
+    }
+    return NULL;
+}
+
+extern s_pipe_handle *stdout_redir;
+extern s_pipe_handle *stderr_redir;
+extern s_pipe_handle *stdin_redir;
+
+#endif /* !PIPE_H_ */
