@@ -28,6 +28,7 @@
 #include <string.h>
 #include <errno.h>
 #include "internal.h"
+#include "criterion/redirect.h"
 
 #if defined(BSD) || defined(__unix__)
 

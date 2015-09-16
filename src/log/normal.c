@@ -30,7 +30,7 @@
 #include "criterion/logging.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
-#include "compat/basename.h"
+#include "compat/posix.h"
 #include "compat/time.h"
 #include "string/i18n.h"
 #include "config.h"

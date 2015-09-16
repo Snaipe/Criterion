@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #include <csptr/smalloc.h>
+#include "core/worker.h"
 #include "process.h"
 #include "internal.h"
 #include "pipe-internal.h"
