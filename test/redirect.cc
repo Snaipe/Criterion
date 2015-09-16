@@ -33,6 +33,32 @@ Test(redirect, mock_c) {
     cr_assert_str_eq(contents, "Hello");
 }
 
+Test(redirect, assertions) {
+    std::FILE* f1 = cr_mock_file_size(4096);
+    std::FILE* f2 = cr_mock_file_size(4096);
+    std::FILE* f3 = cr_mock_file_size(4096);
+
+    fprintf(f1, "Foo");
+    fprintf(f2, "Foo");
+    fprintf(f3, "Bar");
+
+    fflush(f1);
+    fflush(f2);
+    fflush(f3);
+
+    cr_expect_file_contents_eq(f1, f1);
+    rewind(f1);
+
+    cr_expect_file_contents_eq(f1, f2);
+    rewind(f1);
+
+    cr_expect_file_contents_neq(f1, f3);
+
+    fclose(f1);
+    fclose(f2);
+    fclose(f3);
+}
+
 Test(redirect, stdout_) {
     cr_redirect_stdout();
 
