@@ -25,7 +25,7 @@
 # define STATS_H_
 
 # include "criterion/stats.h"
-# include "event.h"
+# include "io/event.h"
 
 struct criterion_global_stats *stats_init(void);
 struct criterion_test_stats *test_stats_init(struct criterion_test *t);

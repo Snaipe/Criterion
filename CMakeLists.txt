@@ -75,6 +75,18 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
+  src/core/abort.c
+  src/core/abort.h
+  src/core/report.c
+  src/core/report.h
+  src/core/runner.c
+  src/core/runner.h
+  src/core/worker.c
+  src/core/worker.h
+  src/core/stats.c
+  src/core/stats.h
+  src/core/ordered-set.c
+  src/core/theories.c
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h
@@ -85,40 +97,28 @@ set(SOURCE_FILES
   src/compat/basename.c
   src/compat/basename.h
   src/compat/mockfile.c
+  src/compat/time.c
+  src/compat/time.h
   src/compat/posix.h
-  src/redirect.c
-  src/abort.c
-  src/abort.h
-  src/event.c
-  src/event.h
-  src/report.c
-  src/report.h
-  src/runner.c
-  src/runner.h
-  src/worker.c
-  src/worker.h
-  src/stats.c
-  src/stats.h
+  src/io/redirect.c
+  src/io/event.c
+  src/io/event.h
+  src/io/asprintf.c
+  src/io/file.c
   src/log/logging.c
   src/log/tap.c
   src/log/normal.c
-  src/options.c
-  src/timer.c
-  src/timer.h
-  src/i18n.c
-  src/i18n.h
-  src/ordered-set.c
-  src/theories.c
-  src/asprintf.c
-  src/file.c
-  src/main.c
-  src/entry.c
+  src/string/i18n.c
+  src/string/i18n.h
+  src/entry/options.c
+  src/entry/main.c
+  src/entry/entry.c
 )
 
 if (PCRE_FOUND)
   set (SOURCE_FILES ${SOURCE_FILES}
-    src/extmatch.c
-    src/extmatch.h
+    src/string/extmatch.c
+    src/string/extmatch.h
   )
   set(HAVE_PCRE 1)
 endif ()

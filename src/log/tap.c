@@ -30,7 +30,7 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "compat/basename.h"
-#include "timer.h"
+#include "compat/time.h"
 #include "config.h"
 #include "common.h"
 

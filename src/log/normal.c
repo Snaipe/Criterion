@@ -31,9 +31,9 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "compat/basename.h"
-#include "timer.h"
+#include "compat/time.h"
+#include "string/i18n.h"
 #include "config.h"
-#include "i18n.h"
 #include "common.h"
 
 #ifdef VANILLA_WIN32

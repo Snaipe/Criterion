@@ -29,7 +29,7 @@
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
-#include "runner.h"
+#include "core/runner.h"
 #include "config.h"
 #include "common.h"
 
