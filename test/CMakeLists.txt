@@ -7,6 +7,7 @@ include_directories(../include ../src)
 
 set(TEST_SOURCES
     ordered-set.c
+    asprintf.c
     redirect.cc
 )
 
