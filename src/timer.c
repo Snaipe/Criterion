@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "timer.h"
 #include "criterion/common.h"
-#include "posix-compat.h"
+#include "compat/posix.h"
 
 #define GIGA 1000000000
 

@@ -21,24 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef PIPE_H_
+# define PIPE_H_
 
-# include "criterion/types.h"
+# include "common.h"
 
-DECL_SECTION_LIMITS(struct criterion_test, cr_tst);
-DECL_SECTION_LIMITS(struct criterion_suite, cr_sts);
+struct pipe_handle;
+typedef struct pipe_handle s_pipe_handle;
 
-struct criterion_test_set *criterion_init(void);
+enum pipe_end {
+    PIPE_READ = 0,
+    PIPE_WRITE = 1,
+};
 
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test *Test = GET_SECTION_START(cr_tst);       \
-            Test < (struct criterion_test*) GET_SECTION_END(cr_tst);    \
-            ++Test)
+enum criterion_std_fd {
+    CR_STDIN = 0,
+    CR_STDOUT = 1,
+    CR_STDERR = 2,
+};
 
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite *Suite = GET_SECTION_START(cr_sts);     \
-            Suite < (struct criterion_suite*) GET_SECTION_END(cr_sts);  \
-            ++Suite)
+s_pipe_handle *stdpipe();
+FILE *pipe_in(s_pipe_handle *p, int do_close);
+FILE *pipe_out(s_pipe_handle *p, int do_close);
 
-#endif /* !CRITERION_RUNNER_H_ */
+int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
+void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
+
+INLINE FILE* get_std_file(int fd_kind) {
+    switch (fd_kind) {
+        case CR_STDIN:  return stdin;
+        case CR_STDOUT: return stdout;
+        case CR_STDERR: return stderr;
+    }
+    return NULL;
+}
+
+extern s_pipe_handle *stdout_redir;
+extern s_pipe_handle *stderr_redir;
+extern s_pipe_handle *stdin_redir;
+
+#endif /* !PIPE_H_ */

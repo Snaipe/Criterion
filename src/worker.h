@@ -21,24 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef PROCESS_H_
+# define PROCESS_H_
 
-# include "criterion/types.h"
+# include <stdbool.h>
+# include "compat/process.h"
 
-DECL_SECTION_LIMITS(struct criterion_test, cr_tst);
-DECL_SECTION_LIMITS(struct criterion_suite, cr_sts);
+struct process;
 
-struct criterion_test_set *criterion_init(void);
+enum status_kind {
+    EXIT_STATUS,
+    STOPPED,
+    SIGNAL,
+};
 
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test *Test = GET_SECTION_START(cr_tst);       \
-            Test < (struct criterion_test*) GET_SECTION_END(cr_tst);    \
-            ++Test)
+struct process_status {
+    enum status_kind kind;
+    int status;
+};
 
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite *Suite = GET_SECTION_START(cr_sts);     \
-            Suite < (struct criterion_suite*) GET_SECTION_END(cr_sts);  \
-            ++Suite)
+void run_worker(struct worker_context *ctx);
+void set_runner_process(void);
+void unset_runner_process(void);
+bool is_runner(void);
+struct process_status wait_proc(struct process *proc);
+struct process *spawn_test_worker(struct criterion_test *test,
+                                  struct criterion_suite *suite,
+                                  void (*func)(struct criterion_test *, struct criterion_suite *));
+struct event *worker_read_event(struct process *proc);
 
-#endif /* !CRITERION_RUNNER_H_ */
+#endif /* !PROCESS_H_ */

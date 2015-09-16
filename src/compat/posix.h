@@ -21,24 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef POSIX_COMPAT_H_
+# define POSIX_COMPAT_H_
 
-# include "criterion/types.h"
+#if defined(_WIN32) && !defined(__CYGWIN__)
+# define VANILLA_WIN32
+#endif
 
-DECL_SECTION_LIMITS(struct criterion_test, cr_tst);
-DECL_SECTION_LIMITS(struct criterion_suite, cr_sts);
+# if !defined(_POSIX_SOURCE)
+#  define _POSIX_SOURCE 1
+#  define TMP_POSIX
+# endif
+# include <stdio.h>
+# ifdef TMP_POSIX
+#  undef _POSIX_SOURCE
+#  undef TMP_POSIX
+# endif
 
-struct criterion_test_set *criterion_init(void);
+# ifdef VANILLA_WIN32
+#  define WEXITSTATUS(Status) (((Status) & 0xFF00) >> 8)
+#  define WTERMSIG(Status)    ((Status) & 0x7F)
+#  define WIFEXITED(Status)   (WTERMSIG(Status) == 0)
+#  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
 
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test *Test = GET_SECTION_START(cr_tst);       \
-            Test < (struct criterion_test*) GET_SECTION_END(cr_tst);    \
-            ++Test)
+#  define SIGPROF 27
+#  define CR_EXCEPTION_TIMEOUT 0xC0001042
+# else
+#  include <sys/param.h>
+#  include <sys/wait.h>
+# endif
 
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite *Suite = GET_SECTION_START(cr_sts);     \
-            Suite < (struct criterion_suite*) GET_SECTION_END(cr_sts);  \
-            ++Suite)
+# include "compat/pipe.h"
+# include "compat/section.h"
+# include "compat/process.h"
+# include "compat/basename.h"
 
-#endif /* !CRITERION_RUNNER_H_ */
+#endif /* !POSIX_COMPAT_H_ */

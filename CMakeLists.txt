@@ -75,6 +75,18 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
+  src/compat/internal.h
+  src/compat/pipe.c
+  src/compat/pipe.h
+  src/compat/section.c
+  src/compat/section.h
+  src/compat/process.c
+  src/compat/process.h
+  src/compat/basename.c
+  src/compat/basename.h
+  src/compat/mockfile.c
+  src/compat/posix.h
+  src/redirect.c
   src/abort.c
   src/abort.h
   src/event.c
@@ -83,8 +95,8 @@ set(SOURCE_FILES
   src/report.h
   src/runner.c
   src/runner.h
-  src/process.c
-  src/process.h
+  src/worker.c
+  src/worker.h
   src/stats.c
   src/stats.h
   src/log/logging.c
@@ -96,7 +108,6 @@ set(SOURCE_FILES
   src/i18n.c
   src/i18n.h
   src/ordered-set.c
-  src/posix-compat.c
   src/theories.c
   src/asprintf.c
   src/file.c

@@ -29,9 +29,9 @@
 #include "criterion/logging.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
+#include "compat/basename.h"
 #include "timer.h"
 #include "config.h"
-#include "posix-compat.h"
 #include "common.h"
 
 #ifdef _MSC_VER
