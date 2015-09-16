@@ -24,7 +24,7 @@
 #include <csptr/smalloc.h>
 #include "process.h"
 #include "internal.h"
-#include "pipe.h"
+#include "pipe-internal.h"
 
 #ifdef VANILLA_WIN32
 # define CREATE_SUSPENDED_(Filename, CmdLine, StartupInfo, Info)    \

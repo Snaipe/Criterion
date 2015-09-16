@@ -25,16 +25,7 @@
 #include <csptr/smalloc.h>
 
 #include "criterion/assert.h"
-#include "pipe.h"
-#include "internal.h"
-
-struct pipe_handle {
-#ifdef VANILLA_WIN32
-    HANDLE fhs[2];
-#else
-    int fds[2];
-#endif
-};
+#include "pipe-internal.h"
 
 FILE *pipe_in(s_pipe_handle *p, int do_close) {
 #ifdef VANILLA_WIN32
