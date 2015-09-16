@@ -55,11 +55,11 @@ Theory((struct format_test *fmt), asprintf, valid) {
     free(actual);
 }
 
-#ifdef __GNUC__
+#if defined(__unix__) && defined(__GNUC__)
 # pragma GCC diagnostic ignored "-Wformat"
-#endif
 
 Test(asprintf, invalid) {
     char *actual;
     cr_expect_eq(cr_asprintf(&actual, "%"), -1);
 }
+#endif
