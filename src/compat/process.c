@@ -290,7 +290,17 @@ s_proc_handle *fork_process() {
     ResumeThread(info.hThread);
     CloseHandle(info.hThread);
 
-    while (!ctx->resumed); // wait until the child has initialized itself
+    // wait until the child has initialized itself
+    while (!ctx->resumed) {
+        DWORD exit;
+        GetExitCodeProcess(info.hProcess, &exit);
+        if (exit != STILL_ACTIVE) {
+            UnmapViewOfFile(ctx);
+            CloseHandle(sharedMem);
+            CloseHandle(info.hProcess);
+            return (void *) -1;
+        }
+    }
 
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);

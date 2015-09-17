@@ -91,7 +91,7 @@ struct process *spawn_test_worker(struct criterion_test *test,
 
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
-        return NULL;
+        abort();
     } else if (proc == NULL) {
         run_worker(&g_worker_context);
         return NULL;
