@@ -21,11 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <assert.h>
+#include <string.h>
 #include <csptr/smalloc.h>
 #include "core/worker.h"
+#include "core/runner.h"
+#include "io/event.h"
 #include "process.h"
 #include "internal.h"
 #include "pipe-internal.h"
+
+#include <signal.h>
 
 #ifdef VANILLA_WIN32
 # define CREATE_SUSPENDED_(Filename, CmdLine, StartupInfo, Info)    \
@@ -44,14 +50,6 @@
         WriteProcessMemory(Proc, &What, &What, Size, NULL);
 #endif
 
-struct proc_handle {
-#ifdef VANILLA_WIN32
-    HANDLE handle;
-#else
-    pid_t pid;
-#endif
-};
-
 struct worker_context g_worker_context = {.test = NULL};
 
 #ifdef VANILLA_WIN32
@@ -69,6 +67,32 @@ static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker");
 #define MAPPING_SIZE sizeof (struct full_context)
 
 static struct full_context local_ctx;
+#endif
+
+#ifdef __unix__
+# ifndef __GNUC__
+#  error Unsupported compiler. Use GCC or Clang under *nixes.
+# endif
+
+static void handle_sigchld(int sig) {
+    assert(sig == SIGCHLD);
+
+    int fd = g_worker_pipe->fds[1];
+    pid_t pid;
+    int status;
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        int kind = WORKER_TERMINATED;
+        struct worker_status ws = {
+            (s_proc_handle) { pid }, get_status(status)
+        };
+
+        char buf[sizeof (int) + sizeof (struct worker_status)];
+        memcpy(buf, &kind, sizeof (kind));
+        memcpy(buf + sizeof (kind), &ws, sizeof (ws));
+
+        write(fd, &buf, sizeof (buf));
+    }
+}
 #endif
 
 int resume_child(void) {
@@ -111,6 +135,16 @@ int resume_child(void) {
     run_worker(&g_worker_context);
     return 1;
 #else
+# ifdef __unix__
+    struct sigaction sa;
+    sa.sa_handler = &handle_sigchld;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+    if (sigaction(SIGCHLD, &sa, 0) == -1) {
+        perror(0);
+        exit(1);
+    }
+# endif
     return 0;
 #endif
 }

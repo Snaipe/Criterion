@@ -25,7 +25,9 @@
 # define PROCESS_H_
 
 # include <stdbool.h>
+# include "criterion/types.h"
 # include "compat/process.h"
+# include "compat/pipe.h"
 
 struct process;
 
@@ -40,14 +42,21 @@ struct process_status {
     int status;
 };
 
+struct worker_status {
+    s_proc_handle proc;
+    struct process_status status;
+};
+
 void run_worker(struct worker_context *ctx);
 void set_runner_process(void);
 void unset_runner_process(void);
 bool is_runner(void);
 struct process_status wait_proc(struct process *proc);
+struct process_status get_status(int status);
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
-                                  void (*func)(struct criterion_test *, struct criterion_suite *));
+                                  f_worker_func func,
+                                  s_pipe_handle *pipe);
 struct event *worker_read_event(struct process *proc);
 
 #endif /* !PROCESS_H_ */

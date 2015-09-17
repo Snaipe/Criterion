@@ -25,8 +25,16 @@
 # define COMPAT_PROCESS_H_
 
 # include "criterion/types.h"
+# include "compat/posix.h"
 
-struct proc_handle;
+struct proc_handle {
+#ifdef VANILLA_WIN32
+    HANDLE handle;
+#else
+    pid_t pid;
+#endif
+};
+
 typedef struct proc_handle s_proc_handle;
 
 struct worker_context {

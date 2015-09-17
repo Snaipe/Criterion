@@ -27,18 +27,23 @@
 #include "criterion/assert.h"
 #include "pipe-internal.h"
 
-FILE *pipe_in(s_pipe_handle *p, int do_close) {
+FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts) {
 #ifdef VANILLA_WIN32
-    if (do_close)
+    if (opts & PIPE_CLOSE)
         CloseHandle(p->fhs[1]);
     int fd = _open_osfhandle((intptr_t) p->fhs[0], _O_RDONLY);
     if (fd == -1)
         return NULL;
+    if (opts & PIPE_DUP)
+        fd = _dup(fd);
     FILE *in = _fdopen(fd, "r");
 #else
-    if (do_close)
+    if (opts & PIPE_CLOSE)
         close(p->fds[1]);
-    FILE *in = fdopen(p->fds[0], "r");
+    int fd = p->fds[0];
+    if (opts & PIPE_DUP)
+        fd = dup(fd);
+    FILE *in = fdopen(fd, "r");
 #endif
     if (!in)
         return NULL;
@@ -47,18 +52,23 @@ FILE *pipe_in(s_pipe_handle *p, int do_close) {
     return in;
 }
 
-FILE *pipe_out(s_pipe_handle *p, int do_close) {
+FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts) {
 #ifdef VANILLA_WIN32
-    if (do_close)
+    if (opts & PIPE_CLOSE)
         CloseHandle(p->fhs[0]);
     int fd = _open_osfhandle((intptr_t) p->fhs[1], _O_WRONLY);
     if (fd == -1)
         return NULL;
+    if (opts & PIPE_DUP)
+        fd = _dup(fd);
     FILE *out = _fdopen(fd, "w");
 #else
-    if (do_close)
+    if (opts & PIPE_CLOSE)
         close(p->fds[0]);
-    FILE *out = fdopen(p->fds[1], "w");
+    int fd = p->fds[1];
+    if (opts & PIPE_DUP)
+        fd = dup(fd);
+    FILE *out = fdopen(fd, "w");
 #endif
     if (!out)
         return NULL;
