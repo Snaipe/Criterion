@@ -48,7 +48,46 @@
 
 # define WRITE_PROCESS_(Proc, What, Size)                           \
         WriteProcessMemory(Proc, &What, &What, Size, NULL);
+
+static int get_win_status(HANDLE handle) {
+    DWORD exit_code;
+    GetExitCodeProcess(handle, &exit_code);
+    unsigned int sig = 0;
+    switch (exit_code) {
+        case STATUS_FLOAT_DENORMAL_OPERAND:
+        case STATUS_FLOAT_DIVIDE_BY_ZERO:
+        case STATUS_FLOAT_INEXACT_RESULT:
+        case STATUS_FLOAT_INVALID_OPERATION:
+        case STATUS_FLOAT_OVERFLOW:
+        case STATUS_FLOAT_STACK_CHECK:
+        case STATUS_FLOAT_UNDERFLOW:
+        case STATUS_INTEGER_DIVIDE_BY_ZERO:
+        case STATUS_INTEGER_OVERFLOW:           sig = SIGFPE; break;
+
+        case STATUS_ILLEGAL_INSTRUCTION:
+        case STATUS_PRIVILEGED_INSTRUCTION:
+        case STATUS_NONCONTINUABLE_EXCEPTION:   sig = SIGILL; break;
+
+        case CR_EXCEPTION_TIMEOUT:              sig = SIGPROF; break;
+
+        case STATUS_ACCESS_VIOLATION:
+        case STATUS_DATATYPE_MISALIGNMENT:
+        case STATUS_ARRAY_BOUNDS_EXCEEDED:
+        case STATUS_GUARD_PAGE_VIOLATION:
+        case STATUS_IN_PAGE_ERROR:
+        case STATUS_NO_MEMORY:
+        case STATUS_INVALID_DISPOSITION:
+        case STATUS_STACK_OVERFLOW:             sig = SIGSEGV; break;
+
+        case STATUS_CONTROL_C_EXIT:             sig = SIGINT; break;
+
+        default: break;
+    }
+    return sig ? sig : exit_code << 8;
+}
 #endif
+
+
 
 struct worker_context g_worker_context = {.test = NULL};
 
@@ -92,6 +131,37 @@ static void handle_sigchld(int sig) {
 
         write(fd, &buf, sizeof (buf));
     }
+}
+#endif
+
+#ifdef VANILLA_WIN32
+struct wait_context {
+    HANDLE wait_handle;
+    HANDLE proc_handle;
+};
+
+static void handle_child_terminated(PVOID lpParameter,
+                                    BOOLEAN TimerOrWaitFired) {
+
+    assert(!TimerOrWaitFired);
+
+    struct wait_context *wctx = lpParameter;
+
+    int status = get_win_status(wctx->proc_handle);
+    int kind = WORKER_TERMINATED;
+    struct worker_status ws = {
+        (s_proc_handle) { wctx->proc_handle }, get_status(status)
+    };
+
+    char buf[sizeof (int) + sizeof (struct worker_status)];
+    memcpy(buf, &kind, sizeof (kind));
+    memcpy(buf + sizeof (kind), &ws, sizeof (ws));
+
+    WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), NULL, NULL);
+
+    HANDLE whandle = wctx->wait_handle;
+    free(lpParameter);
+    UnregisterWaitEx(whandle, NULL);
 }
 #endif
 
@@ -206,6 +276,17 @@ s_proc_handle *fork_process() {
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
 
+    struct wait_context *wctx = malloc(sizeof (struct wait_context));
+    *wctx = {}
+
+    RegisterWaitForSingleObject(
+            &wctx->wait_handle,
+            info.hProcess,
+            handle_child_terminated,
+            wctx,
+            INFINITE,
+            WT_EXECUTELONGFUNCTION | WT_EXECUTEONLYONCE);
+
     s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
     *handle = (s_proc_handle) { info.hProcess };
     return handle;
@@ -225,43 +306,8 @@ s_proc_handle *fork_process() {
 void wait_process(s_proc_handle *handle, int *status) {
 #ifdef VANILLA_WIN32
     WaitForSingleObject(handle->handle, INFINITE);
-    DWORD exit_code;
-    GetExitCodeProcess(handle->handle, &exit_code);
+    *status = get_win_status(handle->handle);
     CloseHandle(handle->handle);
-
-    unsigned int sig = 0;
-    switch (exit_code) {
-        case STATUS_FLOAT_DENORMAL_OPERAND:
-        case STATUS_FLOAT_DIVIDE_BY_ZERO:
-        case STATUS_FLOAT_INEXACT_RESULT:
-        case STATUS_FLOAT_INVALID_OPERATION:
-        case STATUS_FLOAT_OVERFLOW:
-        case STATUS_FLOAT_STACK_CHECK:
-        case STATUS_FLOAT_UNDERFLOW:
-        case STATUS_INTEGER_DIVIDE_BY_ZERO:
-        case STATUS_INTEGER_OVERFLOW:           sig = SIGFPE; break;
-
-        case STATUS_ILLEGAL_INSTRUCTION:
-        case STATUS_PRIVILEGED_INSTRUCTION:
-        case STATUS_NONCONTINUABLE_EXCEPTION:   sig = SIGILL; break;
-
-        case CR_EXCEPTION_TIMEOUT:              sig = SIGPROF; break;
-
-        case STATUS_ACCESS_VIOLATION:
-        case STATUS_DATATYPE_MISALIGNMENT:
-        case STATUS_ARRAY_BOUNDS_EXCEEDED:
-        case STATUS_GUARD_PAGE_VIOLATION:
-        case STATUS_IN_PAGE_ERROR:
-        case STATUS_NO_MEMORY:
-        case STATUS_INVALID_DISPOSITION:
-        case STATUS_STACK_OVERFLOW:             sig = SIGSEGV; break;
-
-        case STATUS_CONTROL_C_EXIT:             sig = SIGINT; break;
-
-        default: break;
-    }
-
-    *status = sig ? sig : exit_code << 8;
 #else
     waitpid(handle->pid, status, 0);
 #endif

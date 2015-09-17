@@ -26,6 +26,7 @@
 
 # include "criterion/types.h"
 # include "compat/posix.h"
+# include "internal.h"
 
 struct proc_handle {
 #ifdef VANILLA_WIN32
