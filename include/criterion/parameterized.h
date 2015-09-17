@@ -42,7 +42,7 @@
     criterion_test_params(sizeof (Type), (Array), (Length))
 # else
 #  define cr_make_param_array(Type, Array, Length) \
-    (struct criterion_test_params) { sizeof (Type), (void**)(Array), (Length) }
+    (struct criterion_test_params) { sizeof (Type), (void*)(Array), (Length) }
 # endif
 
 #endif /* !CRITERION_PARAMETERIZED_H_ */

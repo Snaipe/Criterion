@@ -8,6 +8,6 @@ ParameterizedTestParameters(params, str) {
     return cr_make_param_array(const char *, strings, sizeof (strings) / sizeof (const char *));
 }
 
-ParameterizedTest(const char *str, params, str) {
-    cr_assert(0, "Parameter: %s", str);
+ParameterizedTest(const char **str, params, str) {
+    cr_assert(0, "Parameter: %s", *str);
 }

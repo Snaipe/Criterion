@@ -40,11 +40,11 @@ enum criterion_test_kind {
 
 struct criterion_test_params {
     size_t size;
-    void **params;
+    void *params;
     size_t length;
 
 # ifdef __cplusplus
-    constexpr criterion_test_params(size_t size, void **params, size_t length)
+    constexpr criterion_test_params(size_t size, void *params, size_t length)
         : size(size)
         , params(params)
         , length(length)

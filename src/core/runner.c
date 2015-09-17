@@ -386,7 +386,7 @@ static void run_test_param(struct criterion_global_stats *stats,
 
     struct criterion_test_params params = test->data->param_();
     for (size_t i = 0; i < params.length; ++i) {
-        struct test_single_param param = { params.size, params.params[i] };
+        struct test_single_param param = { params.size, (char *) params.params + i * params.size };
 
         run_test(stats, suite_stats, test, suite, &param);
     }
