@@ -25,7 +25,6 @@
 # define COMPAT_PROCESS_H_
 
 # include "criterion/types.h"
-# include "compat/posix.h"
 # include "internal.h"
 
 struct proc_handle {

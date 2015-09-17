@@ -140,8 +140,8 @@ struct wait_context {
     HANDLE proc_handle;
 };
 
-static void handle_child_terminated(PVOID lpParameter,
-                                    BOOLEAN TimerOrWaitFired) {
+static void CALLBACK handle_child_terminated(PVOID lpParameter,
+                                             BOOLEAN TimerOrWaitFired) {
 
     assert(!TimerOrWaitFired);
 
@@ -157,7 +157,8 @@ static void handle_child_terminated(PVOID lpParameter,
     memcpy(buf, &kind, sizeof (kind));
     memcpy(buf + sizeof (kind), &ws, sizeof (ws));
 
-    WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), NULL, NULL);
+    DWORD written;
+    WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), &written, NULL);
 
     HANDLE whandle = wctx->wait_handle;
     free(lpParameter);
@@ -277,7 +278,9 @@ s_proc_handle *fork_process() {
     CloseHandle(sharedMem);
 
     struct wait_context *wctx = malloc(sizeof (struct wait_context));
-    *wctx = {}
+    *wctx = (struct wait_context) {
+        .proc_handle = info.hProcess,
+    };
 
     RegisterWaitForSingleObject(
             &wctx->wait_handle,
