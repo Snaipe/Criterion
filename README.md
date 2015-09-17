@@ -4,7 +4,7 @@
 
 [![Unix Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/Snaipe/Criterion?svg=true&branch=bleeding)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
-[![Coverage Status](https://coveralls.io/repos/Snaipe/Criterion/badge.svg?branch=bleeding)](https://coveralls.io/r/Snaipe/Criterion?branch=bleeding) 
+[![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
 [![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
 
@@ -41,7 +41,8 @@ the user would have with other frameworks:
 
 * [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.0.0/criterion-v2.0.0-linux-x86_64.tar.bz2)
 * [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.0.0/criterion-v2.0.0-osx-x86_64.tar.bz2)
-* [Windows (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.0.0/criterion-v2.0.0-windows-x86_64.tar.bz2)
+* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.0.0/criterion-v2.0.0-windows-msvc-x86_64.tar.bz2)
+* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.0.0/criterion-v2.0.0-windows-mingw-x86_64.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 

@@ -1,3 +1,3 @@
 #!/bin/sh
-./simple.c.bin --no-early-exit --always-succeed
-./theories.c.bin --no-early-exit --always-succeed
+./simple.c.bin --always-succeed
+CRITERION_NO_EARLY_EXIT=0 ./simple.c.bin --always-succeed

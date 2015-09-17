@@ -27,7 +27,7 @@
 #include <string.h>
 #include "criterion/logging.h"
 #include "criterion/options.h"
-#include "i18n.h"
+#include "string/i18n.h"
 
 #ifdef ENABLE_NLS
 # define LOG_FORMAT "[%1$s%2$s%3$s] %4$s"

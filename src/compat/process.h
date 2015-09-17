@@ -21,19 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef EVENT_H_
-# define EVENT_H_
+#ifndef COMPAT_PROCESS_H_
+# define COMPAT_PROCESS_H_
 
-# include "criterion/event.h"
-# include <stdio.h>
+# include "criterion/types.h"
+# include "internal.h"
 
-extern FILE *g_event_pipe;
-
-struct event {
-    int kind;
-    void *data;
+struct proc_handle {
+#ifdef VANILLA_WIN32
+    HANDLE handle;
+#else
+    pid_t pid;
+#endif
 };
 
-struct event *read_event(FILE *f);
+typedef struct proc_handle s_proc_handle;
 
-#endif /* !EVENT_H_ */
+struct worker_context {
+    struct criterion_test *test;
+    struct criterion_suite *suite;
+    f_worker_func func;
+    struct pipe_handle *pipe;
+    struct test_single_param *param;
+};
+
+extern struct worker_context g_worker_context;
+
+int resume_child(void);
+
+s_proc_handle *fork_process();
+void wait_process(s_proc_handle *handle, int *status);
+
+s_proc_handle *get_current_process();
+bool is_current_process(s_proc_handle *proc);
+
+#endif /* !COMPAT_PROCESS_H_ */

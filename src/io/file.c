@@ -24,6 +24,9 @@ int cr_file_match_str(FILE* f, const char *str) {
 }
 
 int cr_file_match_file(FILE* f, FILE* ref) {
+    if (f == ref)
+        return true;
+
     char buf1[512];
     char buf2[512];
 

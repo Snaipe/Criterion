@@ -28,20 +28,20 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "criterion/logging.h"
+#include "compat/time.h"
+#include "compat/posix.h"
+#include "string/i18n.h"
+#include "io/event.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
-#include "event.h"
-#include "process.h"
-#include "timer.h"
-#include "posix-compat.h"
+#include "worker.h"
 #include "abort.h"
 #include "config.h"
-#include "i18n.h"
 #include "common.h"
 
 #ifdef HAVE_PCRE
-#include "extmatch.h"
+#include "string/extmatch.h"
 #endif
 
 #ifdef _MSC_VER
@@ -59,6 +59,7 @@ TestSuite();
 Test(,) {};
 
 static INLINE void nothing(void) {}
+static INLINE void nothing_ptr(UNUSED void* ptr) {}
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -186,7 +187,11 @@ static void run_test_child(struct criterion_test *test,
     struct timespec_compat ts;
     if (setup_abort_test()) {
         timer_start(&ts);
-        (test->test ? test->test : nothing)();
+        if (!test->data->param_)
+            (test->test ? test->test : nothing)();
+        else
+            (test->test ? (void(*)(void*)) test->test
+                        : nothing_ptr)(g_worker_context.param->ptr);
     }
 
     double elapsed_time;
@@ -208,17 +213,97 @@ static INLINE bool is_disabled(struct criterion_test *t,
 
 #define push_event(Kind, ...)                                       \
     do {                                                            \
-        stat_push_event(stats,                                      \
-                suite_stats,                                        \
-                test_stats,                                         \
+        stat_push_event(ctx->stats,                                 \
+                ctx->suite_stats,                                   \
+                ctx->test_stats,                                    \
                 &(struct event) { .kind = Kind, __VA_ARGS__ });     \
-        report(Kind, test_stats);                                   \
+        report(Kind, ctx->test_stats);                              \
     } while (0)
+
+s_pipe_handle *g_worker_pipe;
+
+struct execution_context {
+    bool test_started;
+    bool normal_finish;
+    bool cleaned_up;
+    struct criterion_global_stats *stats;
+    struct criterion_test *test;
+    struct criterion_test_stats *test_stats;
+    struct criterion_suite *suite;
+    struct criterion_suite_stats *suite_stats;
+};
+
+static void handle_worker_terminated(struct event *ev,
+        struct execution_context *ctx) {
+
+    struct worker_status *ws = ev->data;
+    struct process_status status = ws->status;
+
+    if (status.kind == SIGNAL) {
+        if (status.status == SIGPROF) {
+            ctx->test_stats->timed_out = true;
+            double elapsed_time = ctx->test->data->timeout;
+            if (elapsed_time == 0 && ctx->suite->data)
+                elapsed_time = ctx->suite->data->timeout;
+            push_event(POST_TEST, .data = &elapsed_time);
+            push_event(POST_FINI);
+            log(test_timeout, ctx->test_stats);
+            return;
+        }
+
+        if (ctx->normal_finish || !ctx->test_started) {
+            log(other_crash, ctx->test_stats);
+            if (!ctx->test_started) {
+                stat_push_event(ctx->stats,
+                        ctx->suite_stats,
+                        ctx->test_stats,
+                        &(struct event) { .kind = TEST_CRASH });
+            }
+            return;
+        }
+        ctx->test_stats->signal = status.status;
+        if (ctx->test->data->signal == 0) {
+            push_event(TEST_CRASH);
+            log(test_crash, ctx->test_stats);
+        } else {
+            double elapsed_time = 0;
+            push_event(POST_TEST, .data = &elapsed_time);
+            log(post_test, ctx->test_stats);
+            push_event(POST_FINI);
+            log(post_fini, ctx->test_stats);
+        }
+    } else {
+        if ((ctx->normal_finish && !ctx->cleaned_up) || !ctx->test_started) {
+            log(abnormal_exit, ctx->test_stats);
+            if (!ctx->test_started) {
+                stat_push_event(ctx->stats,
+                        ctx->suite_stats,
+                        ctx->test_stats,
+                        &(struct event) { .kind = TEST_CRASH });
+            }
+            return;
+        }
+        ctx->test_stats->exit_code = status.status;
+        if (!ctx->normal_finish) {
+            if (ctx->test->data->exit_code == 0) {
+                push_event(TEST_CRASH);
+                log(abnormal_exit, ctx->test_stats);
+            } else {
+                double elapsed_time = 0;
+                push_event(POST_TEST, .data = &elapsed_time);
+                log(post_test, ctx->test_stats);
+                push_event(POST_FINI);
+                log(post_fini, ctx->test_stats);
+            }
+        }
+    }
+}
 
 static void run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
         struct criterion_test *test,
-        struct criterion_suite *suite) {
+        struct criterion_suite *suite,
+        struct test_single_param *param) {
 
     struct criterion_test_stats *test_stats = test_stats_init(test);
     struct process *proc = NULL;
@@ -231,16 +316,21 @@ static void run_test(struct criterion_global_stats *stats,
         goto cleanup;
     }
 
-    proc = spawn_test_worker(test, suite, run_test_child);
+    proc = spawn_test_worker(test, suite, run_test_child, g_worker_pipe, param);
     if (proc == NULL && !is_runner())
         goto cleanup;
 
-    bool test_started  = false;
-    bool normal_finish = false;
-    bool cleaned_up = false;
+    struct execution_context ctx = {
+        .stats = stats,
+        .test = test,
+        .test_stats = test_stats,
+        .suite = suite,
+        .suite_stats = suite_stats,
+    };
     struct event *ev;
     while ((ev = worker_read_event(proc)) != NULL) {
-        stat_push_event(stats, suite_stats, test_stats, ev);
+        if (ev->kind < WORKER_TERMINATED)
+            stat_push_event(stats, suite_stats, test_stats, ev);
         switch (ev->kind) {
             case PRE_INIT:
                 report(PRE_INIT, test);
@@ -249,7 +339,7 @@ static void run_test(struct criterion_global_stats *stats,
             case PRE_TEST:
                 report(PRE_TEST, test);
                 log(pre_test, test);
-                test_started = true;
+                ctx.test_started = true;
                 break;
             case THEORY_FAIL: {
                 struct criterion_theory_stats ths = {
@@ -266,80 +356,56 @@ static void run_test(struct criterion_global_stats *stats,
             case POST_TEST:
                 report(POST_TEST, test_stats);
                 log(post_test, test_stats);
-                normal_finish = true;
+                ctx.normal_finish = true;
                 break;
             case POST_FINI:
                 report(POST_FINI, test_stats);
                 log(post_fini, test_stats);
-                cleaned_up = true;
+                ctx.cleaned_up = true;
                 break;
+            case WORKER_TERMINATED:
+                handle_worker_terminated(ev, &ctx);
+                sfree(ev);
+                goto cleanup;
         }
         sfree(ev);
-    }
-
-    struct process_status status = wait_proc(proc);
-    if (status.kind == SIGNAL) {
-        if (status.status == SIGPROF) {
-            test_stats->timed_out = true;
-            double elapsed_time = test->data->timeout;
-            if (elapsed_time == 0 && suite->data)
-                elapsed_time = suite->data->timeout;
-            push_event(POST_TEST, .data = &elapsed_time);
-            push_event(POST_FINI);
-            log(test_timeout, test_stats);
-            goto cleanup;
-        }
-
-        if (normal_finish || !test_started) {
-            log(other_crash, test_stats);
-            if (!test_started) {
-                stat_push_event(stats,
-                        suite_stats,
-                        test_stats,
-                        &(struct event) { .kind = TEST_CRASH });
-            }
-            goto cleanup;
-        }
-        test_stats->signal = status.status;
-        if (test->data->signal == 0) {
-            push_event(TEST_CRASH);
-            log(test_crash, test_stats);
-        } else {
-            double elapsed_time = 0;
-            push_event(POST_TEST, .data = &elapsed_time);
-            log(post_test, test_stats);
-            push_event(POST_FINI);
-            log(post_fini, test_stats);
-        }
-    } else {
-        if ((normal_finish && !cleaned_up) || !test_started) {
-            log(abnormal_exit, test_stats);
-            if (!test_started) {
-                stat_push_event(stats,
-                        suite_stats,
-                        test_stats,
-                        &(struct event) { .kind = TEST_CRASH });
-            }
-            goto cleanup;
-        }
-        test_stats->exit_code = status.status;
-        if (!normal_finish) {
-            if (test->data->exit_code == 0) {
-                push_event(TEST_CRASH);
-                log(abnormal_exit, test_stats);
-            } else {
-                double elapsed_time = 0;
-                push_event(POST_TEST, .data = &elapsed_time);
-                log(post_test, test_stats);
-                push_event(POST_FINI);
-                log(post_fini, test_stats);
-            }
-        }
     }
 
 cleanup:
     sfree(test_stats);
     sfree(proc);
+}
+
+static void run_test_param(struct criterion_global_stats *stats,
+        struct criterion_suite_stats *suite_stats,
+        struct criterion_test *test,
+        struct criterion_suite *suite) {
+
+    if (!test->data->param_)
+        return;
+
+    struct criterion_test_params params = test->data->param_();
+    for (size_t i = 0; i < params.length; ++i) {
+        struct test_single_param param = { params.size, params.params[i] };
+
+        run_test(stats, suite_stats, test, suite, &param);
+    }
+}
+
+static void run_test_switch(struct criterion_global_stats *stats,
+        struct criterion_suite_stats *suite_stats,
+        struct criterion_test *test,
+        struct criterion_suite *suite) {
+
+    switch (test->data->kind_) {
+        case CR_TEST_NORMAL:
+            run_test(stats, suite_stats, test, suite, NULL);
+            break;
+        case CR_TEST_PARAMETERIZED:
+            run_test_param(stats, suite_stats, test, suite);
+            break;
+        default: break;
+    }
 }
 
 #ifdef HAVE_PCRE
@@ -381,8 +447,12 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
 
     fflush(NULL); // flush everything before forking
 
+    g_worker_pipe = stdpipe();
+    if (g_worker_pipe == NULL)
+        abort();
+
     struct criterion_global_stats *stats = stats_init();
-    map_tests(set, stats, run_test);
+    map_tests(set, stats, run_test_switch);
 
     int result = is_runner() ? stats->tests_failed == 0 : -1;
 

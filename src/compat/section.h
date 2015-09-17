@@ -21,63 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef POSIX_COMPAT_H_
-# define POSIX_COMPAT_H_
-
-#if defined(_WIN32) && !defined(__CYGWIN__)
-# define VANILLA_WIN32
-#endif
-
-# if !defined(_POSIX_SOURCE)
-#  define _POSIX_SOURCE 1
-#  define TMP_POSIX
-# endif
-# include <stdio.h>
-# ifdef TMP_POSIX
-#  undef _POSIX_SOURCE
-#  undef TMP_POSIX
-# endif
-
-# ifdef VANILLA_WIN32
-#  define WEXITSTATUS(Status) (((Status) & 0xFF00) >> 8)
-#  define WTERMSIG(Status)    ((Status) & 0x7F)
-#  define WIFEXITED(Status)   (WTERMSIG(Status) == 0)
-#  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
-
-#  define SIGPROF 27
-#  define CR_EXCEPTION_TIMEOUT 0xC0001042
-# else
-#  include <sys/wait.h>
-# endif
-
-#include <criterion/types.h>
-
-struct proc_handle;
-typedef struct proc_handle s_proc_handle;
-
-struct pipe_handle;
-typedef struct pipe_handle s_pipe_handle;
-
-struct worker_context {
-    struct criterion_test *test;
-    struct criterion_suite *suite;
-    f_worker_func func;
-    struct pipe_handle *pipe;
-};
-
-extern struct worker_context g_worker_context;
-
-int resume_child(void);
-
-s_pipe_handle *stdpipe();
-FILE *pipe_in(s_pipe_handle *p, int do_close);
-FILE *pipe_out(s_pipe_handle *p, int do_close);
-
-s_proc_handle *fork_process();
-void wait_process(s_proc_handle *handle, int *status);
-
-s_proc_handle *get_current_process();
-bool is_current_process(s_proc_handle *proc);
+#ifndef SECTION_H_
+# define SECTION_H_
 
 # ifdef _WIN32
 void *get_win_section_start(const char *section);
@@ -98,6 +43,4 @@ void *get_osx_section_end(const char *section);
 #  define GET_SECTION_END(Name)   SECTION_END(Name)
 # endif
 
-const char *basename_compat(const char *str);
-
-#endif /* !POSIX_COMPAT_H_ */
+#endif /* !SECTION_H_ */

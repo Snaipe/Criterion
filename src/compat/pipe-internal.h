@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef STATS_H_
-# define STATS_H_
+#ifndef PIPE_INTERNAL_H_
+# define PIPE_INTERNAL_H_
 
-# include "criterion/stats.h"
-# include "event.h"
+# include "internal.h"
+# include "pipe.h"
 
-struct criterion_global_stats *stats_init(void);
-struct criterion_test_stats *test_stats_init(struct criterion_test *t);
-struct criterion_suite_stats *suite_stats_init(struct criterion_suite *s);
-void stat_push_event(struct criterion_global_stats *stats,
-                     struct criterion_suite_stats *suite,
-                     struct criterion_test_stats *test,
-                     struct event *data);
+struct pipe_handle {
+#ifdef VANILLA_WIN32
+    HANDLE fhs[2];
+#else
+    int fds[2];
+#endif
+};
 
-#endif /* !STATS_H_ */
+#endif /* !PIPE_INTERNAL_H_ */

@@ -3,12 +3,7 @@
 
 #include <string>
 #include <iostream>
-#include <fstream>
 #include <cctype>
-
-#ifdef __GNUC__
-# include <ext/stdio_filebuf.h>
-#endif
 
 // Testing stdout/stderr
 
