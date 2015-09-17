@@ -425,6 +425,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     log(post_all, stats);
 
 cleanup:
+    sfree(g_worker_pipe);
     sfree(stats);
     return result;
 }
