@@ -183,18 +183,20 @@ int resume_child(void) {
            0,
            MAPPING_SIZE);
 
-    if (ctx == NULL)
+    if (ctx == NULL) {
+        CloseHandle(sharedMem);
         exit(-1);
+    }
 
     local_ctx = *ctx;
     struct test_single_param *param = NULL;
     if (local_ctx.param.size != 0) {
-        param = malloc(sizeof (struct test_single_param) + local_ctx.param->size);
+        param = malloc(sizeof (struct test_single_param) + local_ctx.param.size);
         *param = (struct test_single_param) {
-            .size = local_ctx.param->size,
+            .size = local_ctx.param.size,
             .ptr = param + 1,
         };
-        memcpy(param + 1, local_ctx.param->ptr, param->size);
+        memcpy(param + 1, local_ctx.param.ptr, param->size);
     }
 
     g_worker_context = (struct worker_context) {
@@ -282,6 +284,7 @@ s_proc_handle *fork_process() {
     if (g_worker_context.param) {
         ctx->param = *g_worker_context.param,
         memcpy(ctx + 1, g_worker_context.param->ptr, g_worker_context.param->size);
+        ctx->param.ptr = ctx + 1;
     }
 
     if (g_worker_context.suite->data)
@@ -293,7 +296,9 @@ s_proc_handle *fork_process() {
     // wait until the child has initialized itself
     while (!ctx->resumed) {
         DWORD exit;
-        GetExitCodeProcess(info.hProcess, &exit);
+        if (!GetExitCodeProcess(info.hProcess, &exit));
+            continue;
+
         if (exit != STILL_ACTIVE) {
             UnmapViewOfFile(ctx);
             CloseHandle(sharedMem);

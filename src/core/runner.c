@@ -389,6 +389,10 @@ static void run_test_param(struct criterion_global_stats *stats,
         struct test_single_param param = { params.size, (char *) params.params + i * params.size };
 
         run_test(stats, suite_stats, test, suite, &param);
+        if (criterion_options.fail_fast && stats->tests_failed > 0)
+            break;
+        if (!is_runner())
+            break;
     }
 }
 
