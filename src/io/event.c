@@ -28,6 +28,7 @@
 #include "criterion/stats.h"
 #include "criterion/common.h"
 #include "criterion/hooks.h"
+#include "core/worker.h"
 #include "event.h"
 
 FILE *g_event_pipe = NULL;
@@ -110,6 +111,20 @@ fail_assert:
                     .dtor = destroy_event
                 );
             *ev = (struct event) { .kind = kind, .data = elapsed_time };
+            return ev;
+        }
+        case WORKER_TERMINATED: {
+            struct worker_status *status = malloc(sizeof (struct worker_status));
+            if (fread(status, sizeof (struct worker_status), 1, f) == 0) {
+                free(status);
+                return NULL;
+            }
+
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .kind = kind, .data = status };
             return ev;
         }
         default: {

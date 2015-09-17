@@ -25,6 +25,7 @@
 # define CRITERION_RUNNER_H_
 
 # include "criterion/types.h"
+# include "compat/pipe.h"
 
 DECL_SECTION_LIMITS(struct criterion_test, cr_tst);
 DECL_SECTION_LIMITS(struct criterion_suite, cr_sts);
@@ -40,5 +41,7 @@ struct criterion_test_set *criterion_init(void);
     for (struct criterion_suite *Suite = GET_SECTION_START(cr_sts);     \
             Suite < (struct criterion_suite*) GET_SECTION_END(cr_sts);  \
             ++Suite)
+
+extern s_pipe_handle *g_worker_pipe;
 
 #endif /* !CRITERION_RUNNER_H_ */

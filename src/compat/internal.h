@@ -24,9 +24,7 @@
 #ifndef INTERNAL_H_
 # define INTERNAL_H_
 
-# include "posix.h"
-
-# ifdef VANILLA_WIN32
+# if defined(_WIN32) && !defined(__CYGWIN__)
 #  define VC_EXTRALEAN
 #  define WIN32_LEAN_AND_MEAN
 #  undef _WIN32_WINNT
@@ -43,5 +41,7 @@
 #  include <sys/signal.h>
 #  include <sys/fcntl.h>
 # endif
+
+# include "posix.h"
 
 #endif /* !INTERNAL_H_ */

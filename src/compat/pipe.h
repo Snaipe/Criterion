@@ -24,6 +24,7 @@
 #ifndef PIPE_H_
 # define PIPE_H_
 
+# include <stdio.h>
 # include "common.h"
 
 struct pipe_handle;
@@ -40,9 +41,14 @@ enum criterion_std_fd {
     CR_STDERR = 2,
 };
 
+enum pipe_opt {
+    PIPE_DUP   = 1 << 0,
+    PIPE_CLOSE = 1 << 1,
+};
+
 s_pipe_handle *stdpipe();
-FILE *pipe_in(s_pipe_handle *p, int do_close);
-FILE *pipe_out(s_pipe_handle *p, int do_close);
+FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts);
+FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts);
 
 int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
 void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);

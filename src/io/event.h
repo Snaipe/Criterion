@@ -34,6 +34,10 @@ struct event {
     void *data;
 };
 
+enum other_event_kinds {
+    WORKER_TERMINATED = 1 << 30,
+};
+
 struct event *read_event(FILE *f);
 
 #endif /* !EVENT_H_ */
