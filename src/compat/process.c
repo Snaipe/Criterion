@@ -297,13 +297,13 @@ s_proc_handle *fork_process() {
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
 
-    if (ResumeThread(info.hThread) == -1)
+    if (ResumeThread(info.hThread) == (DWORD) -1)
         goto failure;
 
     // wait until the child has initialized itself
     while (!ctx->resumed) {
         DWORD exit;
-        if (!GetExitCodeProcess(info.hProcess, &exit));
+        if (!GetExitCodeProcess(info.hProcess, &exit))
             continue;
 
         if (exit != STILL_ACTIVE)
