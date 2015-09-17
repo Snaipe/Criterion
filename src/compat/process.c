@@ -34,6 +34,7 @@
 #include <signal.h>
 
 #ifdef VANILLA_WIN32
+# include <tchar.h>
 # define CREATE_SUSPENDED_(Filename, CmdLine, StartupInfo, Info)    \
     CreateProcessW(Filename,                                        \
             CmdLine,                                                \
@@ -103,8 +104,8 @@ struct full_context {
     volatile int resumed;
 };
 
-static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker");
-#define MAPPING_SIZE sizeof (struct full_context)
+static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker_%lu");
+#define MAPPING_SIZE 128
 
 static struct full_context local_ctx;
 #endif
@@ -169,10 +170,13 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
 
 int resume_child(void) {
 #ifdef VANILLA_WIN32
+    TCHAR mapping_name[128];
+    _sntprintf(mapping_name, 128, g_mapping_name, GetCurrentProcessId());
+
     HANDLE sharedMem = OpenFileMapping(
            FILE_MAP_ALL_ACCESS,
            FALSE,
-           g_mapping_name);
+           mapping_name);
 
     if (sharedMem == NULL)
         return 0;
@@ -249,6 +253,9 @@ s_proc_handle *fork_process() {
     if (!CREATE_SUSPENDED_(filename, GetCommandLineW(), si, info))
         return (void *) -1;
 
+    TCHAR mapping_name[128];
+    _sntprintf(mapping_name, 128, g_mapping_name, info.dwProcessId);
+
     // Copy context over
     HANDLE sharedMem = CreateFileMapping(
             INVALID_HANDLE_VALUE,
@@ -256,9 +263,9 @@ s_proc_handle *fork_process() {
             PAGE_READWRITE,
             0,
             MAPPING_SIZE,
-            g_mapping_name);
+            mapping_name);
 
-    if (sharedMem == NULL)
+    if (sharedMem == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
         return (void *) -1;
 
     struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
@@ -290,8 +297,8 @@ s_proc_handle *fork_process() {
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
 
-    ResumeThread(info.hThread);
-    CloseHandle(info.hThread);
+    if (ResumeThread(info.hThread) == -1)
+        goto failure;
 
     // wait until the child has initialized itself
     while (!ctx->resumed) {
@@ -299,13 +306,10 @@ s_proc_handle *fork_process() {
         if (!GetExitCodeProcess(info.hProcess, &exit));
             continue;
 
-        if (exit != STILL_ACTIVE) {
-            UnmapViewOfFile(ctx);
-            CloseHandle(sharedMem);
-            CloseHandle(info.hProcess);
-            return (void *) -1;
-        }
+        if (exit != STILL_ACTIVE)
+            goto failure;
     }
+    CloseHandle(info.hThread);
 
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
@@ -326,6 +330,14 @@ s_proc_handle *fork_process() {
     s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
     *handle = (s_proc_handle) { info.hProcess };
     return handle;
+
+failure:
+    UnmapViewOfFile(ctx);
+    CloseHandle(sharedMem);
+    CloseHandle(info.hThread);
+    CloseHandle(info.hProcess);
+    return (void *) -1;
+
 #else
     pid_t pid = fork();
     if (pid == -1)
