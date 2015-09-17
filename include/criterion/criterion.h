@@ -48,6 +48,8 @@
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) =      \
         CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
+            .kind_ = CR_TEST_NORMAL,                                           \
+            .param_ = (struct criterion_test_params(*)(void)) NULL,            \
             .identifier_ = #Category "/" #Name,                                \
             .file_    = __FILE__,                                              \
             .line_    = __LINE__,                                              \

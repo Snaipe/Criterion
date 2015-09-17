@@ -47,6 +47,11 @@ struct worker_status {
     struct process_status status;
 };
 
+struct test_single_param {
+    size_t size;
+    void *ptr;
+};
+
 void run_worker(struct worker_context *ctx);
 void set_runner_process(void);
 void unset_runner_process(void);
@@ -56,7 +61,8 @@ struct process_status get_status(int status);
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
                                   f_worker_func func,
-                                  s_pipe_handle *pipe);
+                                  s_pipe_handle *pipe,
+                                  struct test_single_param *param);
 struct event *worker_read_event(struct process *proc);
 
 #endif /* !PROCESS_H_ */

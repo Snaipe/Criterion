@@ -77,12 +77,14 @@ void run_worker(struct worker_context *ctx) {
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
                                   f_worker_func func,
-                                  s_pipe_handle *pipe) {
+                                  s_pipe_handle *pipe,
+                                  struct test_single_param *param) {
     g_worker_context = (struct worker_context) {
         .test = test,
         .suite = suite,
         .func = func,
-        .pipe = pipe
+        .pipe = pipe,
+        .param = param,
     };
 
     struct process *ptr = NULL;

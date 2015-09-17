@@ -99,6 +99,7 @@ struct full_context {
     struct criterion_test_extra_data suite_data;
     f_worker_func func;
     struct pipe_handle pipe;
+    struct test_single_param param;
     volatile int resumed;
 };
 
@@ -186,11 +187,22 @@ int resume_child(void) {
         exit(-1);
 
     local_ctx = *ctx;
+    struct test_single_param *param = NULL;
+    if (local_ctx.param.size != 0) {
+        param = malloc(sizeof (struct test_single_param) + local_ctx.param->size);
+        *param = (struct test_single_param) {
+            .size = local_ctx.param->size,
+            .ptr = param + 1,
+        };
+        memcpy(param + 1, local_ctx.param->ptr, param->size);
+    }
+
     g_worker_context = (struct worker_context) {
-        &local_ctx.test,
-        &local_ctx.suite,
-        local_ctx.func,
-        &local_ctx.pipe
+        .test = &local_ctx.test,
+        .suite = &local_ctx.suite,
+        .func = local_ctx.func,
+        .pipe = &local_ctx.pipe,
+        .param = param,
     };
 
     local_ctx.test.data  = &local_ctx.test_data;
@@ -204,6 +216,7 @@ int resume_child(void) {
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 
     run_worker(&g_worker_context);
+    free(param);
     return 1;
 #else
 # if defined(__unix__) || defined(__APPLE__)
@@ -265,6 +278,11 @@ s_proc_handle *fork_process() {
         .pipe      = *g_worker_context.pipe,
         .resumed   = 0,
     };
+
+    if (g_worker_context.param) {
+        ctx->param = *g_worker_context.param,
+        memcpy(ctx + 1, g_worker_context.param->ptr, g_worker_context.param->size);
+    }
 
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
