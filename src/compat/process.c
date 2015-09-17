@@ -108,7 +108,7 @@ static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker");
 static struct full_context local_ctx;
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 # ifndef __GNUC__
 #  error Unsupported compiler. Use GCC or Clang under *nixes.
 # endif
@@ -205,7 +205,7 @@ int resume_child(void) {
     run_worker(&g_worker_context);
     return 1;
 #else
-# ifdef __unix__
+# if defined(__unix__) || defined(__APPLE__)
     struct sigaction sa;
     sa.sa_handler = &handle_sigchld;
     sigemptyset(&sa.sa_mask);
