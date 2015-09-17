@@ -42,6 +42,7 @@ struct worker_context {
     struct criterion_suite *suite;
     f_worker_func func;
     struct pipe_handle *pipe;
+    struct test_single_param *param;
 };
 
 extern struct worker_context g_worker_context;
