@@ -38,11 +38,11 @@
     static struct criterion_test_params IDENTIFIER_(Category, Name, param)(void)
 
 # ifdef __cplusplus
-#  define cr_make_param_array(Type, Array, Length) \
-    criterion_test_params(sizeof (Type), (Array), (Length))
+#  define cr_make_param_array(Type, Array, ...) \
+    criterion_test_params(sizeof (Type), (Array), __VA_ARGS__)
 # else
-#  define cr_make_param_array(Type, Array, Length) \
-    (struct criterion_test_params) { sizeof (Type), (void*)(Array), (Length) }
+#  define cr_make_param_array(Type, Array, ...) \
+    (struct criterion_test_params) { sizeof (Type), (void*)(Array), __VA_ARGS__ }
 # endif
 
 #endif /* !CRITERION_PARAMETERIZED_H_ */

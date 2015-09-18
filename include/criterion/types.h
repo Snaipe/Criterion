@@ -42,12 +42,21 @@ struct criterion_test_params {
     size_t size;
     void *params;
     size_t length;
+    void (*cleanup)(struct criterion_test_params *);
 
 # ifdef __cplusplus
     constexpr criterion_test_params(size_t size, void *params, size_t length)
         : size(size)
         , params(params)
         , length(length)
+    {}
+
+    constexpr criterion_test_params(size_t size, void *params, size_t length,
+            void (*cleanup)(struct criterion_test_params *))
+        : size(size)
+        , params(params)
+        , length(length)
+        , cleanup(cleanup)
     {}
 # endif
 };

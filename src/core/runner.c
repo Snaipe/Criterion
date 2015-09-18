@@ -396,6 +396,9 @@ static void run_test_param(struct criterion_global_stats *stats,
         if (!is_runner())
             break;
     }
+
+    if (params.cleanup)
+        params.cleanup(&params);
 }
 
 static void run_test_switch(struct criterion_global_stats *stats,
