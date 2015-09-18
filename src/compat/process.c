@@ -88,8 +88,6 @@ static int get_win_status(HANDLE handle) {
 }
 #endif
 
-
-
 struct worker_context g_worker_context = {.test = NULL};
 
 #ifdef VANILLA_WIN32
@@ -101,11 +99,11 @@ struct full_context {
     f_worker_func func;
     struct pipe_handle pipe;
     struct test_single_param param;
-    volatile int resumed;
+    HANDLE sync;
 };
 
 static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker_%lu");
-#define MAPPING_SIZE 128
+#define MAPPING_SIZE 1024
 
 static struct full_context local_ctx;
 #endif
@@ -195,6 +193,8 @@ int resume_child(void) {
     local_ctx = *ctx;
     struct test_single_param *param = NULL;
     if (local_ctx.param.size != 0) {
+        local_ctx.param.ptr = ctx + 1;
+
         param = malloc(sizeof (struct test_single_param) + local_ctx.param.size);
         *param = (struct test_single_param) {
             .size = local_ctx.param.size,
@@ -214,10 +214,12 @@ int resume_child(void) {
     local_ctx.test.data  = &local_ctx.test_data;
     local_ctx.suite.data = &local_ctx.suite_data;
 
-    ctx->resumed = 1;
+    HANDLE sync = ctx->sync;
 
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
+
+    SetEvent(sync);
 
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 
@@ -246,6 +248,16 @@ s_proc_handle *fork_process() {
 
     ZeroMemory(&info, sizeof (info));
 
+    SECURITY_ATTRIBUTES inherit_handle = {
+        .nLength = sizeof (SECURITY_ATTRIBUTES),
+        .bInheritHandle = TRUE
+    };
+
+    // Create the synchronization event
+    HANDLE sync = CreateEvent(&inherit_handle, FALSE, FALSE, NULL);
+    if (sync == NULL)
+        return (void *) -1;
+
     // Create the suspended child process
     wchar_t filename[MAX_PATH];
     GetModuleFileNameW(NULL, filename, MAX_PATH);
@@ -253,10 +265,10 @@ s_proc_handle *fork_process() {
     if (!CREATE_SUSPENDED_(filename, GetCommandLineW(), si, info))
         return (void *) -1;
 
+    // Copy context over
     TCHAR mapping_name[128];
     _sntprintf(mapping_name, 128, g_mapping_name, info.dwProcessId);
 
-    // Copy context over
     HANDLE sharedMem = CreateFileMapping(
             INVALID_HANDLE_VALUE,
             NULL,
@@ -285,13 +297,12 @@ s_proc_handle *fork_process() {
         .suite     = *g_worker_context.suite,
         .func      = g_worker_context.func,
         .pipe      = *g_worker_context.pipe,
-        .resumed   = 0,
+        .sync      = sync,
     };
 
     if (g_worker_context.param) {
         ctx->param = *g_worker_context.param,
         memcpy(ctx + 1, g_worker_context.param->ptr, g_worker_context.param->size);
-        ctx->param.ptr = ctx + 1;
     }
 
     if (g_worker_context.suite->data)
@@ -301,14 +312,11 @@ s_proc_handle *fork_process() {
         goto failure;
 
     // wait until the child has initialized itself
-    while (!ctx->resumed) {
-        DWORD exit;
-        if (!GetExitCodeProcess(info.hProcess, &exit))
-            continue;
+    HANDLE handles[] = { info.hProcess, sync };
+    DWORD wres = WaitForMultipleObjects(sizeof (handles) / sizeof (HANDLE), handles, FALSE, INFINITE);
+    if (wres == WAIT_OBJECT_0)
+        goto failure;
 
-        if (exit != STILL_ACTIVE)
-            goto failure;
-    }
     CloseHandle(info.hThread);
 
     UnmapViewOfFile(ctx);
