@@ -25,10 +25,6 @@
 
 jmp_buf g_pre_test;
 
-int setup_abort_test(void) {
-    return !setjmp(g_pre_test);
-}
-
 void criterion_abort_test(void) {
     longjmp(g_pre_test, 1);
 }

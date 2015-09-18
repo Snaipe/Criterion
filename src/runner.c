@@ -184,7 +184,7 @@ static void run_test_child(struct criterion_test *test,
     send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
-    if (setup_abort_test()) {
+    if (!setjmp(g_pre_test)) {
         timer_start(&ts);
         (test->test ? test->test : nothing)();
     }
