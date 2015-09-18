@@ -100,10 +100,10 @@ struct full_context {
     struct pipe_handle pipe;
     struct test_single_param param;
     HANDLE sync;
+    DWORD extra_size;
 };
 
 static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker_%lu");
-#define MAPPING_SIZE 1024
 
 static struct full_context local_ctx;
 #endif
@@ -183,7 +183,7 @@ int resume_child(void) {
            FILE_MAP_ALL_ACCESS,
            0,
            0,
-           MAPPING_SIZE);
+           sizeof (struct full_context));
 
     if (ctx == NULL) {
         CloseHandle(sharedMem);
@@ -191,17 +191,31 @@ int resume_child(void) {
     }
 
     local_ctx = *ctx;
+    UnmapViewOfFile(ctx);
+
     struct test_single_param *param = NULL;
     if (local_ctx.param.size != 0) {
-        local_ctx.param.ptr = ctx + 1;
+        ctx = (struct full_context*) MapViewOfFile(sharedMem,
+               FILE_MAP_ALL_ACCESS,
+               0,
+               0,
+               sizeof (struct full_context) + local_ctx.extra_size);
+
+        if (ctx == NULL) {
+            CloseHandle(sharedMem);
+            exit(-1);
+        }
 
         param = malloc(sizeof (struct test_single_param) + local_ctx.param.size);
         *param = (struct test_single_param) {
             .size = local_ctx.param.size,
             .ptr = param + 1,
         };
-        memcpy(param + 1, local_ctx.param.ptr, param->size);
+        memcpy(param + 1, ctx + 1, param->size);
+        UnmapViewOfFile(ctx);
     }
+
+    CloseHandle(sharedMem);
 
     g_worker_context = (struct worker_context) {
         .test = &local_ctx.test,
@@ -214,12 +228,7 @@ int resume_child(void) {
     local_ctx.test.data  = &local_ctx.test_data;
     local_ctx.suite.data = &local_ctx.suite_data;
 
-    HANDLE sync = ctx->sync;
-
-    UnmapViewOfFile(ctx);
-    CloseHandle(sharedMem);
-
-    SetEvent(sync);
+    SetEvent(local_ctx.sync);
 
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 
@@ -269,12 +278,16 @@ s_proc_handle *fork_process() {
     TCHAR mapping_name[128];
     _sntprintf(mapping_name, 128, g_mapping_name, info.dwProcessId);
 
+    DWORD mapping_size = sizeof (struct full_context);
+    if (g_worker_context.param)
+        mapping_size += g_worker_context.param->size;
+
     HANDLE sharedMem = CreateFileMapping(
             INVALID_HANDLE_VALUE,
             NULL,
             PAGE_READWRITE,
             0,
-            MAPPING_SIZE,
+            mapping_size,
             mapping_name);
 
     if (sharedMem == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
@@ -284,7 +297,7 @@ s_proc_handle *fork_process() {
             FILE_MAP_ALL_ACCESS,
             0,
             0,
-            MAPPING_SIZE);
+            mapping_size);
 
     if (ctx == NULL) {
         CloseHandle(sharedMem);
@@ -301,7 +314,8 @@ s_proc_handle *fork_process() {
     };
 
     if (g_worker_context.param) {
-        ctx->param = *g_worker_context.param,
+        ctx->extra_size = g_worker_context.param->size;
+        ctx->param = *g_worker_context.param;
         memcpy(ctx + 1, g_worker_context.param->ptr, g_worker_context.param->size);
     }
 
