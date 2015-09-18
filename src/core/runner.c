@@ -59,7 +59,6 @@ TestSuite();
 Test(,) {};
 
 static INLINE void nothing(void) {}
-static INLINE void nothing_ptr(UNUSED void* ptr) {}
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -187,11 +186,14 @@ static void run_test_child(struct criterion_test *test,
     struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
         timer_start(&ts);
-        if (!test->data->param_)
-            (test->test ? test->test : nothing)();
-        else
-            (test->test ? (void(*)(void*)) test->test
-                        : nothing_ptr)(g_worker_context.param->ptr);
+        if (test->test) {
+            if (!test->data->param_) {
+                test->test();
+            } else {
+                void(*param_test_func)(void *) = (void(*)(void*)) test->test;
+                param_test_func(g_worker_context.param->ptr);
+            }
+        }
     }
 
     double elapsed_time;
