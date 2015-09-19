@@ -1,3 +1,9 @@
+2015-09-19  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.0.1
+    * Fix: Fixed wrong setjmp() usage making tests compiled with optimisations
+      crash.
+
 2015-09-14  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.0.0
