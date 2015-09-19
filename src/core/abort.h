@@ -29,6 +29,4 @@
 
 extern jmp_buf g_pre_test;
 
-int setup_abort_test(void);
-
 #endif /* !ABORT_H_ */

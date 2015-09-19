@@ -28,7 +28,7 @@ endif ()
 
 # Project setup & environment variables
 
-set(PROJECT_VERSION "2.0.0")
+set(PROJECT_VERSION "2.0.1")
 set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
