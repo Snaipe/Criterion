@@ -30,6 +30,7 @@
 #include "process.h"
 #include "internal.h"
 #include "pipe-internal.h"
+#include "alloc.h"
 
 #include <signal.h>
 
@@ -168,6 +169,8 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
 
 int resume_child(void) {
 #ifdef VANILLA_WIN32
+    init_inheritable_heap();
+
     TCHAR mapping_name[128];
     _sntprintf(mapping_name, 128, g_mapping_name, GetCurrentProcessId());
 
@@ -321,6 +324,8 @@ s_proc_handle *fork_process() {
 
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
+
+    inherit_heap(info.hProcess);
 
     if (ResumeThread(info.hThread) == (DWORD) -1)
         goto failure;

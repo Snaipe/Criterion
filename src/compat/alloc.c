@@ -1,0 +1,94 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+#include "alloc.h"
+#include "internal.h"
+#include <stdlib.h>
+
+#ifdef VANILLA_WIN32
+HANDLE g_heap;
+
+void init_inheritable_heap(void) {
+    g_heap = HeapCreate(0, 0, 0);
+    if (g_heap == (HANDLE) NULL) {
+        fputs("Could not create the private inheritable heap.", stderr);
+        abort();
+    }
+}
+
+int inherit_heap(HANDLE child_process) {
+    PROCESS_HEAP_ENTRY entry = { .lpData = NULL };
+
+    while (HeapWalk(g_heap, &entry)) {
+        if (!(entry.wFlags & PROCESS_HEAP_REGION))
+            continue;
+
+        if (!VirtualAllocEx(child_process,
+                entry.lpData,
+                entry.cbData + entry.cbOverhead,
+                MEM_COMMIT,
+                PAGE_READWRITE))
+            return -1;
+
+        if (!WriteProcessMemory(child_process,
+                entry.lpData,
+                entry.lpData,
+                entry.cbData + entry.cbOverhead,
+                NULL))
+            return -1;
+    }
+    return 0;
+}
+#endif
+
+void *cr_malloc(size_t size) {
+#ifdef VANILLA_WIN32
+    return HeapAlloc(g_heap, 0, size);
+#else
+    return malloc(size);
+#endif
+}
+
+void *cr_calloc(size_t nmemb, size_t size) {
+#ifdef VANILLA_WIN32
+    return HeapAlloc(g_heap, HEAP_ZERO_MEMORY, nmemb * size);
+#else
+    return calloc(nmemb, size);
+#endif
+}
+
+void *cr_realloc(void *ptr, size_t size) {
+#ifdef VANILLA_WIN32
+    return HeapReAlloc(g_heap, 0, ptr, size);
+#else
+    return realloc(ptr, size);
+#endif
+}
+
+void cr_free(void *ptr) {
+#ifdef VANILLA_WIN32
+    HeapFree(g_heap, 0, ptr);
+#else
+    free(ptr);
+#endif
+}
