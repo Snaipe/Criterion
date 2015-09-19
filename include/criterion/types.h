@@ -49,6 +49,7 @@ struct criterion_test_params {
         : size(size)
         , params(params)
         , length(length)
+        , cleanup(nullptr)
     {}
 
     constexpr criterion_test_params(size_t size, void *params, size_t length,

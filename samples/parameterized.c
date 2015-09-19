@@ -42,33 +42,20 @@ ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
 // or this will fail on windows
 
 void free_params(struct criterion_test_params *crp) {
-    struct parameter_tuple_dyn *tuples = crp->params;
-    for (size_t i = 0; i < crp->length; ++i) {
-        struct parameter_tuple_dyn *tup = &tuples[i];
-        free(tup->d);
-    }
     free(crp->params);
-}
-
-double *gen_double(double d) {
-    double *ptr = malloc(sizeof(double));
-    printf("%p\n", ptr);
-    fflush(NULL);
-    *ptr = d;
-    return ptr;
 }
 
 ParameterizedTestParameters(params, cleanup) {
     const size_t nb_tuples = 3;
 
-    struct parameter_tuple_dyn *params = malloc(sizeof(struct parameter_tuple_dyn) * nb_tuples);
-    params[0] = (struct parameter_tuple_dyn) { 1, gen_double(2) };
-    params[1] = (struct parameter_tuple_dyn) { 3, gen_double(4) };
-    params[2] = (struct parameter_tuple_dyn) { 5, gen_double(6) };
+    struct parameter_tuple *params = malloc(sizeof(struct parameter_tuple) * nb_tuples);
+    params[0] = (struct parameter_tuple) { 1, 2 };
+    params[1] = (struct parameter_tuple) { 3, 4 };
+    params[2] = (struct parameter_tuple) { 5, 6 };
 
-    return cr_make_param_array(struct parameter_tuple_dyn, params, nb_tuples, free_params);
+    return cr_make_param_array(struct parameter_tuple, params, nb_tuples, free_params);
 }
 
-ParameterizedTest(struct parameter_tuple_dyn *tup, params, cleanup) {
-    cr_assert_fail("Parameters: (%d, %p)", tup->i, tup->d);
+ParameterizedTest(struct parameter_tuple *tup, params, cleanup) {
+    cr_assert_fail("Parameters: (%d, %f)", tup->i, tup->d);
 }
