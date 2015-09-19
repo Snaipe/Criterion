@@ -30,9 +30,9 @@
 #include "internal.h"
 #include "criterion/redirect.h"
 
-#if defined(BSD) || defined(__unix__)
+#if defined(OS_BSD) || defined(__unix__)
 
-# ifdef BSD
+# ifdef OS_BSD
 typedef int cr_count;
 typedef int cr_retcount;
 typedef fpos_t cr_off;
@@ -71,7 +71,7 @@ static inline size_t off_safe_add(size_t size, size_t cur, cr_off off) {
 
 static cr_retcount mock_file_read(void *cookie, char *buf, cr_count count) {
     struct memfile *mf = cookie;
-# ifdef BSD
+# ifdef OS_BSD
     if (count < 0)
         errno_return(EINVAL, (cr_retcount) -1);
 # endif
@@ -87,7 +87,7 @@ static cr_retcount mock_file_read(void *cookie, char *buf, cr_count count) {
 
 static cr_retcount mock_file_write(void *cookie, const char *buf, cr_count count) {
     struct memfile *mf = cookie;
-# ifdef BSD
+# ifdef OS_BSD
     if (count < 0)
         errno_return(EINVAL, (cr_retcount) -1);
 # endif
@@ -115,7 +115,7 @@ static cr_retcount mock_file_write(void *cookie, const char *buf, cr_count count
     return count;
 }
 
-# ifdef BSD
+# ifdef OS_BSD
 static cr_off mock_file_seek(void *cookie, cr_off off, int whence) {
     struct memfile *mf = cookie;
     switch (whence) {
@@ -149,7 +149,7 @@ static int mock_file_close(void *cookie) {
 #endif
 
 FILE *cr_mock_file_size(size_t max_size) {
-#if defined(__unix__) || defined(BSD)
+#if defined(__unix__) || defined(OS_BSD)
     struct memfile *cookie = malloc(sizeof (struct memfile));
     *cookie = (struct memfile) {
         .max_size = max_size,

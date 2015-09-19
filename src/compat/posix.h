@@ -28,6 +28,14 @@
 # define VANILLA_WIN32
 #endif
 
+# if defined(BSD) \
+  || defined(__FreeBSD__) \
+  || defined(__NetBSD__) \
+  || defined(__OpenBSD__) \
+  || defined(__DragonFly__)
+#  define OS_BSD 1
+# endif
+
 # if !defined(_POSIX_SOURCE)
 #  define _POSIX_SOURCE 1
 #  define TMP_POSIX
