@@ -34,6 +34,7 @@
 #include <signal.h>
 
 #ifdef VANILLA_WIN32
+# include <tchar.h>
 # define CREATE_SUSPENDED_(Filename, CmdLine, StartupInfo, Info)    \
     CreateProcessW(Filename,                                        \
             CmdLine,                                                \
@@ -87,8 +88,6 @@ static int get_win_status(HANDLE handle) {
 }
 #endif
 
-
-
 struct worker_context g_worker_context = {.test = NULL};
 
 #ifdef VANILLA_WIN32
@@ -99,11 +98,12 @@ struct full_context {
     struct criterion_test_extra_data suite_data;
     f_worker_func func;
     struct pipe_handle pipe;
-    volatile int resumed;
+    struct test_single_param param;
+    HANDLE sync;
+    DWORD extra_size;
 };
 
-static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker");
-#define MAPPING_SIZE sizeof (struct full_context)
+static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker_%lu");
 
 static struct full_context local_ctx;
 #endif
@@ -168,10 +168,13 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
 
 int resume_child(void) {
 #ifdef VANILLA_WIN32
+    TCHAR mapping_name[128];
+    _sntprintf(mapping_name, 128, g_mapping_name, GetCurrentProcessId());
+
     HANDLE sharedMem = OpenFileMapping(
            FILE_MAP_ALL_ACCESS,
            FALSE,
-           g_mapping_name);
+           mapping_name);
 
     if (sharedMem == NULL)
         return 0;
@@ -180,30 +183,57 @@ int resume_child(void) {
            FILE_MAP_ALL_ACCESS,
            0,
            0,
-           MAPPING_SIZE);
+           sizeof (struct full_context));
 
-    if (ctx == NULL)
+    if (ctx == NULL) {
+        CloseHandle(sharedMem);
         exit(-1);
+    }
 
     local_ctx = *ctx;
+    UnmapViewOfFile(ctx);
+
+    struct test_single_param *param = NULL;
+    if (local_ctx.param.size != 0) {
+        ctx = (struct full_context*) MapViewOfFile(sharedMem,
+               FILE_MAP_ALL_ACCESS,
+               0,
+               0,
+               sizeof (struct full_context) + local_ctx.extra_size);
+
+        if (ctx == NULL) {
+            CloseHandle(sharedMem);
+            exit(-1);
+        }
+
+        param = malloc(sizeof (struct test_single_param) + local_ctx.param.size);
+        *param = (struct test_single_param) {
+            .size = local_ctx.param.size,
+            .ptr = param + 1,
+        };
+        memcpy(param + 1, ctx + 1, param->size);
+        UnmapViewOfFile(ctx);
+    }
+
+    CloseHandle(sharedMem);
+
     g_worker_context = (struct worker_context) {
-        &local_ctx.test,
-        &local_ctx.suite,
-        local_ctx.func,
-        &local_ctx.pipe
+        .test = &local_ctx.test,
+        .suite = &local_ctx.suite,
+        .func = local_ctx.func,
+        .pipe = &local_ctx.pipe,
+        .param = param,
     };
 
     local_ctx.test.data  = &local_ctx.test_data;
     local_ctx.suite.data = &local_ctx.suite_data;
 
-    ctx->resumed = 1;
-
-    UnmapViewOfFile(ctx);
-    CloseHandle(sharedMem);
+    SetEvent(local_ctx.sync);
 
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
 
     run_worker(&g_worker_context);
+    free(param);
     return 1;
 #else
 # if defined(__unix__) || defined(__APPLE__)
@@ -227,6 +257,16 @@ s_proc_handle *fork_process() {
 
     ZeroMemory(&info, sizeof (info));
 
+    SECURITY_ATTRIBUTES inherit_handle = {
+        .nLength = sizeof (SECURITY_ATTRIBUTES),
+        .bInheritHandle = TRUE
+    };
+
+    // Create the synchronization event
+    HANDLE sync = CreateEvent(&inherit_handle, FALSE, FALSE, NULL);
+    if (sync == NULL)
+        return (void *) -1;
+
     // Create the suspended child process
     wchar_t filename[MAX_PATH];
     GetModuleFileNameW(NULL, filename, MAX_PATH);
@@ -235,22 +275,29 @@ s_proc_handle *fork_process() {
         return (void *) -1;
 
     // Copy context over
+    TCHAR mapping_name[128];
+    _sntprintf(mapping_name, 128, g_mapping_name, info.dwProcessId);
+
+    DWORD mapping_size = sizeof (struct full_context);
+    if (g_worker_context.param)
+        mapping_size += g_worker_context.param->size;
+
     HANDLE sharedMem = CreateFileMapping(
             INVALID_HANDLE_VALUE,
             NULL,
             PAGE_READWRITE,
             0,
-            MAPPING_SIZE,
-            g_mapping_name);
+            mapping_size,
+            mapping_name);
 
-    if (sharedMem == NULL)
+    if (sharedMem == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
         return (void *) -1;
 
     struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
             FILE_MAP_ALL_ACCESS,
             0,
             0,
-            MAPPING_SIZE);
+            mapping_size);
 
     if (ctx == NULL) {
         CloseHandle(sharedMem);
@@ -263,16 +310,28 @@ s_proc_handle *fork_process() {
         .suite     = *g_worker_context.suite,
         .func      = g_worker_context.func,
         .pipe      = *g_worker_context.pipe,
-        .resumed   = 0,
+        .sync      = sync,
     };
+
+    if (g_worker_context.param) {
+        ctx->extra_size = g_worker_context.param->size;
+        ctx->param = *g_worker_context.param;
+        memcpy(ctx + 1, g_worker_context.param->ptr, g_worker_context.param->size);
+    }
 
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
 
-    ResumeThread(info.hThread);
-    CloseHandle(info.hThread);
+    if (ResumeThread(info.hThread) == (DWORD) -1)
+        goto failure;
 
-    while (!ctx->resumed); // wait until the child has initialized itself
+    // wait until the child has initialized itself
+    HANDLE handles[] = { info.hProcess, sync };
+    DWORD wres = WaitForMultipleObjects(sizeof (handles) / sizeof (HANDLE), handles, FALSE, INFINITE);
+    if (wres == WAIT_OBJECT_0)
+        goto failure;
+
+    CloseHandle(info.hThread);
 
     UnmapViewOfFile(ctx);
     CloseHandle(sharedMem);
@@ -293,6 +352,14 @@ s_proc_handle *fork_process() {
     s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
     *handle = (s_proc_handle) { info.hProcess };
     return handle;
+
+failure:
+    UnmapViewOfFile(ctx);
+    CloseHandle(sharedMem);
+    CloseHandle(info.hThread);
+    CloseHandle(info.hProcess);
+    return (void *) -1;
+
 #else
     pid_t pid = fork();
     if (pid == -1)

@@ -1,0 +1,19 @@
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m60[0m: Assertion failed: Parameters: (1, 2.000000)
+[[0;31mFAIL[0m] params::cleanup: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m60[0m: Assertion failed: Parameters: (3, 4.000000)
+[[0;31mFAIL[0m] params::cleanup: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m60[0m: Assertion failed: Parameters: (5, 6.000000)
+[[0;31mFAIL[0m] params::cleanup: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m36[0m: Assertion failed: Parameters: (1, 2.000000)
+[[0;31mFAIL[0m] params::multiple: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m36[0m: Assertion failed: Parameters: (3, 4.000000)
+[[0;31mFAIL[0m] params::multiple: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m36[0m: Assertion failed: Parameters: (5, 6.000000)
+[[0;31mFAIL[0m] params::multiple: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m15[0m: Assertion failed: Parameter: foo
+[[0;31mFAIL[0m] params::str: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m15[0m: Assertion failed: Parameter: bar
+[[0;31mFAIL[0m] params::str: (0.00s)
+[[0;34m----[0m] [0;1mparameterized.c[0m:[0;31m15[0m: Assertion failed: Parameter: baz
+[[0;31mFAIL[0m] params::str: (0.00s)
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m9[0;1m | Passing: [0;32m0[0;1m | Failing: [0;31m9[0;1m | Crashing: [0;31m0[0;1m [0m

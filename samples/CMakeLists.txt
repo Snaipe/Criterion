@@ -17,6 +17,7 @@ set(SAMPLES
   theories.c
   timeout.c
   redirect.c
+  parameterized.c
 
   signal.cc
   report.cc

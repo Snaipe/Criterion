@@ -186,7 +186,14 @@ static void run_test_child(struct criterion_test *test,
     struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
         timer_start(&ts);
-        (test->test ? test->test : nothing)();
+        if (test->test) {
+            if (!test->data->param_) {
+                test->test();
+            } else {
+                void(*param_test_func)(void *) = (void(*)(void*)) test->test;
+                param_test_func(g_worker_context.param->ptr);
+            }
+        }
     }
 
     double elapsed_time;
@@ -297,7 +304,8 @@ static void handle_worker_terminated(struct event *ev,
 static void run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
         struct criterion_test *test,
-        struct criterion_suite *suite) {
+        struct criterion_suite *suite,
+        struct test_single_param *param) {
 
     struct criterion_test_stats *test_stats = test_stats_init(test);
     struct process *proc = NULL;
@@ -310,7 +318,7 @@ static void run_test(struct criterion_global_stats *stats,
         goto cleanup;
     }
 
-    proc = spawn_test_worker(test, suite, run_test_child, g_worker_pipe);
+    proc = spawn_test_worker(test, suite, run_test_child, g_worker_pipe, param);
     if (proc == NULL && !is_runner())
         goto cleanup;
 
@@ -370,6 +378,45 @@ cleanup:
     sfree(proc);
 }
 
+static void run_test_param(struct criterion_global_stats *stats,
+        struct criterion_suite_stats *suite_stats,
+        struct criterion_test *test,
+        struct criterion_suite *suite) {
+
+    if (!test->data->param_)
+        return;
+
+    struct criterion_test_params params = test->data->param_();
+    for (size_t i = 0; i < params.length; ++i) {
+        struct test_single_param param = { params.size, (char *) params.params + i * params.size };
+
+        run_test(stats, suite_stats, test, suite, &param);
+        if (criterion_options.fail_fast && stats->tests_failed > 0)
+            break;
+        if (!is_runner())
+            break;
+    }
+
+    if (params.cleanup)
+        params.cleanup(&params);
+}
+
+static void run_test_switch(struct criterion_global_stats *stats,
+        struct criterion_suite_stats *suite_stats,
+        struct criterion_test *test,
+        struct criterion_suite *suite) {
+
+    switch (test->data->kind_) {
+        case CR_TEST_NORMAL:
+            run_test(stats, suite_stats, test, suite, NULL);
+            break;
+        case CR_TEST_PARAMETERIZED:
+            run_test_param(stats, suite_stats, test, suite);
+            break;
+        default: break;
+    }
+}
+
 #ifdef HAVE_PCRE
 void disable_unmatching(struct criterion_test_set *set) {
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
@@ -414,7 +461,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
         abort();
 
     struct criterion_global_stats *stats = stats_init();
-    map_tests(set, stats, run_test);
+    map_tests(set, stats, run_test_switch);
 
     int result = is_runner() ? stats->tests_failed == 0 : -1;
 
