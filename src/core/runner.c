@@ -45,14 +45,14 @@
 #endif
 
 #ifdef _MSC_VER
-struct criterion_test  SECTION_START_(cr_tst);
-struct criterion_suite SECTION_START_(cr_sts);
-struct criterion_test  SECTION_END_(cr_tst);
-struct criterion_suite SECTION_END_(cr_sts);
+struct criterion_test  *SECTION_START_(cr_tst);
+struct criterion_suite *SECTION_START_(cr_sts);
+struct criterion_test  *SECTION_END_(cr_tst);
+struct criterion_suite *SECTION_END_(cr_sts);
 #endif
 
-IMPL_SECTION_LIMITS(struct criterion_test, cr_tst);
-IMPL_SECTION_LIMITS(struct criterion_suite, cr_sts);
+IMPL_SECTION_LIMITS(struct criterion_test*, cr_tst);
+IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
 // This is here to make the test suite & test sections non-empty
 TestSuite();
@@ -98,11 +98,11 @@ struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
-        if (!s->name)
-            break;
+        if (!*s)
+            continue;
 
         struct criterion_suite_set css = {
-            .suite = *s,
+            .suite = **s,
         };
         insert_ordered_set(suites, &css, sizeof (css));
     }
@@ -118,13 +118,13 @@ struct criterion_test_set *criterion_init(void) {
     };
 
     FOREACH_TEST_SEC(test) {
-        if (!test->category)
-            break;
-
-        if (!*test->category)
+        if (!*test)
             continue;
 
-        criterion_register_test(set, test);
+        if (!(*test)->category)
+            continue;
+
+        criterion_register_test(set, *test);
     }
 
     return set;

@@ -53,13 +53,15 @@
             .line_    = __LINE__,                                              \
             __VA_ARGS__                                                        \
         ));                                                                    \
-    SECTION_("cr_tst")                                                         \
     struct criterion_test IDENTIFIER_(Category, Name, meta) = {                \
         #Name,                                                                 \
         #Category,                                                             \
         IDENTIFIER_(Category, Name, impl),                                     \
         &IDENTIFIER_(Category, Name, extra)                                    \
-    } SECTION_SUFFIX_;                                                         \
+    };                                                                         \
+    SECTION_("cr_tst")                                                         \
+    struct criterion_test *IDENTIFIER_(Category, Name, ptr)                    \
+            = &IDENTIFIER_(Category, Name, meta) SECTION_SUFFIX_;              \
     TEST_PROTOTYPE_(Category, Name)
 
 # define TestSuite(...) CR_EXPAND(TestSuite_(__VA_ARGS__, .sentinel_ = 0))
@@ -70,11 +72,13 @@
             .line_    = 0,                                                     \
             __VA_ARGS__                                                        \
         ));                                                                    \
-    SECTION_("cr_sts")                                                         \
     struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {                   \
         #Name,                                                                 \
         &SUITE_IDENTIFIER_(Name, extra),                                       \
-    } SECTION_SUFFIX_
+    };                                                                         \
+    SECTION_("cr_sts")                                                         \
+    struct criterion_suite *SUITE_IDENTIFIER_(Name, ptr)                       \
+	    = &SUITE_IDENTIFIER_(Name, meta) SECTION_SUFFIX_
 
 CR_BEGIN_C_API
 

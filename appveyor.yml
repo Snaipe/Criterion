@@ -1,4 +1,4 @@
-version: 2.0.1_b{build}-{branch}
+version: 2.0.2_b{build}-{branch}
 
 os: Visual Studio 2015
 
