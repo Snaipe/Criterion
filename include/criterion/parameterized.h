@@ -25,13 +25,15 @@
             .line_    = __LINE__,                                              \
             __VA_ARGS__                                                        \
         ));                                                                    \
-    SECTION_("cr_tst")                                                         \
     struct criterion_test IDENTIFIER_(Category, Name, meta) = {                \
         #Name,                                                                 \
         #Category,                                                             \
         (void(*)(void)) IDENTIFIER_(Category, Name, impl),                     \
         &IDENTIFIER_(Category, Name, extra)                                    \
-    } SECTION_SUFFIX_;                                                         \
+    };                                                                         \
+    SECTION_("cr_tst")                                                         \
+    struct criterion_test *IDENTIFIER_(Category, Name, ptr)                    \
+            = &IDENTIFIER_(Category, Name, meta) SECTION_SUFFIX_;              \
     CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name)
 
 # define ParameterizedTestParameters(Category, Name) \
