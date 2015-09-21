@@ -239,4 +239,27 @@ crash is the divison of INT_MAX by -1, which is undefined.
 Fixing this is as easy as changing the prototypes of ``my_mul`` and ``my_div``
 to operate on ``long long`` rather than ``int``.
 
+What's the difference between theories and parameterized tests ?
+----------------------------------------------------------------
 
+While it may at first seem that theories and parameterized tests are the same,
+just because they happen to take multiple parameters does not mean that they
+logically behave in the same manner.
+
+Parameterized tests are useful to test a specific logic against a fixed, *finite*
+set of examples that you need to work.
+
+Theories are, well, just that: theories. They represent a test against an
+universal truth, regardless of the input data matching its predicates.
+
+Implementation-wise, Criterion also marks the separation by the way that both
+are executed:
+
+Each parameterized test iteration is run in its own test; this means that
+one parameterized test acts as a collection of many tests, and gets reported
+as such.
+
+On the other hand, a theory act as one single test, since the size and contents
+of the generated data set is not relevant. It does not make sense to say that
+an universal truth is "partially true", so if one of the iteration fails, then
+the whole test fails.
