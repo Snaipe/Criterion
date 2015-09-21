@@ -28,9 +28,9 @@
 #include "criterion/types.h"
 #include "criterion/options.h"
 #include "criterion/redirect.h"
-#include "process.h"
-#include "event.h"
-#include "posix-compat.h"
+#include "io/event.h"
+#include "compat/posix.h"
+#include "worker.h"
 
 struct process {
     s_proc_handle *proc;
@@ -63,7 +63,7 @@ struct event *worker_read_event(struct process *proc) {
 
 void run_worker(struct worker_context *ctx) {
     cr_redirect_stdin();
-    g_event_pipe = pipe_out(ctx->pipe, 1);
+    g_event_pipe = pipe_out(ctx->pipe, PIPE_CLOSE);
 
     ctx->func(ctx->test, ctx->suite);
     fclose(g_event_pipe);
@@ -76,26 +76,25 @@ void run_worker(struct worker_context *ctx) {
 
 struct process *spawn_test_worker(struct criterion_test *test,
                                   struct criterion_suite *suite,
-                                  f_worker_func func) {
-    s_pipe_handle *pipe = stdpipe();
-    if (pipe == NULL)
-        abort();
-
+                                  f_worker_func func,
+                                  s_pipe_handle *pipe,
+                                  struct test_single_param *param) {
     g_worker_context = (struct worker_context) {
         .test = test,
         .suite = suite,
         .func = func,
-        .pipe = pipe
+        .pipe = pipe,
+        .param = param,
     };
 
     struct process *ptr = NULL;
 
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
-        goto cleanup;
+        abort();
     } else if (proc == NULL) {
         run_worker(&g_worker_context);
-        goto cleanup;
+        return NULL;
     }
 
     ptr = smalloc(
@@ -103,16 +102,11 @@ struct process *spawn_test_worker(struct criterion_test *test,
             .kind = UNIQUE,
             .dtor = close_process);
 
-    *ptr = (struct process) { .proc = proc, .in = pipe_in(pipe, 1) };
-cleanup:
-    sfree(pipe);
+    *ptr = (struct process) { .proc = proc, .in = pipe_in(pipe, PIPE_DUP) };
     return ptr;
 }
 
-struct process_status wait_proc(struct process *proc) {
-    int status;
-    wait_process(proc->proc, &status);
-
+struct process_status get_status(int status) {
     if (WIFEXITED(status))
         return (struct process_status) {
             .kind = EXIT_STATUS,
@@ -126,4 +120,11 @@ struct process_status wait_proc(struct process *proc) {
         };
 
     return (struct process_status) { .kind = STOPPED };
+}
+
+struct process_status wait_proc(struct process *proc) {
+    int status;
+    wait_process(proc->proc, &status);
+
+    return get_status(status);
 }

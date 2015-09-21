@@ -33,8 +33,39 @@ using std::size_t;
 # endif
 # include "common.h"
 
+enum criterion_test_kind {
+    CR_TEST_NORMAL,
+    CR_TEST_PARAMETERIZED,
+};
+
+struct criterion_test_params {
+    size_t size;
+    void *params;
+    size_t length;
+    void (*cleanup)(struct criterion_test_params *);
+
+# ifdef __cplusplus
+    constexpr criterion_test_params(size_t size, void *params, size_t length)
+        : size(size)
+        , params(params)
+        , length(length)
+        , cleanup(nullptr)
+    {}
+
+    constexpr criterion_test_params(size_t size, void *params, size_t length,
+            void (*cleanup)(struct criterion_test_params *))
+        : size(size)
+        , params(params)
+        , length(length)
+        , cleanup(cleanup)
+    {}
+# endif
+};
+
 struct criterion_test_extra_data {
     int sentinel_;
+    enum criterion_test_kind kind_;
+    struct criterion_test_params (*param_)(void);
     const char *identifier_;
     const char *file_;
     unsigned line_;
@@ -44,7 +75,7 @@ struct criterion_test_extra_data {
     int exit_code;
     bool disabled;
     const char *description;
-    float timeout;
+    double timeout;
     void *data;
 };
 

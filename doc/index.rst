@@ -10,6 +10,7 @@ Criterion
     assert
     hooks
     env
+    parameterized
     theories
     internal
     faq

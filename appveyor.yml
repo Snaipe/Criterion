@@ -1,4 +1,4 @@
-version: 2.0.2_b{build}-{branch}
+version: 2.1.0_b{build}-{branch}
 
 os: Visual Studio 2015
 
@@ -11,7 +11,6 @@ environment:
     secure: 5nuCg+faxFPeppoNNcSwVobswAVFUf8ut83vw8CX/4W2y0kZkGmwEfCUxSQWiQDU
   CI_NAME: appveyor
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
-  LOCAL_INSTALL: $(APPVEYOR_BUILD_FOLDER)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
   matrix:
   - COMPILER: mingw
@@ -22,9 +21,13 @@ environment:
 clone_depth: 5
 
 platform:
+  - x86
   - x86_64
 
-configuration: Release
+configuration:
+  - Debug
+  - Release
+  - RelWithDebInfo
 
 install:
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
@@ -36,7 +39,7 @@ install:
       cmake
       -Wno-dev
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
-      -DCMAKE_PREFIX_PATH="%LOCAL_INSTALL%"
+      -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
       -G "%GENERATOR%"
       ..
 
@@ -73,3 +76,4 @@ deploy:
   prerelease: false
   on:
     appveyor_repo_tag: true
+    configuration: RelWithDebInfo

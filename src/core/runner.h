@@ -21,19 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef EVENT_H_
-# define EVENT_H_
+#ifndef CRITERION_RUNNER_H_
+# define CRITERION_RUNNER_H_
 
-# include "criterion/event.h"
-# include <stdio.h>
+# include "criterion/types.h"
+# include "compat/pipe.h"
 
-extern FILE *g_event_pipe;
+DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
+DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
-struct event {
-    int kind;
-    void *data;
-};
+struct criterion_test_set *criterion_init(void);
 
-struct event *read_event(FILE *f);
+# define FOREACH_TEST_SEC(Test)                                         \
+    for (struct criterion_test **Test = GET_SECTION_START(cr_tst);      \
+            Test < (struct criterion_test**) GET_SECTION_END(cr_tst);   \
+            ++Test)
 
-#endif /* !EVENT_H_ */
+# define FOREACH_SUITE_SEC(Suite)                                       \
+    for (struct criterion_suite **Suite = GET_SECTION_START(cr_sts);    \
+            Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
+            ++Suite)
+
+extern s_pipe_handle *g_worker_pipe;
+
+#endif /* !CRITERION_RUNNER_H_ */

@@ -41,10 +41,7 @@ The flow of the test process goes as follows:
 Hook Parameters
 ---------------
 
-A report hook may take zero or one parameter. If a parameter is given, it
-is undefined behaviour if it is not a pointer type and not of the proper pointed
-type for that phase.
-
+A report hook takes exactly one parameter. 
 Valid types for each phases are:
 
 * ``struct criterion_test_set *`` for ``PRE_ALL``.
@@ -56,16 +53,12 @@ Valid types for each phases are:
 * ``struct criterion_suite_stats *`` for ``POST_SUITE``.
 * ``struct criterion_global_stats *`` for ``POST_ALL``.
 
-For instance, these are valid report hook declarations for the ``PRE_TEST`` phase:
+For instance, this is a valid report hook declaration for the ``PRE_TEST`` phase:
 
 .. code-block:: c
 
     #include <criterion/criterion.h>
     #include <criterion/hooks.h>
-
-    ReportHook(PRE_TEST)() {
-        // not using the parameter
-    }
 
     ReportHook(PRE_TEST)(struct criterion_test *test) {
         // using the parameter

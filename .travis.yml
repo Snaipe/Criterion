@@ -15,31 +15,39 @@ addons:
     packages:
     - gcc-4.9
     - g++-4.9
-
-before_install:
-- export GCOV="gcov-4.9"
-- export LOCAL_INSTALL="$HOME"
-- export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/lib
-- export CFLAGS="-g -O0"
-- export CXX="g++-4.9"
-script:
-- mkdir -p build
-- cd build
-- cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$HOME -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG} ..
-- make
-- make criterion_tests
-- make test
-after_success:
-- make coveralls
-after_failure:
-- cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
 env:
   global:
-    secure: bzZcWjdqoTgceC40kEBucx7NuWYJPk+rxgF3UJJDXi+ijQAFYPv70p5eVsGR6rfc+XgqXCxcUFQtuL4ZVt7QEfVk1ZOJITNeHbKIeKaEYS4nX8mFf+CBeEm9bJGZ04KiQJdJu5mzzAHvXbW7roGXDGWe1Bjnk5wwA+dNUCa7H04=
+    GCOV: gcov-4.9
+    CXX: g++-4.9
+  matrix:
+    - CONFIGURATION=Debug          COVERAGE=ON
+    - CONFIGURATION=Release        COVERAGE=OFF
+    - CONFIGURATION=RelWithDebInfo COVERAGE=OFF
+
+script:
+  - mkdir -p build
+  - cd build
+  - >
+      cmake
+      -Wno-dev
+      -DCOVERALLS=${COVERAGE}
+      -DCMAKE_BUILD_TYPE=${CONFIGURATION}
+      -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
+      ..
+  - make
+  - make criterion_tests
+  - make test
+
+after_success:
+  - make gcov
+  - bash <(curl -s https://codecov.io/bash)
+
+after_failure:
+  - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
 
 before_deploy:
-- make install
-- tar -cvjf criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2 criterion-${TRAVIS_TAG}
+  - make install
+  - tar -cvjf criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2 criterion-${TRAVIS_TAG}
 
 deploy:
   provider: releases
@@ -50,3 +58,4 @@ deploy:
   on:
     repo: Snaipe/Criterion
     tags: true
+    condition: $CONFIGURATION = RelWithDebInfo

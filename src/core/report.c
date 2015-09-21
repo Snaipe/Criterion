@@ -31,7 +31,7 @@
 #include "criterion/ordered-set.h"
 #include "report.h"
 #include "config.h"
-#include "posix-compat.h"
+#include "compat/posix.h"
 
 static inline void nothing() {}
 

@@ -1,3 +1,9 @@
+2015-09-21  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.1.0
+    * Addition: Added file mocking utilities
+    * Addition: Added parameterized tests
+
 2015-09-20  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.0.2

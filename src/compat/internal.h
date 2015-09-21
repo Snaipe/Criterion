@@ -21,33 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef PROCESS_H_
-# define PROCESS_H_
+#ifndef INTERNAL_H_
+# define INTERNAL_H_
 
-# include <stdbool.h>
-# include "posix-compat.h"
+# if defined(_WIN32) && !defined(__CYGWIN__)
+#  define VC_EXTRALEAN
+#  define WIN32_LEAN_AND_MEAN
+#  undef _WIN32_WINNT
+#  define _WIN32_WINNT 0x0502
+#  include <windows.h>
+#  include <io.h>
+#  include <fcntl.h>
+#  include <winnt.h>
+#  include <stdint.h>
+#  include <signal.h>
+# else
+#  include <unistd.h>
+#  include <sys/wait.h>
+#  include <sys/signal.h>
+#  include <sys/fcntl.h>
+# endif
 
-struct process;
+# include "posix.h"
 
-enum status_kind {
-    EXIT_STATUS,
-    STOPPED,
-    SIGNAL,
-};
-
-struct process_status {
-    enum status_kind kind;
-    int status;
-};
-
-void run_worker(struct worker_context *ctx);
-void set_runner_process(void);
-void unset_runner_process(void);
-bool is_runner(void);
-struct process_status wait_proc(struct process *proc);
-struct process *spawn_test_worker(struct criterion_test *test,
-                                  struct criterion_suite *suite,
-                                  void (*func)(struct criterion_test *, struct criterion_suite *));
-struct event *worker_read_event(struct process *proc);
-
-#endif /* !PROCESS_H_ */
+#endif /* !INTERNAL_H_ */

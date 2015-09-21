@@ -33,9 +33,15 @@ be merged.
     |- .cmake/: CMake modules
     |- dependencies/: dependencies for building libcriterion
     |- doc/: Sphinx documentation files
+    |- dev/: Developer files
     |- include/criterion/: Public API
     |- src/: Sources for libcriterion
-    |   `- log/: Output providers, all the output logic in general
+    |   |- compat/: Cross-platform abstractions for platform-dependent code
+    |   |- core/: Core mechanisms used to run the tests
+    |   |- entry/: Entry-point related sources, and default main function
+    |   |- io/: IO related functions, redirections
+    |   |- log/: Output providers, all the output logic in general
+    |   `- string/: String manipulation functions, i18n
     |- po/: Translation files, i18n stuff
     |- test/: Unit tests for libcriterion
     `- samples/: Sample files

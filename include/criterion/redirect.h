@@ -33,7 +33,15 @@
 #  include <fstream>
 
 #  ifdef __GNUC__
-#   include <ext/stdio_filebuf.h>
+#   if defined(__MINGW32__) || defined(__MINGW64__)
+#    define off_t _off_t
+#    define off64_t _off64_t
+#   endif
+#   include <ext/stdio_sync_filebuf.h>
+#   if defined(__MINGW32__) || defined(__MINGW64__)
+#    undef off_t
+#    undef off64_t
+#   endif
 #  endif
 # else
 #  include <stdio.h>
@@ -51,6 +59,8 @@ CR_API CR_STDN FILE* cr_get_redirected_stdin(void);
 
 CR_API int cr_file_match_str(CR_STDN FILE* f, const char *str);
 CR_API int cr_file_match_file(CR_STDN FILE* f, CR_STDN FILE* ref);
+
+CR_API CR_STDN FILE *cr_mock_file_size(size_t max_size);
 
 CR_END_C_API
 
@@ -133,102 +143,143 @@ CR_END_C_API
 # ifdef __cplusplus
 namespace criterion {
 
+    template <typename CharT, typename Super>
+    class stream_mixin : public Super {
+public:
+        stream_mixin(FILE* f)
+#  ifdef __GNUC__
+            : Super()
+            , fbuf(new ::__gnu_cxx::stdio_sync_filebuf<CharT>(f))
+#  else
+            : Super(f)
+#  endif
+            , file(f)
+        {
+#  ifdef __GNUC__
+            std::ios::rdbuf(&*fbuf);
+#  endif
+        }
+
+        stream_mixin(const stream_mixin& other) = delete;
+        stream_mixin& operator=(const stream_mixin& other) = delete;
+
+        stream_mixin(stream_mixin&& other) :
+#  ifdef __GNUC__
+            fbuf(std::move(other.fbuf)),
+#  endif
+            file(std::move(other.file))
+        {}
+
+        stream_mixin& operator=(stream_mixin&& other) {
+#  ifdef __GNUC__
+            fbuf = std::move(other.fbuf);
+#  endif
+            file = std::move(other.file);
+        }
+
+        void close(void) {
+            Super::flush();
+            Super::close();
+            std::fclose(file);
+        }
+
+    private:
+#  ifdef __GNUC__
+        std::shared_ptr<::__gnu_cxx::stdio_sync_filebuf<CharT>> fbuf;
+#  endif
+        std::FILE* file;
+    };
+
     template <typename CharT>
-    class basic_ofstream : public std::basic_ofstream<CharT> {
+    using ofstream_mixin = stream_mixin<CharT, std::basic_ofstream<CharT>>;
+
+    template <typename CharT>
+    using ifstream_mixin = stream_mixin<CharT, std::basic_ifstream<CharT>>;
+
+    template <typename CharT>
+    using fstream_mixin = stream_mixin<CharT, std::basic_fstream<CharT>>;
+
+    template <typename CharT>
+    class basic_ofstream : public ofstream_mixin<CharT> {
     public:
         basic_ofstream(FILE* f)
-#  ifdef __GNUC__
-            : std::ofstream()
-            , fbuf(new ::__gnu_cxx::stdio_filebuf<CharT>(f, std::ios::out))
-#  else
-            : std::ofstream(f)
-#  endif
-            , file(f)
-        {
-#  ifdef __GNUC__
-            std::ios::rdbuf(&*fbuf);
-#  endif
-        }
+            : ofstream_mixin<CharT>(f)
+        {}
 
-        void close(void) {
-            std::basic_ofstream<CharT>::flush();
-            std::basic_ofstream<CharT>::close();
-            std::fclose(file);
-        }
-
-    private:
-#  ifdef __GNUC__
-        std::unique_ptr<::__gnu_cxx::stdio_filebuf<CharT>> fbuf;
-#  endif
-        std::FILE* file;
+        basic_ofstream(basic_ofstream&& other)
+            : ofstream_mixin<CharT>(std::move(other))
+        {}
     };
 
     template <typename CharT>
-    class basic_ifstream : public std::basic_ifstream<CharT> {
+    class basic_ifstream : public ifstream_mixin<CharT> {
     public:
         basic_ifstream(FILE* f)
-#  ifdef __GNUC__
-            : std::ifstream()
-            , fbuf(new ::__gnu_cxx::stdio_filebuf<CharT>(f, std::ios::in))
-#  else
-            : std::ifstream(f)
-#  endif
-            , file(f)
-        {
-#  ifdef __GNUC__
-            std::ios::rdbuf(&*fbuf);
-#  endif
-        }
+            : ifstream_mixin<CharT>(f)
+        {}
 
-        void close(void) {
-            std::basic_ifstream<CharT>::flush();
-            std::basic_ifstream<CharT>::close();
-            std::fclose(file);
-        }
-
-    private:
-#  ifdef __GNUC__
-        std::unique_ptr<::__gnu_cxx::stdio_filebuf<CharT>> fbuf;
-#  endif
-        std::FILE* file;
+        basic_ifstream(basic_ifstream&& other)
+            : ifstream_mixin<CharT>(std::move(other))
+        {}
     };
 
     template <typename CharT>
-    struct get_redirected_out_stream_ {
-        static inline basic_ofstream<CharT>& call(std::FILE* f) {
-            static std::unique_ptr<basic_ofstream<CharT>> stream;
+    class basic_fstream : public fstream_mixin<CharT> {
+    public:
+        basic_fstream(FILE* f)
+            : fstream_mixin<CharT>(f)
+        {}
 
-            if (!stream)
-                stream.reset(new basic_ofstream<CharT>(f));
-            return *stream;
-        }
-
-    };
-
-    template <typename CharT>
-    struct get_redirected_in_stream_ {
-        static inline basic_ifstream<CharT>& call(std::FILE* f) {
-            static std::unique_ptr<basic_ifstream<CharT>> stream;
-            if (!stream)
-                stream.reset(new basic_ifstream<CharT>(f));
-            return *stream;
-        }
+        basic_fstream(basic_fstream&& other)
+            : fstream_mixin<CharT>(std::move(other))
+        {}
     };
 
     using ofstream = basic_ofstream<char>;
     using ifstream = basic_ifstream<char>;
+    using fstream  = basic_fstream<char>;
+
+    struct get_redirected_out_stream_ {
+        static inline ofstream& call(std::FILE* f) {
+            static std::unique_ptr<ofstream> stream;
+
+            if (!stream)
+                stream.reset(new ofstream(f));
+            return *stream;
+        }
+
+    };
+
+    struct get_redirected_in_stream_ {
+        static inline ifstream& call(std::FILE* f) {
+            static std::unique_ptr<ifstream> stream;
+            if (!stream)
+                stream.reset(new ifstream(f));
+            return *stream;
+        }
+    };
 
     static inline ofstream& get_redirected_cin(void) {
-        return get_redirected_out_stream_<char>::call(cr_get_redirected_stdin());
+        return get_redirected_out_stream_::call(cr_get_redirected_stdin());
     }
 
     static inline ifstream& get_redirected_cout(void) {
-        return get_redirected_in_stream_<char>::call(cr_get_redirected_stdout());
+        return get_redirected_in_stream_::call(cr_get_redirected_stdout());
     }
 
     static inline ifstream& get_redirected_cerr(void) {
-        return get_redirected_in_stream_<char>::call(cr_get_redirected_stderr());
+        return get_redirected_in_stream_::call(cr_get_redirected_stderr());
     }
+
+#  if __GNUC__ >= 5
+    static inline fstream mock_file(size_t max_size) {
+        return fstream(cr_mock_file_size(max_size));
+    }
+
+    static inline fstream mock_file(void) {
+        return mock_file(4096);
+    }
+#  endif
 }
 # endif
 

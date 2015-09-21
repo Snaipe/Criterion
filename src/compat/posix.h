@@ -28,6 +28,14 @@
 # define VANILLA_WIN32
 #endif
 
+# if defined(BSD) \
+  || defined(__FreeBSD__) \
+  || defined(__NetBSD__) \
+  || defined(__OpenBSD__) \
+  || defined(__DragonFly__)
+#  define OS_BSD 1
+# endif
+
 # if !defined(_POSIX_SOURCE)
 #  define _POSIX_SOURCE 1
 #  define TMP_POSIX
@@ -47,57 +55,13 @@
 #  define SIGPROF 27
 #  define CR_EXCEPTION_TIMEOUT 0xC0001042
 # else
+#  include <sys/param.h>
 #  include <sys/wait.h>
 # endif
 
-#include <criterion/types.h>
-
-struct proc_handle;
-typedef struct proc_handle s_proc_handle;
-
-struct pipe_handle;
-typedef struct pipe_handle s_pipe_handle;
-
-struct worker_context {
-    struct criterion_test *test;
-    struct criterion_suite *suite;
-    f_worker_func func;
-    struct pipe_handle *pipe;
-};
-
-extern struct worker_context g_worker_context;
-
-int resume_child(void);
-
-s_pipe_handle *stdpipe();
-FILE *pipe_in(s_pipe_handle *p, int do_close);
-FILE *pipe_out(s_pipe_handle *p, int do_close);
-
-s_proc_handle *fork_process();
-void wait_process(s_proc_handle *handle, int *status);
-
-s_proc_handle *get_current_process();
-bool is_current_process(s_proc_handle *proc);
-
-# ifdef _WIN32
-void *get_win_section_start(const char *section);
-void *get_win_section_end(const char *section);
-#  define CR_STRINGIFY_(Param) #Param
-#  define CR_STRINGIFY(Param) CR_STRINGIFY_(Param)
-#  define GET_SECTION_START(Name) get_win_section_start(CR_STRINGIFY(Name))
-#  define GET_SECTION_END(Name)   get_win_section_end(CR_STRINGIFY(Name))
-# elif defined(__APPLE__)
-void *get_osx_section_start(const char *section);
-void *get_osx_section_end(const char *section);
-#  define CR_STRINGIFY_(Param) #Param
-#  define CR_STRINGIFY(Param) CR_STRINGIFY_(Param)
-#  define GET_SECTION_START(Name) get_osx_section_start(CR_STRINGIFY(Name))
-#  define GET_SECTION_END(Name)   get_osx_section_end(CR_STRINGIFY(Name))
-# else
-#  define GET_SECTION_START(Name) SECTION_START(Name)
-#  define GET_SECTION_END(Name)   SECTION_END(Name)
-# endif
-
-const char *basename_compat(const char *str);
+# include "compat/pipe.h"
+# include "compat/section.h"
+# include "compat/process.h"
+# include "compat/basename.h"
 
 #endif /* !POSIX_COMPAT_H_ */
