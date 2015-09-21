@@ -28,8 +28,28 @@
 #ifdef VANILLA_WIN32
 HANDLE g_heap;
 
+struct garbage_heap {
+    HANDLE handle;
+    struct garbage_heap *next;
+};
+
+# define HEAP_MIN_BASE 0x08000000
+
 void init_inheritable_heap(void) {
-    g_heap = HeapCreate(0, 0, 0);
+    struct garbage_heap *heaps = NULL;
+
+    while ((void*)(g_heap = HeapCreate(0, 0, 0)) < (void*)HEAP_MIN_BASE) {
+        if (g_heap == NULL)
+            break;
+
+        struct garbage_heap *heap = malloc(sizeof(struct garbage_heap));
+        heap->handle = g_heap;
+        heap->next = heaps;
+        heaps = heap;
+    }
+    for (struct garbage_heap *h = heaps; h != NULL; h = h->next)
+        HeapDestroy(h->handle);
+
     if (g_heap == (HANDLE) NULL) {
         fputs("Could not create the private inheritable heap.", stderr);
         abort();

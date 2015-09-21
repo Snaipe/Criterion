@@ -169,8 +169,6 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
 
 int resume_child(void) {
 #ifdef VANILLA_WIN32
-    init_inheritable_heap();
-
     TCHAR mapping_name[128];
     _sntprintf(mapping_name, 128, g_mapping_name, GetCurrentProcessId());
 
@@ -179,8 +177,10 @@ int resume_child(void) {
            FALSE,
            mapping_name);
 
-    if (sharedMem == NULL)
+    if (sharedMem == NULL) {
+        init_inheritable_heap();
         return 0;
+    }
 
     struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
            FILE_MAP_ALL_ACCESS,
