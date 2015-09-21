@@ -56,7 +56,7 @@ easily use a struct to hold the context as a workaround:
 
     ParameterizedTestParameter(suite_name, test_name) = {
         size_t nb_params = 32;
-        struct my_params *params = malloc(sizeof (struct my_params) * nb_params);
+        struct my_params *params = cr_malloc(sizeof (struct my_params) * nb_params);
 
         // generate parameter set
 
@@ -72,11 +72,39 @@ easily use a struct to hold the context as a workaround:
         // access param.param0, param.param1, ...
     }
 
-There is, however, one absolute rule that must be respected, unless you don't
-want your tests to run on windows, ever: parameters must not contain any
-pointer to dynamically allocated data.
+Dynamically allocating fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Hence, this is not permitted:
+Any dynamic memory allocation done from a ParameterizedTestParameter function
+**must** be done with ``cr_malloc``, ``cr_calloc``, or ``cr_realloc``.
+
+Any pointer returned by those 3 functions must be passed to ``cr_free`` after
+you have no more use of it.
+
+It is undefined behaviour to use any other allocation function (such as ``malloc``)
+from the scope of a ParameterizedTestParameter function.
+
+In C++, these methods should not be called explicitely -- instead, you should
+use:
+
+* ``criterion::new_obj<Type>(params...)`` to allocate an object of type ``Type``
+  and call its constructor taking ``params...``.
+  The function possess the exact same semantics as ``new Type(params...)``.
+* ``criterion::delete_obj(obj)`` to destroy an object previously allocated by
+  ``criterion::new_obj``.
+  The function possess the exact same semantics as ``delete obj``.
+* ``criterion::new_arr<Type>(size)`` to allocate an array of objects of type ``Type``
+  and length ``size``. ``Type`` is initialized by calling its default constructor.
+  The function possess the exact same semantics as ``new Type[size]``.
+* ``criterion::delete_arr(array)`` to destroy an array previously allocated by
+  ``criterion::new_arr``.
+  The function possess the exact same semantics as ``delete[] array``.
+
+Freeing dynamically allocated parameter fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+One can pass an extra parameter to ``cr_make_param_array`` to specify
+the cleanup function that should be called on the generated parameter context:
 
 .. code-block:: c
 
@@ -86,16 +114,18 @@ Hence, this is not permitted:
         int *some_int_ptr;
     };
 
+    void cleanup_params(struct criterion_test_params *ctp) {
+        cr_free(((struct my_params *) ctp->params)->some_int_ptr);
+    }
+
     ParameterizedTestParameter(suite_name, test_name) = {
         static my_params param = {
-            .some_int_ptr = malloc(sizeof (int)); // Don't do this.
+            .some_int_ptr = cr_malloc(sizeof (int));
         };
         *param.some_int_ptr = 42;
 
-        return cr_make_param_array(struct my_params, &param, 1);
+        return cr_make_param_array(struct my_params, &param, 1, cleanup_params);
     }
-
-and **will crash the test** on Windows.
 
 Configuring parameterized tests
 -------------------------------
