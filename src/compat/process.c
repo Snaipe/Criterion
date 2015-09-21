@@ -169,6 +169,8 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
 
 int resume_child(void) {
 #ifdef VANILLA_WIN32
+    init_inheritable_heap();
+
     TCHAR mapping_name[128];
     _sntprintf(mapping_name, 128, g_mapping_name, GetCurrentProcessId());
 
@@ -177,10 +179,8 @@ int resume_child(void) {
            FALSE,
            mapping_name);
 
-    if (sharedMem == NULL) {
-        init_inheritable_heap();
+    if (sharedMem == NULL)
         return 0;
-    }
 
     struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
            FILE_MAP_ALL_ACCESS,
@@ -195,20 +195,6 @@ int resume_child(void) {
 
     local_ctx = *ctx;
     UnmapViewOfFile(ctx);
-
-    HANDLE self = GetCurrentThread();
-    DuplicateHandle(GetCurrentProcess(),
-            self,
-            GetCurrentProcess(),
-            &self,
-            0,
-            FALSE,
-            DUPLICATE_SAME_ACCESS);
-
-    SetEvent(local_ctx.sync);
-    SuspendThread(self);
-
-    init_inheritable_heap();
 
     struct test_single_param *param = NULL;
     if (local_ctx.param.size != 0) {
@@ -339,6 +325,8 @@ s_proc_handle *fork_process() {
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
 
+    inherit_heap(info.hProcess);
+
     if (ResumeThread(info.hThread) == (DWORD) -1)
         goto failure;
 
@@ -346,11 +334,6 @@ s_proc_handle *fork_process() {
     HANDLE handles[] = { info.hProcess, sync };
     DWORD wres = WaitForMultipleObjects(sizeof (handles) / sizeof (HANDLE), handles, FALSE, INFINITE);
     if (wres == WAIT_OBJECT_0)
-        goto failure;
-
-    inherit_heap(info.hProcess);
-
-    if (ResumeThread(info.hThread) == (DWORD) -1)
         goto failure;
 
     CloseHandle(info.hThread);
