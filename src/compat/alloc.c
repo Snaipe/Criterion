@@ -63,17 +63,19 @@ int inherit_heap(HANDLE child_process) {
         if (!(entry.wFlags & PROCESS_HEAP_REGION))
             continue;
 
+        DWORD region_size = entry.Region.dwCommittedSize;
+
         if (!VirtualAllocEx(child_process,
                 entry.lpData,
-                entry.cbData + entry.cbOverhead,
-                MEM_COMMIT,
+                region_size,
+                MEM_RESERVE | MEM_COMMIT,
                 PAGE_READWRITE))
             return -1;
 
         if (!WriteProcessMemory(child_process,
                 entry.lpData,
                 entry.lpData,
-                entry.cbData + entry.cbOverhead,
+                region_size,
                 NULL))
             return -1;
     }

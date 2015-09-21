@@ -57,17 +57,17 @@ namespace criterion {
     typename std::enable_if<std::is_fundamental<T>::value>::type*
     new_arr(size_t len) {
         void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
-        *(static_cast<size_t*>(ptr)) = len;
-        T* arr = static_cast<T*>(static_cast<size_t*>(ptr) + 1);
+        *(reinterpret_cast<size_t*>(ptr)) = len;
+        T* arr = reinterpret_cast<T*>(reinterpret_cast<size_t*>(ptr) + 1);
         return arr;
     }
 
     template<typename T>
     T* new_arr(size_t len) {
         void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
-        *(static_cast<size_t*>(ptr)) = len;
+        *(reinterpret_cast<size_t*>(ptr)) = len;
 
-        T* arr = static_cast<T*>(static_cast<size_t*>(ptr) + 1);
+        T* arr = reinterpret_cast<T*>(reinterpret_cast<size_t*>(ptr) + 1);
         for (size_t i = 0; i < len; ++i)
             new (arr + i) T();
         return arr;
@@ -86,8 +86,8 @@ namespace criterion {
 
     template<typename T>
     void delete_arr(T* ptr) {
-        size_t len = *(static_cast<size_t*>(ptr));
-        T* arr = static_cast<T*>(static_cast<size_t*>(ptr) + 1);
+        size_t len = *(reinterpret_cast<size_t*>(ptr));
+        T* arr = reinterpret_cast<T*>(reinterpret_cast<size_t*>(ptr) + 1);
         for (int i = 0; i < len; ++i) {
             arr[i].~T();
         }
