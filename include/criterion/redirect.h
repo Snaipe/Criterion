@@ -235,42 +235,40 @@ public:
         {}
     };
 
-    template <typename CharT>
-    struct get_redirected_out_stream_ {
-        static inline basic_ofstream<CharT>& call(std::FILE* f) {
-            static std::unique_ptr<basic_ofstream<CharT>> stream;
-
-            if (!stream)
-                stream.reset(new basic_ofstream<CharT>(f));
-            return *stream;
-        }
-
-    };
-
-    template <typename CharT>
-    struct get_redirected_in_stream_ {
-        static inline basic_ifstream<CharT>& call(std::FILE* f) {
-            static std::unique_ptr<basic_ifstream<CharT>> stream;
-            if (!stream)
-                stream.reset(new basic_ifstream<CharT>(f));
-            return *stream;
-        }
-    };
-
     using ofstream = basic_ofstream<char>;
     using ifstream = basic_ifstream<char>;
     using fstream  = basic_fstream<char>;
 
+    struct get_redirected_out_stream_ {
+        static inline ofstream& call(std::FILE* f) {
+            static std::unique_ptr<ofstream> stream;
+
+            if (!stream)
+                stream.reset(new ofstream(f));
+            return *stream;
+        }
+
+    };
+
+    struct get_redirected_in_stream_ {
+        static inline ifstream& call(std::FILE* f) {
+            static std::unique_ptr<ifstream> stream;
+            if (!stream)
+                stream.reset(new ifstream(f));
+            return *stream;
+        }
+    };
+
     static inline ofstream& get_redirected_cin(void) {
-        return get_redirected_out_stream_<char>::call(cr_get_redirected_stdin());
+        return get_redirected_out_stream_::call(cr_get_redirected_stdin());
     }
 
     static inline ifstream& get_redirected_cout(void) {
-        return get_redirected_in_stream_<char>::call(cr_get_redirected_stdout());
+        return get_redirected_in_stream_::call(cr_get_redirected_stdout());
     }
 
     static inline ifstream& get_redirected_cerr(void) {
-        return get_redirected_in_stream_<char>::call(cr_get_redirected_stderr());
+        return get_redirected_in_stream_::call(cr_get_redirected_stderr());
     }
 
 #  if __GNUC__ >= 5
