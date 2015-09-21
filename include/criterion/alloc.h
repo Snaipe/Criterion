@@ -88,9 +88,8 @@ namespace criterion {
     void delete_arr(T* ptr) {
         size_t len = *(reinterpret_cast<size_t*>(ptr));
         T* arr = reinterpret_cast<T*>(reinterpret_cast<size_t*>(ptr) + 1);
-        for (int i = 0; i < len; ++i) {
+        for (size_t i = 0; i < len; ++i)
             arr[i].~T();
-        }
         cr_free(ptr);
     }
 
