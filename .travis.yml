@@ -16,8 +16,13 @@ addons:
     - gcc-4.9
     - g++-4.9
 env:
+  global:
     GCOV: gcov-4.9
     CXX: g++-4.9
+  matrix:
+    - CONFIGURATION: Debug
+    - CONFIGURATION: Release
+    - CONFIGURATION: RelWithDebInfo
 
 script:
   - mkdir -p build
@@ -26,7 +31,7 @@ script:
       cmake
       -Wno-dev
       -DCOVERALLS=ON
-      -DCMAKE_BUILD_TYPE=Debug
+      -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
       ..
   - make
@@ -53,3 +58,4 @@ deploy:
   on:
     repo: Snaipe/Criterion
     tags: true
+    condition: $CONFIGURATION = RelWithDebInfo

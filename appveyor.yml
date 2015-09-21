@@ -21,9 +21,13 @@ environment:
 clone_depth: 5
 
 platform:
+  - x86
   - x86_64
 
-configuration: Release
+configuration:
+  - Debug
+  - Release
+  - RelWithDebInfo
 
 install:
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
@@ -35,6 +39,7 @@ install:
       cmake
       -Wno-dev
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
+      -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
       -G "%GENERATOR%"
       ..
 
@@ -71,3 +76,4 @@ deploy:
   prerelease: false
   on:
     appveyor_repo_tag: true
+    configuration: RelWithDebInfo
