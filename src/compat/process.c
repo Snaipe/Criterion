@@ -114,7 +114,7 @@ static struct full_context local_ctx;
 #  error Unsupported compiler. Use GCC or Clang under *nixes.
 # endif
 
-static void handle_sigchld(int sig) {
+static void handle_sigchld(UNUSED int sig) {
     assert(sig == SIGCHLD);
 
     int fd = g_worker_pipe->fds[1];
@@ -130,7 +130,8 @@ static void handle_sigchld(int sig) {
         memcpy(buf, &kind, sizeof (kind));
         memcpy(buf + sizeof (kind), &ws, sizeof (ws));
 
-        write(fd, &buf, sizeof (buf));
+        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf))
+            abort();
     }
 }
 #endif
@@ -142,7 +143,7 @@ struct wait_context {
 };
 
 static void CALLBACK handle_child_terminated(PVOID lpParameter,
-                                             BOOLEAN TimerOrWaitFired) {
+                                             UNUSED BOOLEAN TimerOrWaitFired) {
 
     assert(!TimerOrWaitFired);
 

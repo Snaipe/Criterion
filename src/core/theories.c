@@ -184,6 +184,17 @@ static void concat_arg(char (*msg)[4096], struct criterion_datapoints *dps, size
     strncat(*msg, arg, sizeof (*msg) - 1);
 }
 
+int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void)) {
+    jmp_buf backup;
+    memcpy(backup, g_pre_test, sizeof (jmp_buf));
+    int res = setjmp(g_pre_test);
+    if (!res) {
+        cr_theory_call(ctx, fnptr);
+    }
+    memcpy(g_pre_test, backup, sizeof (jmp_buf));
+    return !res;
+}
+
 void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void)) {
     struct criterion_theory_context *ctx = cr_theory_init();
 
@@ -205,11 +216,7 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                         ((char*) dps[i].arr) + dps[i].size * indices[i]);
             }
 
-            jmp_buf backup;
-            memcpy(backup, g_pre_test, sizeof (jmp_buf));
-            if (!setjmp(g_pre_test)) {
-                cr_theory_call(ctx, fnptr);
-            } else {
+            if (!try_call_theory(ctx, fnptr)) {
                 struct {
                     size_t len;
                     char msg[4096];
@@ -224,7 +231,6 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
 
                 send_event(THEORY_FAIL, &result, result.len + sizeof (size_t));
             }
-            memcpy(g_pre_test, backup, sizeof (jmp_buf));
         }
 
         for (size_t i = 0; i < datapoints; ++i) {
