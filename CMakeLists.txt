@@ -50,7 +50,7 @@ endif()
 
 # Setup coveralls
 
-option(TESTS "Turn on the samples and test" OFF)
+option(CTESTS "Turn on the samples and test" OFF)
 option(COVERALLS "Turn on coveralls support" OFF)
 option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
 
@@ -193,7 +193,7 @@ add_custom_target(gcov
         -P "${CMAKE_MODULE_PATH}/Gcov.cmake"
 )
 
-if (TESTS)
+if (CTESTS)
 enable_testing()
 add_subdirectory(samples)
 add_subdirectory(test)

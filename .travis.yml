@@ -30,7 +30,7 @@ script:
   - >
       cmake
       -Wno-dev
-      -DTESTS=ON
+      -DCTESTS=ON
       -DCOVERALLS=${COVERAGE}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
