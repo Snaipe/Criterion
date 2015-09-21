@@ -171,6 +171,7 @@ endif()
 
 if (LIBINTL_LIB_FOUND)
   target_link_libraries(criterion ${LIBINTL_LIBRARIES})
+  include_directories(${LIBINTL_INCLUDE_DIR})
 endif()
 
 if (COVERALLS)
