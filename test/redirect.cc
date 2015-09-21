@@ -79,7 +79,7 @@ Test(redirect, stderr_) {
 
 Test(redirect, stdin_) {
     auto& f_cin = criterion::get_redirected_cin();
-    f_cin << std::string("Foo");
+    f_cin << "Foo";
     f_cin.close();
 
     std::string read;
