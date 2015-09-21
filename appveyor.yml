@@ -38,6 +38,7 @@ install:
   - >
       cmake
       -Wno-dev
+      -DTESTS=ON
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
       -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
       -G "%GENERATOR%"
