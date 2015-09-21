@@ -26,30 +26,34 @@
 #include <stdlib.h>
 
 #ifdef VANILLA_WIN32
-struct block {
-    void *ptr;
-    size_t size;
-    struct block *next;
-};
-
-struct block *g_blocks = NULL;
+HANDLE g_heap;
 
 void init_inheritable_heap(void) {
+    g_heap = HeapCreate(0, 0, 0);
+    if (g_heap == (HANDLE) NULL) {
+        fputs("Could not create the private inheritable heap.", stderr);
+        abort();
+    }
 }
 
 int inherit_heap(HANDLE child_process) {
-    for (struct block *b = g_blocks; b != NULL; b = b->next) {
+    PROCESS_HEAP_ENTRY entry = { .lpData = NULL };
+
+    while (HeapWalk(g_heap, &entry)) {
+        if (!(entry.wFlags & PROCESS_HEAP_REGION))
+            continue;
+
         if (!VirtualAllocEx(child_process,
-                b->ptr,
-                b->size,
+                entry.lpData,
+                entry.cbData + entry.cbOverhead,
                 MEM_COMMIT,
                 PAGE_READWRITE))
             return -1;
 
         if (!WriteProcessMemory(child_process,
-                b->ptr,
-                b->ptr,
-                b->size,
+                entry.lpData,
+                entry.lpData,
+                entry.cbData + entry.cbOverhead,
                 NULL))
             return -1;
     }
@@ -59,15 +63,7 @@ int inherit_heap(HANDLE child_process) {
 
 void *cr_malloc(size_t size) {
 #ifdef VANILLA_WIN32
-    void *ptr = VirtualAlloc(NULL, size, MEM_COMMIT, PAGE_READWRITE);
-    if (ptr == NULL)
-        return NULL;
-    struct block *b = malloc(sizeof (struct block));
-    b->next = g_blocks;
-    b->ptr = ptr;
-    b->size = size;
-    g_blocks = b;
-    return ptr;
+    return HeapAlloc(g_heap, 0, size);
 #else
     return malloc(size);
 #endif
@@ -75,9 +71,7 @@ void *cr_malloc(size_t size) {
 
 void *cr_calloc(size_t nmemb, size_t size) {
 #ifdef VANILLA_WIN32
-    void *ptr = cr_malloc(nmemb * size);
-    memset(ptr, 0, nmemb * size);
-    return ptr;
+    return HeapAlloc(g_heap, HEAP_ZERO_MEMORY, nmemb * size);
 #else
     return calloc(nmemb, size);
 #endif
@@ -85,9 +79,7 @@ void *cr_calloc(size_t nmemb, size_t size) {
 
 void *cr_realloc(void *ptr, size_t size) {
 #ifdef VANILLA_WIN32
-    if (size > 4096)
-        return NULL;
-    return ptr;
+    return HeapReAlloc(g_heap, 0, ptr, size);
 #else
     return realloc(ptr, size);
 #endif
@@ -95,6 +87,7 @@ void *cr_realloc(void *ptr, size_t size) {
 
 void cr_free(void *ptr) {
 #ifdef VANILLA_WIN32
+    HeapFree(g_heap, 0, ptr);
 #else
     free(ptr);
 #endif
