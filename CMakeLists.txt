@@ -101,6 +101,8 @@ set(SOURCE_FILES
   src/compat/time.c
   src/compat/time.h
   src/compat/posix.h
+  src/compat/alloc.c
+  src/compat/alloc.h
   src/io/redirect.c
   src/io/event.c
   src/io/event.h
@@ -140,6 +142,7 @@ set(INTERFACE_FILES
   include/criterion/asprintf-compat.h
   include/criterion/designated-initializer-compat.h
   include/criterion/preprocess.h
+  include/criterion/alloc.h
 )
 
 # Generate the configure file

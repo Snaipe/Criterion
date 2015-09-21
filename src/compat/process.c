@@ -30,6 +30,7 @@
 #include "process.h"
 #include "internal.h"
 #include "pipe-internal.h"
+#include "alloc.h"
 
 #include <signal.h>
 
@@ -176,8 +177,10 @@ int resume_child(void) {
            FALSE,
            mapping_name);
 
-    if (sharedMem == NULL)
+    if (sharedMem == NULL) {
+        init_inheritable_heap();
         return 0;
+    }
 
     struct full_context *ctx = (struct full_context *) MapViewOfFile(sharedMem,
            FILE_MAP_ALL_ACCESS,
@@ -321,6 +324,8 @@ s_proc_handle *fork_process() {
 
     if (g_worker_context.suite->data)
         ctx->suite_data = *g_worker_context.suite->data;
+
+    inherit_heap(info.hProcess);
 
     if (ResumeThread(info.hThread) == (DWORD) -1)
         goto failure;

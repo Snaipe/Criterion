@@ -28,6 +28,7 @@
 # include "common.h"
 # include "types.h"
 # include "assert.h"
+# include "alloc.h"
 
 # define IDENTIFIER_(Category, Name, Suffix) \
     Category ## _ ## Name ## _ ## Suffix
