@@ -20,9 +20,9 @@ env:
     GCOV: gcov-4.9
     CXX: g++-4.9
   matrix:
-    - CONFIGURATION: Debug
-    - CONFIGURATION: Release
-    - CONFIGURATION: RelWithDebInfo
+    - CONFIGURATION=Debug          COVERAGE=ON
+    - CONFIGURATION=Release        COVERAGE=OFF
+    - CONFIGURATION=RelWithDebInfo COVERAGE=OFF
 
 script:
   - mkdir -p build
@@ -30,7 +30,7 @@ script:
   - >
       cmake
       -Wno-dev
-      -DCOVERALLS=ON
+      -DCOVERALLS=${COVERAGE}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
       ..
