@@ -86,10 +86,6 @@ void cr_theory_abort(void) {
     longjmp(theory_jmp, 1);
 }
 
-int cr_theory_mark(void) {
-    return setjmp(theory_jmp);
-}
-
 void cr_theory_reset(struct criterion_theory_context *ctx) {
     dcReset(ctx->vm);
 }
@@ -185,14 +181,11 @@ static void concat_arg(char (*msg)[4096], struct criterion_datapoints *dps, size
 }
 
 int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void)) {
-    jmp_buf backup;
-    memcpy(backup, g_pre_test, sizeof (jmp_buf));
-    int res = setjmp(g_pre_test);
-    if (!res) {
+    if (!setjmp(g_pre_test)) {
         cr_theory_call(ctx, fnptr);
+        return 1;
     }
-    memcpy(g_pre_test, backup, sizeof (jmp_buf));
-    return !res;
+    return 0;
 }
 
 void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void)) {
@@ -201,9 +194,9 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
     size_t *indices = malloc(sizeof (size_t) * datapoints);
     memset(indices, 0, datapoints * sizeof (size_t));
 
-    bool has_next = true;
+    volatile bool has_next = true;
     while (has_next) {
-        if (!cr_theory_mark()) {
+        if (!setjmp(theory_jmp)) {
             cr_theory_reset(ctx);
             for (size_t i = 0; i < datapoints; ++i) {
 
