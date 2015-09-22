@@ -111,18 +111,18 @@ struct criterion_datapoints {
     cr_assume((Expected) - (Actual) > (Epsilon)         \
            || (Actual) - (Expected) > (Epsilon))
 
-# define cr_assume_strings_op_(Op, Actual, Expected) \
+# define cr_assume_str_op_(Op, Actual, Expected) \
     cr_assume(strcmp((Actual), (Expected)) Op 0)
 
-# define cr_assume_strings_eq(Actual, Expected)  cr_assume_strings_op_(==, Actual, Expected)
-# define cr_assume_strings_neq(Actual, Expected) cr_assume_strings_op_(!=, Actual, Expected)
-# define cr_assume_strings_lt(Actual, Expected)  cr_assume_strings_op_(<, Actual, Expected)
-# define cr_assume_strings_leq(Actual, Expected) cr_assume_strings_op_(<=, Actual, Expected)
-# define cr_assume_strings_gt(Actual, Expected)  cr_assume_strings_op_(>, Actual, Expected)
-# define cr_assume_strings_geq(Actual, Expected) cr_assume_strings_op_(>=, Actual, Expected)
+# define cr_assume_str_eq(Actual, Expected)  cr_assume_str_op_(==, Actual, Expected)
+# define cr_assume_str_neq(Actual, Expected) cr_assume_str_op_(!=, Actual, Expected)
+# define cr_assume_str_lt(Actual, Expected)  cr_assume_str_op_(<, Actual, Expected)
+# define cr_assume_str_leq(Actual, Expected) cr_assume_str_op_(<=, Actual, Expected)
+# define cr_assume_str_gt(Actual, Expected)  cr_assume_str_op_(>, Actual, Expected)
+# define cr_assume_str_geq(Actual, Expected) cr_assume_str_op_(>=, Actual, Expected)
 
-# define cr_assume_arrays_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
-# define cr_assume_arrays_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
+# define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
+# define cr_assume_arr_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
 
 CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
 
@@ -141,5 +141,17 @@ CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, 
     void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args
 
 CR_END_C_API
+
+# ifndef CRITERION_NO_COMPAT
+#  define cr_assume_strings_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_eq, cr_assume_str_eq) cr_assume_str_eq(__VA_ARGS__)
+#  define cr_assume_strings_neq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_neq, cr_assume_str_neq) cr_assume_str_neq(__VA_ARGS__)
+#  define cr_assume_strings_lt(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_lt, cr_assume_str_lt) cr_assume_str_lt(__VA_ARGS__)
+#  define cr_assume_strings_leq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_leq, cr_assume_str_leq) cr_assume_str_leq(__VA_ARGS__)
+#  define cr_assume_strings_gt(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_gt, cr_assume_str_gt) cr_assume_str_gt(__VA_ARGS__)
+#  define cr_assume_strings_geq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_geq, cr_assume_str_geq) cr_assume_str_geq(__VA_ARGS__)
+
+#  define cr_assume_arrays_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_eq, cr_assume_arr_eq) cr_assume_arr_eq(__VA_ARGS__)
+#  define cr_assume_arrays_neq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_neq, cr_assume_arr_neq) cr_assume_arr_neq(__VA_ARGS__)
+# endif
 
 #endif /* !CRITERION_THEORIES_H_ */
