@@ -32,17 +32,17 @@ size_t get_processor_count(void) {
     return (size_t) sysinfo.dwNumberOfProcessors;
 #elif defined(BSD)
     int mib[2] = { CTL_HW, HW_AVAILCPU };
-    long long count;
+    long long count = 0;
     size_t len = sizeof (count);
 
     /* get the number of CPUs from the system */
-    sysctl(mib, 2, &count, &len, NULL, 0);
+    int res = sysctl(mib, 2, &count, &len, NULL, 0);
 
-    if (count < 1) {
+    if (count < 1 || res == -1) {
         mib[1] = HW_NCPU;
-        sysctl(mib, 2, &count, &len, NULL, 0);
+        res = sysctl(mib, 2, &count, &len, NULL, 0);
 
-        if (count < 1)
+        if (count < 1 || res == -1)
             count = 1;
     }
     return (size_t) count;
