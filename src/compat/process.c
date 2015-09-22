@@ -385,16 +385,6 @@ failure:
 #endif
 }
 
-void wait_process(s_proc_handle *handle, int *status) {
-#ifdef VANILLA_WIN32
-    WaitForSingleObject(handle->handle, INFINITE);
-    *status = get_win_status(handle->handle);
-    CloseHandle(handle->handle);
-#else
-    waitpid(handle->pid, status, 0);
-#endif
-}
-
 s_proc_handle *get_current_process() {
     s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
 #ifdef VANILLA_WIN32

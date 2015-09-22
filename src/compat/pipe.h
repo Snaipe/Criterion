@@ -25,6 +25,7 @@
 # define PIPE_H_
 
 # include <stdio.h>
+# include <stdlib.h>
 # include "common.h"
 
 struct pipe_handle;
@@ -53,13 +54,13 @@ FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts);
 int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
 void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
 
-INLINE FILE* get_std_file(int fd_kind) {
+INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
     switch (fd_kind) {
         case CR_STDIN:  return stdin;
         case CR_STDOUT: return stdout;
         case CR_STDERR: return stderr;
     }
-    return NULL;
+    abort();
 }
 
 extern s_pipe_handle *stdout_redir;

@@ -295,7 +295,7 @@ static void handle_event(struct event *ev) {
     }
 }
 
-static struct process *run_test(struct criterion_global_stats *stats,
+static struct worker *run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
         struct criterion_test_stats *test_stats,
         struct test_single_param *param) {
@@ -345,7 +345,7 @@ void criterion_finalize(struct criterion_test_set *set) {
     sfree(set);
 }
 
-static struct process *run_next_test(struct criterion_test_set *p_set,
+static struct worker *run_next_test(struct criterion_test_set *p_set,
                                      struct criterion_global_stats *p_stats,
                                      ccrContParam) {
     ccrBeginContext;
@@ -407,7 +407,7 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
                         (char *) ctx->params.params + ctx->i * ctx->params.size
                     };
 
-                    struct process *worker = run_test(ctx->stats,
+                    struct worker *worker = run_test(ctx->stats,
                             ctx->suite_stats,
                             ctx->test_stats,
                             &param);
@@ -435,7 +435,7 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
                     continue;
                 }
 
-                struct process *worker = run_test(ctx->stats,
+                struct worker *worker = run_test(ctx->stats,
                         ctx->suite_stats,
                         ctx->test_stats,
                         NULL);
@@ -468,7 +468,7 @@ static void run_tests_async(struct criterion_test_set *set,
     size_t nb_workers = DEF(criterion_options.jobs, get_processor_count());
     struct worker_set workers = {
         .max_workers = nb_workers,
-        .workers = calloc(nb_workers, sizeof (struct process*)),
+        .workers = calloc(nb_workers, sizeof (struct worker*)),
     };
 
     size_t active_workers = 0;

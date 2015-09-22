@@ -47,7 +47,7 @@ bool is_runner(void) {
 }
 
 static void close_process(void *ptr, UNUSED void *meta) {
-    struct process *proc = ptr;
+    struct worker *proc = ptr;
     fclose(proc->in);
     sfree(proc->ctx.suite_stats);
     sfree(proc->ctx.test_stats);
@@ -87,7 +87,7 @@ void run_worker(struct worker_context *ctx) {
     _Exit(0);
 }
 
-struct process *spawn_test_worker(struct execution_context *ctx,
+struct worker *spawn_test_worker(struct execution_context *ctx,
                                   f_worker_func func,
                                   s_pipe_handle *pipe) {
     g_worker_context = (struct worker_context) {
@@ -98,7 +98,7 @@ struct process *spawn_test_worker(struct execution_context *ctx,
         .param = ctx->param,
     };
 
-    struct process *ptr = NULL;
+    struct worker *ptr = NULL;
 
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
@@ -112,11 +112,11 @@ struct process *spawn_test_worker(struct execution_context *ctx,
     }
 
     ptr = smalloc(
-            .size = sizeof (struct process),
+            .size = sizeof (struct worker),
             .kind = SHARED,
             .dtor = close_process);
 
-    *ptr = (struct process) {
+    *ptr = (struct worker) {
         .proc = proc,
         .in = pipe_in(pipe, PIPE_DUP),
         .ctx = *ctx,
@@ -138,11 +138,4 @@ struct process_status get_status(int status) {
         };
 
     return (struct process_status) { .kind = STOPPED };
-}
-
-struct process_status wait_proc(struct process *proc) {
-    int status;
-    wait_process(proc->proc, &status);
-
-    return get_status(status);
 }

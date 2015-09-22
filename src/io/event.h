@@ -35,7 +35,7 @@ struct event {
     int kind;
     void *data;
 
-    struct process *worker;
+    struct worker *worker;
     size_t worker_index;
 };
 
