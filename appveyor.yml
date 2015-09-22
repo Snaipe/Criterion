@@ -22,7 +22,7 @@ clone_depth: 5
 
 platform:
   - x86
-  - x86_64
+  - x64
 
 configuration:
   - Debug

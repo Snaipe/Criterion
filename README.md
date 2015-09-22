@@ -51,6 +51,8 @@ the user would have with other frameworks:
 * [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.1.0/criterion-v2.1.0-windows-msvc-x86_64.tar.bz2)
 * [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.1.0/criterion-v2.1.0-windows-mingw-x86_64.tar.bz2)
 
+[comment]: # (Don't forget to change x86_64 to x64 on windows links on the next release)
+
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
 ## Developer Resources
