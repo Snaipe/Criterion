@@ -40,6 +40,15 @@
 #  include <sys/wait.h>
 #  include <sys/signal.h>
 #  include <sys/fcntl.h>
+#  include <sys/param.h>
+#  ifdef BSD
+#   include <sys/types.h>
+typedef unsigned long u_long;
+typedef unsigned int u_int;
+typedef unsigned short u_short;
+typedef unsigned char u_char;
+#   include <sys/sysctl.h>
+#  endif
 # endif
 
 # include "posix.h"

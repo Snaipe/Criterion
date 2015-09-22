@@ -49,6 +49,10 @@ struct event *read_event(FILE *f) {
     if (fread(&kind, sizeof (unsigned), 1, f) == 0)
         return NULL;
 
+    unsigned long long pid;
+    if (fread(&pid, sizeof (unsigned long long), 1, f) == 0)
+        return NULL;
+
     switch (kind) {
         case ASSERT: {
             const size_t assert_size = sizeof (struct criterion_assert_stats);
@@ -73,7 +77,7 @@ struct event *read_event(FILE *f) {
                     .size = sizeof (struct event),
                     .dtor = destroy_assert_event
                 );
-            *ev = (struct event) { .kind = kind, .data = buf };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = buf };
             return ev;
 
 fail_assert:
@@ -96,7 +100,7 @@ fail_assert:
                     .size = sizeof (struct event),
                     .dtor = destroy_event
                 );
-            *ev = (struct event) { .kind = kind, .data = buf };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = buf };
             return ev;
         }
         case POST_TEST: {
@@ -110,7 +114,7 @@ fail_assert:
                     .size = sizeof (struct event),
                     .dtor = destroy_event
                 );
-            *ev = (struct event) { .kind = kind, .data = elapsed_time };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = elapsed_time };
             return ev;
         }
         case WORKER_TERMINATED: {
@@ -124,22 +128,26 @@ fail_assert:
                     .size = sizeof (struct event),
                     .dtor = destroy_event
                 );
-            *ev = (struct event) { .kind = kind, .data = status };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = status };
             return ev;
         }
         default: {
             struct event *ev = smalloc(sizeof (struct event));
-            *ev = (struct event) { .kind = kind, .data = NULL };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = NULL };
             return ev;
         }
     }
 }
 
 void send_event(int kind, void *data, size_t size) {
-    unsigned char *buf = malloc(sizeof (int) + size);
+    unsigned long long pid = get_process_id();
+
+    unsigned char *buf = malloc(sizeof (int) + sizeof (pid) + size);
     memcpy(buf, &kind, sizeof (int));
-    memcpy(buf + sizeof (int), data, size);
-    if (fwrite(buf, sizeof (int) + size, 1, g_event_pipe) == 0)
+    memcpy(buf + sizeof (int), &pid, sizeof (pid));
+    memcpy(buf + sizeof (int) + sizeof (pid), data, size);
+    if (fwrite(buf, sizeof (int) + sizeof (pid) + size, 1, g_event_pipe) == 0)
         abort();
+
     free(buf);
 }

@@ -55,4 +55,7 @@ void wait_process(s_proc_handle *handle, int *status);
 s_proc_handle *get_current_process();
 bool is_current_process(s_proc_handle *proc);
 
+unsigned long long get_process_id(void);
+unsigned long long get_process_id_of(s_proc_handle *proc);
+
 #endif /* !COMPAT_PROCESS_H_ */

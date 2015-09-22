@@ -65,6 +65,7 @@ macro(add_samples DIR_ SAMPLES_)
                 ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
                 ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
                 ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
+                ENVIRONMENT "CRITERION_JOBS=1" # for output ordering
             )
         endif ()
     endforeach()
@@ -87,6 +88,7 @@ foreach(script ${SCRIPTS})
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
         ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
+        ENVIRONMENT "CRITERION_JOBS=1" # for output ordering
     )
 endforeach()
 

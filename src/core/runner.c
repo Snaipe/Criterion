@@ -30,6 +30,7 @@
 #include "criterion/logging.h"
 #include "compat/time.h"
 #include "compat/posix.h"
+#include "compat/processor.h"
 #include "string/i18n.h"
 #include "io/event.h"
 #include "stats.h"
@@ -39,6 +40,7 @@
 #include "abort.h"
 #include "config.h"
 #include "common.h"
+#include "coroutine.h"
 
 #ifdef HAVE_PCRE
 #include "string/extmatch.h"
@@ -130,45 +132,6 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
-typedef void (*f_test_run)(struct criterion_global_stats *,
-        struct criterion_suite_stats *,
-        struct criterion_test *,
-        struct criterion_suite *);
-
-static void map_tests(struct criterion_test_set *set,
-                      struct criterion_global_stats *stats,
-                      f_test_run fun) {
-
-    FOREACH_SET(struct criterion_suite_set *s, set->suites) {
-        if (!s->tests)
-            continue;
-
-        report(PRE_SUITE, s);
-        log(pre_suite, s);
-
-        struct criterion_suite_stats *suite_stats = suite_stats_init(&s->suite);
-
-        struct event ev = { .kind = PRE_SUITE };
-        stat_push_event(stats, suite_stats, NULL, &ev);
-
-        FOREACH_SET(struct criterion_test *t, s->tests) {
-            fun(stats, suite_stats, t, &s->suite);
-            if (criterion_options.fail_fast && stats->tests_failed > 0)
-                break;
-            if (!is_runner()) {
-                sfree(suite_stats);
-                return;
-            }
-        }
-
-        report(POST_SUITE, suite_stats);
-        log(post_suite, suite_stats);
-
-        sfree(suite_stats);
-    }
-
-}
-
 static void run_test_child(struct criterion_test *test,
                            struct criterion_suite *suite) {
 
@@ -223,17 +186,6 @@ static INLINE bool is_disabled(struct criterion_test *t,
     } while (0)
 
 s_pipe_handle *g_worker_pipe;
-
-struct execution_context {
-    bool test_started;
-    bool normal_finish;
-    bool cleaned_up;
-    struct criterion_global_stats *stats;
-    struct criterion_test *test;
-    struct criterion_test_stats *test_stats;
-    struct criterion_suite *suite;
-    struct criterion_suite_stats *suite_stats;
-};
 
 static void handle_worker_terminated(struct event *ev,
         struct execution_context *ctx) {
@@ -301,120 +253,63 @@ static void handle_worker_terminated(struct event *ev,
     }
 }
 
-static void run_test(struct criterion_global_stats *stats,
+static void handle_event(struct event *ev) {
+    struct execution_context *ctx = &ev->worker->ctx;
+    if (ev->kind < WORKER_TERMINATED)
+        stat_push_event(ctx->stats, ctx->suite_stats, ctx->test_stats, ev);
+    switch (ev->kind) {
+        case PRE_INIT:
+            report(PRE_INIT, ctx->test);
+            log(pre_init, ctx->test);
+            break;
+        case PRE_TEST:
+            report(PRE_TEST, ctx->test);
+            log(pre_test, ctx->test);
+            ctx->test_started = true;
+            break;
+        case THEORY_FAIL: {
+            struct criterion_theory_stats ths = {
+                .formatted_args = (char*) ev->data,
+                .stats = ctx->test_stats,
+            };
+            report(THEORY_FAIL, &ths);
+            log(theory_fail, &ths);
+        } break;
+        case ASSERT:
+            report(ASSERT, ev->data);
+            log(assert, ev->data);
+            break;
+        case POST_TEST:
+            report(POST_TEST, ctx->test_stats);
+            log(post_test, ctx->test_stats);
+            ctx->normal_finish = true;
+            break;
+        case POST_FINI:
+            report(POST_FINI, ctx->test_stats);
+            log(post_fini, ctx->test_stats);
+            ctx->cleaned_up = true;
+            break;
+        case WORKER_TERMINATED:
+            handle_worker_terminated(ev, ctx);
+            break;
+    }
+}
+
+static struct process *run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
-        struct criterion_test *test,
-        struct criterion_suite *suite,
+        struct criterion_test_stats *test_stats,
         struct test_single_param *param) {
 
-    struct criterion_test_stats *test_stats = test_stats_init(test);
-    struct process *proc = NULL;
-
-    if (is_disabled(test, suite)) {
-        stat_push_event(stats,
-                suite_stats,
-                test_stats,
-                &(struct event) { .kind = PRE_INIT });
-        goto cleanup;
-    }
-
-    proc = spawn_test_worker(test, suite, run_test_child, g_worker_pipe, param);
-    if (proc == NULL && !is_runner())
-        goto cleanup;
-
     struct execution_context ctx = {
-        .stats = stats,
-        .test = test,
-        .test_stats = test_stats,
-        .suite = suite,
-        .suite_stats = suite_stats,
+        .stats = sref(stats),
+        .test = test_stats->test,
+        .test_stats = sref(test_stats),
+        .suite = suite_stats->suite,
+        .suite_stats = sref(suite_stats),
+        .param = param,
     };
-    struct event *ev;
-    while ((ev = worker_read_event(proc)) != NULL) {
-        if (ev->kind < WORKER_TERMINATED)
-            stat_push_event(stats, suite_stats, test_stats, ev);
-        switch (ev->kind) {
-            case PRE_INIT:
-                report(PRE_INIT, test);
-                log(pre_init, test);
-                break;
-            case PRE_TEST:
-                report(PRE_TEST, test);
-                log(pre_test, test);
-                ctx.test_started = true;
-                break;
-            case THEORY_FAIL: {
-                struct criterion_theory_stats ths = {
-                    .formatted_args = (char*) ev->data,
-                    .stats = test_stats,
-                };
-                report(THEORY_FAIL, &ths);
-                log(theory_fail, &ths);
-            } break;
-            case ASSERT:
-                report(ASSERT, ev->data);
-                log(assert, ev->data);
-                break;
-            case POST_TEST:
-                report(POST_TEST, test_stats);
-                log(post_test, test_stats);
-                ctx.normal_finish = true;
-                break;
-            case POST_FINI:
-                report(POST_FINI, test_stats);
-                log(post_fini, test_stats);
-                ctx.cleaned_up = true;
-                break;
-            case WORKER_TERMINATED:
-                handle_worker_terminated(ev, &ctx);
-                sfree(ev);
-                goto cleanup;
-        }
-        sfree(ev);
-    }
+    return spawn_test_worker(&ctx, run_test_child, g_worker_pipe);
 
-cleanup:
-    sfree(test_stats);
-    sfree(proc);
-}
-
-static void run_test_param(struct criterion_global_stats *stats,
-        struct criterion_suite_stats *suite_stats,
-        struct criterion_test *test,
-        struct criterion_suite *suite) {
-
-    if (!test->data->param_)
-        return;
-
-    struct criterion_test_params params = test->data->param_();
-    for (size_t i = 0; i < params.length; ++i) {
-        struct test_single_param param = { params.size, (char *) params.params + i * params.size };
-
-        run_test(stats, suite_stats, test, suite, &param);
-        if (criterion_options.fail_fast && stats->tests_failed > 0)
-            break;
-        if (!is_runner())
-            break;
-    }
-
-    if (params.cleanup)
-        params.cleanup(&params);
-}
-
-static void run_test_switch(struct criterion_global_stats *stats,
-        struct criterion_suite_stats *suite_stats,
-        struct criterion_test *test,
-        struct criterion_suite *suite) {
-
-    switch (test->data->kind_) {
-        case CR_TEST_NORMAL:
-            run_test(stats, suite_stats, test, suite, NULL);
-            break;
-        case CR_TEST_PARAMETERIZED:
-            run_test_param(stats, suite_stats, test, suite);
-            break;
-        default: break;
-    }
 }
 
 #ifdef HAVE_PCRE
@@ -450,6 +345,179 @@ void criterion_finalize(struct criterion_test_set *set) {
     sfree(set);
 }
 
+static struct process *run_next_test(struct criterion_test_set *p_set,
+                                     struct criterion_global_stats *p_stats,
+                                     ccrContParam) {
+    ccrBeginContext;
+    struct criterion_suite_set *suite_set;
+    struct criterion_test *test;
+    struct criterion_suite_stats *suite_stats;
+    struct criterion_test_stats *test_stats;
+    struct criterion_test_set *set;
+    struct criterion_global_stats *stats;
+    struct criterion_test_params params;
+
+    struct criterion_ordered_set_node *ns;
+    struct criterion_ordered_set_node *nt;
+    size_t i;
+    ccrEndContext(ctx);
+
+    ccrBegin(ctx);
+
+    ctx->set = p_set;
+    ctx->stats = p_stats;
+    ccrReturn(NULL);
+
+    for (ctx->ns = ctx->set->suites->first; ctx->ns; ctx->ns = ctx->ns->next) {
+        ctx->suite_set = (void*) ctx->ns->data;
+
+        if (!ctx->suite_set->tests)
+            continue;
+
+        report(PRE_SUITE, ctx->suite_set);
+        log(pre_suite, ctx->suite_set);
+
+        ctx->suite_stats = suite_stats_init(&ctx->suite_set->suite);
+
+        struct event ev = { .kind = PRE_SUITE };
+        stat_push_event(ctx->stats, ctx->suite_stats, NULL, &ev);
+
+        for (ctx->nt = ctx->suite_set->tests->first; ctx->nt; ctx->nt = ctx->nt->next) {
+            ctx->test = (void*) ctx->nt->data;
+
+            if (ctx->test->data->kind_ == CR_TEST_PARAMETERIZED
+                    && ctx->test->data->param_) {
+
+                if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
+                    ctx->test_stats = test_stats_init(ctx->test);
+                    stat_push_event(ctx->stats,
+                            ctx->suite_stats,
+                            ctx->test_stats,
+                            &(struct event) { .kind = PRE_INIT });
+                    sfree(ctx->test_stats);
+                    continue;
+                }
+
+                ctx->params = ctx->test->data->param_();
+                for (ctx->i = 0; ctx->i < ctx->params.length; ++ctx->i) {
+                    ctx->test_stats = test_stats_init(ctx->test);
+
+                    struct test_single_param param = {
+                        ctx->params.size,
+                        (char *) ctx->params.params + ctx->i * ctx->params.size
+                    };
+
+                    struct process *worker = run_test(ctx->stats,
+                            ctx->suite_stats,
+                            ctx->test_stats,
+                            &param);
+
+                    if (!is_runner()) {
+                        sfree(ctx->suite_stats);
+                        sfree(ctx->test_stats);
+                        ccrReturn(NULL);
+                    } else {
+                        ccrReturn(worker);
+                    }
+                }
+
+                if (ctx->params.cleanup)
+                    ctx->params.cleanup(&ctx->params);
+            } else {
+                ctx->test_stats = test_stats_init(ctx->test);
+
+                if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
+                    stat_push_event(ctx->stats,
+                            ctx->suite_stats,
+                            ctx->test_stats,
+                            &(struct event) { .kind = PRE_INIT });
+                    sfree(ctx->test_stats);
+                    continue;
+                }
+
+                struct process *worker = run_test(ctx->stats,
+                        ctx->suite_stats,
+                        ctx->test_stats,
+                        NULL);
+
+                sfree(ctx->test_stats);
+
+                if (!is_runner()) {
+                    sfree(ctx->suite_stats);
+                    ccrReturn(NULL);
+                } else {
+                    ccrReturn(worker);
+                }
+            }
+        }
+
+        report(POST_SUITE, ctx->suite_stats);
+        log(post_suite, ctx->suite_stats);
+
+        sfree(ctx->suite_stats);
+    }
+
+    ccrFinish(NULL);
+}
+
+static void run_tests_async(struct criterion_test_set *set,
+                            struct criterion_global_stats *stats) {
+
+    ccrContext ctx = 0;
+
+    size_t nb_workers = DEF(criterion_options.jobs, get_processor_count());
+    struct worker_set workers = {
+        .max_workers = nb_workers,
+        .workers = calloc(nb_workers, sizeof (struct process*)),
+    };
+
+    size_t active_workers = 0;
+
+    FILE *event_pipe = pipe_in(g_worker_pipe, PIPE_DUP);
+    struct event *ev = NULL;
+
+    // initialization of coroutine
+    run_next_test(set, stats, &ctx);
+
+    for (size_t i = 0; i < nb_workers; ++i) {
+        workers.workers[i] = run_next_test(NULL, NULL, &ctx);
+        if (!is_runner())
+            goto cleanup;
+
+        if (!ctx)
+            break;
+        ++active_workers;
+    }
+
+    if (!active_workers)
+        goto cleanup;
+
+    while ((ev = worker_read_event(&workers, event_pipe)) != NULL) {
+        handle_event(ev);
+        size_t wi = ev->worker_index;
+        if (ev->kind == WORKER_TERMINATED) {
+            sfree(workers.workers[wi]);
+            workers.workers[wi] = ctx ? run_next_test(NULL, NULL, &ctx) : NULL;
+
+            if (!is_runner())
+                goto cleanup;
+
+            if (workers.workers[wi] == NULL)
+                --active_workers;
+        }
+        sfree(ev);
+        if (!active_workers)
+            break;
+    }
+    ev = NULL;
+
+cleanup:
+    fclose(event_pipe);
+    sfree(ev);
+    free(workers.workers);
+    ccrAbort(ctx);
+}
+
 static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     report(PRE_ALL, set);
     log(pre_all, set);
@@ -461,7 +529,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
         abort();
 
     struct criterion_global_stats *stats = stats_init();
-    map_tests(set, stats, run_test_switch);
+    run_tests_async(set, stats);
 
     int result = is_runner() ? stats->tests_failed == 0 : -1;
 

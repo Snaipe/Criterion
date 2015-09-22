@@ -126,9 +126,12 @@ static void handle_sigchld(UNUSED int sig) {
             (s_proc_handle) { pid }, get_status(status)
         };
 
-        char buf[sizeof (int) + sizeof (struct worker_status)];
+        unsigned long long pid_ull = (unsigned long long) pid;
+
+        char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
         memcpy(buf, &kind, sizeof (kind));
-        memcpy(buf + sizeof (kind), &ws, sizeof (ws));
+        memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
+        memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
 
         if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf))
             abort();
@@ -155,9 +158,12 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
         (s_proc_handle) { wctx->proc_handle }, get_status(status)
     };
 
-    char buf[sizeof (int) + sizeof (struct worker_status)];
+    unsigned long long pid_ull = (unsigned long long) GetProcessId(wctx->proc_handle);
+
+    char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
     memcpy(buf, &kind, sizeof (kind));
-    memcpy(buf + sizeof (kind), &ws, sizeof (ws));
+    memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
+    memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
 
     DWORD written;
     WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), &written, NULL);
@@ -404,5 +410,21 @@ bool is_current_process(s_proc_handle *proc) {
     return GetProcessId(proc->handle) == GetProcessId(GetCurrentProcess());
 #else
     return proc->pid == getpid();
+#endif
+}
+
+unsigned long long get_process_id(void) {
+#ifdef VANILLA_WIN32
+    return (unsigned long long) GetCurrentProcessId();
+#else
+    return (unsigned long long) getpid();
+#endif
+}
+
+unsigned long long get_process_id_of(s_proc_handle *proc) {
+#ifdef VANILLA_WIN32
+    return (unsigned long long) GetProcessId(proc->handle);
+#else
+    return (unsigned long long) proc->pid;
 #endif
 }

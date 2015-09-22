@@ -42,6 +42,4 @@ struct criterion_test_set *criterion_init(void);
             Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
             ++Suite)
 
-extern s_pipe_handle *g_worker_pipe;
-
 #endif /* !CRITERION_RUNNER_H_ */
