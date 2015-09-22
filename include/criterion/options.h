@@ -36,6 +36,7 @@ struct criterion_options {
     bool fail_fast;
     const char *pattern;
     bool short_filename;
+    size_t jobs;
 };
 
 CR_BEGIN_C_API

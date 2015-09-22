@@ -21,46 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef POSIX_COMPAT_H_
-# define POSIX_COMPAT_H_
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
-# define VANILLA_WIN32
+#include "internal.h"
+
+size_t get_processor_count(void) {
+#ifdef _WIN32
+    SYSTEM_INFO sysinfo;
+    GetSystemInfo(&sysinfo);
+
+    return (size_t) sysinfo.dwNumberOfProcessors;
+#elif defined(BSD)
+    int mib[2] = { CTL_HW, HW_AVAILCPU };
+    long long count;
+    size_t len = sizeof (count);
+
+    /* get the number of CPUs from the system */
+    sysctl(mib, 2, &count, &len, NULL, 0);
+
+    if (count < 1) {
+        mib[1] = HW_NCPU;
+        sysctl(mib, 2, &count, &len, NULL, 0);
+
+        if (count < 1)
+            count = 1;
+    }
+    return (size_t) count;
+#elif defined(__linux__)
+    return sysconf(_SC_NPROCESSORS_ONLN);
+#else
+# error System not supported
 #endif
-
-# if defined(BSD) \
-  || defined(__FreeBSD__) \
-  || defined(__NetBSD__) \
-  || defined(__OpenBSD__) \
-  || defined(__DragonFly__)
-#  define OS_BSD 1
-# endif
-
-# if !defined(_POSIX_SOURCE)
-#  define _POSIX_SOURCE 1
-#  define TMP_POSIX
-# endif
-# include <stdio.h>
-# ifdef TMP_POSIX
-#  undef _POSIX_SOURCE
-#  undef TMP_POSIX
-# endif
-
-# ifdef VANILLA_WIN32
-#  define WEXITSTATUS(Status) (((Status) & 0xFF00) >> 8)
-#  define WTERMSIG(Status)    ((Status) & 0x7F)
-#  define WIFEXITED(Status)   (WTERMSIG(Status) == 0)
-#  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
-
-#  define SIGPROF 27
-#  define CR_EXCEPTION_TIMEOUT 0xC0001042
-# else
-#  include <sys/wait.h>
-# endif
-
-# include "compat/pipe.h"
-# include "compat/section.h"
-# include "compat/process.h"
-# include "compat/basename.h"
-
-#endif /* !POSIX_COMPAT_H_ */
+}

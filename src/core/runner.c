@@ -30,6 +30,7 @@
 #include "criterion/logging.h"
 #include "compat/time.h"
 #include "compat/posix.h"
+#include "compat/processor.h"
 #include "string/i18n.h"
 #include "io/event.h"
 #include "stats.h"
@@ -464,7 +465,7 @@ static void run_tests_async(struct criterion_test_set *set,
 
     ccrContext ctx = 0;
 
-    size_t nb_workers = 1;
+    size_t nb_workers = DEF(criterion_options.jobs, get_processor_count());
     struct worker_set workers = {
         .max_workers = nb_workers,
         .workers = calloc(nb_workers, sizeof (struct process*)),
