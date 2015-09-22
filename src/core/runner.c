@@ -416,9 +416,9 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
                         sfree(ctx->suite_stats);
                         sfree(ctx->test_stats);
                         ccrReturn(NULL);
+                    } else {
+                        ccrReturn(worker);
                     }
-
-                    ccrReturn(worker);
                 }
 
                 if (ctx->params.cleanup)
@@ -445,9 +445,9 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
                 if (!is_runner()) {
                     sfree(ctx->suite_stats);
                     ccrReturn(NULL);
+                } else {
+                    ccrReturn(worker);
                 }
-
-                ccrReturn(worker);
             }
         }
 
