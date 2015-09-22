@@ -72,6 +72,7 @@ static void destroy_stats(void *ptr, UNUSED void *meta) {
 s_glob_stats *stats_init(void) {
     s_glob_stats *stats = smalloc(
             .size = sizeof (s_glob_stats),
+            .kind = SHARED,
             .dtor = destroy_stats
         );
     *stats = (s_glob_stats) { .suites = NULL };

@@ -49,6 +49,9 @@ bool is_runner(void) {
 static void close_process(void *ptr, UNUSED void *meta) {
     struct process *proc = ptr;
     fclose(proc->in);
+    sfree(proc->ctx.suite_stats);
+    sfree(proc->ctx.test_stats);
+    sfree(proc->ctx.stats);
     sfree(proc->proc);
 }
 
@@ -102,12 +105,15 @@ struct process *spawn_test_worker(struct execution_context *ctx,
         abort();
     } else if (proc == NULL) {
         run_worker(&g_worker_context);
+        sfree(ctx->test_stats);
+        sfree(ctx->suite_stats);
+        sfree(ctx->stats);
         return NULL;
     }
 
     ptr = smalloc(
             .size = sizeof (struct process),
-            .kind = UNIQUE,
+            .kind = SHARED,
             .dtor = close_process);
 
     *ptr = (struct process) {

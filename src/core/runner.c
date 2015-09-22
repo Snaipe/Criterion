@@ -296,26 +296,15 @@ static void handle_event(struct event *ev) {
 
 static struct process *run_test(struct criterion_global_stats *stats,
         struct criterion_suite_stats *suite_stats,
-        struct criterion_test *test,
-        struct criterion_suite *suite,
+        struct criterion_test_stats *test_stats,
         struct test_single_param *param) {
 
-    struct criterion_test_stats *test_stats = test_stats_init(test);
-
-    if (is_disabled(test, suite)) {
-        stat_push_event(stats,
-                suite_stats,
-                test_stats,
-                &(struct event) { .kind = PRE_INIT });
-        return NULL;
-    }
-
     struct execution_context ctx = {
-        .stats = stats,
-        .test = test,
-        .test_stats = test_stats,
-        .suite = suite,
-        .suite_stats = suite_stats,
+        .stats = sref(stats),
+        .test = test_stats->test,
+        .test_stats = sref(test_stats),
+        .suite = suite_stats->suite,
+        .suite_stats = sref(suite_stats),
         .param = param,
     };
     return spawn_test_worker(&ctx, run_test_child, g_worker_pipe);
@@ -362,6 +351,7 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
     struct criterion_suite_set *suite_set;
     struct criterion_test *test;
     struct criterion_suite_stats *suite_stats;
+    struct criterion_test_stats *test_stats;
     struct criterion_test_set *set;
     struct criterion_global_stats *stats;
     struct criterion_test_params params;
@@ -397,8 +387,20 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
             if (ctx->test->data->kind_ == CR_TEST_PARAMETERIZED
                     && ctx->test->data->param_) {
 
+                if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
+                    ctx->test_stats = test_stats_init(ctx->test);
+                    stat_push_event(ctx->stats,
+                            ctx->suite_stats,
+                            ctx->test_stats,
+                            &(struct event) { .kind = PRE_INIT });
+                    sfree(ctx->test_stats);
+                    continue;
+                }
+
                 ctx->params = ctx->test->data->param_();
                 for (ctx->i = 0; ctx->i < ctx->params.length; ++ctx->i) {
+                    ctx->test_stats = test_stats_init(ctx->test);
+
                     struct test_single_param param = {
                         ctx->params.size,
                         (char *) ctx->params.params + ctx->i * ctx->params.size
@@ -406,12 +408,12 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
 
                     struct process *worker = run_test(ctx->stats,
                             ctx->suite_stats,
-                            ctx->test,
-                            &ctx->suite_set->suite,
+                            ctx->test_stats,
                             &param);
 
                     if (!is_runner()) {
                         sfree(ctx->suite_stats);
+                        sfree(ctx->test_stats);
                         ccrReturn(NULL);
                     }
 
@@ -421,11 +423,23 @@ static struct process *run_next_test(struct criterion_test_set *p_set,
                 if (ctx->params.cleanup)
                     ctx->params.cleanup(&ctx->params);
             } else {
+                ctx->test_stats = test_stats_init(ctx->test);
+
+                if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
+                    stat_push_event(ctx->stats,
+                            ctx->suite_stats,
+                            ctx->test_stats,
+                            &(struct event) { .kind = PRE_INIT });
+                    sfree(ctx->test_stats);
+                    continue;
+                }
+
                 struct process *worker = run_test(ctx->stats,
                         ctx->suite_stats,
-                        ctx->test,
-                        &ctx->suite_set->suite,
+                        ctx->test_stats,
                         NULL);
+
+                sfree(ctx->test_stats);
 
                 if (!is_runner()) {
                     sfree(ctx->suite_stats);
@@ -453,34 +467,54 @@ static void run_tests_async(struct criterion_test_set *set,
     size_t nb_workers = 1;
     struct worker_set workers = {
         .max_workers = nb_workers,
-        .workers = malloc(sizeof (struct process*) * nb_workers),
+        .workers = calloc(nb_workers, sizeof (struct process*)),
     };
 
     size_t active_workers = 0;
+
+    FILE *event_pipe = pipe_in(g_worker_pipe, PIPE_DUP);
+    struct event *ev = NULL;
 
     // initialization of coroutine
     run_next_test(set, stats, &ctx);
 
     for (size_t i = 0; i < nb_workers; ++i) {
         workers.workers[i] = run_next_test(NULL, NULL, &ctx);
+        if (!is_runner())
+            goto cleanup;
+
+        if (!ctx)
+            break;
         ++active_workers;
     }
 
-    FILE *event_pipe = pipe_in(g_worker_pipe, PIPE_DUP);
+    if (!active_workers)
+        goto cleanup;
 
-    struct event *ev;
     while ((ev = worker_read_event(&workers, event_pipe)) != NULL) {
         handle_event(ev);
+        size_t wi = ev->worker_index;
         if (ev->kind == WORKER_TERMINATED) {
-            workers.workers[ev->worker_index] = run_next_test(NULL, NULL, &ctx);
-            if (workers.workers[ev->worker_index] == NULL)
+            sfree(workers.workers[wi]);
+            workers.workers[wi] = ctx ? run_next_test(NULL, NULL, &ctx) : NULL;
+
+            if (!is_runner())
+                goto cleanup;
+
+            if (workers.workers[wi] == NULL)
                 --active_workers;
         }
         sfree(ev);
         if (!active_workers)
             break;
     }
+    ev = NULL;
 
+cleanup:
+    fclose(event_pipe);
+    sfree(ev);
+    free(workers.workers);
+    ccrAbort(ctx);
 }
 
 static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
