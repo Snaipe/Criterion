@@ -25,13 +25,18 @@
 # define EVENT_H_
 
 # include "criterion/event.h"
+# include "core/worker.h"
 # include <stdio.h>
 
 extern FILE *g_event_pipe;
 
 struct event {
+    unsigned long long pid;
     int kind;
     void *data;
+
+    struct process *worker;
+    size_t worker_index;
 };
 
 enum other_event_kinds {
