@@ -32,8 +32,8 @@ size_t get_processor_count(void) {
     return (size_t) sysinfo.dwNumberOfProcessors;
 #elif defined(BSD)
     int mib[2] = { CTL_HW, HW_NCPU };
-    size_t miblen = 2;
 # ifdef __APPLE__
+    size_t miblen = 2;
     sysctlnametomib("hw.logicalcpu", mib, &miblen);
 # endif
 
