@@ -24,7 +24,13 @@
 #ifndef CRITERION_ALLOC_H_
 # define CRITERION_ALLOC_H_
 
-# include <stddef.h>
+# ifdef __cplusplus
+#  include <memory>
+#  include <cstddef>
+using std::size_t;
+# else
+#  include <stddef.h>
+# endif
 # include "common.h"
 
 CR_BEGIN_C_API
@@ -93,6 +99,48 @@ namespace criterion {
             arr[i].~T();
         cr_free(ptr_ - 1);
     }
+
+    template<typename T>
+    struct allocator {
+        typedef T value_type;
+        typedef value_type* pointer;
+        typedef const value_type* const_pointer;
+        typedef value_type& reference;
+        typedef const value_type& const_reference;
+        typedef std::size_t size_type;
+        typedef std::ptrdiff_t difference_type;
+
+        template<typename U>
+        struct rebind {
+            typedef allocator<U> other;
+        };
+
+        inline explicit allocator() {}
+        inline ~allocator() {}
+        inline explicit allocator(allocator const&) {}
+        template<typename U>
+        inline explicit allocator(allocator<U> const&) {}
+
+        inline pointer address(reference r) { return &r; }
+        inline const_pointer address(const_reference r) { return &r; }
+
+        inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0) {
+            return reinterpret_cast<pointer>(cr_malloc(cnt * sizeof (T))); 
+        }
+
+        inline void deallocate(pointer p, size_type) { cr_free(p); }
+
+        inline size_type max_size() const {
+            return size_type(-1) / sizeof(T);
+        }
+
+        inline void construct(pointer p, const T& t) { new(p) T(t); }
+        inline void construct(pointer p, T&& t) { new (p) T(std::move(t)); }
+        inline void destroy(pointer p) { p->~T(); }
+
+        inline bool operator==(allocator const&) { return true; }
+        inline bool operator!=(allocator const& a) { return !operator==(a); }
+    };
 
 }
 # endif
