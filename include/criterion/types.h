@@ -70,6 +70,15 @@ struct criterion_test_params {
         , length(vec.size())
         , cleanup(cleanup)
     {}
+
+    template <typename T, unsigned int N>
+    constexpr criterion_test_params(T (&arr)[N],
+            void (*cleanup)(criterion_test_params *) = nullptr)
+        : size(sizeof (arr[0]))
+        , params(static_cast<void*>(&arr))
+        , length(N)
+        , cleanup(cleanup)
+    {}
 # endif
 };
 

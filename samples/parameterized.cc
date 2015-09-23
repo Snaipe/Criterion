@@ -28,7 +28,7 @@ ParameterizedTestParameters(params, multiple) {
         {5, 6},
     };
 
-    return cr_make_param_array(struct parameter_tuple, params, sizeof (params) / sizeof (struct parameter_tuple));
+    return criterion_test_params(params);
 }
 
 ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
