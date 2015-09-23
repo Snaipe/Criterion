@@ -55,11 +55,16 @@ Theory((struct format_test *fmt), asprintf, valid) {
     free(actual);
 }
 
-#if defined(__unix__) && defined(__GNUC__)
-# pragma GCC diagnostic ignored "-Wformat"
+#if defined(__linux__) || defined(__APPLE__)
+# ifdef __GNUC__
+#  pragma GCC diagnostic ignored "-Wformat"
+# endif
+# define ASPRINTF_INVALID_DISABLED 0
+#else
+# define ASPRINTF_INVALID_DISABLED 1
+#endif
 
-Test(asprintf, invalid) {
+Test(asprintf, invalid, .disabled = ASPRINTF_INVALID_DISABLED) {
     char *actual;
     cr_expect_lt(cr_asprintf(&actual, "%"), 0);
 }
-#endif
