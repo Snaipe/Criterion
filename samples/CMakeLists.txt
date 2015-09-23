@@ -29,6 +29,7 @@ set(SAMPLES
   simple.cc
   theories.cc
   redirect.cc
+  parameterized.cc
 )
 
 set(SCRIPTS
