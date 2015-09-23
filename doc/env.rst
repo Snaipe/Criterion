@@ -13,6 +13,8 @@ Command line arguments
 * ``-l or --list``: Print all the tests in a list.
 * ``-f or --fail-fast``: Exit after the first test failure.
 * ``--ascii``: Don't use fancy unicode symbols or colors in the output.
+* ``-jN or --jobs N``: Use ``N`` parallel jobs to run the tests. ``0`` picks
+  a number of jobs ideal for your hardware configuration.
 * ``--pattern [PATTERN]``: Run tests whose string identifier matches
   the given shell wildcard pattern (see dedicated section below). (\*nix only)
 * ``--no-early-exit``: The test workers shall not prematurely exit when done and
@@ -60,6 +62,8 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_ENABLE_TAP``:      Same as ``--tap``.
 * ``CRITERION_FAIL_FAST``:       Same as ``--fail-fast``.
 * ``CRITERION_USE_ASCII``:       Same as ``--ascii``.
+* ``CRITERION_JOBS``:            Same as ``jobs``. Sets the number of jobs to
+  its value.
 * ``CRITERION_SHORT_FILENAME``:  Same as ``--short-filename``.
 * ``CRITERION_VERBOSITY_LEVEL``: Same as ``--verbose``. Sets the verbosity level
   to its value.
