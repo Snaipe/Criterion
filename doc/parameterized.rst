@@ -18,7 +18,7 @@ and the parameter generator function:
 
     #include <criterion/parameterized.h>
 
-    ParameterizedTestParameter(suite_name, test_name) = {
+    ParameterizedTestParameters(suite_name, test_name) {
         void *params;
         size_t nb_params;
 
@@ -54,17 +54,12 @@ easily use a struct to hold the context as a workaround:
         ...
     };
 
-    ParameterizedTestParameter(suite_name, test_name) = {
-        size_t nb_params = 32;
-        struct my_params *params = cr_malloc(sizeof (struct my_params) * nb_params);
+    ParameterizedTestParameters(suite_name, test_name) {
+        struct my_params params[] = {
+            // parameter set
+        };
 
-        // generate parameter set
-
-        params[0] = ...
-        params[1] = ...
-
-        ...
-
+        size_t nb_params = sizeof (params) / sizeof (struct my_params);
         return cr_make_param_array(struct my_params, params, nb_params);
     }
 
@@ -72,8 +67,20 @@ easily use a struct to hold the context as a workaround:
         // access param.param0, param.param1, ...
     }
 
-Dynamically allocating fields
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C++ users can also use a simpler syntax before returning an array of parameters:
+
+.. code-block:: c++
+
+    ParameterizedTestParameters(suite_name, test_name) {
+        struct my_params params[] = {
+            // parameter set
+        };
+
+        return criterion_test_params(params);
+    }
+
+Dynamically allocating parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Any dynamic memory allocation done from a ParameterizedTestParameter function
 **must** be done with ``cr_malloc``, ``cr_calloc``, or ``cr_realloc``.
@@ -100,6 +107,9 @@ use:
   ``criterion::new_arr``.
   The function possess the exact same semantics as ``delete[] array``.
 
+Furthermore, the ``criterion::allocator<T>`` allocator can be used with STL
+containers to allocate memory with the functions above.
+
 Freeing dynamically allocated parameter fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -118,14 +128,35 @@ the cleanup function that should be called on the generated parameter context:
         cr_free(((struct my_params *) ctp->params)->some_int_ptr);
     }
 
-    ParameterizedTestParameter(suite_name, test_name) = {
-        static my_params param = {
+    ParameterizedTestParameters(suite_name, test_name) {
+        static my_params params[] = {{
             .some_int_ptr = cr_malloc(sizeof (int));
-        };
-        *param.some_int_ptr = 42;
+        }};
+        param[0].some_int_ptr = 42;
 
-        return cr_make_param_array(struct my_params, &param, 1, cleanup_params);
+        return cr_make_param_array(struct my_params, params, 1, cleanup_params);
     }
+
+C++ users can use a more convenient approach:
+
+.. code-block:: c++
+
+    #include <criterion/parameterized.h>
+
+    struct my_params {
+        std::unique_ptr<int, decltype(criterion::free)> some_int_ptr;
+
+        my_params(int *ptr) : some_int_ptr(ptr, criterion::free) {}
+    };
+
+    ParameterizedTestParameters(suite_name, test_name) {
+        static criterion::parameters<my_params> params;
+        params.push_back(my_params(criterion::new_obj<int>(42)));
+
+        return params;
+    }
+
+``criterion::parameters<T>`` is typedef'd as ``std::vector<T, criterion::allocator<T>>``.
 
 Configuring parameterized tests
 -------------------------------
