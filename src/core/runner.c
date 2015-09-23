@@ -412,9 +412,13 @@ static struct worker *run_next_test(struct criterion_test_set *p_set,
                             ctx->test_stats,
                             &param);
 
+                    sfree(ctx->test_stats);
+
                     if (!is_runner()) {
                         sfree(ctx->suite_stats);
-                        sfree(ctx->test_stats);
+                        if (ctx->params.cleanup)
+                            ctx->params.cleanup(&ctx->params);
+
                         ccrReturn(NULL);
                     } else {
                         ccrReturn(worker);
@@ -514,6 +518,8 @@ static void run_tests_async(struct criterion_test_set *set,
 cleanup:
     fclose(event_pipe);
     sfree(ev);
+    for (size_t i = 0; i < nb_workers; ++i)
+        sfree(workers.workers[i]);
     free(workers.workers);
     ccrAbort(ctx);
 }
