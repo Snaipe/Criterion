@@ -24,8 +24,10 @@
 #ifndef CRITERION_TYPES_H_
 # define CRITERION_TYPES_H_
 
+# include "alloc.h"
 # ifdef __cplusplus
 #  include <cstddef>
+#  include <vector>
 using std::size_t;
 # else
 #  include <stdbool.h>
@@ -58,6 +60,14 @@ struct criterion_test_params {
         , params(params)
         , length(length)
         , cleanup(cleanup)
+    {}
+
+    template <typename T>
+    constexpr criterion_test_params(std::vector<T, criterion::allocator<T>>& vec)
+        : size(sizeof (T))
+        , params(&vec[0])
+        , length(vec.size())
+        , cleanup(nullptr)
     {}
 # endif
 };

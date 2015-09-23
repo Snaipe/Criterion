@@ -2,6 +2,10 @@
 # define CRITERION_PARAMETERIZED_H_
 
 # include "criterion.h"
+# include "alloc.h"
+# ifdef __cplusplus
+#  include <vector>
+# endif
 
 # ifdef __cplusplus
 #  define CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name) \
@@ -45,6 +49,13 @@
 # else
 #  define cr_make_param_array(Type, Array, ...) \
     (struct criterion_test_params) { .size = sizeof (Type), (void*)(Array), __VA_ARGS__ }
+# endif
+
+# ifdef __cplusplus
+namespace criterion {
+    template <typename T>
+    using parameters = std::vector<T, criterion::allocator<T>>;
+}
 # endif
 
 #endif /* !CRITERION_PARAMETERIZED_H_ */
