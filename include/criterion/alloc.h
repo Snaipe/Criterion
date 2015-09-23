@@ -86,11 +86,12 @@ namespace criterion {
 
     template<typename T>
     void delete_arr(T* ptr) {
-        size_t len = *(reinterpret_cast<size_t*>(ptr));
-        T* arr = reinterpret_cast<T*>(reinterpret_cast<size_t*>(ptr) + 1);
+        size_t *ptr_ = reinterpret_cast<size_t*>(ptr);
+        size_t len = *(ptr_ - 1);
+        T* arr = reinterpret_cast<T*>(ptr_);
         for (size_t i = 0; i < len; ++i)
             arr[i].~T();
-        cr_free(ptr);
+        cr_free(ptr_ - 1);
     }
 
 }
