@@ -29,23 +29,34 @@ Command line arguments
 Shell Wildcard Pattern
 ----------------------
 
-Patterns in criterion are matched against a test's string identifier with
-``fnmatch``. This feature is only available on \*nix systems where ``fnmatch``
-is provided.
+Extglob patterns in criterion are matched against a test's string identifier.
+This feature is only available on \*nix systems where ``PCRE`` is provided.
 
-Special characters used in shell-style wildcard patterns are:
+In the table below, a ``pattern-list`` is a list of patterns separated by ``|``.
+Any extglob pattern can be constructed by combining any of the following
+sub-patterns:
 
-=========== ===================================
-Pattern     Meaning
-=========== ===================================
-``*``       matches everything
------------ -----------------------------------
-``?``       matches any character
------------ -----------------------------------
-``[seq]``   matches any character in *seq*
------------ -----------------------------------
-``[!seq]``  matches any character not in *seq*
-=========== ===================================
+==================== ======================================================
+Pattern              Meaning
+==================== ======================================================
+``*``                matches everything
+-------------------- ------------------------------------------------------
+``?``                matches any character
+-------------------- ------------------------------------------------------
+``[seq]``            matches any character in *seq*
+-------------------- ------------------------------------------------------
+``[!seq]``           matches any character not in *seq*
+-------------------- ------------------------------------------------------
+``?(pattern-list)``  Matches zero or one occurrence of the given patterns
+-------------------- ------------------------------------------------------
+``*(pattern-list)``  Matches zero or more occurrences of the given patterns
+-------------------- ------------------------------------------------------
+``+(pattern-list)``  Matches one or more occurrences of the given patterns
+-------------------- ------------------------------------------------------
+``@(pattern-list)``  Matches one of the given patterns
+-------------------- ------------------------------------------------------
+``!(pattern-list)``  Matches anything except one of the given patterns
+==================== ======================================================
 
 A test string identifier is of the form ``suite-name/test-name``, so a pattern
 of ``simple/*`` matches every tests in the ``simple`` suite, ``*/passing``
