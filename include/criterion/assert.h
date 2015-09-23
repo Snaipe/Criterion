@@ -596,12 +596,6 @@ CR_END_C_API
 // It shall be removed in the next major version of Criterion
 # ifndef CRITERION_NO_COMPAT
 
-#  define CRITERION_ASSERT_DEPRECATED_(Name) CRITERION_ASSERT_DEPRECATED__( \
-        message                                                             \
-        ("The `" #Name "` macro is deprecated, "                            \
-        "please use `cr_" #Name "` instead.")                               \
-    )
-
 #  define CRITERION_ASSERT_DEPRECATED_B(Name, Newname) \
     CRITERION_ASSERT_DEPRECATED__(                     \
         message                                        \
@@ -617,16 +611,6 @@ CR_END_C_API
     _Pragma(#Msg)
 # endif
 
-#  ifndef assert
-#   define assert(...) CRITERION_ASSERT_DEPRECATED_(assert) cr_assert(__VA_ARGS__)
-
-// this is needed to make the POSIX assert.h redefine assert if
-// subsequently included
-#   ifndef _ASSERT_H
-#    define _ASSERT_H 1
-#   endif /* !_ASSERT_H */
-#  endif /* !assert */
-
 // scheduled for removal after 2.0
 #  define cr_abort_test(Message) CRITERION_ASSERT_DEPRECATED_B(cr_abort_test, cr_assert_fail) cr_assert_fail(Message)
 #  define cr_assert_strings_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assert_strings_eq, cr_assert_str_eq) cr_assert_str_eq(__VA_ARGS__)
@@ -641,52 +625,6 @@ CR_END_C_API
 
 #  define cr_assert_arrays_eq_cmp(...) CRITERION_ASSERT_DEPRECATED_B(cr_assert_arrays_eq_cmp, cr_assert_arr_eq_cmp) cr_assert_arr_eq_cmp(__VA_ARGS__)
 #  define cr_assert_arrays_neq_cmp(...) CRITERION_ASSERT_DEPRECATED_B(cr_assert_arrays_neq_cmp, cr_assert_arr_neq_cmp) cr_assert_arr_neq_cmp(__VA_ARGS__)
-
-// scheduled for removal at 2.0
-#  define abort_test(Message) CRITERION_ASSERT_DEPRECATED_(abort_test) cr_abort_test(Message)
-#  define expect(...) CRITERION_ASSERT_DEPRECATED_(expect) cr_expect(__VA_ARGS__)
-#  define assert_not(...) CRITERION_ASSERT_DEPRECATED_(assert_not) cr_assert_not(__VA_ARGS__)
-#  define expect_not(...) CRITERION_ASSERT_DEPRECATED_(expect_not) cr_expect_not(__VA_ARGS__)
-#  define assert_eq(...) CRITERION_ASSERT_DEPRECATED_(assert_eq) cr_assert_eq(__VA_ARGS__)
-#  define expect_eq(...) CRITERION_ASSERT_DEPRECATED_(expect_eq) cr_expect_eq(__VA_ARGS__)
-#  define assert_neq(...) CRITERION_ASSERT_DEPRECATED_(assert_neq) cr_assert_neq(__VA_ARGS__)
-#  define expect_neq(...) CRITERION_ASSERT_DEPRECATED_(expect_neq) cr_expect_neq(__VA_ARGS__)
-#  define assert_lt(...) CRITERION_ASSERT_DEPRECATED_(assert_lt) cr_assert_lt(__VA_ARGS__)
-#  define expect_lt(...) CRITERION_ASSERT_DEPRECATED_(expect_lt) cr_expect_lt(__VA_ARGS__)
-#  define assert_gt(...) CRITERION_ASSERT_DEPRECATED_(assert_gt) cr_assert_gt(__VA_ARGS__)
-#  define expect_gt(...) CRITERION_ASSERT_DEPRECATED_(expect_gt) cr_expect_gt(__VA_ARGS__)
-#  define assert_leq(...) CRITERION_ASSERT_DEPRECATED_(assert_leq) cr_assert_leq(__VA_ARGS__)
-#  define expect_leq(...) CRITERION_ASSERT_DEPRECATED_(expect_leq) cr_expect_leq(__VA_ARGS__)
-#  define assert_geq(...) CRITERION_ASSERT_DEPRECATED_(assert_geq) cr_assert_geq(__VA_ARGS__)
-#  define expect_geq(...) CRITERION_ASSERT_DEPRECATED_(expect_geq) cr_expect_geq(__VA_ARGS__)
-#  define assert_null(...) CRITERION_ASSERT_DEPRECATED_(assert_null) cr_assert_null(__VA_ARGS__)
-#  define expect_null(...) CRITERION_ASSERT_DEPRECATED_(expect_null) cr_expect_null(__VA_ARGS__)
-#  define assert_not_null(...) CRITERION_ASSERT_DEPRECATED_(assert_not_null) cr_assert_not_null(__VA_ARGS__)
-#  define expect_not_null(...) CRITERION_ASSERT_DEPRECATED_(expect_not_null) cr_expect_not_null(__VA_ARGS__)
-#  define assert_float_eq(...) CRITERION_ASSERT_DEPRECATED_(assert_float_eq) cr_assert_float_eq(__VA_ARGS__)
-#  define expect_float_eq(...) CRITERION_ASSERT_DEPRECATED_(expect_float_eq) cr_expect_float_eq(__VA_ARGS__)
-#  define assert_float_neq(...) CRITERION_ASSERT_DEPRECATED_(assert_float_neq) cr_assert_float_neq(__VA_ARGS__)
-#  define expect_float_neq(...) CRITERION_ASSERT_DEPRECATED_(expect_float_neq) cr_expect_float_neq(__VA_ARGS__)
-#  define assert_strings_eq(...) CRITERION_ASSERT_DEPRECATED_(assert_strings_eq) cr_assert_strings_eq(__VA_ARGS__)
-#  define expect_strings_eq(...) CRITERION_ASSERT_DEPRECATED_(expect_strings_eq) cr_expect_strings_eq(__VA_ARGS__)
-#  define assert_strings_neq(...) CRITERION_ASSERT_DEPRECATED_(assert_strings_neq) cr_assert_strings_neq(__VA_ARGS__)
-#  define expect_strings_neq(...) CRITERION_ASSERT_DEPRECATED_(expect_strings_neq) cr_expect_strings_neq(__VA_ARGS__)
-#  define assert_strings_gt(...) CRITERION_ASSERT_DEPRECATED_(assert_strings_gt) cr_assert_strings_gt(__VA_ARGS__)
-#  define expect_strings_gt(...) CRITERION_ASSERT_DEPRECATED_(expect_strings_gt) cr_expect_strings_gt(__VA_ARGS__)
-#  define assert_strings_lt(...) CRITERION_ASSERT_DEPRECATED_(assert_strings_lt) cr_assert_strings_lt(__VA_ARGS__)
-#  define expect_strings_lt(...) CRITERION_ASSERT_DEPRECATED_(expect_strings_lt) cr_expect_strings_lt(__VA_ARGS__)
-#  define assert_strings_leq(...) CRITERION_ASSERT_DEPRECATED_(assert_strings_leq) cr_assert_strings_leq(__VA_ARGS__)
-#  define expect_strings_leq(...) CRITERION_ASSERT_DEPRECATED_(expect_strings_leq) cr_expect_strings_leq(__VA_ARGS__)
-#  define assert_strings_geq(...) CRITERION_ASSERT_DEPRECATED_(assert_strings_geq) cr_assert_strings_geq(__VA_ARGS__)
-#  define expect_strings_geq(...) CRITERION_ASSERT_DEPRECATED_(expect_strings_geq) cr_expect_strings_geq(__VA_ARGS__)
-#  define assert_arrays_eq(...) CRITERION_ASSERT_DEPRECATED_(assert_arrays_eq) cr_assert_arrays_eq(__VA_ARGS__)
-#  define expect_arrays_eq(...) CRITERION_ASSERT_DEPRECATED_(expect_arrays_eq) cr_expect_arrays_eq(__VA_ARGS__)
-#  define assert_arrays_neq(...) CRITERION_ASSERT_DEPRECATED_(assert_arrays_neq) cr_assert_arrays_neq(__VA_ARGS__)
-#  define expect_arrays_neq(...) CRITERION_ASSERT_DEPRECATED_(expect_arrays_neq) cr_expect_arrays_neq(__VA_ARGS__)
-#  define assert_arrays_eq_cmp(...) CRITERION_ASSERT_DEPRECATED_(assert_arrays_eq_cmp) cr_assert_arrays_eq_cmp(__VA_ARGS__)
-#  define expect_arrays_eq_cmp(...) CRITERION_ASSERT_DEPRECATED_(expect_arrays_eq_cmp) cr_expect_arrays_eq_cmp(__VA_ARGS__)
-#  define assert_arrays_neq_cmp(...) CRITERION_ASSERT_DEPRECATED_(assert_arrays_neq_cmp) cr_assert_arrays_neq_cmp(__VA_ARGS__)
-#  define expect_arrays_neq_cmp(...) CRITERION_ASSERT_DEPRECATED_(expect_arrays_neq_cmp) cr_expect_arrays_neq_cmp(__VA_ARGS__)
 
 # endif
 
