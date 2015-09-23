@@ -31,20 +31,19 @@ size_t get_processor_count(void) {
 
     return (size_t) sysinfo.dwNumberOfProcessors;
 #elif defined(BSD)
-    int mib[2] = { CTL_HW, HW_AVAILCPU };
+    int mib[2] = { CTL_HW, HW_NCPU };
+    size_t miblen = 2;
+# ifdef __APPLE__
+    sysctlnametomib("hw.logicalcpu", mib, &miblen);
+# endif
+
     long long count = 0;
     size_t len = sizeof (count);
 
-    /* get the number of CPUs from the system */
     int res = sysctl(mib, 2, &count, &len, NULL, 0);
 
-    if (count < 1 || res == -1) {
-        mib[1] = HW_NCPU;
-        res = sysctl(mib, 2, &count, &len, NULL, 0);
-
-        if (count < 1 || res == -1)
-            count = 1;
-    }
+    if (count < 1 || res == -1)
+        count = 1;
     return (size_t) count;
 #elif defined(__linux__)
     return sysconf(_SC_NPROCESSORS_ONLN);
