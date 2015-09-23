@@ -81,21 +81,6 @@ Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](htt
 
 * [CMake find module for Criterion][find-module]
 
-## F.A.Q.
-
-**Q. What's wrong with other C test frameworks?**  
-A. I worked with CUnit and Check, and I must say that they do their job
-   very well -- the only thing that bugs me is that setting up a test
-   suite from scratch is a pain, it should really be simpler. Most
-   (if not all) high-level languages have test frameworks with automatic
-   test registration, but all the ones for C require you to set up a
-   main, manually register suites, then tests. Criterion tries to
-   fix these shortcomings.
-
-**Q. Where has this been tested?**  
-A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
-   most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, Windows 7 and 2K.
-
 ## Credits
 
 Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
