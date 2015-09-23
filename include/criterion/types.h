@@ -63,11 +63,12 @@ struct criterion_test_params {
     {}
 
     template <typename T>
-    constexpr criterion_test_params(std::vector<T, criterion::allocator<T>>& vec)
+    constexpr criterion_test_params(std::vector<T, criterion::allocator<T>>& vec, 
+            void (*cleanup)(criterion_test_params *) = nullptr)
         : size(sizeof (T))
         , params(&vec[0])
         , length(vec.size())
-        , cleanup(nullptr)
+        , cleanup(cleanup)
     {}
 # endif
 };
