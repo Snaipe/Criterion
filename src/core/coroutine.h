@@ -153,8 +153,15 @@
 
 #define ccrContParam     void **ccrParam
 
-#define ccrBeginContext  struct ccrContextTag { int ccrLine
-#define ccrEndContext(x) } *x = (struct ccrContextTag *)*ccrParam
+#define ccrBeginContext  typedef struct { int ccrLine
+#define ccrEndContext(x) } ccrContextTag; ccrContextTag *x = (ccrContextTag *)*ccrParam
+
+#define ccrUseNamedContext(Name, x)                 \
+     typedef struct Name ccrContextTag;             \
+     ccrContextTag *x = (ccrContextTag *)*ccrParam
+
+#define ccrBeginDefineContextType(Name) struct Name { int ccrLine
+#define ccrEndDefineContextType }
 
 #define ccrBegin(x)      if(!x) {x= *ccrParam=malloc(sizeof(*x)); x->ccrLine=0;}\
                          if (x) switch(x->ccrLine) { case 0:;
@@ -163,12 +170,12 @@
 
 #define ccrReturn(z)     \
         do {\
-            ((struct ccrContextTag *)*ccrParam)->ccrLine=__LINE__;\
+            ((ccrContextTag *)*ccrParam)->ccrLine=__LINE__;\
             return (z); case __LINE__:;\
         } while (0)
 #define ccrReturnV       \
         do {\
-            ((struct ccrContextTag *)*ccrParam)->ccrLine=__LINE__;\
+            ((ccrContextTag *)*ccrParam)->ccrLine=__LINE__;\
             return; case __LINE__:;\
         } while (0)
 

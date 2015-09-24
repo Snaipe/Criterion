@@ -83,6 +83,8 @@ set(SOURCE_FILES
   src/core/report.h
   src/core/runner.c
   src/core/runner.h
+  src/core/runner_coroutine.c
+  src/core/runner_coroutine.h
   src/core/worker.c
   src/core/worker.h
   src/core/stats.c

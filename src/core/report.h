@@ -25,6 +25,7 @@
 # define REPORT_H_
 
 # include "criterion/hooks.h"
+# include "criterion/options.h"
 
 # define report(Kind, Data) call_report_hooks_##Kind(Data)
 

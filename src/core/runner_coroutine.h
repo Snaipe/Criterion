@@ -21,26 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#ifndef RUNNER_COROUTINE_H_
+# define RUNNER_COROUTINE_H_
 
-# include "criterion/types.h"
-# include "compat/pipe.h"
+# include "coroutine.h"
 
-DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
-DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
+struct worker *run_next_test(struct criterion_test_set *p_set,
+                             struct criterion_global_stats *p_stats,
+                             ccrContParam);
 
-struct criterion_test_set *criterion_init(void);
-void run_test_child(struct criterion_test *test, struct criterion_suite *suite);
-
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test **Test = GET_SECTION_START(cr_tst);      \
-            Test < (struct criterion_test**) GET_SECTION_END(cr_tst);   \
-            ++Test)
-
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite **Suite = GET_SECTION_START(cr_sts);    \
-            Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
-            ++Suite)
-
-#endif /* !CRITERION_RUNNER_H_ */
+#endif /* !RUNNER_COROUTINE_H_ */

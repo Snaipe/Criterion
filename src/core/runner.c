@@ -33,6 +33,7 @@
 #include "compat/processor.h"
 #include "string/i18n.h"
 #include "io/event.h"
+#include "runner_coroutine.h"
 #include "stats.h"
 #include "runner.h"
 #include "report.h"
@@ -40,7 +41,6 @@
 #include "abort.h"
 #include "config.h"
 #include "common.h"
-#include "coroutine.h"
 
 #ifdef HAVE_PCRE
 #include "string/extmatch.h"
@@ -132,8 +132,8 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
-static void run_test_child(struct criterion_test *test,
-                           struct criterion_suite *suite) {
+void run_test_child(struct criterion_test *test,
+                    struct criterion_suite *suite) {
 
     if (suite->data && suite->data->timeout != 0 && test->data->timeout == 0)
         setup_timeout((uint64_t) (suite->data->timeout * 1e9));
@@ -168,12 +168,6 @@ static void run_test_child(struct criterion_test *test,
     if (suite->data)
         (suite->data->fini ? suite->data->fini : nothing)();
     send_event(POST_FINI, NULL, 0);
-}
-
-static INLINE bool is_disabled(struct criterion_test *t,
-                               struct criterion_suite *s) {
-
-    return t->data->disabled || (s->data && s->data->disabled);
 }
 
 #define push_event(Kind, ...)                                       \
@@ -295,23 +289,6 @@ static void handle_event(struct event *ev) {
     }
 }
 
-static struct worker *run_test(struct criterion_global_stats *stats,
-        struct criterion_suite_stats *suite_stats,
-        struct criterion_test_stats *test_stats,
-        struct test_single_param *param) {
-
-    struct execution_context ctx = {
-        .stats = sref(stats),
-        .test = test_stats->test,
-        .test_stats = sref(test_stats),
-        .suite = suite_stats->suite,
-        .suite_stats = sref(suite_stats),
-        .param = param,
-    };
-    return spawn_test_worker(&ctx, run_test_child, g_worker_pipe);
-
-}
-
 #ifdef HAVE_PCRE
 void disable_unmatching(struct criterion_test_set *set) {
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
@@ -343,125 +320,6 @@ struct criterion_test_set *criterion_initialize(void) {
 
 void criterion_finalize(struct criterion_test_set *set) {
     sfree(set);
-}
-
-static struct worker *run_next_test(struct criterion_test_set *p_set,
-                                     struct criterion_global_stats *p_stats,
-                                     ccrContParam) {
-    ccrBeginContext;
-    struct criterion_suite_set *suite_set;
-    struct criterion_test *test;
-    struct criterion_suite_stats *suite_stats;
-    struct criterion_test_stats *test_stats;
-    struct criterion_test_set *set;
-    struct criterion_global_stats *stats;
-    struct criterion_test_params params;
-
-    struct criterion_ordered_set_node *ns;
-    struct criterion_ordered_set_node *nt;
-    size_t i;
-    ccrEndContext(ctx);
-
-    ccrBegin(ctx);
-
-    ctx->set = p_set;
-    ctx->stats = p_stats;
-    ccrReturn(NULL);
-
-    for (ctx->ns = ctx->set->suites->first; ctx->ns; ctx->ns = ctx->ns->next) {
-        ctx->suite_set = (void*) ctx->ns->data;
-
-        if (!ctx->suite_set->tests)
-            continue;
-
-        report(PRE_SUITE, ctx->suite_set);
-        log(pre_suite, ctx->suite_set);
-
-        ctx->suite_stats = suite_stats_init(&ctx->suite_set->suite);
-
-        struct event ev = { .kind = PRE_SUITE };
-        stat_push_event(ctx->stats, ctx->suite_stats, NULL, &ev);
-
-        for (ctx->nt = ctx->suite_set->tests->first; ctx->nt; ctx->nt = ctx->nt->next) {
-            ctx->test = (void*) ctx->nt->data;
-
-            if (ctx->test->data->kind_ == CR_TEST_PARAMETERIZED
-                    && ctx->test->data->param_) {
-
-                if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
-                    ctx->test_stats = test_stats_init(ctx->test);
-                    stat_push_event(ctx->stats,
-                            ctx->suite_stats,
-                            ctx->test_stats,
-                            &(struct event) { .kind = PRE_INIT });
-                    sfree(ctx->test_stats);
-                    continue;
-                }
-
-                ctx->params = ctx->test->data->param_();
-                for (ctx->i = 0; ctx->i < ctx->params.length; ++ctx->i) {
-                    ctx->test_stats = test_stats_init(ctx->test);
-
-                    struct test_single_param param = {
-                        ctx->params.size,
-                        (char *) ctx->params.params + ctx->i * ctx->params.size
-                    };
-
-                    struct worker *worker = run_test(ctx->stats,
-                            ctx->suite_stats,
-                            ctx->test_stats,
-                            &param);
-
-                    sfree(ctx->test_stats);
-
-                    if (!is_runner()) {
-                        sfree(ctx->suite_stats);
-                        if (ctx->params.cleanup)
-                            ctx->params.cleanup(&ctx->params);
-
-                        ccrReturn(NULL);
-                    } else {
-                        ccrReturn(worker);
-                    }
-                }
-
-                if (ctx->params.cleanup)
-                    ctx->params.cleanup(&ctx->params);
-            } else {
-                ctx->test_stats = test_stats_init(ctx->test);
-
-                if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
-                    stat_push_event(ctx->stats,
-                            ctx->suite_stats,
-                            ctx->test_stats,
-                            &(struct event) { .kind = PRE_INIT });
-                    sfree(ctx->test_stats);
-                    continue;
-                }
-
-                struct worker *worker = run_test(ctx->stats,
-                        ctx->suite_stats,
-                        ctx->test_stats,
-                        NULL);
-
-                sfree(ctx->test_stats);
-
-                if (!is_runner()) {
-                    sfree(ctx->suite_stats);
-                    ccrReturn(NULL);
-                } else {
-                    ccrReturn(worker);
-                }
-            }
-        }
-
-        report(POST_SUITE, ctx->suite_stats);
-        log(post_suite, ctx->suite_stats);
-
-        sfree(ctx->suite_stats);
-    }
-
-    ccrFinish(NULL);
 }
 
 static void run_tests_async(struct criterion_test_set *set,
