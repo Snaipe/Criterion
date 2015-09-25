@@ -116,7 +116,7 @@ typedef int (*dbl_cmp)(register union criterion_fp_double, register union criter
             return 0;                                                                   \
                                                                                         \
         if (unlikely(p1 == FP_INFINITE || p2 == FP_INFINITE))                           \
-            return val1.f > val2.f;                                                     \
+            return val1.f < val2.f ? -1 : 1;                                            \
                                                                                         \
         const int sign1 = signbit(val1.f), sign2 = signbit(val2.f);                     \
                                                                                         \
