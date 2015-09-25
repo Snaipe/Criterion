@@ -51,8 +51,8 @@ static INLINE int64_t abs64(int64_t x) {
 # define likely(x)   __builtin_expect((x),1)
 # define unlikely(x) __builtin_expect((x),0)
 #else
-# define likely(x)
-# define unlikely(x)
+# define likely(x) x
+# define unlikely(x) x
 #endif
 
 #define fp_abs(Order) fp_abs_ ## Order
