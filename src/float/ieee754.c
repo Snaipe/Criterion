@@ -136,14 +136,14 @@ IMPL_CMP_ULP(single)
 IMPL_CMP_ULP(double)
 
 flt_cmp criterion_flt_strategies[] = {
-    [CR_FP_CMP_RELATIVE_EPSILON]    = ieee754_single_cmp_releps,
     [CR_FP_CMP_ABSOLUTE_EPSILON]    = ieee754_single_cmp_abseps,
+    [CR_FP_CMP_RELATIVE_EPSILON]    = ieee754_single_cmp_releps,
     [CR_FP_CMP_ULPS]                = ieee754_single_cmp_ulp,
 };
 
 dbl_cmp criterion_dbl_strategies[] = {
-    [CR_FP_CMP_RELATIVE_EPSILON]    = ieee754_double_cmp_releps,
     [CR_FP_CMP_ABSOLUTE_EPSILON]    = ieee754_double_cmp_abseps,
+    [CR_FP_CMP_RELATIVE_EPSILON]    = ieee754_double_cmp_releps,
     [CR_FP_CMP_ULPS]                = ieee754_double_cmp_ulp,
 };
 

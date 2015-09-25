@@ -30,8 +30,8 @@
 // This is part of the ABI, do **not** reorder or remove entries.
 // Add new entries at the end, but before CR_FP_CMP_NB_STRATEGIES_.
 enum criterion_fpcmp_strategy {
-    CR_FP_CMP_RELATIVE_EPSILON,
     CR_FP_CMP_ABSOLUTE_EPSILON,
+    CR_FP_CMP_RELATIVE_EPSILON,
     CR_FP_CMP_ULPS,
     CR_FP_CMP_ADAPTIVE,
 
