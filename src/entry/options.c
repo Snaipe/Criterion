@@ -22,8 +22,14 @@
  * THE SOFTWARE.
  */
 # include "criterion/options.h"
+# include <float.h>
 
 struct criterion_options criterion_options = {
     .logging_threshold = CRITERION_IMPORTANT,
     .output_provider   = &normal_logging,
+    .floating_point_compare = {
+        .strategy = CR_FP_CMP_ABSOLUTE_EPSILON,
+        .flt_range = 4,
+        .flt_epsilon = FLT_EPSILON,
+    },
 };
