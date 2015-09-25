@@ -1,0 +1,21 @@
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m27[0m: Assertion failed: The expression (a) == (bad_div(bad_mul(a, b), b)) is false.
+[[0;34m----[0m]   Theory algebra::bad_divide_is_inverse_of_multiply failed with the following parameters: (2147483647, 2)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m27[0m: Assertion failed: The expression (a) == (bad_div(bad_mul(a, b), b)) is false.
+[[0;34m----[0m]   Theory algebra::bad_divide_is_inverse_of_multiply failed with the following parameters: (-2147483648, 2)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m27[0m: Unexpected signal caught below this line!
+[[0;31mFAIL[0m] algebra::bad_divide_is_inverse_of_multiply: CRASH!
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m120[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m]   Theory theory::gen failed with the following parameters: (1)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m120[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m]   Theory theory::gen failed with the following parameters: (2)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m120[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m]   Theory theory::gen failed with the following parameters: (3)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m120[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m]   Theory theory::gen failed with the following parameters: (4)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m120[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m]   Theory theory::gen failed with the following parameters: (5)
+[[0;31mFAIL[0m] theory::gen: (0.00s)
+[[0;34m----[0m] [0;1mtheories.c[0m:[0;31m103[0m: Assertion failed: The conditions for this assertion were not met.
+[[0;34m----[0m]   Theory theory::misc failed with the following parameters: ('a', true, 1, 1, 1l, 1l, 3.14f, 3.14, "test", "other test", 0x604698)
+[[0;31mFAIL[0m] theory::misc: (0.00s)
+[[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m6[0;1m | Passing: [0;32m3[0;1m | Failing: [0;31m3[0;1m | Crashing: [0;31m1[0;1m [0m
