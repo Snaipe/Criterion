@@ -50,10 +50,20 @@ union criterion_fp_double {
 
 struct criterion_fp_any {
     unsigned long datasize;
-    union {
+    union inner {
         union criterion_fp_single sp;
         union criterion_fp_double dp;
+
+#ifdef __cplusplus
+        inner(float val) : sp {val} {}
+        inner(double val) : dp {val} {}
+#endif
     } val;
+
+#ifdef __cplusplus
+    criterion_fp_any(float val) : datasize(sizeof (float)), val(val) {}
+    criterion_fp_any(double val) : datasize(sizeof (double)), val(val) {}
+#endif
 };
 
 CR_BEGIN_C_API
