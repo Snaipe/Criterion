@@ -144,24 +144,41 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {0,                 0,                  0,  0 }
     };
 
-    bool use_ascii = !strcmp("1", DEF(getenv("CRITERION_USE_ASCII"), "0"))
-                  || !strcmp("dumb", DEF(getenv("TERM"), "dumb"));
-
     setlocale(LC_ALL, "");
 #if ENABLE_NLS
     textdomain (PACKAGE "-test");
 #endif
 
+    char *env_always_succeed    = getenv("CRITERION_ALWAYS_SUCCEED");
+    char *env_no_early_exit     = getenv("CRITERION_NO_EARLY_EXIT");
+    char *env_fail_fast         = getenv("CRITERION_FAIL_FAST");
+    char *env_use_ascii         = getenv("CRITERION_USE_ASCII");
+    char *env_jobs              = getenv("CRITERION_JOBS");
+    char *env_logging_threshold = getenv("CRITERION_VERBOSITY_LEVEL");
+    char *env_short_filename    = getenv("CRITERION_SHORT_FILENAME");
+
+    bool is_term_dumb = !strcmp("dumb", DEF(getenv("TERM"), "dumb"));
+
     struct criterion_options *opt = &criterion_options;
-    opt->always_succeed    = !strcmp("1", DEF(getenv("CRITERION_ALWAYS_SUCCEED"), "0"));
-    opt->no_early_exit     = !strcmp("1", DEF(getenv("CRITERION_NO_EARLY_EXIT") , "0"));
-    opt->fail_fast         = !strcmp("1", DEF(getenv("CRITERION_FAIL_FAST")     , "0"));
-    opt->use_ascii         = use_ascii;
-    opt->jobs              = atou(DEF(getenv("CRITERION_JOBS"), "0"));
-    opt->logging_threshold = atou(DEF(getenv("CRITERION_VERBOSITY_LEVEL"), "2"));
-    opt->short_filename    = !strcmp("1", DEF(getenv("CRITERION_SHORT_FILENAME"), "0"));
+    if (env_always_succeed)
+        opt->always_succeed    = !strcmp("1", env_always_succeed);
+    if (env_no_early_exit)
+        opt->no_early_exit     = !strcmp("1", env_no_early_exit);
+    if (env_fail_fast)
+        opt->fail_fast         = !strcmp("1", env_fail_fast);
+    if (env_use_ascii)
+        opt->use_ascii         = !strcmp("1", env_use_ascii) || is_term_dumb;
+    if (env_jobs)
+        opt->jobs              = atou(env_jobs);
+    if (env_logging_threshold)
+        opt->logging_threshold = atou(env_logging_threshold);
+    if (env_short_filename)
+        opt->short_filename    = !strcmp("1", env_short_filename);
+
 #ifdef HAVE_PCRE
-    opt->pattern           = getenv("CRITERION_TEST_PATTERN");
+    char *env_pattern = getenv("CRITERION_TEST_PATTERN");
+    if (env_pattern)
+        opt->pattern = env_pattern;
 #endif
 
     bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));

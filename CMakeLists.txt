@@ -20,6 +20,7 @@ include_directories(
   /usr/local/include/
   dependencies/libcsptr/include/
   dependencies/dyncall/dyncall/
+  dependencies/valgrind/include/
 )
 
 if (MSVC)
