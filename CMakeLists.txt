@@ -61,6 +61,16 @@ endif()
 
 # Find dependencies
 
+include(CheckFloatingPointFormat)
+
+UB_CHECK_FLOATING_POINT_FORMAT(HAVE_IEEE754_FLOATS
+    HAVE_FLOAT_BYTES_BIGENDIAN HAVE_FLOAT_WORDS_BIGENDIAN)
+
+if (NOT HAVE_IEEE754_FLOATS)
+    message(WARNING "This platform does not support IEEE 754 floats "
+        "-- advanced comparison on floating point datatypes will be disabled.")
+endif ()
+
 find_package(Gettext)
 find_package(Libintl)
 if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
@@ -123,6 +133,10 @@ set(SOURCE_FILES
   src/entry/entry.c
 )
 
+if (HAVE_IEEE754_FLOATS)
+  set (SOURCE_FILES ${SOURCE_FILES} src/float/ieee754.c)
+endif ()
+
 if (PCRE_FOUND)
   set (SOURCE_FILES ${SOURCE_FILES}
     src/string/extmatch.c
@@ -163,6 +177,8 @@ target_link_libraries(criterion csptr dyncall_s)
 
 if (MSVC)
   target_link_libraries(criterion wingetopt)
+else ()
+  target_link_libraries(criterion m)
 endif ()
 
 if (HAVE_CLOCK_GETTIME)

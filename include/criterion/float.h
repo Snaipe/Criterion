@@ -21,37 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_OPTIONS_H_
-# define CRITERION_OPTIONS_H_
+#ifndef CRITERION_FLOAT_H_
+# define CRITERION_FLOAT_H_
 
-# include <stdbool.h>
-# include "logging.h"
-# include "float.h"
+# include <inttypes.h>
+# include "common.h"
 
-struct criterion_options {
-    enum criterion_logging_level logging_threshold;
-    struct criterion_output_provider *output_provider;
-    bool no_early_exit;
-    bool always_succeed;
-    bool use_ascii;
-    bool fail_fast;
-    const char *pattern;
-    bool short_filename;
-    size_t jobs;
+// This is part of the ABI, do **not** reorder or remove entries.
+// Add new entries at the end, but before CR_FP_CMP_NB_STRATEGIES_.
+enum criterion_fpcmp_strategy {
+    CR_FP_CMP_RELATIVE_EPSILON,
+    CR_FP_CMP_ABSOLUTE_EPSILON,
+    CR_FP_CMP_ULPS,
+    CR_FP_CMP_ADAPTIVE,
 
-    struct {
-        enum criterion_fpcmp_strategy strategy;
-        int32_t flt_range;
-        float flt_epsilon;
-        int64_t dbl_range;
-        double dbl_epsilon;
-    } floating_point_compare;
+    CR_FP_CMP_NB_STRATEGIES_, // sentinel
+};
+
+union criterion_fp_single {
+    float f;
+    int32_t i;
+};
+
+union criterion_fp_double {
+    double f;
+    int64_t i;
+};
+
+struct criterion_fp_any {
+    unsigned long datasize;
+    union {
+        union criterion_fp_single sp;
+        union criterion_fp_double dp;
+    } val;
 };
 
 CR_BEGIN_C_API
 
-extern struct criterion_options criterion_options;
+typedef int (*cr_flt_cmp)(register union criterion_fp_single,
+                          register union criterion_fp_single);
+typedef int (*cr_dbl_cmp)(register union criterion_fp_double,
+                          register union criterion_fp_double);
+
+extern cr_flt_cmp criterion_flt_strategies[CR_FP_CMP_NB_STRATEGIES_];
+extern cr_dbl_cmp criterion_dbl_strategies[CR_FP_CMP_NB_STRATEGIES_];
+
+CR_API int cr_float_cmp(struct criterion_fp_any *a, struct criterion_fp_any *b);
 
 CR_END_C_API
 
-#endif /*!CRITERION_OPTIONS_H_ */
+#endif /* !CRITERION_FLOAT_H_ */

@@ -1,0 +1,84 @@
+# Originally taken from https://github.com/ntamas/unibinlog
+
+# The MIT License (MIT)
+#
+# Copyright (c) 2014 Tamas Nepusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+SET(UB_DIRECTORY_OF_CHECK_FLOATING_POINT_FORMAT_SCRIPT "${CMAKE_CURRENT_LIST_DIR}")
+
+MACRO(UB_CHECK_FLOATING_POINT_FORMAT IEEE754_FLOATS FLOAT_BYTES_BIGENDIAN FLOAT_WORDS_BIGENDIAN)
+	IF(NOT DEFINED HAVE_${IEEE754_FLOATS})
+		MESSAGE(STATUS "Check floating point format")
+
+		SET(UB_CHECK_FLOATING_POINT_FORMAT_TARGET
+			"${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CheckFloatingPointFormat.bin")
+		TRY_COMPILE(HAVE_${IEEE754_FLOATS} "${CMAKE_BINARY_DIR}"
+			"${UB_DIRECTORY_OF_CHECK_FLOATING_POINT_FORMAT_SCRIPT}/CheckFloatingPointFormat.c"
+			COPY_FILE "${UB_CHECK_FLOATING_POINT_FORMAT_TARGET}")
+
+		IF(HAVE_${IEEE754_FLOATS})
+			FILE(STRINGS "${UB_CHECK_FLOATING_POINT_FORMAT_TARGET}"
+				UB_IEEE754_BIG_BIG REGEX "ABCDEFGH" LIMIT_COUNT 1)
+			FILE(STRINGS "${UB_CHECK_FLOATING_POINT_FORMAT_TARGET}"
+				UB_IEEE754_LITTLE_LITTLE REGEX "HGFEDCBA" LIMIT_COUNT 1)
+			FILE(STRINGS "${UB_CHECK_FLOATING_POINT_FORMAT_TARGET}"
+				UB_IEEE754_BIG_LITTLE REGEX "EFGHABCD" LIMIT_COUNT 1)
+			FILE(STRINGS "${UB_CHECK_FLOATING_POINT_FORMAT_TARGET}"
+				UB_IEEE754_LITTLE_BIG REGEX "DCBAHGFE" LIMIT_COUNT 1)
+
+			IF(UB_IEEE754_BIG_BIG OR UB_IEEE754_LITTLE_LITTLE OR
+					UB_IEEE754_LITTLE_BIG OR UB_IEEE754_BIG_LITTLE)
+				SET(UB_IEEE754 TRUE)
+			ELSE()
+				SET(UB_IEEE754 FALSE)
+			ENDIF()
+		ENDIF()
+
+		IF(UB_IEEE754)
+			SET(${IEEE754_FLOATS} 1 CACHE INTERNAL
+				"Stores whether the system uses IEEE754 floats" FORCE)
+		ENDIF(UB_IEEE754)
+
+		IF(UB_IEEE754_BIG_BIG OR UB_IEEE754_BIG_LITTLE)
+			SET(${FLOAT_BYTES_BIGENDIAN} 1 CACHE INTERNAL
+				"Stores whether IEEE754 floats store bytes in big endian" FORCE)
+		ENDIF(UB_IEEE754_BIG_BIG OR UB_IEEE754_BIG_LITTLE)
+
+		IF(UB_IEEE754_BIG_BIG OR UB_IEEE754_LITTLE_BIG)
+			SET(${FLOAT_WORDS_BIGENDIAN} 1 CACHE INTERNAL
+				"Stores whether IEEE754 words store bytes in big endian" FORCE)
+		ENDIF(UB_IEEE754_BIG_BIG OR UB_IEEE754_LITTLE_BIG)
+
+		IF(UB_IEEE754_BIG_BIG)
+			MESSAGE(STATUS "Check floating point format - IEEE-754, big endian")
+		ELSEIF(UB_IEEE754_LITTLE_LITTLE)
+			MESSAGE(STATUS "Check floating point format - IEEE-754, little endian")
+		ELSEIF(UB_IEEE754_BIG_LITTLE)
+			MESSAGE(STATUS "Check floating point format - IEEE-754, bytes are big endian, words are little endian")
+		ELSEIF(UB_IEEE754_LITTLE_BIG)
+			MESSAGE(STATUS "Check floating point format - IEEE-754, bytes are little endian, words are big endian")
+		ELSE()
+			MESSAGE(STATUS "Check floating point format - unknown")
+		ENDIF()
+
+	ENDIF()
+ENDMACRO(UB_CHECK_FLOATING_POINT_FORMAT IEEE754_FLOATS FLOAT_BYTES_BIGENDIAN FLOAT_WORDS_BIGENDIAN)
+
