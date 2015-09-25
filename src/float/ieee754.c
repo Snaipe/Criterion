@@ -135,6 +135,44 @@ IMPL_CMP_RELEPS(double)
 IMPL_CMP_ULP(single)
 IMPL_CMP_ULP(double)
 
+int ieee754_single_cmp_adaptive(register union criterion_fp_single val1,
+                                register union criterion_fp_single val2) {
+
+    size_t max_ulps = fp_range(single);
+
+    const int p1 = fpclassify(val1.f),
+              p2 = fpclassify(val2.f);
+
+    if (unlikely((val1.i == val2.i
+                    || (p1 == FP_ZERO && p2 == FP_ZERO)
+                    || ((p1 == FP_ZERO) ^ (p2 == FP_SUBNORMAL))
+                    || ((p2 == FP_ZERO) ^ (p1 == FP_SUBNORMAL)))
+            && p1 != FP_NAN && p2 != FP_NAN))
+        return 0;
+
+    if (unlikely(p1 == FP_INFINITE || p2 == FP_INFINITE))
+        return val1.f < val2.f ? -1 : 1;
+
+    const int sign1 = signbit(val1.f),
+              sign2 = signbit(val2.f);
+
+    if (sign1 != sign2) {
+        return val1.f > val2.f ? 1 : -1;
+    }
+
+    if (unlikely((p1 == FP_SUBNORMAL) ^ (p2 == FP_SUBNORMAL))) {
+        int32_t fm = !sign1 ? single_min.i : single_neg_min.i;
+        if (p1 == FP_SUBNORMAL)
+            return abs32(val2.i - fm) < (int32_t) max_ulps ? 0 : 1;
+        else
+            return abs32(val1.i - fm) < (int32_t) max_ulps ? 0 : -1;
+    }
+    int32_t ulpdiff = val1.i - val2.i;
+
+    return fp_abs(single)(ulpdiff) < (int32_t) max_ulps ? 0 : (ulpdiff > 0 ? 1 : -1);
+
+}
+
 flt_cmp criterion_flt_strategies[] = {
     [CR_FP_CMP_ABSOLUTE_EPSILON]    = ieee754_single_cmp_abseps,
     [CR_FP_CMP_RELATIVE_EPSILON]    = ieee754_single_cmp_releps,
