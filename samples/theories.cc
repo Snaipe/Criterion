@@ -106,9 +106,6 @@ Theory((char c, bool b, short s, int i, long l, long long ll, float f, double d,
     cr_assert_str_eq(str, "test");
     cr_assert_str_eq(cstr, "other test");
     cr_assert_eq(obj->foo, 42);
-
-    // abort to see the formatted string of all parameters
-    cr_assert_fail();
 }
 
 // Manually generate datapoints
