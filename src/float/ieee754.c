@@ -151,9 +151,9 @@ int cr_float_cmp(struct criterion_fp_any *a, struct criterion_fp_any *b) {
     assert(a->datasize == b->datasize);
 
     if (a->datasize == sizeof (float)) {
-        criterion_flt_strategies[fpcmp_opt(strategy)](a->val.sp, b->val.sp);
+        return criterion_flt_strategies[fpcmp_opt(strategy)](a->val.sp, b->val.sp);
     } else if (a->datasize == sizeof (double)) {
-        criterion_dbl_strategies[fpcmp_opt(strategy)](a->val.dp, b->val.dp);
+        return criterion_dbl_strategies[fpcmp_opt(strategy)](a->val.dp, b->val.dp);
     }
     abort();
 }
