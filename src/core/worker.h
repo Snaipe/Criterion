@@ -49,7 +49,7 @@ struct execution_context {
 struct worker {
     int active;
     s_proc_handle *proc;
-    FILE *in;
+    s_pipe_file_handle *in;
     struct execution_context ctx;
 };
 
@@ -85,6 +85,6 @@ struct process_status get_status(int status);
 struct worker *spawn_test_worker(struct execution_context *ctx,
                                   f_worker_func func,
                                   s_pipe_handle *pipe);
-struct event *worker_read_event(struct worker_set *workers, FILE *pipe);
+struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe);
 
 #endif /* !PROCESS_H_ */

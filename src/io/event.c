@@ -31,7 +31,7 @@
 #include "core/worker.h"
 #include "event.h"
 
-FILE *g_event_pipe = NULL;
+s_pipe_file_handle *g_event_pipe = NULL;
 
 void destroy_event(void *ptr, UNUSED void *meta) {
     struct event *ev = ptr;
@@ -56,12 +56,12 @@ void destroy_assert_event(void *ptr, UNUSED void *meta) {
             abort();        \
     } while (0)
 
-struct event *read_event(FILE *f) {
+struct event *read_event(s_pipe_file_handle *f) {
     unsigned kind;
-    ASSERT(fread(&kind, sizeof (unsigned), 1, f) == 0);
+    ASSERT(pipe_read(&kind, sizeof (unsigned), f) == 0);
 
     unsigned long long pid;
-    ASSERT(fread(&pid, sizeof (unsigned long long), 1, f) == 0);
+    ASSERT(pipe_read(&pid, sizeof (unsigned long long), f) == 0);
 
     switch (kind) {
         case ASSERT: {
@@ -70,13 +70,13 @@ struct event *read_event(FILE *f) {
             char *msg = NULL;
 
             buf = malloc(assert_size);
-            ASSERT(fread(buf, assert_size, 1, f) == 0);
+            ASSERT(pipe_read(buf, assert_size, f) == 0);
 
             size_t len = 0;
-            ASSERT(fread(&len, sizeof (size_t), 1, f) == 0);
+            ASSERT(pipe_read(&len, sizeof (size_t), f) == 0);
 
             msg = malloc(len);
-            ASSERT(fread(msg, len, 1, f) == 0);
+            ASSERT(pipe_read(msg, len, f) == 0);
 
             buf->message = msg;
 
@@ -89,10 +89,10 @@ struct event *read_event(FILE *f) {
         }
         case THEORY_FAIL: {
             size_t len = 0;
-            ASSERT(fread(&len, sizeof (size_t), 1, f) == 0);
+            ASSERT(pipe_read(&len, sizeof (size_t), f) == 0);
 
             char *buf = malloc(len);
-            ASSERT(fread(buf, len, 1, f) == 0);
+            ASSERT(pipe_read(buf, len, f) == 0);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
@@ -103,7 +103,7 @@ struct event *read_event(FILE *f) {
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
-            ASSERT(fread(elapsed_time, sizeof (double), 1, f) == 0);
+            ASSERT(pipe_read(elapsed_time, sizeof (double), f) == 0);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
@@ -114,7 +114,7 @@ struct event *read_event(FILE *f) {
         }
         case WORKER_TERMINATED: {
             struct worker_status *status = malloc(sizeof (struct worker_status));
-            ASSERT(fread(status, sizeof (struct worker_status), 1, f) == 0);
+            ASSERT(pipe_read(status, sizeof (struct worker_status), f) == 0);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
@@ -138,7 +138,7 @@ void send_event(int kind, void *data, size_t size) {
     memcpy(buf, &kind, sizeof (int));
     memcpy(buf + sizeof (int), &pid, sizeof (pid));
     memcpy(buf + sizeof (int) + sizeof (pid), data, size);
-    ASSERT(fwrite(buf, sizeof (int) + sizeof (pid) + size, 1, g_event_pipe) == 0);
+    ASSERT(pipe_write(buf, sizeof (int) + sizeof (pid) + size, g_event_pipe) == 0);
 
     free(buf);
 }

@@ -35,4 +35,12 @@ struct pipe_handle {
 #endif
 };
 
+struct pipe_file_handle {
+#ifdef VANILLA_WIN32
+    HANDLE fh;
+#else
+    int fd;
+#endif
+};
+
 #endif /* !PIPE_INTERNAL_H_ */

@@ -31,6 +31,9 @@
 struct pipe_handle;
 typedef struct pipe_handle s_pipe_handle;
 
+struct pipe_file_handle;
+typedef struct pipe_file_handle s_pipe_file_handle;
+
 enum pipe_end {
     PIPE_READ = 0,
     PIPE_WRITE = 1,
@@ -51,8 +54,14 @@ s_pipe_handle *stdpipe();
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts);
 FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts);
 
+s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts);
+s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts);
+
 int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
 void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
+
+int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe);
+int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe);
 
 INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
     switch (fd_kind) {

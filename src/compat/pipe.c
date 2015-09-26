@@ -182,6 +182,135 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd) {
 #endif
 }
 
+void close_pipe_file_handle(void *ptr, UNUSED void *meta) {
+    s_pipe_file_handle *h = ptr;
+#ifdef VANILLA_WIN32
+    CloseHandle(h->fh);
+#else
+    close(h->fd);
+#endif
+}
+
+#ifdef VANILLA_WIN32
+static HANDLE win_dup(HANDLE h) {
+    HANDLE dup;
+    DuplicateHandle(GetCurrentProcess(),
+        h,
+        GetCurrentProcess(),
+        &dup,
+        0,
+        TRUE,
+        DUPLICATE_SAME_ACCESS);
+    return dup;
+}
+#endif
+
+s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts) {
+#ifdef VANILLA_WIN32
+    if (opts & PIPE_CLOSE)
+        CloseHandle(p->fhs[0]);
+    HANDLE fh = p->fhs[1];
+    if (opts & PIPE_DUP)
+        fh = win_dup(fh);
+
+    s_pipe_file_handle *h = smalloc(
+            .size = sizeof (s_pipe_file_handle),
+            .dtor = close_pipe_file_handle);
+
+    h->fh = fh;
+    return h;
+#else
+    if (opts & PIPE_CLOSE)
+        close(p->fds[0]);
+    int fd = p->fds[1];
+    if (opts & PIPE_DUP)
+        fd = dup(fd);
+
+    s_pipe_file_handle *h = smalloc(
+            .size = sizeof (s_pipe_file_handle),
+            .dtor = close_pipe_file_handle);
+
+    h->fd = fd;
+    return h;
+#endif
+}
+
+s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts) {
+#ifdef VANILLA_WIN32
+    if (opts & PIPE_CLOSE)
+        CloseHandle(p->fhs[1]);
+    HANDLE fh = p->fhs[0];
+    if (opts & PIPE_DUP)
+        fh = win_dup(fh);
+
+    s_pipe_file_handle *h = smalloc(
+            .size = sizeof (s_pipe_file_handle),
+            .dtor = close_pipe_file_handle);
+
+    h->fh = fh;
+    return h;
+#else
+    if (opts & PIPE_CLOSE)
+        close(p->fds[1]);
+    int fd = p->fds[0];
+    if (opts & PIPE_DUP)
+        fd = dup(fd);
+
+    s_pipe_file_handle *h = smalloc(
+            .size = sizeof (s_pipe_file_handle),
+            .dtor = close_pipe_file_handle);
+
+    h->fd = fd;
+    return h;
+#endif
+}
+
+int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe) {
+#ifdef VANILLA_WIN32
+    DWORD written = 0;
+    size_t off = 0;
+    while (size > 0) {
+        if (!WriteFile(pipe->fh, (const char *) buf + off, size, &written, NULL))
+            return -1;
+        size -= written;
+        off += written;
+    }
+    if (off > 0)
+        return 1;
+    return 0;
+#else
+    ssize_t res = write(pipe->fd, buf, size);
+    if (res < 0)
+        return -1;
+    if (res > 0)
+        return 1;
+    return 0;
+#endif
+}
+
+int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe) {
+#ifdef VANILLA_WIN32
+    DWORD read = 0;
+    size_t off = 0;
+    while (size > 0) {
+        if (!ReadFile(pipe->fh, (char *) buf + off, size, &read, NULL))
+            return -1;
+        size -= read;
+        off += read;
+    }
+    if (off > 0)
+        return 1;
+    return 0;
+#else
+    ssize_t res = read(pipe->fd, buf, size);
+    if (res < 0)
+        return -1;
+    if (res > 0)
+        return 1;
+    return 0;
+#endif
+}
+
 static s_pipe_handle stdout_redir_;
 static s_pipe_handle stderr_redir_;
 static s_pipe_handle stdin_redir_;

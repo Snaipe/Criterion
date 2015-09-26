@@ -335,7 +335,7 @@ static void run_tests_async(struct criterion_test_set *set,
 
     size_t active_workers = 0;
 
-    FILE *event_pipe = pipe_in(g_worker_pipe, PIPE_DUP);
+    s_pipe_file_handle *event_pipe = pipe_in_handle(g_worker_pipe, PIPE_DUP);
     struct event *ev = NULL;
 
     // initialization of coroutine
@@ -374,7 +374,7 @@ static void run_tests_async(struct criterion_test_set *set,
     ev = NULL;
 
 cleanup:
-    fclose(event_pipe);
+    sfree(event_pipe);
     sfree(ev);
     for (size_t i = 0; i < nb_workers; ++i)
         sfree(workers.workers[i]);

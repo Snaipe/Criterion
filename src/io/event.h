@@ -28,7 +28,7 @@
 # include "core/worker.h"
 # include <stdio.h>
 
-extern FILE *g_event_pipe;
+extern s_pipe_file_handle *g_event_pipe;
 
 struct event {
     unsigned long long pid;
@@ -43,6 +43,6 @@ enum other_event_kinds {
     WORKER_TERMINATED = 1 << 30,
 };
 
-struct event *read_event(FILE *f);
+struct event *read_event(s_pipe_file_handle *f);
 
 #endif /* !EVENT_H_ */

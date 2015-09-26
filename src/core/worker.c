@@ -48,14 +48,14 @@ bool is_runner(void) {
 
 static void close_process(void *ptr, UNUSED void *meta) {
     struct worker *proc = ptr;
-    fclose(proc->in);
+    sfree(proc->in);
     sfree(proc->ctx.suite_stats);
     sfree(proc->ctx.test_stats);
     sfree(proc->ctx.stats);
     sfree(proc->proc);
 }
 
-struct event *worker_read_event(struct worker_set *workers, FILE *pipe) {
+struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe) {
     struct event *ev = read_event(pipe);
     if (ev) {
         ev->worker_index = -1;
@@ -76,10 +76,10 @@ struct event *worker_read_event(struct worker_set *workers, FILE *pipe) {
 
 void run_worker(struct worker_context *ctx) {
     cr_redirect_stdin();
-    g_event_pipe = pipe_out(ctx->pipe, PIPE_CLOSE);
+    g_event_pipe = pipe_out_handle(ctx->pipe, PIPE_CLOSE);
 
     ctx->func(ctx->test, ctx->suite);
-    fclose(g_event_pipe);
+    sfree(g_event_pipe);
 
     fflush(NULL); // flush all opened streams
     if (criterion_options.no_early_exit)
@@ -118,7 +118,7 @@ struct worker *spawn_test_worker(struct execution_context *ctx,
 
     *ptr = (struct worker) {
         .proc = proc,
-        .in = pipe_in(pipe, PIPE_DUP),
+        .in = pipe_in_handle(pipe, PIPE_DUP),
         .ctx = *ctx,
     };
     return ptr;
