@@ -44,14 +44,24 @@ void destroy_assert_event(void *ptr, UNUSED void *meta) {
     free(ev->data);
 }
 
+#ifdef __GNUC__
+# define unlikely(x) __builtin_expect((x),0)
+#else
+# define unlikely(x) (x)
+#endif
+
+#define ASSERT(Cond)        \
+    do {                    \
+        if (unlikely(Cond)) \
+            abort();        \
+    } while (0)
+
 struct event *read_event(FILE *f) {
     unsigned kind;
-    if (fread(&kind, sizeof (unsigned), 1, f) == 0)
-        return NULL;
+    ASSERT(fread(&kind, sizeof (unsigned), 1, f) == 0);
 
     unsigned long long pid;
-    if (fread(&pid, sizeof (unsigned long long), 1, f) == 0)
-        return NULL;
+    ASSERT(fread(&pid, sizeof (unsigned long long), 1, f) == 0);
 
     switch (kind) {
         case ASSERT: {
@@ -60,16 +70,13 @@ struct event *read_event(FILE *f) {
             char *msg = NULL;
 
             buf = malloc(assert_size);
-            if (fread(buf, assert_size, 1, f) == 0)
-                goto fail_assert;
+            ASSERT(fread(buf, assert_size, 1, f) == 0);
 
             size_t len = 0;
-            if (fread(&len, sizeof (size_t), 1, f) == 0)
-                goto fail_assert;
+            ASSERT(fread(&len, sizeof (size_t), 1, f) == 0);
 
             msg = malloc(len);
-            if (fread(msg, len, 1, f) == 0)
-                goto fail_assert;
+            ASSERT(fread(msg, len, 1, f) == 0);
 
             buf->message = msg;
 
@@ -79,22 +86,13 @@ struct event *read_event(FILE *f) {
                 );
             *ev = (struct event) { .pid = pid, .kind = kind, .data = buf };
             return ev;
-
-fail_assert:
-            free(buf);
-            free(msg);
-            return NULL;
         }
         case THEORY_FAIL: {
             size_t len = 0;
-            if (fread(&len, sizeof (size_t), 1, f) == 0)
-                return NULL;
+            ASSERT(fread(&len, sizeof (size_t), 1, f) == 0);
 
             char *buf = malloc(len);
-            if (fread(buf, len, 1, f) == 0) {
-                free(buf);
-                return NULL;
-            }
+            ASSERT(fread(buf, len, 1, f) == 0);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
@@ -105,10 +103,7 @@ fail_assert:
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
-            if (fread(elapsed_time, sizeof (double), 1, f) == 0) {
-                free(elapsed_time);
-                return NULL;
-            }
+            ASSERT(fread(elapsed_time, sizeof (double), 1, f) == 0);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
@@ -119,10 +114,7 @@ fail_assert:
         }
         case WORKER_TERMINATED: {
             struct worker_status *status = malloc(sizeof (struct worker_status));
-            if (fread(status, sizeof (struct worker_status), 1, f) == 0) {
-                free(status);
-                return NULL;
-            }
+            ASSERT(fread(status, sizeof (struct worker_status), 1, f) == 0);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
@@ -146,8 +138,7 @@ void send_event(int kind, void *data, size_t size) {
     memcpy(buf, &kind, sizeof (int));
     memcpy(buf + sizeof (int), &pid, sizeof (pid));
     memcpy(buf + sizeof (int) + sizeof (pid), data, size);
-    if (fwrite(buf, sizeof (int) + sizeof (pid) + size, 1, g_event_pipe) == 0)
-        abort();
+    ASSERT(fwrite(buf, sizeof (int) + sizeof (pid) + size, 1, g_event_pipe) == 0);
 
     free(buf);
 }
