@@ -158,6 +158,10 @@ struct criterion_test_set *criterion_init(void) {
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_ENABLE_ERROR_REPORTING;
+#endif
+
     if (suite->data && suite->data->timeout != 0 && test->data->timeout == 0)
         setup_timeout((uint64_t) (suite->data->timeout * 1e9));
     else if (test->data->timeout != 0)
@@ -335,6 +339,9 @@ void disable_unmatching(struct criterion_test_set *set) {
 struct criterion_test_set *criterion_initialize(void) {
     init_i18n();
 
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_DISABLE_ERROR_REPORTING;
+#endif
     if (RUNNING_ON_VALGRIND) {
         criterion_options.no_early_exit = 1;
         criterion_options.jobs = 1;
@@ -348,6 +355,10 @@ struct criterion_test_set *criterion_initialize(void) {
 
 void criterion_finalize(struct criterion_test_set *set) {
     sfree(set);
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_ENABLE_ERROR_REPORTING;
+#endif
 }
 
 static void run_tests_async(struct criterion_test_set *set,
