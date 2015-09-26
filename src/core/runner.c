@@ -419,5 +419,10 @@ int criterion_run_all_tests(struct criterion_test_set *set) {
     int res = criterion_run_all_tests_impl(set);
     unset_runner_process();
 
+    if (res == -1) {
+        criterion_finalize(set);
+        exit(0);
+    }
+
     return criterion_options.always_succeed || res;
 }
