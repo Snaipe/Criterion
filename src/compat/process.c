@@ -23,6 +23,7 @@
  */
 #include <assert.h>
 #include <string.h>
+#include <errno.h>
 #include <csptr/smalloc.h>
 #include "core/worker.h"
 #include "core/runner.h"
@@ -133,8 +134,12 @@ static void handle_sigchld(UNUSED int sig) {
         memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
         memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
 
-        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf))
+        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf)) {
+            criterion_perror("Could not write the WORKER_TERMINATED event "
+                    "down the event pipe: %s.\n",
+                    strerror(errno));
             abort();
+        }
     }
 }
 #endif

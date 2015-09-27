@@ -28,6 +28,7 @@
 #include "criterion/stats.h"
 #include "criterion/common.h"
 #include "criterion/hooks.h"
+#include "criterion/logging.h"
 #include "core/worker.h"
 #include "event.h"
 
@@ -50,10 +51,12 @@ void destroy_assert_event(void *ptr, UNUSED void *meta) {
 # define unlikely(x) (x)
 #endif
 
-#define ASSERT(Cond)            \
-    do {                        \
-        if (unlikely(!(Cond)))  \
-            abort();            \
+#define ASSERT(Cond)                                                        \
+    do {                                                                    \
+        if (unlikely(!(Cond))){                                             \
+            criterion_perror("Corrupted event IO in the worker pipe.\n");   \
+            abort();                                                        \
+        }                                                                   \
     } while (0)
 
 struct event *read_event(s_pipe_file_handle *f) {

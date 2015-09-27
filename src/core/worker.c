@@ -23,6 +23,7 @@
  */
 #include <stdlib.h>
 #include <stdbool.h>
+#include <errno.h>
 #include <csptr/smalloc.h>
 
 #include "criterion/types.h"
@@ -69,6 +70,8 @@ struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *
                 return ev;
             }
         }
+        criterion_perror("Could not link back the event PID to the active workers.\n");
+        criterion_perror("The event pipe might have been corrupted.\n");
         abort();
     }
     return NULL;
@@ -102,6 +105,7 @@ struct worker *spawn_test_worker(struct execution_context *ctx,
 
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
+        criterion_perror("Could not fork the current process and start a worker: %s.\n", strerror(errno));
         abort();
     } else if (proc == NULL) {
         run_worker(&g_worker_context);

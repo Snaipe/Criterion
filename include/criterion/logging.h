@@ -47,6 +47,7 @@ enum criterion_logging_prefix {
     CRITERION_LOGGING_PREFIX_SKIP,
     CRITERION_LOGGING_PREFIX_PASS,
     CRITERION_LOGGING_PREFIX_FAIL,
+    CRITERION_LOGGING_PREFIX_ERR,
 };
 
 struct criterion_prefix_data {
@@ -82,6 +83,7 @@ extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 # define CRITERION_PREFIX_SKIP   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_SKIP  ])
 # define CRITERION_PREFIX_PASS   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_PASS  ])
 # define CRITERION_PREFIX_FAIL   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_FAIL  ])
+# define CRITERION_PREFIX_ERR    (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_ERR   ])
 
 CR_API void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
 
@@ -96,6 +98,8 @@ CR_API void criterion_log(enum criterion_logging_level level, const char *msg, .
 
 # define criterion_pinfo(...) criterion_plog(CRITERION_INFO, __VA_ARGS__)
 # define criterion_pimportant(...) criterion_plog(CRITERION_IMPORTANT, __VA_ARGS__)
+
+# define criterion_perror(...) criterion_plog(CRITERION_IMPORTANT, CRITERION_PREFIX_ERR, __VA_ARGS__)
 
 struct criterion_output_provider {
     void (*log_pre_all      )(struct criterion_test_set *set);

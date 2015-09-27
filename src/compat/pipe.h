@@ -27,6 +27,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include "common.h"
+# include "criterion/logging.h"
 
 struct pipe_handle;
 typedef struct pipe_handle s_pipe_handle;
@@ -69,6 +70,7 @@ INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
         case CR_STDOUT: return stdout;
         case CR_STDERR: return stderr;
     }
+    criterion_perror("get_std_file: invalid parameter.\n");
     abort();
 }
 

@@ -24,6 +24,7 @@
 #define CRITERION_LOGGING_COLORS
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 #include <csptr/smalloc.h>
 #include <valgrind/valgrind.h>
 #include "criterion/criterion.h"
@@ -437,8 +438,11 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     fflush(NULL); // flush everything before forking
 
     g_worker_pipe = stdpipe();
-    if (g_worker_pipe == NULL)
+    if (g_worker_pipe == NULL) {
+        criterion_perror("Could not initialize the event pipe: %s.\n",
+                strerror(errno));
         abort();
+    }
 
     struct criterion_global_stats *stats = stats_init();
     run_tests_async(set, stats);
