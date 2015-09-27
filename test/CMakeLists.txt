@@ -9,6 +9,7 @@ set(TEST_SOURCES
     ordered-set.c
     asprintf.c
     redirect.cc
+    float.cc
 )
 
 add_executable(criterion_unit_tests EXCLUDE_FROM_ALL ${TEST_SOURCES})

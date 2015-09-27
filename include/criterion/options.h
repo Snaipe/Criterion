@@ -26,6 +26,7 @@
 
 # include <stdbool.h>
 # include "logging.h"
+# include "float.h"
 
 struct criterion_options {
     enum criterion_logging_level logging_threshold;
@@ -37,6 +38,14 @@ struct criterion_options {
     const char *pattern;
     bool short_filename;
     size_t jobs;
+
+    struct {
+        enum criterion_fpcmp_strategy strategy;
+        int32_t flt_range;
+        float flt_epsilon;
+        int64_t dbl_range;
+        double dbl_epsilon;
+    } floating_point_compare;
 };
 
 CR_BEGIN_C_API
