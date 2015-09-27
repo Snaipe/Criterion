@@ -15,7 +15,7 @@ environment:
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
-    BUILD_OPT: -- -j4
+    BUILD_OPT: -- -j2
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015"
     CFLAGS: /MP
@@ -60,7 +60,7 @@ before_deploy:
 
 test_script:
   - cmake --build . --target criterion_tests %BUILD_OPT%
-  - ps: try { ctest -j4 } catch { type Testing/Temporary/LastTest.log }
+  - ps: try { ctest -j2 } catch { type Testing/Temporary/LastTest.log }
 
 #after_test:
 #  - 'make coveralls'
