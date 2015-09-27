@@ -20,6 +20,7 @@ include_directories(
   /usr/local/include/
   dependencies/libcsptr/include/
   dependencies/dyncall/dyncall/
+  dependencies/valgrind/include/
 )
 
 if (MSVC)
@@ -50,9 +51,14 @@ endif()
 
 # Setup coveralls
 
-option(CTESTS "Turn on the samples and test" OFF)
 option(COVERALLS "Turn on coveralls support" OFF)
 option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+option(DEV_BUILD "Compile in developer mode" OFF)
+option(CTESTS "Turn on the samples and test" ${DEV_BUILD})
+
+if (DEV_BUILD)
+  set(ENABLE_VALGRIND_ERRORS 1)
+endif ()
 
 if (COVERALLS)
   include(Coveralls)

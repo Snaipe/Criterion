@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define CRITERION_LOGGING_COLORS
 #include <stdlib.h>
 #include <stdio.h>
 #include <csptr/smalloc.h>
+#include <valgrind/valgrind.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
@@ -45,6 +47,27 @@
 #ifdef HAVE_PCRE
 #include "string/extmatch.h"
 #endif
+
+typedef const char *const msg_t;
+
+#ifdef ENABLE_NLS
+static msg_t msg_valgrind_early_exit = N_("%1$sWarning! Criterion has detected "
+        "that it is running under valgrind, but the no_early_exit option is "
+        "explicitely disabled. Reports will not be accurate!%2$s\n");
+
+static msg_t msg_valgrind_jobs = N_("%1$sWarning! Criterion has detected "
+        "that it is running under valgrind, but the number of jobs have been "
+        "explicitely set. Reports might appear confusing!%2$s\n");
+#else
+static msg_t msg_valgrind_early_exit = "%sWarning! Criterion has detected "
+        "that it is running under valgrind, but the no_early_exit option is "
+        "explicitely disabled. Reports will not be accurate!%s\n";
+
+static msg_t msg_valgrind_jobs = "%sWarning! Criterion has detected "
+        "that it is running under valgrind, but the number of jobs have been "
+        "explicitely set. Reports might appear confusing!%s\n";
+#endif
+
 
 #ifdef _MSC_VER
 struct criterion_test  *SECTION_START_(cr_tst);
@@ -134,6 +157,10 @@ struct criterion_test_set *criterion_init(void) {
 
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_ENABLE_ERROR_REPORTING;
+#endif
 
     if (suite->data && suite->data->timeout != 0 && test->data->timeout == 0)
         setup_timeout((uint64_t) (suite->data->timeout * 1e9));
@@ -312,6 +339,14 @@ void disable_unmatching(struct criterion_test_set *set) {
 struct criterion_test_set *criterion_initialize(void) {
     init_i18n();
 
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_DISABLE_ERROR_REPORTING;
+#endif
+    if (RUNNING_ON_VALGRIND) {
+        criterion_options.no_early_exit = 1;
+        criterion_options.jobs = 1;
+    }
+
     if (resume_child()) // (windows only) resume from the fork
         exit(0);
 
@@ -320,6 +355,10 @@ struct criterion_test_set *criterion_initialize(void) {
 
 void criterion_finalize(struct criterion_test_set *set) {
     sfree(set);
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_ENABLE_ERROR_REPORTING;
+#endif
 }
 
 static void run_tests_async(struct criterion_test_set *set,
@@ -385,6 +424,15 @@ cleanup:
 static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     report(PRE_ALL, set);
     log(pre_all, set);
+
+    if (RUNNING_ON_VALGRIND) {
+        if (!criterion_options.no_early_exit)
+            criterion_pimportant(CRITERION_PREFIX_DASHES,
+                    _(msg_valgrind_early_exit), FG_BOLD, RESET);
+        if (criterion_options.jobs != 1)
+            criterion_pimportant(CRITERION_PREFIX_DASHES,
+                    _(msg_valgrind_jobs), FG_BOLD, RESET);
+    }
 
     fflush(NULL); // flush everything before forking
 

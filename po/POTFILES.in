@@ -1,3 +1,4 @@
 # List of source files which contain translatable strings.
 src/log/normal.c
 src/string/i18n.c
+src/core/runner.c
