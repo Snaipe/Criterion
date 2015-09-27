@@ -15,7 +15,6 @@ environment:
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
-    BUILD_OPT: -- -j2
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015"
     CFLAGS: /MP
@@ -59,7 +58,7 @@ before_deploy:
         Push-AppveyorArtifact "../$archive.tar.bz2"
 
 test_script:
-  - cmake --build . --target criterion_tests %BUILD_OPT%
+  - cmake --build . --target criterion_tests
   - ps: try { ctest -j2 } catch { type Testing/Temporary/LastTest.log }
 
 #after_test:
