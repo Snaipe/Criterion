@@ -15,8 +15,11 @@ environment:
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
+    BUILD_OPT: -- -j4
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015"
+    CFLAGS: /MP
+    CXXFLAGS: /MP
 
 clone_depth: 5
 
@@ -56,8 +59,8 @@ before_deploy:
         Push-AppveyorArtifact "../$archive.tar.bz2"
 
 test_script:
-  - cmake --build . --target criterion_tests
-  - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
+  - cmake --build . --target criterion_tests %BUILD_OPT%
+  - ps: try { ctest -j4 } catch { type Testing/Temporary/LastTest.log }
 
 #after_test:
 #  - 'make coveralls'

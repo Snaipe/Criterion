@@ -35,9 +35,8 @@ script:
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
       ..
-  - make
-  - make criterion_tests
-  - make test
+  - cmake --build . --target criterion_tests -- -j4
+  - ctest -j4
 
 after_success:
   - make gcov
