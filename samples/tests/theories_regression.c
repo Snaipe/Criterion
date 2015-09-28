@@ -20,14 +20,17 @@ TheoryDataPoints(theory, misc) = {
 };
 
 Theory((char c, bool b, short s, int i, long l, long long ll, float f, double d, char *str, const char *cstr), theory, misc) {
+    float reff = 3.14f;
+    double refd = 3.14;
+
     cr_assert(b);
     cr_assert_eq(c, 'a');
     cr_assert_eq(s, 1);
     cr_assert_eq(i, 1);
     cr_assert_eq(l, 1);
     cr_assert_eq(ll, 1);
-    cr_assert_eq(f, 3.14f);
-    cr_assert_eq(d, 3.14);
+    cr_assert_eq(f, reff);
+    cr_assert_eq(d, refd);
     cr_assert_str_eq(str, "test");
     cr_assert_str_eq(cstr, "other test");
 
