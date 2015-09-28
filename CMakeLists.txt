@@ -16,8 +16,9 @@ endif ()
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
 
+include_directories(SYSTEM /usr/local/include)
+
 include_directories(
-  /usr/local/include/
   dependencies/libcsptr/include/
   dependencies/dyncall/dyncall/
   dependencies/valgrind/include/
