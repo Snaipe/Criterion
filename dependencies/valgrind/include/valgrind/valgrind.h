@@ -93,6 +93,7 @@
 
 
 #include <stdarg.h>
+#include <criterion/common.h>
 
 /* Nb: this file might be included in a file compiled with -ansi.  So
    we can't use C++ style "//" comments nor the "asm" keyword (instead
@@ -6220,7 +6221,7 @@ static int
 #if defined(_MSC_VER)
 __inline
 #endif
-VALGRIND_PRINTF(const char *format, ...)
+VALGRIND_PRINTF(UNUSED const char *format, ...)
 {
 #if defined(NVALGRIND)
    return 0;
@@ -6258,7 +6259,7 @@ static int
 #if defined(_MSC_VER)
 __inline
 #endif
-VALGRIND_PRINTF_BACKTRACE(const char *format, ...)
+VALGRIND_PRINTF_BACKTRACE(UNUSED const char *format, ...)
 {
 #if defined(NVALGRIND)
    return 0;
