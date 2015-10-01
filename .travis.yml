@@ -35,7 +35,7 @@ script:
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
       ..
-  - cmake --build . --target criterion_tests -- -j4
+  - TERM=dumb cmake --build . --target criterion_tests -- -j4
   - ctest -j4
 
 after_success:
