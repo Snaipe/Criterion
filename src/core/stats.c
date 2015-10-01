@@ -183,6 +183,7 @@ static void push_assert(s_glob_stats *stats,
 
     s_assert_stats *dup = smalloc(sizeof (s_assert_stats));
     memcpy(dup, data, sizeof (s_assert_stats));
+    dup->message = strdup(data->message);
 
     dup->next = test->asserts;
     test->asserts = dup;
