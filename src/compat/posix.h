@@ -40,7 +40,15 @@
 #  define _POSIX_SOURCE 1
 #  define TMP_POSIX
 # endif
+# if defined(__MINGW32__) || defined(__MINGW64__)
+#  define off_t _off_t
+#  define off64_t _off64_t
+# endif
 # include <stdio.h>
+# if defined(__MINGW32__) || defined(__MINGW64__)
+#  undef off_t
+#  undef off64_t
+# endif
 # ifdef TMP_POSIX
 #  undef _POSIX_SOURCE
 #  undef TMP_POSIX
