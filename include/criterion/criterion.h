@@ -36,9 +36,11 @@
 # ifdef __cplusplus
 #  define TEST_PROTOTYPE_(Category, Name) \
     extern "C" void IDENTIFIER_(Category, Name, impl)(void)
+#  define CR_LANG CR_LANG_CPP
 # else
 #  define TEST_PROTOTYPE_(Category, Name) \
     void IDENTIFIER_(Category, Name, impl)(void)
+#  define CR_LANG CR_LANG_C
 # endif
 
 # define SUITE_IDENTIFIER_(Name, Suffix) \
@@ -49,6 +51,7 @@
     TEST_PROTOTYPE_(Category, Name);                                           \
     struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) =      \
         CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
+            .lang_ = CR_LANG,                                                  \
             .kind_ = CR_TEST_NORMAL,                                           \
             .param_ = (struct criterion_test_params(*)(void)) NULL,            \
             .identifier_ = #Category "/" #Name,                                \

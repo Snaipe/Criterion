@@ -40,6 +40,7 @@ add_definitions(-DCRITERION_BUILDING_DLL=1)
 
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g -std=c++11")
 endif ()
 
 if (MSVC)
@@ -84,6 +85,8 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
+  src/core/wrappers/wrap.c
+  src/core/wrappers/wrap.cc
   src/core/abort.c
   src/core/abort.h
   src/core/report.c
