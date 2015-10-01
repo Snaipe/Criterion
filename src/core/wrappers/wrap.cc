@@ -23,16 +23,16 @@
  */
 #include <exception>
 #include "criterion/assert.h"
+#include "criterion/event.h"
 
 extern "C" {
 
 #include "core/abort.h"
-#include "core/stats.h"
-#include "core/worker.h"
 #include "core/report.h"
+#include "core/worker.h"
 #include "compat/time.h"
-#include "io/event.h"
 #include "wrap.h"
+#include "common.h"
 
 static INLINE void nothing(void) {}
 
