@@ -228,6 +228,18 @@ static void handle_worker_terminated(struct event *ev,
             log(post_fini, ctx->test_stats);
         }
     } else {
+        if (ctx->aborted) {
+            if (!ctx->normal_finish) {
+                double elapsed_time = 0;
+                push_event(POST_TEST, .data = &elapsed_time);
+                log(post_test, ctx->test_stats);
+            }
+            if (!ctx->cleaned_up) {
+                push_event(POST_FINI);
+                log(post_fini, ctx->test_stats);
+            }
+            return;
+        }
         if ((ctx->normal_finish && !ctx->cleaned_up) || !ctx->test_started) {
             log(abnormal_exit, ctx->test_stats);
             if (!ctx->test_started) {
@@ -279,6 +291,11 @@ static void handle_event(struct event *ev) {
         case ASSERT:
             report(ASSERT, ev->data);
             log(assert, ev->data);
+            break;
+        case TEST_ABORT:
+            log(test_abort, ctx->test_stats, ev->data);
+            ctx->test_stats->failed = 1;
+            ctx->aborted = true;
             break;
         case POST_TEST:
             report(POST_TEST, ctx->test_stats);

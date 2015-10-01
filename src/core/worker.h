@@ -38,6 +38,7 @@ struct execution_context {
     bool test_started;
     bool normal_finish;
     bool cleaned_up;
+    bool aborted;
     struct criterion_global_stats *stats;
     struct criterion_test *test;
     struct criterion_test_stats *test_stats;

@@ -110,6 +110,7 @@ struct criterion_output_provider {
     void (*log_theory_fail  )(struct criterion_theory_stats *stats);
     void (*log_test_timeout )(struct criterion_test_stats *stats);
     void (*log_test_crash   )(struct criterion_test_stats *stats);
+    void (*log_test_abort   )(struct criterion_test_stats *stats, const char *msg);
     void (*log_other_crash  )(struct criterion_test_stats *stats);
     void (*log_abnormal_exit)(struct criterion_test_stats *stats);
     void (*log_post_test    )(struct criterion_test_stats *stats);

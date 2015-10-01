@@ -41,6 +41,7 @@ struct event {
 
 enum other_event_kinds {
     WORKER_TERMINATED = 1 << 30,
+    TEST_ABORT,
 };
 
 struct event *read_event(s_pipe_file_handle *f);

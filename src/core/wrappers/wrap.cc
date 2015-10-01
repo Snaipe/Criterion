@@ -44,11 +44,9 @@ void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
             (suite->data->init ? suite->data->init : nothing)();
         (test->data->init ? test->data->init : nothing)();
     } catch (const std::exception &e) {
-        cr_assert_fail("Caught an unexpected exception during the test initialization: %s.", e.what());
-        std::exit(1);
+        criterion_test_die("Caught an unexpected exception during the test initialization: %s.", e.what());
     } catch (...) {
-        cr_assert_fail("Caught some unexpected exception during the test initialization.");
-        std::exit(1);
+        criterion_test_die("Caught some unexpected exception during the test initialization.");
     }
     send_event(PRE_TEST, NULL, 0);
 
@@ -64,11 +62,9 @@ void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
                     param_test_func(g_worker_context.param->ptr);
                 }
             } catch (const std::exception &e) {
-                cr_assert_fail("Caught an unexpected exception during the test execution: %s.", e.what());
-                std::exit(1);
+                criterion_test_die("Caught an unexpected exception during the test execution: %s.", e.what());
             } catch (...) {
-                cr_assert_fail("Caught some unexpected exception during the test execution.");
-                std::exit(1);
+                criterion_test_die("Caught some unexpected exception during the test execution.");
             }
         }
     }
@@ -83,11 +79,9 @@ void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
         if (suite->data)
             (suite->data->fini ? suite->data->fini : nothing)();
     } catch (const std::exception &e) {
-        cr_assert_fail("Caught an unexpected exception during the test finalization: %s.", e.what());
-        std::exit(1);
+        criterion_test_die("Caught an unexpected exception during the test finalization: %s.", e.what());
     } catch (...) {
-        cr_assert_fail("Caught some unexpected exception during the test finalization.");
-        std::exit(1);
+        criterion_test_die("Caught some unexpected exception during the test finalization.");
     }
     send_event(POST_FINI, NULL, 0);
 
