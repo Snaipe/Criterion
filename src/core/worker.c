@@ -47,7 +47,7 @@ bool is_runner(void) {
     return is_current_process(g_current_proc);
 }
 
-static void close_process(void *ptr, UNUSED void *meta) {
+static void close_process(void *ptr, CR_UNUSED void *meta) {
     struct worker *proc = ptr;
     sfree(proc->in);
     sfree(proc->ctx.suite_stats);

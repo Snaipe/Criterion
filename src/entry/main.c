@@ -102,7 +102,7 @@ int list_tests(bool unicode) {
         if (!tests)
             continue;
 
-        printf("%s: " SIZE_T_FORMAT " test%s\n",
+        printf("%s: " CR_SIZE_T_FORMAT " test%s\n",
                 s->suite.name,
                 tests,
                 tests == 1 ? "" : "s");
@@ -206,7 +206,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         }
     }
     if (use_tap)
-        criterion_options.output_provider = TAP_LOGGING;
+        criterion_options.output_provider = CR_TAP_LOGGING;
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)

@@ -27,8 +27,8 @@
 # include "criterion/types.h"
 # include "compat/pipe.h"
 
-DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
-DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
+CR_DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
+CR_DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
 struct criterion_test_set *criterion_init(void);
 void run_test_child(struct criterion_test *test, struct criterion_suite *suite);

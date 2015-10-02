@@ -182,7 +182,7 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd) {
 #endif
 }
 
-void close_pipe_file_handle(void *ptr, UNUSED void *meta) {
+void close_pipe_file_handle(void *ptr, CR_UNUSED void *meta) {
     s_pipe_file_handle *h = ptr;
 #ifdef VANILLA_WIN32
     CloseHandle(h->fh);

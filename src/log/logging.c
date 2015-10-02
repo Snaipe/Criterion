@@ -63,16 +63,16 @@ void criterion_plog(enum criterion_logging_level level, const struct criterion_p
         fprintf(stderr, _(ERROR_FORMAT),
             CRIT_COLOR_NORMALIZE(prefix->color),
             prefix->prefix,
-            RESET,
-            FG_RED,
-            FG_BOLD,
+                CR_RESET,
+                CR_FG_RED,
+                CR_FG_BOLD,
             formatted_msg,
-            RESET);
+                CR_RESET);
     } else {
         fprintf(stderr, _(LOG_FORMAT),
             CRIT_COLOR_NORMALIZE(prefix->color),
             prefix->prefix,
-            RESET,
+                CR_RESET,
             formatted_msg);
     }
 

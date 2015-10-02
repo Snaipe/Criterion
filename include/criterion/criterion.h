@@ -30,26 +30,26 @@
 # include "assert.h"
 # include "alloc.h"
 
-# define IDENTIFIER_(Category, Name, Suffix) \
+# define CR_IDENTIFIER_(Category, Name, Suffix) \
     Category ## _ ## Name ## _ ## Suffix
 
 # ifdef __cplusplus
-#  define TEST_PROTOTYPE_(Category, Name) \
-    extern "C" void IDENTIFIER_(Category, Name, impl)(void)
+#  define CR_TEST_PROTOTYPE_(Category, Name) \
+    extern "C" void CR_IDENTIFIER_(Category, Name, impl)(void)
 #  define CR_LANG CR_LANG_CPP
 # else
-#  define TEST_PROTOTYPE_(Category, Name) \
-    void IDENTIFIER_(Category, Name, impl)(void)
+#  define CR_TEST_PROTOTYPE_(Category, Name) \
+    void CR_IDENTIFIER_(Category, Name, impl)(void)
 #  define CR_LANG CR_LANG_C
 # endif
 
-# define SUITE_IDENTIFIER_(Name, Suffix) \
+# define CR_SUITE_IDENTIFIER_(Name, Suffix) \
     suite_ ## Name ## _ ## Suffix
 
 # define Test(...) CR_EXPAND(Test_(__VA_ARGS__, .sentinel_ = 0))
 # define Test_(Category, Name, ...)                                            \
-    TEST_PROTOTYPE_(Category, Name);                                           \
-    struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) =      \
+    CR_TEST_PROTOTYPE_(Category, Name);                                        \
+    struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
         CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
             .lang_ = CR_LANG,                                                  \
             .kind_ = CR_TEST_NORMAL,                                           \
@@ -59,32 +59,32 @@
             .line_    = __LINE__,                                              \
             __VA_ARGS__                                                        \
         ));                                                                    \
-    struct criterion_test IDENTIFIER_(Category, Name, meta) = {                \
+    struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {             \
         #Name,                                                                 \
         #Category,                                                             \
-        IDENTIFIER_(Category, Name, impl),                                     \
-        &IDENTIFIER_(Category, Name, extra)                                    \
+        CR_IDENTIFIER_(Category, Name, impl),                                  \
+        &CR_IDENTIFIER_(Category, Name, extra)                                 \
     };                                                                         \
-    SECTION_("cr_tst")                                                         \
-    struct criterion_test *IDENTIFIER_(Category, Name, ptr)                    \
-            = &IDENTIFIER_(Category, Name, meta) SECTION_SUFFIX_;              \
-    TEST_PROTOTYPE_(Category, Name)
+    CR_SECTION_("cr_tst")                                                      \
+    struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)                 \
+            = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;        \
+    CR_TEST_PROTOTYPE_(Category, Name)
 
 # define TestSuite(...) CR_EXPAND(TestSuite_(__VA_ARGS__, .sentinel_ = 0))
 # define TestSuite_(Name, ...)                                                 \
-    struct criterion_test_extra_data SUITE_IDENTIFIER_(Name, extra) =          \
+    struct criterion_test_extra_data CR_SUITE_IDENTIFIER_(Name, extra) =       \
         CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
             .file_    = __FILE__,                                              \
             .line_    = 0,                                                     \
             __VA_ARGS__                                                        \
         ));                                                                    \
-    struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {                   \
+    struct criterion_suite CR_SUITE_IDENTIFIER_(Name, meta) = {                \
         #Name,                                                                 \
-        &SUITE_IDENTIFIER_(Name, extra),                                       \
+        &CR_SUITE_IDENTIFIER_(Name, extra),                                    \
     };                                                                         \
-    SECTION_("cr_sts")                                                         \
-    struct criterion_suite *SUITE_IDENTIFIER_(Name, ptr)                       \
-	    = &SUITE_IDENTIFIER_(Name, meta) SECTION_SUFFIX_
+    CR_SECTION_("cr_sts")                                                      \
+    struct criterion_suite *CR_SUITE_IDENTIFIER_(Name, ptr)                    \
+	    = &CR_SUITE_IDENTIFIER_(Name, meta) CR_SECTION_SUFFIX_
 
 CR_BEGIN_C_API
 

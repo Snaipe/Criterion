@@ -27,11 +27,11 @@
 #include <csptr/smalloc.h>
 #include "common.h"
 
-static void destroy_ordered_set(void *ptr, UNUSED void *meta) {
+static void destroy_ordered_set(void *ptr, CR_UNUSED void *meta) {
     sfree(((struct criterion_ordered_set *) ptr)->first);
 }
 
-static INLINE void nothing(UNUSED void *ptr, UNUSED void *meta) {}
+static INLINE void nothing(CR_UNUSED void *ptr, CR_UNUSED void *meta) {}
 
 static void destroy_ordered_set_node(void *ptr, void *meta) {
     struct criterion_ordered_set *set = *(void **) meta;

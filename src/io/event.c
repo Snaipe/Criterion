@@ -34,12 +34,12 @@
 
 s_pipe_file_handle *g_event_pipe = NULL;
 
-void destroy_event(void *ptr, UNUSED void *meta) {
+void destroy_event(void *ptr, CR_UNUSED void *meta) {
     struct event *ev = ptr;
     free(ev->data);
 }
 
-void destroy_assert_event(void *ptr, UNUSED void *meta) {
+void destroy_assert_event(void *ptr, CR_UNUSED void *meta) {
     struct event *ev = ptr;
     free((void*) ((struct criterion_assert_stats *) ev->data)->message);
     free(ev->data);

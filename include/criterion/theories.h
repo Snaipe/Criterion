@@ -54,10 +54,10 @@ CR_API void cr_theory_reset(struct criterion_theory_context *ctx);
 CR_API void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void));
 
 # define TheoryDataPoints(Category, Name) \
-    static struct criterion_datapoints IDENTIFIER_(Category, Name, dps)[]
+    static struct criterion_datapoints CR_IDENTIFIER_(Category, Name, dps)[]
 
 # define TheoryDataPoint(Category, Name) \
-    (IDENTIFIER_(Category, Name, dps))
+    (CR_IDENTIFIER_(Category, Name, dps))
 
 # ifdef __cplusplus
 #  define CR_TH_VA_NUM(Type, ...)     criterion_va_num__(__VA_ARGS__)
@@ -127,7 +127,7 @@ struct criterion_datapoints {
 CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
 
 # define CR_VAARG_ID(Suffix, Category, Name, ...) \
-    IDENTIFIER_(Category, Name, Suffix)
+    CR_IDENTIFIER_(Category, Name, Suffix)
 
 # define Theory(Args, ...)                                                      \
     void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args;                      \

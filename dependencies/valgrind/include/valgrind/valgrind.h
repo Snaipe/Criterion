@@ -6221,7 +6221,7 @@ static int
 #if defined(_MSC_VER)
 __inline
 #endif
-VALGRIND_PRINTF(UNUSED const char *format, ...)
+VALGRIND_PRINTF(CR_UNUSED const char *format, ...)
 {
 #if defined(NVALGRIND)
    return 0;
@@ -6259,7 +6259,7 @@ static int
 #if defined(_MSC_VER)
 __inline
 #endif
-VALGRIND_PRINTF_BACKTRACE(UNUSED const char *format, ...)
+VALGRIND_PRINTF_BACKTRACE(CR_UNUSED const char *format, ...)
 {
 #if defined(NVALGRIND)
    return 0;

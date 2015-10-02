@@ -65,12 +65,12 @@ struct criterion_prefix_data {
 #  define CRIT_FG_BLUE  "\33[0;34m"
 #  define CRIT_RESET    "\33[0m"
 
-#  define FG_BOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
-#  define FG_RED   CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
-#  define FG_GREEN CRIT_COLOR_NORMALIZE(CRIT_FG_GREEN)
-#  define FG_GOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_GOLD)
-#  define FG_BLUE  CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
-#  define RESET    CRIT_COLOR_NORMALIZE(CRIT_RESET)
+#  define CR_FG_BOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
+#  define CR_FG_RED   CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
+#  define CR_FG_GREEN CRIT_COLOR_NORMALIZE(CRIT_FG_GREEN)
+#  define CR_FG_GOLD  CRIT_COLOR_NORMALIZE(CRIT_FG_GOLD)
+#  define CR_FG_BLUE  CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
+#  define CR_RESET    CRIT_COLOR_NORMALIZE(CRIT_RESET)
 # endif
 
 CR_BEGIN_C_API
@@ -87,10 +87,10 @@ extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 
 CR_API void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
 
-FORMAT(printf, 3, 4)
+CR_FORMAT(printf, 3, 4)
 CR_API void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...);
 
-FORMAT(printf, 2, 3)
+CR_FORMAT(printf, 2, 3)
 CR_API void criterion_log(enum criterion_logging_level level, const char *msg, ...);
 
 # define criterion_info(...) criterion_log(CRITERION_INFO, __VA_ARGS__)
@@ -124,7 +124,7 @@ extern struct criterion_output_provider tap_logging;
 
 CR_END_C_API
 
-#define NORMAL_LOGGING (&normal_logging)
-#define TAP_LOGGING    (&tap_logging)
+#define CR_NORMAL_LOGGING (&normal_logging)
+#define CR_TAP_LOGGING    (&tap_logging)
 
 #endif /* !CRITERION_LOGGING_H_ */

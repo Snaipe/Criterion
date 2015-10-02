@@ -72,14 +72,14 @@ static msg_t msg_valgrind_jobs = "%sWarning! Criterion has detected "
 
 
 #ifdef _MSC_VER
-struct criterion_test  *SECTION_START_(cr_tst);
-struct criterion_suite *SECTION_START_(cr_sts);
-struct criterion_test  *SECTION_END_(cr_tst);
-struct criterion_suite *SECTION_END_(cr_sts);
+struct criterion_test  *CR_SECTION_START_(cr_tst);
+struct criterion_suite *CR_SECTION_START_(cr_sts);
+struct criterion_test  *CR_SECTION_END_(cr_tst);
+struct criterion_suite *CR_SECTION_END_(cr_sts);
 #endif
 
-IMPL_SECTION_LIMITS(struct criterion_test*, cr_tst);
-IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
+CR_IMPL_SECTION_LIMITS(struct criterion_test*, cr_tst);
+CR_IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
 // This is here to make the test suite & test sections non-empty
 TestSuite();
@@ -97,12 +97,12 @@ int cmp_test(void *a, void *b) {
     return strcmp(s1->name, s2->name);
 }
 
-static void dtor_suite_set(void *ptr, UNUSED void *meta) {
+static void dtor_suite_set(void *ptr, CR_UNUSED void *meta) {
     struct criterion_suite_set *s = ptr;
     sfree(s->tests);
 }
 
-static void dtor_test_set(void *ptr, UNUSED void *meta) {
+static void dtor_test_set(void *ptr, CR_UNUSED void *meta) {
     struct criterion_test_set *t = ptr;
     sfree(t->suites);
 }
@@ -425,10 +425,10 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     if (RUNNING_ON_VALGRIND) {
         if (!criterion_options.no_early_exit)
             criterion_pimportant(CRITERION_PREFIX_DASHES,
-                    _(msg_valgrind_early_exit), FG_BOLD, RESET);
+                    _(msg_valgrind_early_exit), CR_FG_BOLD, CR_RESET);
         if (criterion_options.jobs != 1)
             criterion_pimportant(CRITERION_PREFIX_DASHES,
-                    _(msg_valgrind_jobs), FG_BOLD, RESET);
+                    _(msg_valgrind_jobs), CR_FG_BOLD, CR_RESET);
     }
 
     fflush(NULL); // flush everything before forking

@@ -55,13 +55,13 @@ static void push_test_crash(s_glob_stats *stats,
 		           s_test_stats *tstats,
 		           void *data);
 
-static void nothing(UNUSED s_glob_stats *stats,
-		    UNUSED s_suite_stats *sstats,
-		    UNUSED s_test_stats *tstats,
-		    UNUSED void *data) {
+static void nothing(CR_UNUSED s_glob_stats *stats,
+                    CR_UNUSED s_suite_stats *sstats,
+                    CR_UNUSED s_test_stats *tstats,
+                    CR_UNUSED void *data) {
 };
 
-static void destroy_stats(void *ptr, UNUSED void *meta) {
+static void destroy_stats(void *ptr, CR_UNUSED void *meta) {
     s_glob_stats *stats = ptr;
     for (s_suite_stats *s = stats->suites, *next; s; s = next) {
         next = s->next;
@@ -79,7 +79,7 @@ s_glob_stats *stats_init(void) {
     return stats;
 }
 
-static void destroy_suite_stats(void *ptr, UNUSED void *meta) {
+static void destroy_suite_stats(void *ptr, CR_UNUSED void *meta) {
     s_suite_stats *stats = ptr;
     for (s_test_stats *t = stats->tests, *next; t; t = next) {
         next = t->next;
@@ -97,7 +97,7 @@ s_suite_stats *suite_stats_init(struct criterion_suite *s) {
     return stats;
 }
 
-static void destroy_test_stats(void *ptr, UNUSED void *meta) {
+static void destroy_test_stats(void *ptr, CR_UNUSED void *meta) {
     s_test_stats *stats = ptr;
     for (s_assert_stats *a = stats->asserts, *next; a; a = next) {
         next = a->next;
@@ -147,8 +147,8 @@ void stat_push_event(s_glob_stats *stats,
 
 static void push_pre_suite(s_glob_stats *stats,
                         s_suite_stats *suite,
-                        UNUSED s_test_stats *test,
-                        UNUSED void *ptr) {
+                           CR_UNUSED s_test_stats *test,
+                           CR_UNUSED void *ptr) {
     suite->next = stats->suites;
     stats->suites = sref(suite);
     ++stats->nb_suites;
@@ -163,7 +163,7 @@ static INLINE bool is_disabled(struct criterion_test *t,
 static void push_pre_init(s_glob_stats *stats,
                           s_suite_stats *suite,
                           s_test_stats *test,
-                          UNUSED void *ptr) {
+                          CR_UNUSED void *ptr) {
     test->next = suite->tests;
     suite->tests = sref(test);
     ++stats->nb_tests;
@@ -230,7 +230,7 @@ static void push_post_test(s_glob_stats *stats,
 static void push_test_crash(s_glob_stats *stats,
                             s_suite_stats *suite,
                             s_test_stats *test,
-                            UNUSED void *ptr) {
+                            CR_UNUSED void *ptr) {
     test->failed = 1;
     test->crashed = 1;
     ++suite->tests_failed;

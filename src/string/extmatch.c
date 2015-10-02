@@ -127,7 +127,7 @@ static inline void handle_special(struct context *ctx, handler_arg strs[5]) {
 }
 
 # define Handler(Name, ...)                                             \
-        static void Name(struct context *ctx, UNUSED char c) {          \
+        static void Name(struct context *ctx, CR_UNUSED char c) {          \
             handle_special(ctx, (handler_arg[5]) {                      \
                 __VA_ARGS__                                             \
             });                                                         \
@@ -146,7 +146,7 @@ Handler(handle_excl,
 Handler(handle_at, [ELSESTR] = {_, "@"});
 # undef _
 
-static void handle_rbra(struct context *ctx, UNUSED char c) {
+static void handle_rbra(struct context *ctx, CR_UNUSED char c) {
     copy_char(ctx, c);
     if (peek_char(ctx) == '!') {
         read_char(ctx);
@@ -159,7 +159,7 @@ static void escape_char(struct context *ctx, char c) {
     copy_char(ctx, c);
 }
 
-static void escape_pipe(struct context *ctx, UNUSED char c) {
+static void escape_pipe(struct context *ctx, CR_UNUSED char c) {
     if (ctx->depth == 0)
         copy_char(ctx, '\\');
     copy_char(ctx, '|');

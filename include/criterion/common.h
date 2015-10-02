@@ -52,74 +52,74 @@
 # endif
 
 # ifdef __APPLE__
-#  define SECTION_START_PREFIX       __first
-#  define SECTION_END_PREFIX         __last
-#  define SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
-#  define SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
-#  define SECTION_(Name)             CR_ATTRIBUTE(section("__DATA," Name))
-#  define SECTION_SUFFIX_
+#  define CR_SECTION_START_PREFIX       __first
+#  define CR_SECTION_END_PREFIX         __last
+#  define CR_SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
+#  define CR_SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
+#  define CR_SECTION_(Name)             CR_ATTRIBUTE(section("__DATA," Name))
+#  define CR_SECTION_SUFFIX_
 # elif CR_IS_MSVC
-#  define SECTION_START_PREFIX       __start
-#  define SECTION_END_PREFIX         __stop
-#  define SECTION_START_SUFFIX(Name)
-#  define SECTION_END_SUFFIX(Name)
-#  define SECTION_(Name)                    \
+#  define CR_SECTION_START_PREFIX       __start
+#  define CR_SECTION_END_PREFIX         __stop
+#  define CR_SECTION_START_SUFFIX(Name)
+#  define CR_SECTION_END_SUFFIX(Name)
+#  define CR_SECTION_(Name)                 \
     __pragma(data_seg(push))                \
     __pragma(section(Name, read))           \
     __declspec(allocate(Name))
-#  define SECTION_SUFFIX_                   \
+#  define CR_SECTION_SUFFIX_                \
     __pragma(data_seg(pop))
 # else
-#  define SECTION_START_PREFIX       __start
-#  define SECTION_END_PREFIX         __stop
-#  define SECTION_START_SUFFIX(Name)
-#  define SECTION_END_SUFFIX(Name)
-#  define SECTION_(Name)             CR_ATTRIBUTE(section(Name))
-#  define SECTION_SUFFIX_
+#  define CR_SECTION_START_PREFIX       __start
+#  define CR_SECTION_END_PREFIX         __stop
+#  define CR_SECTION_START_SUFFIX(Name)
+#  define CR_SECTION_END_SUFFIX(Name)
+#  define CR_SECTION_(Name)             CR_ATTRIBUTE(section(Name))
+#  define CR_SECTION_SUFFIX_
 # endif
 
-# define MAKE_IDENTIFIER_(Prefix, Id) MAKE_IDENTIFIER__(Prefix, Id)
-# define MAKE_IDENTIFIER__(Prefix, Id) Prefix ## _ ## Id
+# define CR_MAKE_IDENTIFIER_(Prefix, Id) CR_MAKE_IDENTIFIER__(Prefix, Id)
+# define CR_MAKE_IDENTIFIER__(Prefix, Id) Prefix ## _ ## Id
 
-# define SECTION_START_(Name) MAKE_IDENTIFIER_(SECTION_START_PREFIX, Name)
-# define SECTION_END_(Name)   MAKE_IDENTIFIER_(SECTION_END_PREFIX, Name)
+# define CR_SECTION_START_(Name) CR_MAKE_IDENTIFIER_(CR_SECTION_START_PREFIX, Name)
+# define CR_SECTION_END_(Name)   CR_MAKE_IDENTIFIER_(CR_SECTION_END_PREFIX, Name)
 
-# define SECTION_START(Name)  g_ ## Name ## _section_start
-# define SECTION_END(Name)    g_ ## Name ## _section_end
+# define CR_SECTION_START(Name)  g_ ## Name ## _section_start
+# define CR_SECTION_END(Name)    g_ ## Name ## _section_end
 
-# define DECL_SECTION_LIMITS(Type, Name) DECL_SECTION_LIMITS_(Type, Name)
-# define DECL_SECTION_LIMITS_(Type, Name)                            \
-    extern Type SECTION_START_(Name) SECTION_START_SUFFIX(#Name);   \
-    extern Type SECTION_END_(Name)   SECTION_END_SUFFIX(#Name)
+# define CR_DECL_SECTION_LIMITS(Type, Name) CR_DECL_SECTION_LIMITS_(Type, Name)
+# define CR_DECL_SECTION_LIMITS_(Type, Name)                            \
+    extern Type CR_SECTION_START_(Name) CR_SECTION_START_SUFFIX(#Name); \
+    extern Type CR_SECTION_END_(Name)   CR_SECTION_END_SUFFIX(#Name)
 
-# define IMPL_SECTION_LIMITS(Type, Name)                        \
-    Type *const SECTION_START(Name) = &SECTION_START_(Name);    \
-    Type *const SECTION_END(Name)   = &SECTION_END_(Name)
+# define CR_IMPL_SECTION_LIMITS(Type, Name)                         \
+    Type *const CR_SECTION_START(Name) = &CR_SECTION_START_(Name);  \
+    Type *const CR_SECTION_END(Name)   = &CR_SECTION_END_(Name)
 
 # ifdef __GNUC__
-#  define UNUSED CR_ATTRIBUTE(unused)
-#  define NORETURN CR_ATTRIBUTE(noreturn)
+#  define CR_UNUSED CR_ATTRIBUTE(unused)
+#  define CR_NORETURN CR_ATTRIBUTE(noreturn)
 #  define CR_INLINE CR_ATTRIBUTE(always_inline) inline
 # elif CR_IS_MSVC
-#  define UNUSED
-#  define NORETURN __declspec(noreturn)
+#  define CR_UNUSED
+#  define CR_NORETURN __declspec(noreturn)
 #  define CR_INLINE __forceinline
 # else
-#  define UNUSED
-#  define NORETURN
+#  define CR_UNUSED
+#  define CR_NORETURN
 #  define CR_INLINE inline
 # endif
 
 # ifdef _WIN32
-#  define SIZE_T_FORMAT "%Iu"
+#  define CR_SIZE_T_FORMAT "%Iu"
 # else
-#  define SIZE_T_FORMAT "%zu"
+#  define CR_SIZE_T_FORMAT "%zu"
 # endif
 
 # ifdef __GNUC__
-#  define FORMAT(Archetype, Index, Ftc) CR_ATTRIBUTE(format(Archetype, Index, Ftc))
+#  define CR_FORMAT(Archetype, Index, Ftc) CR_ATTRIBUTE(format(Archetype, Index, Ftc))
 # else
-#  define FORMAT(Archetype, Index, Ftc)
+#  define CR_FORMAT(Archetype, Index, Ftc)
 # endif
 
 # if defined _WIN32 || defined __CYGWIN__

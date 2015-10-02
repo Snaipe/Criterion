@@ -34,7 +34,7 @@
 
 CR_BEGIN_C_API
 
-FORMAT(printf, 2, 3)
+CR_FORMAT(printf, 2, 3)
 CR_API int cr_asprintf(char **strp, const char *fmt, ...);
 CR_API int cr_vasprintf(char **strp, const char *fmt, va_list ap);
 

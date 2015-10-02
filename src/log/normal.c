@@ -94,7 +94,7 @@ static msg_t msg_post_all = "%sSynthesis: Tested: %s%lu%s "
             "%s\n";
 #endif
 
-void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
+void normal_log_pre_all(CR_UNUSED struct criterion_test_set *set) {
     criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_pre_all), VERSION);
 }
 
@@ -150,12 +150,12 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 
     criterion_pimportant(CRITERION_PREFIX_EQUALS,
             _(msg_post_all),
-            FG_BOLD,
-            FG_BLUE,  (unsigned long) tested,               FG_BOLD,
-            FG_GREEN, (unsigned long) stats->tests_passed,  FG_BOLD,
-            FG_RED,   (unsigned long) stats->tests_failed,  FG_BOLD,
-            FG_RED,   (unsigned long) stats->tests_crashed, FG_BOLD,
-            RESET);
+                         CR_FG_BOLD,
+                         CR_FG_BLUE,  (unsigned long) tested, CR_FG_BOLD,
+                         CR_FG_GREEN, (unsigned long) stats->tests_passed, CR_FG_BOLD,
+                         CR_FG_RED,   (unsigned long) stats->tests_failed, CR_FG_BOLD,
+                         CR_FG_RED,   (unsigned long) stats->tests_crashed, CR_FG_BOLD,
+                         CR_RESET);
 }
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
@@ -172,8 +172,8 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
         bool sf = criterion_options.short_filename;
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_fail),
-                FG_BOLD, sf ? basename_compat(stats->file) : stats->file, RESET,
-                FG_RED,  stats->line, RESET,
+                             CR_FG_BOLD, sf ? basename_compat(stats->file) : stats->file, CR_RESET,
+                             CR_FG_RED,  stats->line, CR_RESET,
                 line);
 
 #ifdef VANILLA_WIN32
@@ -190,30 +190,30 @@ void normal_log_test_crash(struct criterion_test_stats *stats) {
     bool sf = criterion_options.short_filename;
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_crash_line),
-            FG_BOLD, sf ? basename_compat(stats->file) : stats->file, RESET,
-            FG_RED,  stats->progress, RESET);
+                         CR_FG_BOLD, sf ? basename_compat(stats->file) : stats->file, CR_RESET,
+                         CR_FG_RED,  stats->progress, CR_RESET);
     criterion_pimportant(CRITERION_PREFIX_FAIL, _(msg_test_crash),
             stats->test->category,
             stats->test->name);
 }
 
-void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
+void normal_log_other_crash(CR_UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_other_crash),
-            FG_BOLD, stats->test->category, stats->test->name, RESET);
+                         CR_FG_BOLD, stats->test->category, stats->test->name, CR_RESET);
 }
 
-void normal_log_abnormal_exit(UNUSED struct criterion_test_stats *stats) {
+void normal_log_abnormal_exit(CR_UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_abnormal_exit),
-            FG_BOLD, stats->test->category, stats->test->name, RESET);
+                         CR_FG_BOLD, stats->test->category, stats->test->name, CR_RESET);
 }
 
 void normal_log_pre_suite(struct criterion_suite_set *set) {
     criterion_pinfo(CRITERION_PREFIX_EQUALS,
             _s(msg_pre_suite[0], msg_pre_suite[1], set->tests->size),
-            FG_BLUE, (unsigned long) set->tests->size, RESET,
-            FG_GOLD, set->suite.name,  RESET);
+                    CR_FG_BLUE, (unsigned long) set->tests->size, CR_RESET,
+                    CR_FG_GOLD, set->suite.name, CR_RESET);
 }
 
 void normal_log_theory_fail(struct criterion_theory_stats *stats) {
@@ -224,7 +224,7 @@ void normal_log_theory_fail(struct criterion_theory_stats *stats) {
             stats->formatted_args);
 }
 
-void normal_log_test_timeout(UNUSED struct criterion_test_stats *stats) {
+void normal_log_test_timeout(CR_UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_FAIL,
             _(msg_test_timeout),
             stats->test->category,
@@ -232,7 +232,7 @@ void normal_log_test_timeout(UNUSED struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
-void normal_log_test_abort(UNUSED struct criterion_test_stats *stats, const char *msg) {
+void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const char *msg) {
 
     char *dup       = strdup(msg);
 

@@ -39,12 +39,16 @@
 #endif
 
 static void print_prelude(struct criterion_global_stats *stats) {
-    criterion_important("TAP version 13\n1.." SIZE_T_FORMAT "\n", stats->nb_tests);
+    criterion_important("TAP version 13\n1.."
+                                CR_SIZE_T_FORMAT
+                                "\n", stats->nb_tests);
     criterion_important("# Criterion v%s\n", VERSION);
 }
 
 static void print_pre_suite(struct criterion_suite_stats *stats) {
-    criterion_important("\n# Running " SIZE_T_FORMAT " tests from %s\n",
+    criterion_important("\n# Running "
+                                CR_SIZE_T_FORMAT
+                                " tests from %s\n",
             stats->nb_tests,
             stats->suite->name);
 }
