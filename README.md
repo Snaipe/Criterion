@@ -8,6 +8,8 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
 [![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
 
+![Analytics](https://ga-beacon.appspot.com/UA-68371536-1/Criterion/README.md?pixel)
+
 A dead-simple, yet extensible, C and C++ unit testing framework.
 
 ![Screencast](./doc/screencast.gif)
