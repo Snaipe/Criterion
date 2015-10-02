@@ -34,6 +34,16 @@
 #include "config.h"
 #include "common.h"
 
+#ifdef VANILLA_WIN32
+# if HAVE_STRTOK_S
+#   define strtok_r strtok_s
+# else
+    static char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr) {
+      return strtok(str, delim);
+    }
+# endif
+#endif
+
 #ifdef _MSC_VER
 # define strdup _strdup
 #endif
@@ -69,22 +79,15 @@ static void print_test_normal(struct criterion_test_stats *stats) {
     for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
         if (!asrt->passed) {
             char *dup = strdup(*asrt->message ? asrt->message : "");
-#ifdef VANILLA_WIN32
-            char *line = strtok(dup, "\n");
-#else
             char *saveptr = NULL;
             char *line = strtok_r(dup, "\n", &saveptr);
-#endif
             bool sf = criterion_options.short_filename;
             criterion_important("  %s:%u: Assertion failed: %s\n",
                     sf ? basename_compat(asrt->file) : asrt->file,
                     asrt->line,
                     line);
-#ifdef VANILLA_WIN32
-            while ((line = strtok(NULL, "\n")))
-#else
+
             while ((line = strtok_r(NULL, "\n", &saveptr)))
-#endif
                 criterion_important("    %s\n", line);
             free(dup);
         }

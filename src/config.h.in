@@ -4,6 +4,7 @@
 #cmakedefine ENABLE_NLS @ENABLE_NLS@
 #cmakedefine HAVE_PCRE @HAVE_PCRE@
 #cmakedefine ENABLE_VALGRIND_ERRORS @ENABLE_VALGRIND_ERRORS@
+#cmakedefine01 HAVE_STRTOK_S
 
 # define LOCALEDIR "${LOCALEDIR}"
 # define PACKAGE "${PROJECT_NAME}"

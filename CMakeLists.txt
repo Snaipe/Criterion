@@ -8,6 +8,7 @@ set(LIBCSPTR_DISABLE_TESTS ON)
 set(LIBCSPTR_DISABLE_COVERALLS ON)
 
 include(Submodules)
+include(Capabilities)
 
 if (MSVC)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
