@@ -95,6 +95,7 @@ set(SOURCE_FILES
   src/core/runner.h
   src/core/runner_coroutine.c
   src/core/runner_coroutine.h
+  src/core/coroutine.h
   src/core/worker.c
   src/core/worker.h
   src/core/stats.c
@@ -104,6 +105,7 @@ set(SOURCE_FILES
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h
+  src/compat/pipe-internal.h
   src/compat/section.c
   src/compat/section.h
   src/compat/process.c
@@ -131,6 +133,8 @@ set(SOURCE_FILES
   src/entry/options.c
   src/entry/main.c
   src/entry/entry.c
+  src/common.h
+  src/config.h
 )
 
 if (PCRE_FOUND)
@@ -158,6 +162,8 @@ set(INTERFACE_FILES
   include/criterion/designated-initializer-compat.h
   include/criterion/preprocess.h
   include/criterion/alloc.h
+  include/criterion/parameterized.h
+  include/criterion/redirect.h
 )
 
 # Generate the configure file
