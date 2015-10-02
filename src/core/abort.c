@@ -46,7 +46,7 @@ void criterion_test_die(const char *msg, ...) {
     *buf = res + 1;
     memcpy(buf + 1, formatted_msg, res + 1);
 
-    send_event(TEST_ABORT, buf, sizeof (size_t) + res + 1);
+    criterion_send_event(TEST_ABORT, buf, sizeof(size_t) + res + 1);
     free(buf);
     free(formatted_msg);
 

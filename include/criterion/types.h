@@ -129,6 +129,6 @@ struct criterion_test_set {
     size_t tests;
 };
 
-typedef void (*f_worker_func)(struct criterion_test *, struct criterion_suite *);
+typedef void (*cr_worker_func)(struct criterion_test *, struct criterion_suite *);
 
 #endif /* !CRITERION_TYPES_H_ */

@@ -84,7 +84,7 @@ bool is_runner(void);
 struct process_status wait_proc(struct worker *proc);
 struct process_status get_status(int status);
 struct worker *spawn_test_worker(struct execution_context *ctx,
-                                  f_worker_func func,
+                                  cr_worker_func func,
                                   s_pipe_handle *pipe);
 struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe);
 

@@ -150,7 +150,7 @@ struct event *read_event(s_pipe_file_handle *f) {
     }
 }
 
-void send_event(int kind, void *data, size_t size) {
+void criterion_send_event(int kind, void *data, size_t size) {
     unsigned long long pid = get_process_id();
 
     unsigned char *buf = malloc(sizeof (int) + sizeof (pid) + size);

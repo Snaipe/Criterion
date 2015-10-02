@@ -72,7 +72,7 @@ enum criterion_assert_messages {
 
 CR_BEGIN_C_API
 
-CR_API char *translate_assert_msg(int msg_index, ...);
+CR_API char *cr_translate_assert_msg(int msg_index, ...);
 
 CR_END_C_API
 
@@ -90,7 +90,7 @@ CR_END_C_API
     CR_IDENTITY Arg
 
 # define CR_TRANSLATE_DEF_MSG_(...)                                         \
-    CR_EXPAND(translate_assert_msg(                                         \
+    CR_EXPAND(cr_translate_assert_msg(                                      \
             CR_VA_HEAD(__VA_ARGS__),                                        \
             "" CR_TRANSLATE_DEF_MSG__(CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)))  \
     ))
@@ -145,7 +145,7 @@ CR_END_C_API
         stat->file = __FILE__;                                              \
         stat->line = __LINE__;                                              \
                                                                             \
-        send_event(ASSERT, stat, bufsize);                                  \
+        criterion_send_event(ASSERT, stat, bufsize);                        \
         CR_STDN free(stat);                                                 \
                                                                             \
         if (!passed)                                                        \

@@ -222,7 +222,7 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                 concat_arg(&result.msg, dps, indices, datapoints - 1);
                 result.len = strlen(result.msg) + 1;
 
-                send_event(THEORY_FAIL, &result, result.len + sizeof (size_t));
+                criterion_send_event(THEORY_FAIL, &result, result.len + sizeof(size_t));
             }
         }
 

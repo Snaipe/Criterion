@@ -38,7 +38,7 @@ static INLINE void nothing(void) {}
 
 void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
 
-    send_event(PRE_INIT, NULL, 0);
+    criterion_send_event(PRE_INIT, NULL, 0);
     try {
         if (suite->data)
             (suite->data->init ? suite->data->init : nothing)();
@@ -48,7 +48,7 @@ void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
     } catch (...) {
         criterion_test_die("Caught some unexpected exception during the test initialization.");
     }
-    send_event(PRE_TEST, NULL, 0);
+    criterion_send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
@@ -73,7 +73,7 @@ void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
     if (!timer_end(&elapsed_time, &ts))
         elapsed_time = -1;
 
-    send_event(POST_TEST, &elapsed_time, sizeof (double));
+    criterion_send_event(POST_TEST, &elapsed_time, sizeof(double));
     try {
         (test->data->fini ? test->data->fini : nothing)();
         if (suite->data)
@@ -83,7 +83,7 @@ void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
     } catch (...) {
         criterion_test_die("Caught some unexpected exception during the test finalization.");
     }
-    send_event(POST_FINI, NULL, 0);
+    criterion_send_event(POST_FINI, NULL, 0);
 
 }
 

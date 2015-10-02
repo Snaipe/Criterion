@@ -98,7 +98,7 @@ struct full_context {
     struct criterion_test_extra_data test_data;
     struct criterion_suite suite;
     struct criterion_test_extra_data suite_data;
-    f_worker_func func;
+    cr_worker_func func;
     struct pipe_handle pipe;
     struct test_single_param param;
     HANDLE sync;

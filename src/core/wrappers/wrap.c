@@ -33,11 +33,11 @@ static INLINE void nothing(void) {}
 
 void c_wrap(struct criterion_test *test, struct criterion_suite *suite) {
 
-    send_event(PRE_INIT, NULL, 0);
+    criterion_send_event(PRE_INIT, NULL, 0);
     if (suite->data)
         (suite->data->init ? suite->data->init : nothing)();
     (test->data->init ? test->data->init : nothing)();
-    send_event(PRE_TEST, NULL, 0);
+    criterion_send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
@@ -56,10 +56,10 @@ void c_wrap(struct criterion_test *test, struct criterion_suite *suite) {
     if (!timer_end(&elapsed_time, &ts))
         elapsed_time = -1;
 
-    send_event(POST_TEST, &elapsed_time, sizeof (double));
+    criterion_send_event(POST_TEST, &elapsed_time, sizeof(double));
     (test->data->fini ? test->data->fini : nothing)();
     if (suite->data)
         (suite->data->fini ? suite->data->fini : nothing)();
-    send_event(POST_FINI, NULL, 0);
+    criterion_send_event(POST_FINI, NULL, 0);
 
 }

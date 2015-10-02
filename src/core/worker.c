@@ -91,7 +91,7 @@ void run_worker(struct worker_context *ctx) {
 }
 
 struct worker *spawn_test_worker(struct execution_context *ctx,
-                                  f_worker_func func,
+                                  cr_worker_func func,
                                   s_pipe_handle *pipe) {
     g_worker_context = (struct worker_context) {
         .test = ctx->test,
