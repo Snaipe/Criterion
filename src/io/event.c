@@ -90,6 +90,22 @@ struct event *read_event(s_pipe_file_handle *f) {
             *ev = (struct event) { .pid = pid, .kind = kind, .data = buf };
             return ev;
         }
+        case TEST_ABORT: {
+            char *msg = NULL;
+
+            size_t len = 0;
+            ASSERT(pipe_read(&len, sizeof (size_t), f) == 1);
+
+            msg = malloc(len);
+            ASSERT(pipe_read(msg, len, f) == 1);
+
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = msg };
+            return ev;
+        }
         case THEORY_FAIL: {
             size_t len = 0;
             ASSERT(pipe_read(&len, sizeof (size_t), f) == 1);

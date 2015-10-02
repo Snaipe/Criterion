@@ -34,6 +34,7 @@
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"
+#include "wrappers/wrap.h"
 #include "string/i18n.h"
 #include "io/event.h"
 #include "runner_coroutine.h"
@@ -156,6 +157,11 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
+f_wrapper *g_wrappers[] = {
+    [CR_LANG_C]     = c_wrap,
+    [CR_LANG_CPP]   = cpp_wrap,
+};
+
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
@@ -168,34 +174,7 @@ void run_test_child(struct criterion_test *test,
     else if (test->data->timeout != 0)
         setup_timeout((uint64_t) (test->data->timeout * 1e9));
 
-    send_event(PRE_INIT, NULL, 0);
-    if (suite->data)
-        (suite->data->init ? suite->data->init : nothing)();
-    (test->data->init ? test->data->init : nothing)();
-    send_event(PRE_TEST, NULL, 0);
-
-    struct timespec_compat ts;
-    if (!setjmp(g_pre_test)) {
-        timer_start(&ts);
-        if (test->test) {
-            if (!test->data->param_) {
-                test->test();
-            } else {
-                void(*param_test_func)(void *) = (void(*)(void*)) test->test;
-                param_test_func(g_worker_context.param->ptr);
-            }
-        }
-    }
-
-    double elapsed_time;
-    if (!timer_end(&elapsed_time, &ts))
-        elapsed_time = -1;
-
-    send_event(POST_TEST, &elapsed_time, sizeof (double));
-    (test->data->fini ? test->data->fini : nothing)();
-    if (suite->data)
-        (suite->data->fini ? suite->data->fini : nothing)();
-    send_event(POST_FINI, NULL, 0);
+    g_wrappers[test->data->lang_](test, suite);
 }
 
 #define push_event(Kind, ...)                                       \
@@ -249,6 +228,18 @@ static void handle_worker_terminated(struct event *ev,
             log(post_fini, ctx->test_stats);
         }
     } else {
+        if (ctx->aborted) {
+            if (!ctx->normal_finish) {
+                double elapsed_time = 0;
+                push_event(POST_TEST, .data = &elapsed_time);
+                log(post_test, ctx->test_stats);
+            }
+            if (!ctx->cleaned_up) {
+                push_event(POST_FINI);
+                log(post_fini, ctx->test_stats);
+            }
+            return;
+        }
         if ((ctx->normal_finish && !ctx->cleaned_up) || !ctx->test_started) {
             log(abnormal_exit, ctx->test_stats);
             if (!ctx->test_started) {
@@ -300,6 +291,11 @@ static void handle_event(struct event *ev) {
         case ASSERT:
             report(ASSERT, ev->data);
             log(assert, ev->data);
+            break;
+        case TEST_ABORT:
+            log(test_abort, ctx->test_stats, ev->data);
+            ctx->test_stats->failed = 1;
+            ctx->aborted = true;
             break;
         case POST_TEST:
             report(POST_TEST, ctx->test_stats);

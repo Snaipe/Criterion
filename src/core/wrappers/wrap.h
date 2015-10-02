@@ -21,14 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef ABORT_H_
-# define ABORT_H_
+#ifndef WRAP_H_
+# define WRAP_H_
 
-# include <criterion/abort.h>
-# include <setjmp.h>
+# include "criterion/types.h"
 
-extern jmp_buf g_pre_test;
+typedef void (f_wrapper)(struct criterion_test *, struct criterion_suite *);
 
-void criterion_test_die(const char *msg, ...);
+void c_wrap(struct criterion_test *test, struct criterion_suite *suite);
+void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite);
 
-#endif /* !ABORT_H_ */
+extern f_wrapper *g_wrappers[];
+
+#endif /* !WRAP_H_ */

@@ -10,6 +10,8 @@ set(SAMPLES
   long-messages.cc
   other-crashes.cc
   theories_regression.cc
+
+  exception.cc
 )
 
 add_samples("${CMAKE_CURRENT_LIST_DIR}" "${SAMPLES}")

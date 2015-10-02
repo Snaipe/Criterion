@@ -21,34 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <string.h>
-#include "abort.h"
-#include "criterion/asprintf-compat.h"
+#include "core/abort.h"
+#include "core/stats.h"
+#include "core/worker.h"
+#include "core/report.h"
+#include "compat/time.h"
 #include "io/event.h"
+#include "wrap.h"
 
-jmp_buf g_pre_test;
+static INLINE void nothing(void) {}
 
-void criterion_abort_test(void) {
-    longjmp(g_pre_test, 1);
-}
+void c_wrap(struct criterion_test *test, struct criterion_suite *suite) {
 
-void criterion_test_die(const char *msg, ...) {
-    va_list vl;
-    va_start(vl, msg);
-    char *formatted_msg = NULL;
-    int res = cr_vasprintf(&formatted_msg, msg, vl);
-    va_end(vl);
+    send_event(PRE_INIT, NULL, 0);
+    if (suite->data)
+        (suite->data->init ? suite->data->init : nothing)();
+    (test->data->init ? test->data->init : nothing)();
+    send_event(PRE_TEST, NULL, 0);
 
-    if (res < 0)
-        abort();
+    struct timespec_compat ts;
+    if (!setjmp(g_pre_test)) {
+        timer_start(&ts);
+        if (test->test) {
+            if (!test->data->param_) {
+                test->test();
+            } else {
+                void(*param_test_func)(void *) = (void(*)(void*)) test->test;
+                param_test_func(g_worker_context.param->ptr);
+            }
+        }
+    }
 
-    size_t *buf = malloc(sizeof (size_t) + res + 1);
-    *buf = res + 1;
-    memcpy(buf + 1, formatted_msg, res + 1);
+    double elapsed_time;
+    if (!timer_end(&elapsed_time, &ts))
+        elapsed_time = -1;
 
-    send_event(TEST_ABORT, buf, sizeof (size_t) + res + 1);
-    free(buf);
-    free(formatted_msg);
+    send_event(POST_TEST, &elapsed_time, sizeof (double));
+    (test->data->fini ? test->data->fini : nothing)();
+    if (suite->data)
+        (suite->data->fini ? suite->data->fini : nothing)();
+    send_event(POST_FINI, NULL, 0);
 
-    exit(0);
 }

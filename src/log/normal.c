@@ -61,6 +61,7 @@ static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
+static msg_t msg_test_abort = N_("%1$s::%2$s: %3$s\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
 static msg_t msg_test_abnormal_exit = N_("%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n");
 static msg_t msg_pre_suite[] = N_s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
@@ -81,6 +82,7 @@ static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parame
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
+static msg_t msg_test_abort = N_("%s::%s: %s\n");
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
 static msg_t msg_test_abnormal_exit = "%sWarning! The test `%s::%s` exited during its setup or teardown.%s\n";
 static msg_t msg_pre_suite[] = { "Running %s%lu%s test from %s%s%s:\n",
@@ -230,6 +232,33 @@ void normal_log_test_timeout(UNUSED struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
+void normal_log_test_abort(UNUSED struct criterion_test_stats *stats, const char *msg) {
+
+    char *dup       = strdup(msg);
+
+#ifdef VANILLA_WIN32
+    char *line      = strtok(dup, "\n");
+#else
+    char *saveptr   = NULL;
+    char *line      = strtok_r(dup, "\n", &saveptr);
+#endif
+
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _(msg_test_abort),
+            stats->test->category,
+            stats->test->name,
+            line);
+
+#ifdef VANILLA_WIN32
+    while ((line = strtok(NULL, "\n")))
+#else
+    while ((line = strtok_r(NULL, "\n", &saveptr)))
+#endif
+        criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
+
+    free(dup);
+}
+
 struct criterion_output_provider normal_logging = {
     .log_pre_all        = normal_log_pre_all,
     .log_pre_init       = normal_log_pre_init,
@@ -238,6 +267,7 @@ struct criterion_output_provider normal_logging = {
     .log_theory_fail    = normal_log_theory_fail,
     .log_test_timeout   = normal_log_test_timeout,
     .log_test_crash     = normal_log_test_crash,
+    .log_test_abort     = normal_log_test_abort,
     .log_other_crash    = normal_log_other_crash,
     .log_abnormal_exit  = normal_log_abnormal_exit,
     .log_post_test      = normal_log_post_test,

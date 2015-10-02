@@ -30,7 +30,15 @@
 #  undef _WIN32_WINNT
 #  define _WIN32_WINNT 0x0502
 #  include <windows.h>
+#  if defined(__MINGW32__) || defined(__MINGW64__)
+#   define off_t _off_t
+#   define off64_t _off64_t
+#  endif
 #  include <io.h>
+#  if defined(__MINGW32__) || defined(__MINGW64__)
+#   undef off_t
+#   undef off64_t
+#  endif
 #  include <fcntl.h>
 #  include <winnt.h>
 #  include <stdint.h>

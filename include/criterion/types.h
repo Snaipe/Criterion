@@ -35,6 +35,11 @@ using std::size_t;
 # endif
 # include "common.h"
 
+enum criterion_language {
+    CR_LANG_C,
+    CR_LANG_CPP,
+};
+
 enum criterion_test_kind {
     CR_TEST_NORMAL,
     CR_TEST_PARAMETERIZED,
@@ -84,6 +89,7 @@ struct criterion_test_params {
 
 struct criterion_test_extra_data {
     int sentinel_;
+    enum criterion_language lang_;
     enum criterion_test_kind kind_;
     struct criterion_test_params (*param_)(void);
     const char *identifier_;
