@@ -125,7 +125,7 @@ struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     FOREACH_SUITE_SEC(s) {
-        if (!*s)
+        if (!*s || !*(*s)->name)
             continue;
 
         struct criterion_suite_set css = {
@@ -148,7 +148,7 @@ struct criterion_test_set *criterion_init(void) {
         if (!*test)
             continue;
 
-        if (!(*test)->category)
+        if (!*(*test)->category || !*(*test)->name)
             continue;
 
         criterion_register_test(set, *test);
