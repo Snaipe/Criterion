@@ -232,6 +232,7 @@ static void push_test_crash(s_glob_stats *stats,
                             s_test_stats *test,
                             UNUSED void *ptr) {
     test->failed = 1;
+    test->crashed = 1;
     ++suite->tests_failed;
     ++suite->tests_crashed;
     ++stats->tests_failed;

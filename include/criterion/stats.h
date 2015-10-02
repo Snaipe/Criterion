@@ -45,6 +45,7 @@ struct criterion_test_stats {
     int exit_code;
     float elapsed_time;
     bool timed_out;
+    bool crashed;
     unsigned progress;
     const char *file;
 
