@@ -37,8 +37,13 @@
 #include "common.h"
 
 #ifdef VANILLA_WIN32
-// fallback to strtok on windows since strtok_s is not available everywhere
-# define strtok_r(str, delim, saveptr) strtok(str, delim)
+# if HAVE_STRTOK_S
+#   define strtok_r strtok_s
+# else
+    static char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr) {
+      return strtok(str, delim);
+    }
+# endif
 #endif
 
 #ifdef _MSC_VER
@@ -161,13 +166,8 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
         char *dup       = strdup(*stats->message ? stats->message : "");
-
-#ifdef VANILLA_WIN32
-        char *line      = strtok(dup, "\n");
-#else
         char *saveptr   = NULL;
         char *line      = strtok_r(dup, "\n", &saveptr);
-#endif
 
         bool sf = criterion_options.short_filename;
         criterion_pimportant(CRITERION_PREFIX_DASHES,
@@ -176,11 +176,7 @@ void normal_log_assert(struct criterion_assert_stats *stats) {
                              CR_FG_RED,  stats->line, CR_RESET,
                 line);
 
-#ifdef VANILLA_WIN32
-        while ((line = strtok(NULL, "\n")))
-#else
         while ((line = strtok_r(NULL, "\n", &saveptr)))
-#endif
             criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
         free(dup);
     }
@@ -235,13 +231,8 @@ void normal_log_test_timeout(CR_UNUSED struct criterion_test_stats *stats) {
 void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const char *msg) {
 
     char *dup       = strdup(msg);
-
-#ifdef VANILLA_WIN32
-    char *line      = strtok(dup, "\n");
-#else
     char *saveptr   = NULL;
     char *line      = strtok_r(dup, "\n", &saveptr);
-#endif
 
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_abort),
@@ -249,11 +240,7 @@ void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const c
             stats->test->name,
             line);
 
-#ifdef VANILLA_WIN32
-    while ((line = strtok(NULL, "\n")))
-#else
     while ((line = strtok_r(NULL, "\n", &saveptr)))
-#endif
         criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
 
     free(dup);

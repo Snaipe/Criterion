@@ -101,7 +101,7 @@
 #  define CR_NORETURN CR_ATTRIBUTE(noreturn)
 #  define CR_INLINE CR_ATTRIBUTE(always_inline) inline
 # elif CR_IS_MSVC
-#  define CR_UNUSED
+#  define CR_UNUSED __pragma(warning(suppress:4100))
 #  define CR_NORETURN __declspec(noreturn)
 #  define CR_INLINE __forceinline
 # else
