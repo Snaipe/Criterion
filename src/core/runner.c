@@ -157,11 +157,6 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
-f_wrapper *g_wrappers[] = {
-    [CR_LANG_C]     = c_wrap,
-    [CR_LANG_CPP]   = cpp_wrap,
-};
-
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
@@ -174,7 +169,14 @@ void run_test_child(struct criterion_test *test,
     else if (test->data->timeout != 0)
         setup_timeout((uint64_t) (test->data->timeout * 1e9));
 
-    g_wrappers[test->data->lang_](test, suite);
+    if (g_wrappers[test->data->lang_]) {
+        g_wrappers[test->data->lang_](test, suite);
+    } else {
+        criterion_test_die(
+            "The test is compiled in the %s programming language, but the \n"
+            "criterion runner have been compiled without its language support.",
+            cr_language_names[test->data->lang_]);
+    }
 }
 
 #define push_event(Kind, ...)                                       \

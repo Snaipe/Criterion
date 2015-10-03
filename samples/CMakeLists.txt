@@ -19,18 +19,23 @@ set(SAMPLES
   redirect.c
   parameterized.c
 
-  signal.cc
-  report.cc
-  suites.cc
-  fixtures.cc
-  asserts.cc
-  more-suites.cc
-  description.cc
-  simple.cc
-  theories.cc
-  redirect.cc
-  parameterized.cc
 )
+
+if (CMAKE_CXX_COMPILER_WORKS)
+  set(SAMPLES ${SAMPLES}
+    signal.cc
+    report.cc
+    suites.cc
+    fixtures.cc
+    asserts.cc
+    more-suites.cc
+    description.cc
+    simple.cc
+    theories.cc
+    redirect.cc
+    parameterized.cc
+  )
+endif ()
 
 set(SCRIPTS
   tap_test

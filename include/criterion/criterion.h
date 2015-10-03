@@ -34,13 +34,25 @@
     Category ## _ ## Name ## _ ## Suffix
 
 # ifdef __cplusplus
+#  ifdef __OBJC__
+#   define CR_LANG CR_LANG_OBJCXX
+#  else
+#   define CR_LANG CR_LANG_CXX
+#  endif
+# else
+#  ifdef __OBJC__
+#   define CR_LANG CR_LANG_OBJC
+#  else
+#   define CR_LANG CR_LANG_C
+#  endif
+# endif
+
+# ifdef __cplusplus
 #  define CR_TEST_PROTOTYPE_(Category, Name) \
     extern "C" void CR_IDENTIFIER_(Category, Name, impl)(void)
-#  define CR_LANG CR_LANG_CPP
 # else
 #  define CR_TEST_PROTOTYPE_(Category, Name) \
     void CR_IDENTIFIER_(Category, Name, impl)(void)
-#  define CR_LANG CR_LANG_C
 # endif
 
 # define CR_SUITE_IDENTIFIER_(Name, Suffix) \

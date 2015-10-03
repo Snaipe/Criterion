@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Criterion C CXX)
+project(Criterion C)
 
 set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
@@ -29,6 +29,10 @@ if (MSVC)
   include_directories(dependencies/wingetopt/src/)
 endif ()
 
+# Language support
+
+include(Languages)
+
 # Project setup & environment variables
 
 set(PROJECT_VERSION "2.1.0")
@@ -40,7 +44,9 @@ add_definitions(-DCRITERION_BUILDING_DLL=1)
 
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g -std=c++11")
+  if (CMAKE_CXX_COMPILER_WORKS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g -std=c++11")
+  endif ()
 endif ()
 
 if (MSVC)
@@ -85,8 +91,9 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
+  src/core/wrappers/wrap.h
   src/core/wrappers/wrap.c
-  src/core/wrappers/wrap.cc
+  src/core/wrappers/wrappers.c
   src/core/abort.c
   src/core/abort.h
   src/core/report.c
@@ -143,6 +150,10 @@ if (PCRE_FOUND)
     src/string/extmatch.h
   )
   set(HAVE_PCRE 1)
+endif ()
+
+if (CMAKE_CXX_COMPILER_WORKS)
+  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.cc)
 endif ()
 
 set(INTERFACE_FILES

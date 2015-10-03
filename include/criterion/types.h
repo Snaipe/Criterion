@@ -37,8 +37,14 @@ using std::size_t;
 
 enum criterion_language {
     CR_LANG_C,
-    CR_LANG_CPP,
+    CR_LANG_CXX,
+    CR_LANG_OBJC,
+    CR_LANG_OBJCXX,
+
+    CR_LANG_SIZE_ // leave this at the end
 };
+
+extern const char *const cr_language_names[CR_LANG_SIZE_];
 
 enum criterion_test_kind {
     CR_TEST_NORMAL,

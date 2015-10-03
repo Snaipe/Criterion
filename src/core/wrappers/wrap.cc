@@ -36,7 +36,7 @@ extern "C" {
 
 static INLINE void nothing(void) {}
 
-void cpp_wrap(struct criterion_test *test, struct criterion_suite *suite) {
+void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite) {
 
     criterion_send_event(PRE_INIT, NULL, 0);
     try {

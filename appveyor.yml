@@ -43,6 +43,7 @@ install:
       -DCTESTS=ON
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
       -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
+      -DLANGUAGES=CXX
       -G "%GENERATOR%"
       ..
 

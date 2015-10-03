@@ -21,24 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef WRAP_H_
-# define WRAP_H_
+#include "wrap.h"
 
-# include "criterion/types.h"
-# include "config.h"
+f_wrapper *g_wrappers[CR_LANG_SIZE_] = {
+    [CR_LANG_C]         = c_wrap,
 
-typedef void (f_wrapper)(struct criterion_test *, struct criterion_suite *);
+#ifdef CXX_BRIDGE
+    [CR_LANG_CXX]       = cxx_wrap,
+#endif
 
-void c_wrap(struct criterion_test *test, struct criterion_suite *suite);
+#ifdef OBJC_BRIDGE
+    [CR_LANG_OBJC]      = objc_wrap,
+    [CR_LANG_OBJCXX]    = objc_wrap,
+#endif
+};
 
-# ifdef CXX_BRIDGE
-void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite);
-# endif
+const char *const cr_language_names[CR_LANG_SIZE_] = {
+    [CR_LANG_C]         = "C",
+    [CR_LANG_CXX]       = "C++",
+    [CR_LANG_OBJC]      = "Objective-C",
+    [CR_LANG_OBJCXX]    = "Objective-C++",
+};
 
-# ifdef OBJC_BRIDGE
-void objc_wrap(struct criterion_test *test, struct criterion_suite *suite);
-# endif
-
-extern f_wrapper *g_wrappers[];
-
-#endif /* !WRAP_H_ */

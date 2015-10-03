@@ -34,6 +34,7 @@ script:
       -DCOVERALLS=${COVERAGE}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
+      -DLANGUAGES=CXX
       ..
   - TERM=dumb cmake --build . --target criterion_tests -- -j4
   - ctest -j4
