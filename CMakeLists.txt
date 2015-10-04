@@ -49,6 +49,7 @@ if (NOT MSVC)
   endif ()
 endif ()
 
+
 if (MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 endif ()
@@ -154,6 +155,14 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_WORKS)
   set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.cc)
+endif ()
+
+if (CMAKE_ObjectiveC_COMPILER_WORKS)
+  set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
+  if (NOT WIN32)
+    set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} -fPIC")
+  endif ()
+  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.m)
 endif ()
 
 set(INTERFACE_FILES
