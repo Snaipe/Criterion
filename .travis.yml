@@ -15,6 +15,7 @@ addons:
     packages:
     - gcc-4.9
     - g++-4.9
+    - gobjc-4.9
 env:
   global:
     GCOV: gcov-4.9
@@ -34,7 +35,7 @@ script:
       -DCOVERALLS=${COVERAGE}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
-      -DLANGUAGES=CXX
+      -DLANGUAGES=CXX,ObjectiveC
       ..
   - TERM=dumb cmake --build . --target criterion_tests -- -j4
   - ctest -j4
