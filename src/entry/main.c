@@ -130,6 +130,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"verbose",         optional_argument,  0, 'b'},
         {"version",         no_argument,        0, 'v'},
         {"tap",             no_argument,        0, 't'},
+        {"xml",             no_argument,        0, 'x'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
@@ -182,6 +183,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #endif
 
     bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
+    bool use_xml = !strcmp("1", DEF(getenv("CRITERION_ENABLE_XML"), "0"));
 
     bool do_list_tests = false;
     bool do_print_version = false;
@@ -199,6 +201,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
             case 't': use_tap = true; break;
+            case 'x': use_xml = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
@@ -207,6 +210,8 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     }
     if (use_tap)
         criterion_options.output_provider = CR_TAP_LOGGING;
+    else if (use_xml)
+        criterion_options.output_provider = CR_XML_LOGGING;
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)
