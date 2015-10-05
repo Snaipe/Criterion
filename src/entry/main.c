@@ -62,6 +62,7 @@
             "name of the source file on a failure\n"        \
     PATTERN_USAGE                                           \
     "    --tap: enables TAP formatting\n"                   \
+    "    --xml: enables XML formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
             "prematurely after the test\n"                  \

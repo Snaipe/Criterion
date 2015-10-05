@@ -23,6 +23,7 @@ Command line arguments
 * ``-S or --short-filename``: The filenames are displayed in their short form.
 * ``--always-succeed``: The process shall exit with a status of ``0``.
 * ``--tap``: Enables the TAP (Test Anything Protocol) output format.
+* ``--xml``: Enables the JUnit4 XML output format.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
   sets the verbosity level to that integer.
 
@@ -71,6 +72,7 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_ALWAYS_SUCCEED``:  Same as ``--always-succeed``.
 * ``CRITERION_NO_EARLY_EXIT``:   Same as ``--no-early-exit``.
 * ``CRITERION_ENABLE_TAP``:      Same as ``--tap``.
+* ``CRITERION_ENABLE_XML``:      Same as ``--xml``.
 * ``CRITERION_FAIL_FAST``:       Same as ``--fail-fast``.
 * ``CRITERION_USE_ASCII``:       Same as ``--ascii``.
 * ``CRITERION_JOBS``:            Same as ``jobs``. Sets the number of jobs to
