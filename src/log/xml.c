@@ -30,6 +30,7 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "compat/posix.h"
+#include "compat/strtok.h"
 #include "compat/time.h"
 #include "config.h"
 #include "common.h"
