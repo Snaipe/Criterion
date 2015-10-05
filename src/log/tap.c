@@ -34,20 +34,6 @@
 #include "config.h"
 #include "common.h"
 
-#ifdef VANILLA_WIN32
-# if HAVE_STRTOK_S
-#   define strtok_r strtok_s
-# else
-    static char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr) {
-      return strtok(str, delim);
-    }
-# endif
-#endif
-
-#ifdef _MSC_VER
-# define strdup _strdup
-#endif
-
 static void print_prelude(struct criterion_global_stats *stats) {
     criterion_important("TAP version 13\n1.."
                                 CR_SIZE_T_FORMAT

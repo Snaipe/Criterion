@@ -24,9 +24,11 @@
 #ifndef POSIX_COMPAT_H_
 # define POSIX_COMPAT_H_
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
-# define VANILLA_WIN32
-#endif
+# include "config.h"
+
+# if defined(_WIN32) && !defined(__CYGWIN__)
+#  define VANILLA_WIN32
+# endif
 
 # if defined(BSD) \
   || defined(__FreeBSD__) \
@@ -45,6 +47,7 @@
 #  define off64_t _off64_t
 # endif
 # include <stdio.h>
+# include <string.h>
 # if defined(__MINGW32__) || defined(__MINGW64__)
 #  undef off_t
 #  undef off64_t
@@ -62,6 +65,19 @@
 
 #  define SIGPROF 27
 #  define CR_EXCEPTION_TIMEOUT 0xC0001042
+
+#  if HAVE_STRTOK_S
+#   define strtok_r strtok_s
+#  else
+static CR_INLINE char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr) {
+  return strtok(str, delim);
+}
+#  endif
+
+#  ifdef _MSC_VER
+#   define strdup _strdup
+#  endif
+
 # else
 #  include <sys/wait.h>
 # endif
