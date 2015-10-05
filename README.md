@@ -77,7 +77,8 @@ Sample tests can be found in the [sample directory][samples].
 
 ### Getting help
 
-Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
+IRC channel: [#criterion][irc-chan] on irc.freenode.net  
 
 ### Misc
 
@@ -101,3 +102,5 @@ Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
 [sample-report]: ./samples/report.c
 
 [find-module]: ./dev/FindCriterion.cmake
+
+[irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e
