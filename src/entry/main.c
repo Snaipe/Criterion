@@ -55,6 +55,7 @@
     "    -v or --version: prints the version of criterion " \
             "these tests have been linked against\n"        \
     "    -l or --list: prints all the tests in a list\n"    \
+    "    -jN or --jobs N: use N concurrent jobs\n"          \
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
