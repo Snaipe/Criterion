@@ -37,6 +37,7 @@ struct criterion_options {
     const char *pattern;
     bool short_filename;
     size_t jobs;
+    bool measure_time;
 };
 
 CR_BEGIN_C_API

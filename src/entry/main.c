@@ -183,6 +183,8 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 
     bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
 
+    opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
+
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
