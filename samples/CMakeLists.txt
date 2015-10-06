@@ -34,6 +34,7 @@ set(SAMPLES
 
 set(SCRIPTS
   tap_test
+  xml_test
   early_exit
   verbose
   list
