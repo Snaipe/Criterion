@@ -129,6 +129,7 @@ set(SOURCE_FILES
   src/log/logging.c
   src/log/tap.c
   src/log/normal.c
+  src/log/xml.c
   src/string/i18n.c
   src/string/i18n.h
   src/entry/options.c

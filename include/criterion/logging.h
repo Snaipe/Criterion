@@ -121,10 +121,12 @@ struct criterion_output_provider {
 
 extern struct criterion_output_provider normal_logging;
 extern struct criterion_output_provider tap_logging;
+extern struct criterion_output_provider xml_logging;
 
 CR_END_C_API
 
 #define CR_NORMAL_LOGGING (&normal_logging)
 #define CR_TAP_LOGGING    (&tap_logging)
+#define CR_XML_LOGGING    (&xml_logging)
 
 #endif /* !CRITERION_LOGGING_H_ */

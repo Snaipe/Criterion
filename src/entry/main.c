@@ -62,6 +62,7 @@
             "name of the source file on a failure\n"        \
     PATTERN_USAGE                                           \
     "    --tap: enables TAP formatting\n"                   \
+    "    --xml: enables XML formatting\n"                   \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
             "prematurely after the test\n"                  \
@@ -130,6 +131,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"verbose",         optional_argument,  0, 'b'},
         {"version",         no_argument,        0, 'v'},
         {"tap",             no_argument,        0, 't'},
+        {"xml",             no_argument,        0, 'x'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
@@ -182,6 +184,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #endif
 
     bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
+    bool use_xml = !strcmp("1", DEF(getenv("CRITERION_ENABLE_XML"), "0"));
 
     opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
 
@@ -201,6 +204,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
             case 't': use_tap = true; break;
+            case 'x': use_xml = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
@@ -209,6 +213,8 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     }
     if (use_tap)
         criterion_options.output_provider = CR_TAP_LOGGING;
+    else if (use_xml)
+        criterion_options.output_provider = CR_XML_LOGGING;
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)
