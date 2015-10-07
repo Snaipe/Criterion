@@ -15,6 +15,7 @@ environment:
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
+    CMAKE_OPTS: -DLANG_OBJC=ON
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015"
     CFLAGS: /MP
@@ -43,7 +44,7 @@ install:
       -DCTESTS=ON
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
       -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
-      -DLANGUAGES=CXX
+      %CMAKE_OPTS%
       -G "%GENERATOR%"
       ..
 
