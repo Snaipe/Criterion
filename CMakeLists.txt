@@ -49,7 +49,6 @@ if (NOT MSVC)
   endif ()
 endif ()
 
-
 if (MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 endif ()

@@ -22,6 +22,8 @@ if(NOT CMAKE_ObjectiveC_COMPILER_WORKS)
     "#ifdef __cplusplus\n"
     "# error \"The CMAKE_ObjectiveC_COMPILER is set to an ObjectiveC++ compiler\"\n"
     "#endif\n"
+    "@interface Foo\n"
+    "@end\n"
     "int main(int argc, char* argv[])\n"
     "{ (void)argv; return argc-1;}\n")
 try_compile(CMAKE_ObjectiveC_COMPILER_WORKS ${CMAKE_BINARY_DIR}
