@@ -15,7 +15,6 @@ environment:
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
-    CMAKE_OPTS: -DLANG_OBJC=ON
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015"
     CFLAGS: /MP
