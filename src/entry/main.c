@@ -152,6 +152,9 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     textdomain (PACKAGE "-test");
 #endif
 
+    if (!handle_unknown_arg)
+        opterr = 0;
+
     char *env_always_succeed    = getenv("CRITERION_ALWAYS_SUCCEED");
     char *env_no_early_exit     = getenv("CRITERION_NO_EARLY_EXIT");
     char *env_fail_fast         = getenv("CRITERION_FAIL_FAST");
@@ -209,6 +212,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
+            case '?':
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
