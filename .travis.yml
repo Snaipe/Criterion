@@ -16,7 +16,7 @@ addons:
     - gcc-4.9
     - g++-4.9
     - gobjc-4.9
-    - gnustep-base
+    - gnustep-devel
 env:
   global:
     GCOV: gcov-4.9
