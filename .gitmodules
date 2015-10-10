@@ -7,3 +7,6 @@
 [submodule "dependencies/wingetopt"]
 	path = dependencies/wingetopt
 	url = https://github.com/alex85k/wingetopt.git
+[submodule "dependencies/klib"]
+	path = dependencies/klib
+	url = https://github.com/attractivechaos/klib.git
