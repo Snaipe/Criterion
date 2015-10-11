@@ -18,7 +18,7 @@ add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
 
 include_directories(SYSTEM
   /usr/local/include
-  /usr/include/GNUStep
+  /usr/include/GNUstep
 )
 
 include_directories(
