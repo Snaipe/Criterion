@@ -23,6 +23,7 @@ include_directories(
   dependencies/libcsptr/include/
   dependencies/dyncall/dyncall/
   dependencies/valgrind/include/
+  dependencies/klib/
 )
 
 if (MSVC)
@@ -127,6 +128,7 @@ set(SOURCE_FILES
   src/io/asprintf.c
   src/io/file.c
   src/log/logging.c
+  src/log/output.c
   src/log/tap.c
   src/log/normal.c
   src/log/xml.c
