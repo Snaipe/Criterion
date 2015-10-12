@@ -161,6 +161,8 @@ endif ()
 
 if (CMAKE_ObjectiveC_COMPILER_WORKS)
   set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
+  add_definitions(-D_NATIVE_OBJC_EXCEPTIONS)
+
   if (NOT WIN32)
     set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} -fPIC")
   endif ()
