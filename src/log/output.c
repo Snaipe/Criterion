@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <khash.h>
-#include "criterion/stats.h"
-
-typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
+#include "criterion/output.h"
 
 KHASH_MAP_INIT_STR(ht_str, criterion_reporter*)
 KHASH_MAP_INIT_STR(ht_path, const char *)
