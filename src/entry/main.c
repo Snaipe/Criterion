@@ -187,9 +187,6 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         opt->pattern = env_pattern;
 #endif
 
-    bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
-    bool use_xml = !strcmp("1", DEF(getenv("CRITERION_ENABLE_XML"), "0"));
-
     opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
 
     bool do_list_tests = false;
@@ -207,8 +204,6 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
-            case 't': use_tap = true; break;
-            case 'x': use_xml = true; break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
@@ -216,10 +211,6 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
-    if (use_tap)
-        criterion_options.output_provider = CR_TAP_LOGGING;
-    else if (use_xml)
-        criterion_options.output_provider = CR_XML_LOGGING;
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)
