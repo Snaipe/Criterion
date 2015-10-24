@@ -349,6 +349,7 @@ struct criterion_test_set *criterion_initialize(void) {
         exit(0);
 
     criterion_init_output();
+    criterion_register_output_provider("tap", tap_report);
 
     return criterion_init();
 }

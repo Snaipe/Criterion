@@ -35,15 +35,15 @@
 #include "config.h"
 #include "common.h"
 
-static void print_prelude(struct criterion_global_stats *stats) {
-    criterion_important("TAP version 13\n1.."
+static void print_prelude(FILE *f, struct criterion_global_stats *stats) {
+    fprintf(f, "TAP version 13\n1.."
                                 CR_SIZE_T_FORMAT
                                 "\n", stats->nb_tests);
-    criterion_important("# Criterion v%s\n", VERSION);
+    fprintf(f, "# Criterion v%s\n", VERSION);
 }
 
-static void print_pre_suite(struct criterion_suite_stats *stats) {
-    criterion_important("\n# Running "
+static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats) {
+    fprintf(f, "\n# Running "
                                 CR_SIZE_T_FORMAT
                                 " tests from %s\n",
             stats->nb_tests,
@@ -54,10 +54,10 @@ static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite 
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
-static void print_test_normal(struct criterion_test_stats *stats) {
+static void print_test_normal(FILE *f, struct criterion_test_stats *stats) {
     const char *format = can_measure_time() ? "%s - %s::%s %s (%3.2fs)\n"
                                             : "%s - %s::%s %s\n";
-    criterion_important(format,
+    fprintf(f, format,
             stats->failed ? "not ok" : "ok",
             stats->test->category,
             stats->test->name,
@@ -69,64 +69,61 @@ static void print_test_normal(struct criterion_test_stats *stats) {
             char *saveptr = NULL;
             char *line = strtok_r(dup, "\n", &saveptr);
             bool sf = criterion_options.short_filename;
-            criterion_important("  %s:%u: Assertion failed: %s\n",
+            fprintf(f, "  %s:%u: Assertion failed: %s\n",
                     sf ? basename_compat(asrt->file) : asrt->file,
                     asrt->line,
                     line);
 
             while ((line = strtok_r(NULL, "\n", &saveptr)))
-                criterion_important("    %s\n", line);
+                fprintf(f, "    %s\n", line);
             free(dup);
         }
     }
 }
 
-static void print_test_crashed(struct criterion_test_stats *stats) {
+static void print_test_crashed(FILE *f, struct criterion_test_stats *stats) {
     bool sf = criterion_options.short_filename;
-    criterion_important("not ok - %s::%s unexpected signal after %s:%u\n",
+    fprintf(f, "not ok - %s::%s unexpected signal after %s:%u\n",
             stats->test->category,
             stats->test->name,
             sf ? basename_compat(stats->file) : stats->file,
             stats->progress);
 }
 
-static void print_test_timeout(struct criterion_test_stats *stats) {
-    criterion_important("not ok - %s::%s timed out (%3.2fs)\n",
+static void print_test_timeout(FILE *f, struct criterion_test_stats *stats) {
+    fprintf(f, "not ok - %s::%s timed out (%3.2fs)\n",
             stats->test->category,
             stats->test->name,
             stats->elapsed_time);
 }
 
-static void print_test(struct criterion_test_stats *ts,
+static void print_test(FILE *f,
+                       struct criterion_test_stats *ts,
                        struct criterion_suite_stats *ss) {
 
     if (is_disabled(ts->test, ss->suite)) {
-        criterion_important("ok - %s::%s %s # SKIP %s is disabled\n",
+        fprintf(f, "ok - %s::%s %s # SKIP %s is disabled\n",
                 ts->test->category,
                 ts->test->name,
                 DEF(ts->test->data->description, ""),
                 ts->test->data->disabled ? "test" : "suite");
     } else if (ts->crashed) {
-        print_test_crashed(ts);
+        print_test_crashed(f, ts);
     } else if (ts->timed_out) {
-        print_test_timeout(ts);
+        print_test_timeout(f, ts);
     } else {
-        print_test_normal(ts);
+        print_test_normal(f, ts);
     }
 }
 
-void tap_log_post_all(struct criterion_global_stats *stats) {
-    print_prelude(stats);
+void tap_report(FILE *f, struct criterion_global_stats *stats) {
+    print_prelude(f, stats);
 
     for (struct criterion_suite_stats *ss = stats->suites; ss; ss = ss->next) {
-        print_pre_suite(ss);
+        print_pre_suite(f, ss);
 
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
-            print_test(ts, ss);
+            print_test(f, ts, ss);
         }
     }
 }
-
-struct criterion_output_provider tap_logging = {
-    .log_post_all = tap_log_post_all,
-};

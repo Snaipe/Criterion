@@ -132,7 +132,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"version",         no_argument,        0, 'v'},
-        {"tap",             no_argument,        0, 't'},
+        {"tap",             optional_argument,  0, 't'},
         {"xml",             no_argument,        0, 'x'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
@@ -205,6 +205,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
+            case 't': criterion_add_output("tap", DEF(optarg, "-")); break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
