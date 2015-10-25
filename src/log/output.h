@@ -29,5 +29,6 @@
 void process_all_output(struct criterion_global_stats *stats);
 
 void tap_report(FILE *f, struct criterion_global_stats *stats);
+void xml_report(FILE *f, struct criterion_global_stats *stats);
 
 #endif /* !OUTPUT_H_ */

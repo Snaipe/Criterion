@@ -112,24 +112,25 @@ const char *get_status_string(struct criterion_test_stats *ts,
     return status;
 }
 
-static void print_test(struct criterion_test_stats *ts,
+static void print_test(FILE *f,
+                       struct criterion_test_stats *ts,
                        struct criterion_suite_stats *ss) {
 
-    criterion_important(XML_TEST_TEMPLATE_BEGIN,
+    fprintf(f, XML_TEST_TEMPLATE_BEGIN,
             ts->test->name,
             (size_t) (ts->passed_asserts + ts->failed_asserts),
             get_status_string(ts, ss)
         );
 
     if (is_disabled(ts->test, ss->suite)) {
-        criterion_important(XML_TEST_SKIPPED);
+        fprintf(f, XML_TEST_SKIPPED);
     } else if (ts->crashed) {
-        criterion_important(XML_CRASH_MSG_ENTRY);
+        fprintf(f, XML_CRASH_MSG_ENTRY);
     } else if (ts->timed_out) {
-        criterion_important(XML_TIMEOUT_MSG_ENTRY);
+        fprintf(f, XML_TIMEOUT_MSG_ENTRY);
     } else {
         if (ts->failed) {
-            criterion_important(XML_TEST_FAILED_TEMPLATE_BEGIN, ts->failed_asserts);
+            fprintf(f, XML_TEST_FAILED_TEMPLATE_BEGIN, ts->failed_asserts);
             for (struct criterion_assert_stats *asrt = ts->asserts; asrt; asrt = asrt->next) {
                 if (!asrt->passed) {
                     bool sf = criterion_options.short_filename;
@@ -137,26 +138,26 @@ static void print_test(struct criterion_test_stats *ts,
                     char *saveptr = NULL;
                     char *line = strtok_r(dup, "\n", &saveptr);
 
-                    criterion_important(XML_FAILURE_MSG_ENTRY,
+                    fprintf(f, XML_FAILURE_MSG_ENTRY,
                             sf ? basename_compat(asrt->file) : asrt->file,
                             asrt->line,
                             line
                         );
 
                     while ((line = strtok_r(NULL, "\n", &saveptr)))
-                        criterion_important("        %s" LF, line);
+                        fprintf(f, "        %s" LF, line);
                     free(dup);
                 }
             }
-            criterion_important(XML_TEST_FAILED_TEMPLATE_END);
+            fprintf(f, XML_TEST_FAILED_TEMPLATE_END);
         }
     }
 
-    criterion_important(XML_TEST_TEMPLATE_END);
+    fprintf(f, XML_TEST_TEMPLATE_END);
 }
 
-void xml_log_post_all(struct criterion_global_stats *stats) {
-    criterion_important(XML_BASE_TEMPLATE_BEGIN,
+void xml_report(FILE *f, struct criterion_global_stats *stats) {
+    fprintf(f, XML_BASE_TEMPLATE_BEGIN,
             stats->nb_tests,
             stats->tests_failed,
             stats->tests_crashed,
@@ -165,7 +166,7 @@ void xml_log_post_all(struct criterion_global_stats *stats) {
 
     for (struct criterion_suite_stats *ss = stats->suites; ss; ss = ss->next) {
 
-        criterion_important(XML_TESTSUITE_TEMPLATE_BEGIN,
+        fprintf(f, XML_TESTSUITE_TEMPLATE_BEGIN,
                 ss->suite->name,
                 ss->nb_tests,
                 ss->tests_failed,
@@ -175,15 +176,11 @@ void xml_log_post_all(struct criterion_global_stats *stats) {
             );
 
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
-            print_test(ts, ss);
+            print_test(f, ts, ss);
         }
 
-        criterion_important(XML_TESTSUITE_TEMPLATE_END);
+        fprintf(f, XML_TESTSUITE_TEMPLATE_END);
     }
 
-    criterion_important(XML_BASE_TEMPLATE_END);
+    fprintf(f, XML_BASE_TEMPLATE_END);
 }
-
-struct criterion_output_provider xml_logging = {
-    .log_post_all = xml_log_post_all,
-};

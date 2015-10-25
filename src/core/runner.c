@@ -350,6 +350,7 @@ struct criterion_test_set *criterion_initialize(void) {
 
     criterion_init_output();
     criterion_register_output_provider("tap", tap_report);
+    criterion_register_output_provider("xml", xml_report);
 
     return criterion_init();
 }
