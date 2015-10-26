@@ -63,8 +63,10 @@
     "    -S or --short-filename: only display the base "    \
             "name of the source file on a failure\n"        \
     PATTERN_USAGE                                           \
-    "    --tap: enables TAP formatting\n"                   \
-    "    --xml: enables XML formatting\n"                   \
+    "    --tap[=FILE]: writes TAP report in FILE "          \
+            "(no file or \"-\" means stderr)\n"             \
+    "    --xml[=FILE]: writes XML report in FILE "          \
+            "(no file or \"-\" means stderr)\n"             \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
             "prematurely after the test\n"                  \
