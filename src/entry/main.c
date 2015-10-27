@@ -53,6 +53,7 @@
     "usage: %s OPTIONS\n"                                   \
     "options: \n"                                           \
     "    -h or --help: prints this message\n"               \
+    "    -q or --quiet: disables all logging\n"             \
     "    -v or --version: prints the version of criterion " \
             "these tests have been linked against\n"        \
     "    -l or --list: prints all the tests in a list\n"    \
@@ -133,6 +134,7 @@ int atou(const char *str) {
 int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
+        {"quiet",           no_argument,        0, 'q'},
         {"version",         no_argument,        0, 'v'},
         {"tap",             optional_argument,  0, 't'},
         {"xml",             optional_argument,  0, 'x'},
@@ -195,7 +197,8 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
-    for (int c; (c = getopt_long(argc, argv, "hvlfj:S", opts, NULL)) != -1;) {
+    bool quiet = false;
+    for (int c; (c = getopt_long(argc, argv, "hvlfj:Sq", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
@@ -207,8 +210,9 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
-            case 't': criterion_add_output("tap", DEF(optarg, "-")); break;
-            case 'x': criterion_add_output("xml", DEF(optarg, "-")); break;
+            case 'q': quiet = true; break;
+            case 't': quiet = true; criterion_add_output("tap", DEF(optarg, "-")); break;
+            case 'x': quiet = true; criterion_add_output("xml", DEF(optarg, "-")); break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
@@ -216,6 +220,9 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
+    if (quiet)
+        criterion_options.logging_threshold = CRITERION_LOG_LEVEL_QUIET;
+
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)

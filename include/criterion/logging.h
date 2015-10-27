@@ -38,6 +38,8 @@ using std::va_list;
 enum criterion_logging_level {
     CRITERION_INFO = 1,
     CRITERION_IMPORTANT,
+
+    CRITERION_LOG_LEVEL_QUIET = 1 << 30,
 };
 
 enum criterion_logging_prefix {
