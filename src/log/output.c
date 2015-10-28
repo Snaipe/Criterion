@@ -44,6 +44,13 @@ int criterion_add_output(const char *provider, const char *path) {
 }
 
 void criterion_free_output(void) {
+    for (khint_t k = kh_begin(outputs); k != kh_end(outputs); ++k) {
+        if (!kh_exist(outputs, k))
+            continue;
+        str_vec *vec = kh_value(outputs, k);
+        kv_destroy(*vec);
+        free(vec);
+    }
     kh_destroy(ht_str, reporters);
     kh_destroy(ht_path, outputs);
 }

@@ -361,6 +361,8 @@ void criterion_finalize(struct criterion_test_set *set) {
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
+
+    criterion_free_output();
 }
 
 static void run_tests_async(struct criterion_test_set *set,
