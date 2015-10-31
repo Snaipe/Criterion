@@ -70,12 +70,16 @@ endif()
 
 # Find dependencies
 
-find_package(Gettext)
-find_package(Libintl)
-if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
-  include(GettextTranslate)
-  add_subdirectory(po)
-  set(ENABLE_NLS 1)
+option(I18N "Turn on internationalization" ON)
+
+if (I18N)
+  find_package(Gettext)
+  find_package(Libintl)
+  if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
+    include(GettextTranslate)
+    add_subdirectory(po)
+    set(ENABLE_NLS 1)
+  endif ()
 endif ()
 
 include(CheckLibraryExists)
