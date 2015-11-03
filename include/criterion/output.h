@@ -28,9 +28,7 @@
 
 typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
 
-void criterion_init_output(void);
 int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
 int criterion_add_output(const char *provider, const char *path);
-void criterion_free_output(void);
 
 #endif /* !CRITERION_OUTPUT_H_ */

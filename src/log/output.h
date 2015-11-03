@@ -27,6 +27,7 @@
 # include "criterion/output.h"
 
 void process_all_output(struct criterion_global_stats *stats);
+void criterion_free_output(void);
 
 void tap_report(FILE *f, struct criterion_global_stats *stats);
 void xml_report(FILE *f, struct criterion_global_stats *stats);

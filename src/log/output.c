@@ -12,12 +12,10 @@ KHASH_MAP_INIT_STR(ht_path, str_vec*)
 static khash_t(ht_str) *reporters;
 static khash_t(ht_path) *outputs;
 
-void criterion_init_output(void) {
-    reporters = kh_init(ht_str);
-    outputs = kh_init(ht_path);
-}
-
 int criterion_register_output_provider(const char *name, criterion_reporter *reporter) {
+    if (!reporters)
+        reporters = kh_init(ht_str);
+
     int absent;
     khint_t k = kh_put(ht_str, reporters, name, &absent);
     kh_value(reporters, k) = reporter;
@@ -25,6 +23,9 @@ int criterion_register_output_provider(const char *name, criterion_reporter *rep
 }
 
 int criterion_add_output(const char *provider, const char *path) {
+    if (!outputs)
+        outputs = kh_init(ht_path);
+
     khint_t k = kh_get(ht_path, outputs, provider);
 
     if (k == kh_end(outputs)) {
@@ -44,18 +45,25 @@ int criterion_add_output(const char *provider, const char *path) {
 }
 
 void criterion_free_output(void) {
-    for (khint_t k = kh_begin(outputs); k != kh_end(outputs); ++k) {
-        if (!kh_exist(outputs, k))
-            continue;
-        str_vec *vec = kh_value(outputs, k);
-        kv_destroy(*vec);
-        free(vec);
+    if (reporters)
+        kh_destroy(ht_str, reporters);
+
+    if (outputs) {
+        for (khint_t k = kh_begin(outputs); k != kh_end(outputs); ++k) {
+            if (!kh_exist(outputs, k))
+                continue;
+            str_vec *vec = kh_value(outputs, k);
+            kv_destroy(*vec);
+            free(vec);
+        }
+        kh_destroy(ht_path, outputs);
     }
-    kh_destroy(ht_str, reporters);
-    kh_destroy(ht_path, outputs);
 }
 
 void process_all_output(struct criterion_global_stats *stats) {
+    if (!outputs || !reporters)
+        return;
+
     for (khint_t k = kh_begin(reporters); k != kh_end(reporters); ++k) {
         if (!kh_exist(reporters, k))
             continue;
