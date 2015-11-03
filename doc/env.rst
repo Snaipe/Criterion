@@ -75,10 +75,12 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_ENABLE_XML``:      Same as ``--xml``.
 * ``CRITERION_FAIL_FAST``:       Same as ``--fail-fast``.
 * ``CRITERION_USE_ASCII``:       Same as ``--ascii``.
-* ``CRITERION_JOBS``:            Same as ``jobs``. Sets the number of jobs to
+* ``CRITERION_JOBS``:            Same as ``--jobs``. Sets the number of jobs to
   its value.
 * ``CRITERION_SHORT_FILENAME``:  Same as ``--short-filename``.
 * ``CRITERION_VERBOSITY_LEVEL``: Same as ``--verbose``. Sets the verbosity level
   to its value.
 * ``CRITERION_TEST_PATTERN``:    Same as ``--pattern``. Sets the test pattern
   to its value. (\*nix only)
+* ``CRITERION_DISABLE_TIME_MEASUREMENTS``: Disables any time measurements on
+  the tests.
