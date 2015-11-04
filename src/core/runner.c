@@ -37,7 +37,7 @@
 #include "wrappers/wrap.h"
 #include "string/i18n.h"
 #include "io/event.h"
-#include "log/output.h"
+#include "io/output.h"
 #include "runner_coroutine.h"
 #include "stats.h"
 #include "runner.h"

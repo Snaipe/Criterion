@@ -233,7 +233,7 @@ void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const c
     free(dup);
 }
 
-struct criterion_output_provider normal_logging = {
+struct criterion_logger normal_logging = {
     .log_pre_all        = normal_log_pre_all,
     .log_pre_init       = normal_log_pre_init,
     .log_pre_suite      = normal_log_pre_suite,

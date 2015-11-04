@@ -30,7 +30,7 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "core/runner.h"
-#include "log/output.h"
+#include "io/output.h"
 #include "config.h"
 #include "common.h"
 
