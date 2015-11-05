@@ -4,7 +4,7 @@
 #include <string>
 
 // set a timeout for I/O tests
-TestSuite(redirect, .timeout = 0.1);
+TestSuite(redirect, .timeout = 1);
 
 #if __GNUC__ >= 5
 Test(redirect, mock) {
