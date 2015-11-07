@@ -149,6 +149,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #endif
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
+        {"output",          required_argument,  0, 'O'},
         {0,                 0,                  0,  0 }
     };
 
@@ -198,7 +199,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     bool do_print_version = false;
     bool do_print_usage = false;
     bool quiet = false;
-    for (int c; (c = getopt_long(argc, argv, "hvlfj:Sq", opts, NULL)) != -1;) {
+    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
@@ -216,6 +217,20 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
+            case 'O': {
+                char *arg = strdup(optarg);
+                char *buf;
+                strtok_r(arg,  ":", &buf);
+
+                char *path = strtok_r(NULL, ":", &buf);
+                if (arg == NULL || path == NULL) {
+                    do_print_usage = true;
+                    break;
+                }
+
+                quiet = true;
+                criterion_add_output(arg, path);
+            } break;
             case '?':
             default : do_print_usage = handle_unknown_arg; break;
         }

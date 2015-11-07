@@ -26,7 +26,15 @@ Writing to a file with an output provider
 -----------------------------------------
 
 To tell criterion to write a report to a specific file using the output provider
-of your choice, you need to call ``criterion_add_output``:
+of your choice, you can either pass ``--output`` as a command-line
+parameter:
+
+.. code-block:: bash
+
+    ./my_tests --output="provider name":/path/to/file
+
+Or, you can do so directly by calling ``criterion_add_output`` before the
+runner stops:
 
 .. code-block:: c
 
