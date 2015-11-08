@@ -29,6 +29,7 @@
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
+#include "compat/strtok.h"
 #include "core/runner.h"
 #include "io/output.h"
 #include "config.h"
@@ -219,7 +220,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'h': do_print_usage = true; break;
             case 'O': {
                 char *arg = strdup(optarg);
-                char *buf;
+                char *buf = NULL;
                 strtok_r(arg,  ":", &buf);
 
                 char *path = strtok_r(NULL, ":", &buf);
