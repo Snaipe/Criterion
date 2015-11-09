@@ -120,29 +120,30 @@ const char *get_status_string(struct criterion_test_stats *ts,
     return status;
 }
 
-static void print_test(struct criterion_test_stats *ts,
+static void print_test(FILE *f,
+                       struct criterion_test_stats *ts,
                        struct criterion_suite_stats *ss) {
 
-    criterion_important(JSON_TEST_TEMPLATE_BEGIN,
+    fprintf(f, JSON_TEST_TEMPLATE_BEGIN,
             ts->test->name,
             (size_t) (ts->passed_asserts + ts->failed_asserts),
             get_status_string(ts, ss)
         );
 
     if (is_disabled(ts->test, ss->suite)) {
-        criterion_important(JSON_SKIPPED_MSG_ENTRY);
+        fprintf(f, JSON_SKIPPED_MSG_ENTRY);
     } else if (ts->crashed) {
-        criterion_important(JSON_CRASH_MSG_ENTRY);
+        fprintf(f, JSON_CRASH_MSG_ENTRY);
     } else if (ts->timed_out) {
-        criterion_important(JSON_TIMEOUT_MSG_ENTRY);
+        fprintf(f, JSON_TIMEOUT_MSG_ENTRY);
     } else if (ts->failed) {
-        criterion_important(JSON_TEST_FAILED_TEMPLATE_BEGIN);
+        fprintf(f, JSON_TEST_FAILED_TEMPLATE_BEGIN);
 
         bool first = true;
         for (struct criterion_assert_stats *asrt = ts->asserts; asrt; asrt = asrt->next) {
             if (!asrt->passed) {
                 if (!first) {
-                    criterion_important(",\n");
+                    fprintf(f, ",\n");
                 } else {
                     first = false;
                 }
@@ -152,36 +153,36 @@ static void print_test(struct criterion_test_stats *ts,
                 char *saveptr = NULL;
                 char *line = strtok_r(dup, "\n", &saveptr);
 
-                criterion_important(JSON_FAILURE_MSG_ENTRY,
+                fprintf(f, JSON_FAILURE_MSG_ENTRY,
                         sf ? basename_compat(asrt->file) : asrt->file,
                         asrt->line,
                         line
                     );
 
                 while ((line = strtok_r(NULL, "\n", &saveptr))) {
-                    criterion_important(",\n            \"  %s\"\n", line);
+                    fprintf(f, ",\n            \"  %s\"\n", line);
                 }
                 free(dup);
             }
         }
-        criterion_important(JSON_TEST_FAILED_TEMPLATE_END);
+        fprintf(f, JSON_TEST_FAILED_TEMPLATE_END);
     }
 
-    criterion_important(JSON_TEST_TEMPLATE_END);
+    fprintf(f, JSON_TEST_TEMPLATE_END);
 }
 
-void json_log_post_all(struct criterion_global_stats *stats) {
-    criterion_important(JSON_BASE_TEMPLATE_BEGIN,
+void json_report(FILE *f, struct criterion_global_stats *stats) {
+    fprintf(f, JSON_BASE_TEMPLATE_BEGIN,
             stats->tests_passed,
             stats->tests_failed,
             stats->tests_crashed,
             stats->tests_skipped
         );
 
-    criterion_important(JSON_TESTSUITE_LIST_TEMPLATE_BEGIN);
+    fprintf(f, JSON_TESTSUITE_LIST_TEMPLATE_BEGIN);
     for (struct criterion_suite_stats *ss = stats->suites; ss; ss = ss->next) {
 
-        criterion_important(JSON_TESTSUITE_TEMPLATE_BEGIN,
+        fprintf(f, JSON_TESTSUITE_TEMPLATE_BEGIN,
                 ss->suite->name,
                 ss->tests_passed,
                 ss->tests_failed,
@@ -189,21 +190,17 @@ void json_log_post_all(struct criterion_global_stats *stats) {
                 ss->tests_skipped
             );
 
-        criterion_important(JSON_TEST_LIST_TEMPLATE_BEGIN);
+        fprintf(f, JSON_TEST_LIST_TEMPLATE_BEGIN);
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
-            print_test(ts, ss);
-            criterion_important(ts->next ? ",\n" : "\n");
+            print_test(f, ts, ss);
+            fprintf(f, ts->next ? ",\n" : "\n");
         }
-        criterion_important(JSON_TEST_LIST_TEMPLATE_END);
+        fprintf(f, JSON_TEST_LIST_TEMPLATE_END);
 
-        criterion_important(JSON_TESTSUITE_TEMPLATE_END);
-        criterion_important(ss->next ? ",\n" : "\n");
+        fprintf(f, JSON_TESTSUITE_TEMPLATE_END);
+        fprintf(f, ss->next ? ",\n" : "\n");
     }
-    criterion_important(JSON_TESTSUITE_LIST_TEMPLATE_END);
+    fprintf(f, JSON_TESTSUITE_LIST_TEMPLATE_END);
 
-    criterion_important(JSON_BASE_TEMPLATE_END);
+    fprintf(f, JSON_BASE_TEMPLATE_END);
 }
-
-struct criterion_output_provider json_logging = {
-    .log_post_all = json_log_post_all,
-};
