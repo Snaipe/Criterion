@@ -73,7 +73,9 @@
     "    --no-early-exit: do not exit the test worker "     \
             "prematurely after the test\n"                  \
     "    --verbose[=level]: sets verbosity to level "       \
-            "(1 by default)\n"
+            "(1 by default)\n"                              \
+    "    -OP:F or --output=PROVIDER=FILE: write test "      \
+            "report to FILE using the specified provider\n"
 
 int print_usage(char *progname) {
     fprintf(stderr, USAGE, progname);
