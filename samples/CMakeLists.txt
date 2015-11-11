@@ -79,13 +79,13 @@ add_samples("${CMAKE_CURRENT_LIST_DIR}/tests" "${SAMPLES}")
 if (NOT MSVC) # we disable the scripted tests when building with MSVC
 
 foreach(script ${SCRIPTS})
-    add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
+    add_test(${script} sh "${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh")
     set_property(TEST ${script} PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
     )
 
-    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${script})
+    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" "tests/${script}.sh")
     set_property(TEST ${script}_compare PROPERTY
         ENVIRONMENT "LC_ALL=en_US.utf8"
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
