@@ -160,7 +160,7 @@ static void print_test(FILE *f,
                     );
 
                 while ((line = strtok_r(NULL, "\n", &saveptr))) {
-                    fprintf(f, ",\n            \"  %s\"\n", line);
+                    fprintf(f, ",\n            \"  %s\"", line);
                 }
                 free(dup);
             }
