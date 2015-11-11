@@ -135,6 +135,7 @@ set(SOURCE_FILES
   src/io/output.h
   src/io/tap.c
   src/io/xml.c
+  src/io/json.c
   src/log/logging.c
   src/log/normal.c
   src/string/i18n.c

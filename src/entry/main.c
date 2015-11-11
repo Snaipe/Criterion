@@ -142,6 +142,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"version",         no_argument,        0, 'v'},
         {"tap",             optional_argument,  0, 't'},
         {"xml",             optional_argument,  0, 'x'},
+        {"json",            optional_argument,  0, 'n'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
@@ -218,6 +219,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'q': quiet = true; break;
             case 't': quiet = true; criterion_add_output("tap", DEF(optarg, "-")); break;
             case 'x': quiet = true; criterion_add_output("xml", DEF(optarg, "-")); break;
+            case 'n': quiet = true; criterion_add_output("json", DEF(optarg, "-")); break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;

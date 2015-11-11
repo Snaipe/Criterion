@@ -29,6 +29,9 @@ Command line arguments
 * ``--xml[=FILE]``: Writes JUnit4 XML report to FILE.
   No file or ``"-"`` means ``stderr``. This option is equivalent to
   ``--output=xml:FILE``.
+* ``--json[=FILE]``: Writes a JSON report to FILE.
+  No file or ``"-"`` means ``stderr``. This option is equivalent to
+  ``--output=json:FILE``.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
   sets the verbosity level to that integer.
 * ``-OPROVIDER:FILE or --output=PROVIDER:FILE``: Write a test report to FILE
