@@ -38,6 +38,8 @@ using std::va_list;
 enum criterion_logging_level {
     CRITERION_INFO = 1,
     CRITERION_IMPORTANT,
+
+    CRITERION_LOG_LEVEL_QUIET = 1 << 30,
 };
 
 enum criterion_logging_prefix {
@@ -101,7 +103,7 @@ CR_API void criterion_log(enum criterion_logging_level level, const char *msg, .
 
 # define criterion_perror(...) criterion_plog(CRITERION_IMPORTANT, CRITERION_PREFIX_ERR, __VA_ARGS__)
 
-struct criterion_output_provider {
+struct criterion_logger {
     void (*log_pre_all      )(struct criterion_test_set *set);
     void (*log_pre_suite    )(struct criterion_suite_set *set);
     void (*log_pre_init     )(struct criterion_test *test);
@@ -119,14 +121,10 @@ struct criterion_output_provider {
     void (*log_post_all     )(struct criterion_global_stats *stats);
 };
 
-extern struct criterion_output_provider normal_logging;
-extern struct criterion_output_provider tap_logging;
-extern struct criterion_output_provider xml_logging;
+extern struct criterion_logger normal_logging;
 
 CR_END_C_API
 
 #define CR_NORMAL_LOGGING (&normal_logging)
-#define CR_TAP_LOGGING    (&tap_logging)
-#define CR_XML_LOGGING    (&xml_logging)
 
 #endif /* !CRITERION_LOGGING_H_ */

@@ -23,6 +23,7 @@ include_directories(
   dependencies/libcsptr/include/
   dependencies/dyncall/dyncall/
   dependencies/valgrind/include/
+  dependencies/klib/
 )
 
 if (MSVC)
@@ -130,10 +131,12 @@ set(SOURCE_FILES
   src/io/event.h
   src/io/asprintf.c
   src/io/file.c
+  src/io/output.c
+  src/io/output.h
+  src/io/tap.c
+  src/io/xml.c
   src/log/logging.c
-  src/log/tap.c
   src/log/normal.c
-  src/log/xml.c
   src/string/i18n.c
   src/string/i18n.h
   src/entry/options.c
@@ -170,6 +173,7 @@ set(INTERFACE_FILES
   include/criterion/alloc.h
   include/criterion/parameterized.h
   include/criterion/redirect.h
+  include/criterion/output.h
 )
 
 # Generate the configure file

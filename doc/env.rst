@@ -8,6 +8,7 @@ Command line arguments
 ----------------------
 
 * ``-h or --help``: Show a help message with the available switches.
+* ``-q or --quiet``: Disables all logging.
 * ``-v or --version``: Prints the version of criterion that has been
   linked against.
 * ``-l or --list``: Print all the tests in a list.
@@ -22,10 +23,17 @@ Command line arguments
   This is useful when tracking memory leaks with ``valgrind --tool=memcheck``.
 * ``-S or --short-filename``: The filenames are displayed in their short form.
 * ``--always-succeed``: The process shall exit with a status of ``0``.
-* ``--tap``: Enables the TAP (Test Anything Protocol) output format.
-* ``--xml``: Enables the JUnit4 XML output format.
+* ``--tap[=FILE]``: Writes a TAP (Test Anything Protocol) report to FILE.
+  No file or ``"-"`` means ``stderr``. This option is equivalent to
+  ``--output=tap:FILE``.
+* ``--xml[=FILE]``: Writes JUnit4 XML report to FILE.
+  No file or ``"-"`` means ``stderr``. This option is equivalent to
+  ``--output=xml:FILE``.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
   sets the verbosity level to that integer.
+* ``-OPROVIDER:FILE or --output=PROVIDER:FILE``: Write a test report to FILE
+  using the output provider named by PROVIDER. FILE may be a relative path, or
+  ``"-"`` to write to ``stderr``.
 
 Shell Wildcard Pattern
 ----------------------
@@ -71,8 +79,6 @@ Environment variables are alternatives to command line switches when set to 1.
 
 * ``CRITERION_ALWAYS_SUCCEED``:  Same as ``--always-succeed``.
 * ``CRITERION_NO_EARLY_EXIT``:   Same as ``--no-early-exit``.
-* ``CRITERION_ENABLE_TAP``:      Same as ``--tap``.
-* ``CRITERION_ENABLE_XML``:      Same as ``--xml``.
 * ``CRITERION_FAIL_FAST``:       Same as ``--fail-fast``.
 * ``CRITERION_USE_ASCII``:       Same as ``--ascii``.
 * ``CRITERION_JOBS``:            Same as ``--jobs``. Sets the number of jobs to

@@ -37,6 +37,7 @@
 #include "wrappers/wrap.h"
 #include "string/i18n.h"
 #include "io/event.h"
+#include "io/output.h"
 #include "runner_coroutine.h"
 #include "stats.h"
 #include "runner.h"
@@ -347,6 +348,9 @@ struct criterion_test_set *criterion_initialize(void) {
     if (resume_child()) // (windows only) resume from the fork
         exit(0);
 
+    criterion_register_output_provider("tap", tap_report);
+    criterion_register_output_provider("xml", xml_report);
+
     return criterion_init();
 }
 
@@ -356,6 +360,8 @@ void criterion_finalize(struct criterion_test_set *set) {
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
+
+    criterion_free_output();
 }
 
 static void run_tests_async(struct criterion_test_set *set,
@@ -450,6 +456,8 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
 
     report(POST_ALL, stats);
     log(post_all, stats);
+
+    process_all_output(stats);
 
 cleanup:
     sfree(g_worker_pipe);

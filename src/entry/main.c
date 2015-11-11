@@ -29,7 +29,10 @@
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
+#include "compat/posix.h"
+#include "compat/strtok.h"
 #include "core/runner.h"
+#include "io/output.h"
 #include "config.h"
 #include "common.h"
 
@@ -52,6 +55,7 @@
     "usage: %s OPTIONS\n"                                   \
     "options: \n"                                           \
     "    -h or --help: prints this message\n"               \
+    "    -q or --quiet: disables all logging\n"             \
     "    -v or --version: prints the version of criterion " \
             "these tests have been linked against\n"        \
     "    -l or --list: prints all the tests in a list\n"    \
@@ -62,13 +66,17 @@
     "    -S or --short-filename: only display the base "    \
             "name of the source file on a failure\n"        \
     PATTERN_USAGE                                           \
-    "    --tap: enables TAP formatting\n"                   \
-    "    --xml: enables XML formatting\n"                   \
+    "    --tap[=FILE]: writes TAP report in FILE "          \
+            "(no file or \"-\" means stderr)\n"             \
+    "    --xml[=FILE]: writes XML report in FILE "          \
+            "(no file or \"-\" means stderr)\n"             \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
             "prematurely after the test\n"                  \
     "    --verbose[=level]: sets verbosity to level "       \
-            "(1 by default)\n"
+            "(1 by default)\n"                              \
+    "    -OP:F or --output=PROVIDER=FILE: write test "      \
+            "report to FILE using the specified provider\n"
 
 int print_usage(char *progname) {
     fprintf(stderr, USAGE, progname);
@@ -130,9 +138,10 @@ int atou(const char *str) {
 int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
+        {"quiet",           no_argument,        0, 'q'},
         {"version",         no_argument,        0, 'v'},
-        {"tap",             no_argument,        0, 't'},
-        {"xml",             no_argument,        0, 'x'},
+        {"tap",             optional_argument,  0, 't'},
+        {"xml",             optional_argument,  0, 'x'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
@@ -144,6 +153,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #endif
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
+        {"output",          required_argument,  0, 'O'},
         {0,                 0,                  0,  0 }
     };
 
@@ -187,15 +197,13 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         opt->pattern = env_pattern;
 #endif
 
-    bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
-    bool use_xml = !strcmp("1", DEF(getenv("CRITERION_ENABLE_XML"), "0"));
-
     opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
 
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
-    for (int c; (c = getopt_long(argc, argv, "hvlfj:S", opts, NULL)) != -1;) {
+    bool quiet = false;
+    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
@@ -207,19 +215,33 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
-            case 't': use_tap = true; break;
-            case 'x': use_xml = true; break;
+            case 'q': quiet = true; break;
+            case 't': quiet = true; criterion_add_output("tap", DEF(optarg, "-")); break;
+            case 'x': quiet = true; criterion_add_output("xml", DEF(optarg, "-")); break;
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
+            case 'O': {
+                char *arg = strdup(optarg);
+                char *buf = NULL;
+                strtok_r(arg,  ":", &buf);
+
+                char *path = strtok_r(NULL, ":", &buf);
+                if (arg == NULL || path == NULL) {
+                    do_print_usage = true;
+                    break;
+                }
+
+                quiet = true;
+                criterion_add_output(arg, path);
+            } break;
             case '?':
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
-    if (use_tap)
-        criterion_options.output_provider = CR_TAP_LOGGING;
-    else if (use_xml)
-        criterion_options.output_provider = CR_XML_LOGGING;
+    if (quiet)
+        criterion_options.logging_threshold = CRITERION_LOG_LEVEL_QUIET;
+
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)

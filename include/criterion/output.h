@@ -21,10 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-# include "criterion/options.h"
+#ifndef CRITERION_OUTPUT_H_
+# define CRITERION_OUTPUT_H_
 
-struct criterion_options criterion_options = {
-    .logging_threshold = CRITERION_IMPORTANT,
-    .logger            = &normal_logging,
-    .measure_time      = true,
-};
+# include "stats.h"
+
+typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
+
+int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
+int criterion_add_output(const char *provider, const char *path);
+
+#endif /* !CRITERION_OUTPUT_H_ */
