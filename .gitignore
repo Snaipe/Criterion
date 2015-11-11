@@ -16,7 +16,7 @@
 !*.po
 !*.in
 !samples/tests/*.sh
-!samples/*.expected
+!samples/**/*.expected
 
 !LICENSE
 !HEADER
