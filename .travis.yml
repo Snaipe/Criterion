@@ -70,7 +70,8 @@ matrix:
         DEPLOY: true
 
 script:
-  - export CXX=${${CC/gcc/g++/}/clang/clang++}
+  - export CXX=${CC/gcc/g++/}
+  - export CXX=${CXX/clang/clang++}
   - mkdir -p build && cd $_
   - >
       cmake
