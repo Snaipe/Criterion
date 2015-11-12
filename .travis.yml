@@ -69,6 +69,13 @@ matrix:
         CMAKE_OPTS: -DLANG_OBJC=ON
         DEPLOY: true
 
+before_install:
+  - >
+      [ "$TRAVIS_OS_NAME" = "osx" ] && (
+        brew update;
+        brew outdated cmake || brew upgrade cmake
+      )
+
 script:
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - mkdir -p build && cd $_
