@@ -2,8 +2,6 @@ language: c
 
 sudo: false
 
-osx_image: xcode7
-
 addons:
   apt:
     sources:
@@ -73,11 +71,13 @@ before_install:
   - |
       if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         brew update;
-        brew outdated cmake || brew upgrade cmake
+        brew install llvm --with-clang --with-asan --HEAD
       fi
+  - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
+  - $CC --version
+  - $CXX --version
 
 script:
-  - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - mkdir -p build && cd $_
   - >
       cmake
