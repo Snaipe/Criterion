@@ -70,11 +70,11 @@ matrix:
         DEPLOY: true
 
 before_install:
-  - >
-      [ "$TRAVIS_OS_NAME" = "osx" ] && (
+  - |
+      if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         brew update;
         brew outdated cmake || brew upgrade cmake
-      )
+      fi
 
 script:
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
@@ -92,10 +92,11 @@ script:
   - ctest -j4
 
 after_success:
-  - >
-      [ "$COVERAGE" = "ON" ] &&
-      make gcov &&
-      bash <(curl -s https://codecov.io/bash)
+  - |
+      if [ "$COVERAGE" = "ON" ]; then
+        make gcov
+        bash <(curl -s https://codecov.io/bash)
+      fi
 
 after_failure:
   - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
