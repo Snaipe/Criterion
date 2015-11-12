@@ -70,8 +70,9 @@ matrix:
 before_install:
   - |
       if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "clang" ]; then
-        brew update;
-        brew install llvm --with-clang --with-asan --HEAD
+        brew update
+        brew unlink cmake
+        brew install llvm cmake
       fi
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - $CC --version
