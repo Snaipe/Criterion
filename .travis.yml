@@ -1,12 +1,8 @@
 language: c
-os:
-- linux
-- osx
-
-compiler:
-- gcc-4.9
 
 sudo: false
+
+osx_image: xcode7
 
 addons:
   apt:
@@ -17,33 +13,82 @@ addons:
     - g++-4.9
     - gobjc-4.9
     - gnustep-devel
-env:
-  global:
-    GCOV: gcov-4.9
-    CXX: g++-4.9
-  matrix:
-    - CONFIGURATION=Debug          COVERAGE=ON
-    - CONFIGURATION=Release        COVERAGE=OFF
-    - CONFIGURATION=RelWithDebInfo COVERAGE=OFF
+
+matrix:
+  include:
+    # Linux Debug, GCC 4.9
+    - compiler: gcc-4.9
+      env:
+        CONFIGURATION: Debug
+        GCOV: gcov-4.9
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        COVERAGE: ON
+    # Linux Release, GCC 4.9
+    - compiler: gcc-4.9
+      env:
+        CONFIGURATION: Release
+        CMAKE_OPTS: -DLANG_OBJC=ON
+    # Linux RelWithDebInfo, GCC 4.9
+    - compiler: gcc-4.9
+      env:
+        CONFIGURATION: RelWithDebInfo
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        DEPLOY: true
+    # OSX Debug, GCC 4.9
+    - os: osx
+      compiler: gcc-4.9
+      env:
+        CONFIGURATION: Debug
+        GCOV: gcov-4.9
+        COVERAGE: ON
+    # OSX Release, GCC 4.9
+    - os: osx
+      compiler: gcc-4.9
+      env: CONFIGURATION=Release
+    # OSX RelWithDebInfo, GCC 4.9
+    - os: osx
+      compiler: gcc-4.9
+      env: CONFIGURATION=RelWithDebInfo
+    # OSX Debug, Clang
+    - os: osx
+      compiler: clang
+      env:
+        CONFIGURATION: Debug
+        CMAKE_OPTS: -DLANG_OBJC=ON
+    # OSX Release, Clang
+    - os: osx
+      compiler: clang
+      env:
+        CONFIGURATION: Release
+        CMAKE_OPTS: -DLANG_OBJC=ON
+    # OSX RelWithDebInfo, Clang
+    - os: osx
+      compiler: clang
+      env:
+        CONFIGURATION: RelWithDebInfo
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        DEPLOY: true
 
 script:
-  - mkdir -p build
-  - cd build
+  - export CXX=${${CC/gcc/g++/}/clang/clang++}
+  - mkdir -p build && cd $_
   - >
       cmake
       -Wno-dev
       -DCTESTS=ON
-      -DCOVERALLS=${COVERAGE}
+      -DCOVERALLS=${COVERAGE:-OFF}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
-      -DLANG_OBJC=ON
+      ${CMAKE_OPTS}
       ..
   - TERM=dumb cmake --build . --target criterion_tests -- -j4
   - ctest -j4
 
 after_success:
-  - make gcov
-  - bash <(curl -s https://codecov.io/bash)
+  - >
+      [ "$COVERAGE" = "ON" ] &&
+      make gcov &&
+      bash <(curl -s https://codecov.io/bash)
 
 after_failure:
   - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
@@ -61,4 +106,4 @@ deploy:
   on:
     repo: Snaipe/Criterion
     tags: true
-    condition: $CONFIGURATION = RelWithDebInfo
+    condition: $DEPLOY = true
