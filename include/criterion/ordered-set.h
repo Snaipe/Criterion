@@ -37,7 +37,6 @@ struct criterion_ordered_set {
 
 struct criterion_ordered_set_node {
     struct criterion_ordered_set_node *next;
-    char data[0];
 };
 
 CR_BEGIN_C_API
@@ -54,6 +53,6 @@ CR_END_C_API
 # define FOREACH_SET(Elt, Set)                                              \
     for (struct criterion_ordered_set_node *n = Set->first; n; n = n->next) \
         for (int cond = 1; cond;)                                           \
-            for (Elt = (void*) n->data; cond && (cond = 0, 1);)
+            for (Elt = (void*) (n + 1); cond && (cond = 0, 1);)
 
 #endif /* !CRITERION_ORDERED_SET_H_ */

@@ -91,7 +91,7 @@ void cr_theory_reset(struct criterion_theory_context *ctx) {
 }
 
 void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void)) {
-    dcCallVoid(ctx->vm, (DCpointer) fnptr);
+    dcCallVoid(ctx->vm, (DCpointer) (unsigned long long) fnptr);
 }
 
 static bool contains_word(const char *str, const char *pattern, size_t sz) {

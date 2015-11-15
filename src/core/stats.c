@@ -59,7 +59,7 @@ static void nothing(CR_UNUSED s_glob_stats *stats,
                     CR_UNUSED s_suite_stats *sstats,
                     CR_UNUSED s_test_stats *tstats,
                     CR_UNUSED void *data) {
-};
+}
 
 static void destroy_stats(void *ptr, CR_UNUSED void *meta) {
     s_glob_stats *stats = ptr;

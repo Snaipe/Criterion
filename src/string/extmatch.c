@@ -134,16 +134,16 @@ static inline void handle_special(struct context *ctx, handler_arg strs[5]) {
         }
 
 # define _ active
-Handler(handle_plus, [POSTSUFFIX] = {_, "+"}, [ELSESTR] = {_, "+" });
-Handler(handle_star, [POSTSUFFIX] = {_, "*"}, [ELSESTR] = {_, ".*"});
-Handler(handle_wild, [POSTSUFFIX] = {_, "?"}, [ELSESTR] = {_, "." });
+Handler(handle_plus, [POSTSUFFIX] = {_, "+"}, [ELSESTR] = {_, "+" })
+Handler(handle_star, [POSTSUFFIX] = {_, "*"}, [ELSESTR] = {_, ".*"})
+Handler(handle_wild, [POSTSUFFIX] = {_, "?"}, [ELSESTR] = {_, "." })
 Handler(handle_excl,
         [POSTPREFIX] = {_,      "?!"},
         [PRESUFFIX]  = {is_eos, "$" },
         [POSTSUFFIX] = {_,      ".*"},
         [ELSESTR]    = {_,      "!" }
-    );
-Handler(handle_at, [ELSESTR] = {_, "@"});
+    )
+Handler(handle_at, [ELSESTR] = {_, "@"})
 # undef _
 
 static void handle_rbra(struct context *ctx, CR_UNUSED char c) {

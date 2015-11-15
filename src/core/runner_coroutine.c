@@ -112,7 +112,7 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
     ccrReturn(NULL);
 
     for (ctx->ns = ctx->set->suites->first; ctx->ns; ctx->ns = ctx->ns->next) {
-        ctx->suite_set = (void*) ctx->ns->data;
+        ctx->suite_set = (void*) (ctx->ns + 1);
 
         if (!ctx->suite_set->tests)
             continue;
@@ -126,7 +126,7 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
         stat_push_event(ctx->stats, ctx->suite_stats, NULL, &ev);
 
         for (ctx->nt = ctx->suite_set->tests->first; ctx->nt; ctx->nt = ctx->nt->next) {
-            ctx->test = (void*) ctx->nt->data;
+            ctx->test = (void*) (ctx->nt + 1);
 
             if (ctx->test->data->kind_ == CR_TEST_PARAMETERIZED
                     && ctx->test->data->param_) {

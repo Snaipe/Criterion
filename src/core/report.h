@@ -27,7 +27,8 @@
 # include "criterion/hooks.h"
 # include "criterion/options.h"
 
-# define report(Kind, Data) call_report_hooks_##Kind(Data)
+# define report(Kind, Data) report_(Kind, Data)
+# define report_(Kind, Data) call_report_hooks_##Kind(Data)
 
 # define DECL_CALL_REPORT_HOOKS(Kind)                         \
     CR_DECL_SECTION_LIMITS(f_report_hook, CR_HOOK_SECTION(Kind));   \

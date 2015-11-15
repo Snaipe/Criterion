@@ -31,6 +31,7 @@
 #include "criterion/options.h"
 #include "criterion/ordered-set.h"
 #include "criterion/logging.h"
+#include "criterion/preprocess.h"
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"
@@ -84,7 +85,7 @@ CR_IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
 // This is here to make the test suite & test sections non-empty
 TestSuite();
-Test(,) {};
+Test(,) {}
 
 static INLINE void nothing(void) {}
 
@@ -178,13 +179,16 @@ void run_test_child(struct criterion_test *test,
     g_wrappers[test->data->lang_](test, suite);
 }
 
-#define push_event(Kind, ...)                                       \
+#define push_event(...)                                             \
     do {                                                            \
         stat_push_event(ctx->stats,                                 \
                 ctx->suite_stats,                                   \
                 ctx->test_stats,                                    \
-                &(struct event) { .kind = Kind, __VA_ARGS__ });     \
-        report(Kind, ctx->test_stats);                              \
+                &(struct event) {                                   \
+                    .kind = CR_VA_HEAD(__VA_ARGS__),                \
+                    CR_VA_TAIL(__VA_ARGS__)                         \
+                });                                                 \
+        report(CR_VA_HEAD(__VA_ARGS__), ctx->test_stats);           \
     } while (0)
 
 s_pipe_handle *g_worker_pipe;

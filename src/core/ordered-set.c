@@ -36,7 +36,7 @@ static INLINE void nothing(CR_UNUSED void *ptr, CR_UNUSED void *meta) {}
 static void destroy_ordered_set_node(void *ptr, void *meta) {
     struct criterion_ordered_set *set = *(void **) meta;
     struct criterion_ordered_set_node *n = ptr;
-    DEF(set->dtor, nothing)(n->data, NULL);
+    DEF(set->dtor, nothing)(n + 1, NULL);
     sfree(((struct criterion_ordered_set_node *) ptr)->next);
 }
 
@@ -58,11 +58,11 @@ void *insert_ordered_set(struct criterion_ordered_set *l,
                          size_t size) {
     int cmp;
     struct criterion_ordered_set_node *n, *prev = NULL;
-    for (n = l->first; n && (cmp = l->cmp(ptr, n->data)) > 0; n = n->next)
+    for (n = l->first; n && (cmp = l->cmp(ptr, n + 1)) > 0; n = n->next)
         prev = n;
 
     if (n && !cmp) // element already exists
-        return n->data;
+        return n + 1;
 
     struct criterion_ordered_set_node *new = smalloc(
             .size = sizeof(struct criterion_ordered_set_node) + size,
@@ -72,7 +72,7 @@ void *insert_ordered_set(struct criterion_ordered_set *l,
     if (!new)
         return NULL;
 
-    memcpy(new->data, ptr, size);
+    memcpy(new + 1, ptr, size);
     new->next = n;
     if (prev) {
         prev->next = new;
@@ -81,5 +81,5 @@ void *insert_ordered_set(struct criterion_ordered_set *l,
     }
 
     ++l->size;
-    return new->data;
+    return new + 1;
 }
