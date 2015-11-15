@@ -31,12 +31,10 @@
 #  define _WIN32_WINNT 0x0502
 #  include <windows.h>
 
-#  include <stdint.h>
-
-typedef int32_t cr_off32;
-typedef int64_t cr_off64;
-
 #  if defined(__MINGW32__) || defined(__MINGW64__)
+
+#  include "off_t.h"
+
 #   if !defined(__MINGW64__)
 #    define off_t cr_off32
 #   else

@@ -42,10 +42,7 @@
 # endif
 # if defined(__MINGW32__) || defined(__MINGW64__)
 
-# include <stdint.h>
-
-typedef int32_t cr_off32;
-typedef int64_t cr_off64;
+# include "off_t.h"
 
 #  if !defined(__MINGW64__)
 #   define off_t cr_off32
