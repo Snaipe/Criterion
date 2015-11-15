@@ -53,6 +53,10 @@ if (WIN32 AND NOT MSVC)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
 endif()
 
+# Compilation options
+
+option(MINGW_DEFINE_OFF_T "Define off_t and off64_t ourselves before including io.h" OFF)
+
 # Setup coveralls
 
 option(COVERALLS "Turn on coveralls support" OFF)

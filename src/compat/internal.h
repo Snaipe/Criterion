@@ -31,21 +31,18 @@
 #  define _WIN32_WINNT 0x0502
 #  include <windows.h>
 
-#  if defined(__MINGW32__) || defined(__MINGW64__)
+#  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
+#   include "off_t.h"
 
-#   if defined(__STRICT_ANSI__) || defined(MINGW_DEFINE_OFF_T)
-#    include "off_t.h"
-
-#    if !defined(__MINGW64__)
-#     define off_t cr_off32
-#    else
-#     define off_t cr_off64
-#    endif
-#    define off64_t cr_off64
+#   if !defined(__MINGW64__)
+#    define off_t cr_off32
+#   else
+#    define off_t cr_off64
 #   endif
+#   define off64_t cr_off64
 #  endif
 #  include <io.h>
-#  if defined(__MINGW32__) || defined(__MINGW64__)
+#  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
 #   undef off_t
 #   undef off64_t
 #  endif

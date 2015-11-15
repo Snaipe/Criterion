@@ -5,6 +5,7 @@
 #cmakedefine HAVE_PCRE @HAVE_PCRE@
 #cmakedefine ENABLE_VALGRIND_ERRORS @ENABLE_VALGRIND_ERRORS@
 #cmakedefine01 HAVE_STRTOK_S
+#cmakedefine01 MINGW_DEFINE_OFF_T
 
 # define LOCALEDIR "${LOCALEDIR}"
 # define PACKAGE "${PROJECT_NAME}"
