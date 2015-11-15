@@ -33,14 +33,16 @@
 
 #  if defined(__MINGW32__) || defined(__MINGW64__)
 
-#  include "off_t.h"
+#   if defined(__STRICT_ANSI__) || defined(MINGW_DEFINE_OFF_T)
+#    include "off_t.h"
 
-#   if !defined(__MINGW64__)
-#    define off_t cr_off32
-#   else
-#    define off_t cr_off64
+#    if !defined(__MINGW64__)
+#     define off_t cr_off32
+#    else
+#     define off_t cr_off64
+#    endif
+#    define off64_t cr_off64
 #   endif
-#   define off64_t cr_off64
 #  endif
 #  include <io.h>
 #  if defined(__MINGW32__) || defined(__MINGW64__)
