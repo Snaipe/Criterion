@@ -44,8 +44,8 @@
 
 # include <stdint.h>
 
-typedef int32_t cr_off32
-typedef int64_t cr_off64
+typedef int32_t cr_off32;
+typedef int64_t cr_off64;
 
 #  if !defined(__MINGW64__)
 #   define off_t cr_off32
