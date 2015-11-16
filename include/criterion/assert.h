@@ -224,7 +224,7 @@
 
 // Safe array comparison assertions
 
-# if defined(__GNUC__) || defined(__cplusplus)
+# if defined(__GNUC__) || defined(__clang__) || defined(__cplusplus)
 
 #  ifdef __cplusplus
 #   define CR_ARR_COMPARE_(A, B, Size, Cmp, Result)                     \

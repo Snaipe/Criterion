@@ -125,7 +125,7 @@ CR_END_C_API
 # define CR_FAIL_ABORT_ criterion_abort_test
 # define CR_FAIL_CONTINUES_ criterion_continue_test
 
-# ifdef __GNUC__
+# if defined(__GNUC__) || defined(__clang__)
 // We disable the format-zero-length warning because we use the validity of
 // asprintf(out, "") for empty assertion messages
 #  pragma GCC diagnostic ignored "-Wformat-zero-length"
