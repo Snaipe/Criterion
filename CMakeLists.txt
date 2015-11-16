@@ -161,6 +161,9 @@ endif ()
 
 if (CMAKE_ObjectiveC_COMPILER_WORKS)
   set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
+  if ("${CMAKE_ObjectiveC_COMPILER_ID}" STREQUAL "Clang" AND APPLE)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -framework Foundation")
+  endif ()
   add_definitions(-D_NATIVE_OBJC_EXCEPTIONS)
 
   if (NOT WIN32)
