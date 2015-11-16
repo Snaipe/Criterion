@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <exception>
-#include "criterion/assert_base.h"
-#include "criterion/event.h"
+#import <Foundation/Foundation.h>
 
-extern "C" {
+#include "criterion/assert.h"
+#include "criterion/event.h"
 
 #include "core/abort.h"
 #include "core/report.h"
@@ -36,16 +35,19 @@ extern "C" {
 
 static INLINE void nothing(void) {}
 
-void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite) {
+void objc_wrap(struct criterion_test *test, struct criterion_suite *suite) {
 
     criterion_send_event(PRE_INIT, NULL, 0);
-    try {
+    @try {
         if (suite->data)
             (suite->data->init ? suite->data->init : nothing)();
         (test->data->init ? test->data->init : nothing)();
-    } catch (const std::exception &e) {
-        criterion_test_die("Caught an unexpected exception during the test initialization: %s.", e.what());
-    } catch (...) {
+    }
+    @catch (NSException *e) {
+        NSString *reason = [e reason];
+        criterion_test_die("Caught an unexpected exception during the test initialization: %s.", [reason UTF8String]);
+    }
+    @catch (...) {
         criterion_test_die("Caught some unexpected exception during the test initialization.");
     }
     criterion_send_event(PRE_TEST, NULL, 0);
@@ -54,16 +56,19 @@ void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite) {
     if (!setjmp(g_pre_test)) {
         timer_start(&ts);
         if (test->test) {
-            try {
+            @try {
                 if (!test->data->param_) {
                     test->test();
                 } else {
                     void(*param_test_func)(void *) = (void(*)(void*)) test->test;
                     param_test_func(g_worker_context.param->ptr);
                 }
-            } catch (const std::exception &e) {
-                criterion_test_die("Caught an unexpected exception during the test execution: %s.", e.what());
-            } catch (...) {
+            }
+            @catch (NSException *e) {
+                NSString *reason = [e reason];
+                criterion_test_die("Caught an unexpected exception during the test execution: %s.", [reason UTF8String]);
+            }
+            @catch (...) {
                 criterion_test_die("Caught some unexpected exception during the test execution.");
             }
         }
@@ -74,17 +79,18 @@ void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite) {
         elapsed_time = -1;
 
     criterion_send_event(POST_TEST, &elapsed_time, sizeof(double));
-    try {
+    @try {
         (test->data->fini ? test->data->fini : nothing)();
         if (suite->data)
             (suite->data->fini ? suite->data->fini : nothing)();
-    } catch (const std::exception &e) {
-        criterion_test_die("Caught an unexpected exception during the test finalization: %s.", e.what());
-    } catch (...) {
+    }
+    @catch (NSException *e) {
+        NSString *reason = [e reason];
+        criterion_test_die("Caught an unexpected exception during the test finalization: %s.", [reason UTF8String]);
+    }
+    @catch (...) {
         criterion_test_die("Caught some unexpected exception during the test finalization.");
     }
     criterion_send_event(POST_FINI, NULL, 0);
-
-}
 
 }

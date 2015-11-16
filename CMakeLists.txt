@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Criterion C CXX)
+project(Criterion C)
 
 set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
@@ -17,7 +17,10 @@ endif ()
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
 
-include_directories(SYSTEM /usr/local/include)
+include_directories(SYSTEM
+  /usr/local/include
+  /usr/include/GNUstep
+)
 
 include_directories(
   dependencies/libcsptr/include/
@@ -30,6 +33,10 @@ if (MSVC)
   add_subdirectory(dependencies/wingetopt/ EXCLUDE_FROM_ALL)
   include_directories(dependencies/wingetopt/src/)
 endif ()
+
+# Language support
+
+include(Languages)
 
 # Project setup & environment variables
 
@@ -45,7 +52,9 @@ set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS}")
 
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g -std=c++11")
+  if (CMAKE_CXX_COMPILER_WORKS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g -std=c++11")
+  endif ()
 endif ()
 
 if (MSVC)
@@ -98,8 +107,9 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
+  src/core/wrappers/wrap.h
   src/core/wrappers/wrap.c
-  src/core/wrappers/wrap.cc
+  src/core/wrappers/wrappers.c
   src/core/abort.c
   src/core/abort.h
   src/core/report.c
@@ -160,6 +170,23 @@ if (PCRE_FOUND)
     src/string/extmatch.h
   )
   set(HAVE_PCRE 1)
+endif ()
+
+if (CMAKE_CXX_COMPILER_WORKS)
+  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.cc)
+endif ()
+
+if (CMAKE_ObjectiveC_COMPILER_WORKS)
+  set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
+  if ("${CMAKE_ObjectiveC_COMPILER_ID}" STREQUAL "Clang" AND APPLE)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -framework Foundation")
+  endif ()
+  add_definitions(-D_NATIVE_OBJC_EXCEPTIONS)
+
+  if (NOT WIN32)
+    set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} -fPIC")
+  endif ()
+  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.m)
 endif ()
 
 set(INTERFACE_FILES

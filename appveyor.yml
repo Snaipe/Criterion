@@ -45,6 +45,7 @@ install:
       -DI18N=OFF
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
       -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
+      %CMAKE_OPTS%
       -G "%GENERATOR%"
       ..
 

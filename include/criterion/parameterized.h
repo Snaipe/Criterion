@@ -22,6 +22,7 @@
     CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name);                           \
     struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
         CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
+            .lang_ = CR_LANG,                                                  \
             .kind_ = CR_TEST_PARAMETERIZED,                                    \
             .param_ = CR_IDENTIFIER_(Category, Name, param),                   \
             .identifier_ = #Category "/" #Name,                                \

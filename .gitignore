@@ -10,11 +10,13 @@
 !doc/*
 
 !*.c
+!*.m
 !*.cc
 !*.h
 !*.rst
 !*.po
 !*.in
+!.cmake/*.cmake
 !samples/tests/*.sh
 !samples/**/*.expected
 
