@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #include <exception>
-#include "criterion/assert.h"
+#include "criterion/assert_base.h"
 #include "criterion/event.h"
 
 extern "C" {
