@@ -60,7 +60,11 @@ before_deploy:
 
 test_script:
   - cmake --build . --target criterion_tests
-  - ps: try { ctest -j2 } catch { type Testing/Temporary/LastTest.log }
+  - ps: |
+        ctest -j2
+        if (-not $lastexitcode -eq 0) {
+            type Testing/Temporary/LastTest.log
+        }
 
 #after_test:
 #  - 'make coveralls'
