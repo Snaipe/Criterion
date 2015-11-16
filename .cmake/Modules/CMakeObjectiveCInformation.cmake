@@ -156,8 +156,13 @@ set(CMAKE_ObjectiveC_IMPLICIT_LINK_LIBRARIES objc)
 
 # compile a C file into an object file
 if(NOT CMAKE_ObjectiveC_COMPILE_OBJECT)
-  set(CMAKE_ObjectiveC_COMPILE_OBJECT
-    "<CMAKE_ObjectiveC_COMPILER> <DEFINES> <FLAGS> -o <OBJECT>   -c <SOURCE>")
+  if("${CMAKE_VERSION}" VERSION_GREATER 3.3.2)
+    set(CMAKE_ObjectiveC_COMPILE_OBJECT
+        "<CMAKE_ObjectiveC_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -o <OBJECT>   -c <SOURCE>")
+  else ()
+    set(CMAKE_ObjectiveC_COMPILE_OBJECT
+        "<CMAKE_ObjectiveC_COMPILER> <DEFINES> <FLAGS> -o <OBJECT>   -c <SOURCE>")
+  endif ()
 endif()
 
 if(NOT CMAKE_ObjectiveC_LINK_EXECUTABLE)
