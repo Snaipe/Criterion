@@ -23,7 +23,7 @@
  */
 #include <string.h>
 #include <csptr/smalloc.h>
-#include "criterion/common.h"
+#include "criterion/internal/common.h"
 #include "stats.h"
 #include "common.h"
 

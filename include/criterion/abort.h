@@ -24,7 +24,7 @@
 #ifndef CRITERION_ABORT_H_
 # define CRITERION_ABORT_H_
 
-# include "common.h"
+# include "internal/common.h"
 
 CR_BEGIN_C_API
 

@@ -93,7 +93,7 @@
 
 
 #include <stdarg.h>
-#include <criterion/common.h>
+#include <criterion/internal/common.h>
 
 /* Nb: this file might be included in a file compiled with -ansi.  So
    we can't use C++ style "//" comments nor the "asm" keyword (instead

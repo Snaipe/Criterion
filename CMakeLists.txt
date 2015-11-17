@@ -192,23 +192,23 @@ endif ()
 set(INTERFACE_FILES
   include/criterion/assert.h
   include/criterion/abort.h
-  include/criterion/common.h
   include/criterion/criterion.h
   include/criterion/event.h
   include/criterion/hooks.h
   include/criterion/logging.h
   include/criterion/types.h
   include/criterion/options.h
-  include/criterion/ordered-set.h
   include/criterion/stats.h
   include/criterion/theories.h
-  include/criterion/asprintf-compat.h
-  include/criterion/designated-initializer-compat.h
-  include/criterion/preprocess.h
   include/criterion/alloc.h
   include/criterion/parameterized.h
   include/criterion/redirect.h
   include/criterion/output.h
+  include/criterion/internal/common.h
+  include/criterion/internal/ordered-set.h
+  include/criterion/internal/asprintf-compat.h
+  include/criterion/internal/designated-initializer-compat.h
+  include/criterion/internal/preprocess.h
 )
 
 # Generate the configure file

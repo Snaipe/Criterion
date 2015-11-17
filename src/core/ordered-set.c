@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  */
 #include <string.h>
-#include <criterion/common.h>
-#include <criterion/ordered-set.h>
+#include <criterion/internal/common.h>
+#include <criterion/internal/ordered-set.h>
 #include <csptr/smalloc.h>
 #include "common.h"
 

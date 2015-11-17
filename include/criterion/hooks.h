@@ -24,7 +24,7 @@
 #ifndef CRITERION_HOOKS_H_
 # define CRITERION_HOOKS_H_
 
-# include "common.h"
+# include "internal/common.h"
 # include "types.h"
 
 typedef enum {

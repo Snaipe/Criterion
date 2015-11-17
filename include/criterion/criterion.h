@@ -24,8 +24,8 @@
 #ifndef CRITERION_H_
 # define CRITERION_H_
 
-# include "designated-initializer-compat.h"
-# include "common.h"
+# include "internal/designated-initializer-compat.h"
+# include "internal/common.h"
 # include "types.h"
 # include "assert.h"
 # include "alloc.h"

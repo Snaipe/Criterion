@@ -26,7 +26,7 @@
 #include <string.h>
 #include <csptr/smalloc.h>
 #include "criterion/stats.h"
-#include "criterion/common.h"
+#include "criterion/internal/common.h"
 #include "criterion/hooks.h"
 #include "criterion/logging.h"
 #include "core/worker.h"

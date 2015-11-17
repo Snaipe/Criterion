@@ -1,6 +1,6 @@
 #include "criterion/criterion.h"
 #include "criterion/theories.h"
-#include "criterion/asprintf-compat.h"
+#include "criterion/internal/asprintf-compat.h"
 
 #include <stdio.h>
 

@@ -33,7 +33,7 @@ using std::size_t;
 #  include <stdbool.h>
 #  include <stddef.h>
 # endif
-# include "common.h"
+# include "internal/common.h"
 
 enum criterion_language {
     CR_LANG_C,

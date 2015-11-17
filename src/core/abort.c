@@ -23,7 +23,7 @@
  */
 #include <string.h>
 #include "abort.h"
-#include "criterion/asprintf-compat.h"
+#include "criterion/internal/asprintf-compat.h"
 #include "io/event.h"
 
 jmp_buf g_pre_test;

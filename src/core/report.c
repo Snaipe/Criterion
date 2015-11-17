@@ -28,7 +28,7 @@
 #include "criterion/stats.h"
 #include "criterion/logging.h"
 #include "criterion/options.h"
-#include "criterion/ordered-set.h"
+#include "criterion/internal/ordered-set.h"
 #include "report.h"
 #include "config.h"
 #include "compat/posix.h"

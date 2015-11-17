@@ -24,7 +24,7 @@
 #ifndef SECTION_H_
 # define SECTION_H_
 
-# include "criterion/common.h"
+# include "criterion/internal/common.h"
 
 # ifdef _WIN32
 void *get_win_section_start(const char *section);

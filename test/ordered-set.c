@@ -1,7 +1,7 @@
 #include <csptr/smalloc.h>
 
 #include "criterion/criterion.h"
-#include "criterion/ordered-set.h"
+#include "criterion/internal/ordered-set.h"
 
 int compare_gt(void *a, void *b) {
     int *ia = a, *ib = b;

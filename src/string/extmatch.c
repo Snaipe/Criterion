@@ -27,7 +27,7 @@
 #include <setjmp.h>
 
 #include <stdio.h>
-#include "criterion/common.h"
+#include "criterion/internal/common.h"
 #include "common.h"
 
 struct context {

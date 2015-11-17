@@ -28,7 +28,7 @@
 #include <csptr/smalloc.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
-#include "criterion/ordered-set.h"
+#include "criterion/internal/ordered-set.h"
 #include "compat/posix.h"
 #include "compat/strtok.h"
 #include "core/runner.h"

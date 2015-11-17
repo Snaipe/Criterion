@@ -31,7 +31,7 @@ using std::size_t;
 # else
 #  include <stddef.h>
 # endif
-# include "common.h"
+# include "internal/common.h"
 
 CR_BEGIN_C_API
 

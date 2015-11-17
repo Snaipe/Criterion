@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <stdlib.h>
-#include "criterion/common.h"
+#include "criterion/internal/common.h"
 #include "criterion/options.h"
 #include "compat/time.h"
 #include "compat/posix.h"

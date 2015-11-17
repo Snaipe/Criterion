@@ -24,7 +24,7 @@
 #ifndef CRITERION_ORDERED_SET_H_
 # define CRITERION_ORDERED_SET_H_
 
-# include "types.h"
+# include "../types.h"
 
 typedef int (*f_criterion_cmp)(void *, void *);
 

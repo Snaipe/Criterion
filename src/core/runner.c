@@ -29,9 +29,9 @@
 #include <valgrind/valgrind.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
-#include "criterion/ordered-set.h"
+#include "criterion/internal/ordered-set.h"
 #include "criterion/logging.h"
-#include "criterion/preprocess.h"
+#include "criterion/internal/preprocess.h"
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"

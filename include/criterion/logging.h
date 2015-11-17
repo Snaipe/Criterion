@@ -31,8 +31,8 @@ using std::va_list;
 #  include <stdbool.h>
 #  include <stdarg.h>
 # endif
-# include "common.h"
-# include "ordered-set.h"
+# include "internal/common.h"
+# include "internal/ordered-set.h"
 # include "stats.h"
 
 enum criterion_logging_level {

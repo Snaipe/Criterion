@@ -24,8 +24,8 @@
 #ifndef CRITERION_ASSERT_BASE_H_
 # define CRITERION_ASSERT_BASE_H_
 
-# include "preprocess.h"
-# include "asprintf-compat.h"
+# include "internal/preprocess.h"
+# include "internal/asprintf-compat.h"
 
 # ifdef __cplusplus
 #  include <cstring>
@@ -35,7 +35,7 @@
 #  include <stdlib.h>
 #  include <stdbool.h>
 # endif
-# include "designated-initializer-compat.h"
+# include "internal/designated-initializer-compat.h"
 # include "types.h"
 # include "stats.h"
 # include "hooks.h"

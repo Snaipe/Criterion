@@ -1,6 +1,6 @@
 #include "i18n.h"
 #include "criterion/assert.h"
-#include "criterion/asprintf-compat.h"
+#include "criterion/internal/asprintf-compat.h"
 
 void init_i18n(void) {
 #if ENABLE_NLS
