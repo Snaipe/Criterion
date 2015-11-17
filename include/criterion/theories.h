@@ -42,6 +42,8 @@ constexpr size_t criterion_va_num__(const T &...) {
 
 CR_BEGIN_C_API
 
+CR_API void cr_theory_abort(void);
+
 # define TheoryDataPoints(Category, Name) \
     static struct criterion_datapoints CR_IDENTIFIER_(Category, Name, dps)[]
 
