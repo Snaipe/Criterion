@@ -24,62 +24,30 @@
 #ifndef CRITERION_THEORIES_H_
 # define CRITERION_THEORIES_H_
 
-# ifdef __cplusplus
-#  include <cstddef>
-using std::size_t;
-# else
-#  include <stddef.h>
-# endif
-
 # include "criterion.h"
-
-# ifdef __cplusplus
-template <typename... T>
-constexpr size_t criterion_va_num__(const T &...) {
-    return sizeof...(T);
-}
-# endif
+# include "internal/theories.h"
 
 CR_BEGIN_C_API
 
 CR_API void cr_theory_abort(void);
 
-# define TheoryDataPoints(Category, Name) \
-    static struct criterion_datapoints CR_IDENTIFIER_(Category, Name, dps)[]
+CR_END_C_API
 
-# define TheoryDataPoint(Category, Name) \
-    (CR_IDENTIFIER_(Category, Name, dps))
+// Theory and datapoint macros
 
-# ifdef __cplusplus
-#  define CR_TH_VA_NUM(Type, ...)     criterion_va_num__(__VA_ARGS__)
-#  define CR_TH_TEMP_ARRAY(Type, ...) []() { static Type arr[] = { __VA_ARGS__ }; return &arr; }()
-# else
-#  define CR_TH_VA_NUM(Type, ...) sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type)
-#  define CR_TH_TEMP_ARRAY(Type, ...) &(Type[]) { __VA_ARGS__ }
-# endif
+# define Theory(Args, ...) CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
 
-# define DataPoints(Type, ...) { \
-        sizeof (Type), \
-        CR_EXPAND(CR_TH_VA_NUM(Type, __VA_ARGS__)), \
-        #Type, \
-        CR_EXPAND(CR_TH_TEMP_ARRAY(Type, __VA_ARGS__)), \
-    }
+# define TheoryDataPoints(Category, Name) CR_TH_INTERNAL_TDPS(Category, Name)
+# define TheoryDataPoint(Category, Name) CR_TH_INTERNAL_TDP(Category, Name)
+# define DataPoints(Type, ...) CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
-struct criterion_datapoints {
-    size_t size;
-    size_t len;
-    const char *name;
-    void *arr;
-};
-
-# define CR_NB_DATAPOINTS(Var) \
-    (sizeof (Var) / sizeof (struct criterion_datapoints))
+// Theory invariants
 
 # define cr_assume(Condition) \
     do { \
         if (!(Condition)) \
             cr_theory_abort(); \
-    } while (0);
+    } while (0)
 
 # define cr_assume_not(Condition) cr_assume(!(Condition))
 
@@ -115,23 +83,7 @@ struct criterion_datapoints {
 # define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
 # define cr_assume_arr_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
 
-CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
-
-# define CR_VAARG_ID(Suffix, Category, Name, ...) \
-    CR_IDENTIFIER_(Category, Name, Suffix)
-
-# define Theory(Args, ...)                                                      \
-    void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args;                      \
-    CR_EXPAND(CR_TEST_BASE(__VA_ARGS__, .sentinel_ = 0)) {                      \
-        cr_theory_main(                                                         \
-                CR_EXPAND(CR_VAARG_ID(dps, __VA_ARGS__,)),                      \
-                CR_NB_DATAPOINTS(CR_EXPAND(CR_VAARG_ID(dps, __VA_ARGS__,))),    \
-                (void(*)(void)) CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))    \
-            );                                                                  \
-    }                                                                           \
-    void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args
-
-CR_END_C_API
+// Deprecated
 
 # ifndef CRITERION_NO_COMPAT
 #  define cr_assume_strings_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_eq, cr_assume_str_eq) cr_assume_str_eq(__VA_ARGS__)
