@@ -42,17 +42,6 @@ constexpr size_t criterion_va_num__(const T &...) {
 
 CR_BEGIN_C_API
 
-struct criterion_theory_context;
-
-CR_API struct criterion_theory_context* cr_theory_init(void);
-CR_API void cr_theory_push_arg(struct criterion_theory_context *ctx, bool is_float, size_t size, void *ptr);
-CR_API void cr_theory_free(struct criterion_theory_context *ctx);
-CR_API void cr_theory_abort(void);
-CR_API int cr_theory_mark(void);
-
-CR_API void cr_theory_reset(struct criterion_theory_context *ctx);
-CR_API void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void));
-
 # define TheoryDataPoints(Category, Name) \
     static struct criterion_datapoints CR_IDENTIFIER_(Category, Name, dps)[]
 
