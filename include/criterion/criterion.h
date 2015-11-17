@@ -24,79 +24,15 @@
 #ifndef CRITERION_H_
 # define CRITERION_H_
 
-# include "internal/designated-initializer-compat.h"
-# include "internal/common.h"
 # include "types.h"
 # include "assert.h"
 # include "alloc.h"
 
-# define CR_IDENTIFIER_(Category, Name, Suffix) \
-    Category ## _ ## Name ## _ ## Suffix
+# include "internal/test.h"
 
-# ifdef __cplusplus
-#  ifdef __OBJC__
-#   define CR_LANG CR_LANG_OBJCXX
-#  else
-#   define CR_LANG CR_LANG_CXX
-#  endif
-# else
-#  ifdef __OBJC__
-#   define CR_LANG CR_LANG_OBJC
-#  else
-#   define CR_LANG CR_LANG_C
-#  endif
-# endif
+# define Test(...) CR_EXPAND(CR_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
 
-# ifdef __cplusplus
-#  define CR_TEST_PROTOTYPE_(Category, Name) \
-    extern "C" void CR_IDENTIFIER_(Category, Name, impl)(void)
-# else
-#  define CR_TEST_PROTOTYPE_(Category, Name) \
-    void CR_IDENTIFIER_(Category, Name, impl)(void)
-# endif
-
-# define CR_SUITE_IDENTIFIER_(Name, Suffix) \
-    suite_ ## Name ## _ ## Suffix
-
-# define Test(...) CR_EXPAND(Test_(__VA_ARGS__, .sentinel_ = 0))
-# define Test_(Category, Name, ...)                                            \
-    CR_TEST_PROTOTYPE_(Category, Name);                                        \
-    struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
-            .lang_ = CR_LANG,                                                  \
-            .kind_ = CR_TEST_NORMAL,                                           \
-            .param_ = (struct criterion_test_params(*)(void)) NULL,            \
-            .identifier_ = #Category "/" #Name,                                \
-            .file_    = __FILE__,                                              \
-            .line_    = __LINE__,                                              \
-            __VA_ARGS__                                                        \
-        ));                                                                    \
-    struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {             \
-        #Name,                                                                 \
-        #Category,                                                             \
-        CR_IDENTIFIER_(Category, Name, impl),                                  \
-        &CR_IDENTIFIER_(Category, Name, extra)                                 \
-    };                                                                         \
-    CR_SECTION_("cr_tst")                                                      \
-    struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)                 \
-            = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;        \
-    CR_TEST_PROTOTYPE_(Category, Name)
-
-# define TestSuite(...) CR_EXPAND(TestSuite_(__VA_ARGS__, .sentinel_ = 0))
-# define TestSuite_(Name, ...)                                                 \
-    struct criterion_test_extra_data CR_SUITE_IDENTIFIER_(Name, extra) =       \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
-            .file_    = __FILE__,                                              \
-            .line_    = 0,                                                     \
-            __VA_ARGS__                                                        \
-        ));                                                                    \
-    struct criterion_suite CR_SUITE_IDENTIFIER_(Name, meta) = {                \
-        #Name,                                                                 \
-        &CR_SUITE_IDENTIFIER_(Name, extra),                                    \
-    };                                                                         \
-    CR_SECTION_("cr_sts")                                                      \
-    struct criterion_suite *CR_SUITE_IDENTIFIER_(Name, ptr)                    \
-	    = &CR_SUITE_IDENTIFIER_(Name, meta) CR_SECTION_SUFFIX_
+# define TestSuite(...) CR_EXPAND(CR_SUITE_BASE(__VA_ARGS__, .sentinel_ = 0))
 
 CR_BEGIN_C_API
 

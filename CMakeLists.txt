@@ -204,6 +204,8 @@ set(INTERFACE_FILES
   include/criterion/parameterized.h
   include/criterion/redirect.h
   include/criterion/output.h
+  include/criterion/internal/assert.h
+  include/criterion/internal/test.h
   include/criterion/internal/common.h
   include/criterion/internal/ordered-set.h
   include/criterion/internal/asprintf-compat.h

@@ -22,19 +22,23 @@
  * THE SOFTWARE.
  */
 #include <exception>
-#include "criterion/assert_base.h"
 #include "criterion/event.h"
+
+#include "core/report.h"
 
 extern "C" {
 
 #include "core/abort.h"
-#include "core/report.h"
 #include "core/worker.h"
 #include "compat/time.h"
 #include "wrap.h"
 #include "common.h"
 
 static INLINE void nothing(void) {}
+
+void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite);
+
+}
 
 void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite) {
 
@@ -84,7 +88,5 @@ void cxx_wrap(struct criterion_test *test, struct criterion_suite *suite) {
         criterion_test_die("Caught some unexpected exception during the test finalization.");
     }
     criterion_send_event(POST_FINI, NULL, 0);
-
-}
 
 }
