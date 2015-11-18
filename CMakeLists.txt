@@ -248,7 +248,7 @@ if (COVERALLS)
 endif()
 
 foreach (F ${INTERFACE_FILES})
-  get_filename_component(DEST "${F}" DIRECTORY)
+  get_filename_component(DEST "${F}" PATH)
   install(FILES "${F}" DESTINATION "${DEST}")
 endforeach ()
 
