@@ -213,6 +213,11 @@ set(INTERFACE_FILES
   include/criterion/internal/preprocess.h
   include/criterion/internal/theories.h
   include/criterion/internal/parameterized.h
+  include/criterion/internal/stdio_filebuf.hxx
+  include/criterion/internal/stream.hxx
+  include/criterion/internal/hooks.h
+  include/criterion/internal/redirect.h
+  include/criterion/internal/stdio_filebuf.hxx
 )
 
 # Generate the configure file

@@ -24,8 +24,7 @@
 #ifndef CRITERION_HOOKS_H_
 # define CRITERION_HOOKS_H_
 
-# include "internal/common.h"
-# include "types.h"
+# include "internal/hooks.h"
 
 typedef enum {
     PRE_ALL,
@@ -43,57 +42,6 @@ typedef enum {
 
 typedef void (*f_report_hook)();
 
-# define CR_HOOK_IDENTIFIER_(Suffix) CR_HOOK_IDENTIFIER__(__LINE__, Suffix)
-# define CR_HOOK_IDENTIFIER__(Line, Suffix) CR_HOOK_IDENTIFIER___(Line, Suffix)
-# define CR_HOOK_IDENTIFIER___(Line, Suffix) hook_l ## Line ## _ ## Suffix
-
-# ifdef __cplusplus
-#  define CR_HOOK_PROTOTYPE_ \
-    extern "C" void CR_HOOK_IDENTIFIER_(impl)
-# else
-#  define CR_HOOK_PROTOTYPE_ \
-    void CR_HOOK_IDENTIFIER_(impl)
-# endif
-
-// Section abbreviations
-# define CR_HOOK_SECTION_PRE_ALL       cr_pra
-# define CR_HOOK_SECTION_PRE_SUITE     cr_prs
-# define CR_HOOK_SECTION_PRE_INIT      cr_pri
-# define CR_HOOK_SECTION_PRE_TEST      cr_prt
-# define CR_HOOK_SECTION_ASSERT        cr_ast
-# define CR_HOOK_SECTION_THEORY_FAIL   cr_thf
-# define CR_HOOK_SECTION_TEST_CRASH    cr_tsc
-# define CR_HOOK_SECTION_POST_TEST     cr_pot
-# define CR_HOOK_SECTION_POST_FINI     cr_pof
-# define CR_HOOK_SECTION_POST_SUITE    cr_pos
-# define CR_HOOK_SECTION_POST_ALL      cr_poa
-
-# define CR_HOOK_SECTION(Kind) CR_HOOK_SECTION_ ## Kind
-
-# define CR_HOOK_SECTION_STRINGIFY__(Sec) #Sec
-# define CR_HOOK_SECTION_STRINGIFY_(Sec) CR_HOOK_SECTION_STRINGIFY__(Sec)
-# define CR_HOOK_SECTION_STRINGIFY(Kind) CR_HOOK_SECTION_STRINGIFY_(CR_HOOK_SECTION(Kind))
-
-# define CR_HOOK_PARAM_TYPE_PRE_ALL        struct criterion_test_set *
-# define CR_HOOK_PARAM_TYPE_PRE_SUITE      struct criterion_suite_set *
-# define CR_HOOK_PARAM_TYPE_PRE_INIT       struct criterion_test *
-# define CR_HOOK_PARAM_TYPE_PRE_TEST       struct criterion_test *
-# define CR_HOOK_PARAM_TYPE_ASSERT         struct criterion_assert_stats *
-# define CR_HOOK_PARAM_TYPE_THEORY_FAIL    struct criterion_theory_stats *
-# define CR_HOOK_PARAM_TYPE_TEST_CRASH     struct criterion_test_stats *
-# define CR_HOOK_PARAM_TYPE_POST_TEST      struct criterion_test_stats *
-# define CR_HOOK_PARAM_TYPE_POST_FINI      struct criterion_test_stats *
-# define CR_HOOK_PARAM_TYPE_POST_SUITE     struct criterion_suite_stats *
-# define CR_HOOK_PARAM_TYPE_POST_ALL       struct criterion_global_stats *
-
-# define CR_HOOK_PARAM_TYPE(Kind) CR_HOOK_PARAM_TYPE_ ## Kind
-
-# define ReportHook(Kind)                                                       \
-    CR_HOOK_PROTOTYPE_(CR_HOOK_PARAM_TYPE(Kind));                               \
-    CR_SECTION_(CR_HOOK_SECTION_STRINGIFY(Kind))                                \
-    f_report_hook CR_HOOK_IDENTIFIER_(func) =                                   \
-        (f_report_hook) CR_HOOK_IDENTIFIER_(impl)                               \
-    CR_SECTION_SUFFIX_; \
-    CR_HOOK_PROTOTYPE_
+# define ReportHook(Kind) CR_REPORT_HOOK_IMPL(Kind)
 
 #endif /* !CRITERION_HOOKS_H_ */
