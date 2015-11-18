@@ -247,7 +247,11 @@ if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
 
-install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
+foreach (F ${INTERFACE_FILES})
+  get_filename_component(DEST "${F}" DIRECTORY)
+  install(FILES "${F}" DESTINATION "${DEST}")
+endforeach ()
+
 install(TARGETS criterion
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
