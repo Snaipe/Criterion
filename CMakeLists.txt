@@ -211,6 +211,8 @@ set(INTERFACE_FILES
   include/criterion/internal/asprintf-compat.h
   include/criterion/internal/designated-initializer-compat.h
   include/criterion/internal/preprocess.h
+  include/criterion/internal/theories.h
+  include/criterion/internal/parameterized.h
 )
 
 # Generate the configure file
