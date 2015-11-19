@@ -204,11 +204,20 @@ set(INTERFACE_FILES
   include/criterion/parameterized.h
   include/criterion/redirect.h
   include/criterion/output.h
+  include/criterion/internal/assert.h
+  include/criterion/internal/test.h
   include/criterion/internal/common.h
   include/criterion/internal/ordered-set.h
   include/criterion/internal/asprintf-compat.h
   include/criterion/internal/designated-initializer-compat.h
   include/criterion/internal/preprocess.h
+  include/criterion/internal/theories.h
+  include/criterion/internal/parameterized.h
+  include/criterion/internal/stdio_filebuf.hxx
+  include/criterion/internal/stream.hxx
+  include/criterion/internal/hooks.h
+  include/criterion/internal/redirect.h
+  include/criterion/internal/stdio_filebuf.hxx
 )
 
 # Generate the configure file
@@ -243,7 +252,11 @@ if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
 endif()
 
-install(FILES ${INTERFACE_FILES} DESTINATION include/criterion)
+foreach (F ${INTERFACE_FILES})
+  get_filename_component(DEST "${F}" PATH)
+  install(FILES "${F}" DESTINATION "${DEST}")
+endforeach ()
+
 install(TARGETS criterion
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
