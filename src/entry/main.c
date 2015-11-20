@@ -188,7 +188,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     if (env_jobs)
         opt->jobs              = atou(env_jobs);
     if (env_logging_threshold)
-        opt->logging_threshold = atou(env_logging_threshold);
+        opt->logging_threshold = (enum criterion_logging_level) atou(env_logging_threshold);
     if (env_short_filename)
         opt->short_filename    = !strcmp("1", env_short_filename);
 
@@ -206,7 +206,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     bool quiet = false;
     for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:", opts, NULL)) != -1;) {
         switch (c) {
-            case 'b': criterion_options.logging_threshold = atou(DEF(optarg, "1")); break;
+            case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;

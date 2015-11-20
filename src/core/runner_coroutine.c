@@ -102,6 +102,7 @@ static int skip_disabled(struct run_next_context *ctx) {
 struct worker *run_next_test(struct criterion_test_set *p_set,
                              struct criterion_global_stats *p_stats,
                              ccrContParam) {
+    struct worker *worker = NULL;
 
     ccrUseNamedContext(run_next_context, ctx);
 
@@ -122,8 +123,7 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
 
         ctx->suite_stats = suite_stats_init(&ctx->suite_set->suite);
 
-        struct event ev = { .kind = PRE_SUITE };
-        stat_push_event(ctx->stats, ctx->suite_stats, NULL, &ev);
+        stat_push_event(ctx->stats, ctx->suite_stats, NULL, &(struct event) { .kind = PRE_SUITE });
 
         for (ctx->nt = ctx->suite_set->tests->first; ctx->nt; ctx->nt = ctx->nt->next) {
             ctx->test = (void*) (ctx->nt + 1);
@@ -138,15 +138,14 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
                 for (ctx->i = 0; ctx->i < ctx->params.length; ++ctx->i) {
                     ctx->test_stats = test_stats_init(ctx->test);
 
-                    struct test_single_param param = {
-                        ctx->params.size,
-                        (char *) ctx->params.params + ctx->i * ctx->params.size
-                    };
 
-                    struct worker *worker = run_test(ctx->stats,
+                    worker = run_test(ctx->stats,
                             ctx->suite_stats,
                             ctx->test_stats,
-                            &param);
+                            &(struct test_single_param) {
+                                ctx->params.size,
+                                (char *) ctx->params.params + ctx->i * ctx->params.size
+                            });
 
                     ccrReturn(cleanup_and_return_worker(ctx, worker));
                 }
@@ -159,7 +158,7 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
                 if (skip_disabled(ctx))
                     continue;
 
-                struct worker *worker = run_test(ctx->stats,
+                worker = run_test(ctx->stats,
                         ctx->suite_stats,
                         ctx->test_stats,
                         NULL);

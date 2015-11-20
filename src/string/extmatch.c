@@ -99,8 +99,8 @@ typedef struct {
     char *str;
 } handler_arg;
 
-static int active()   { return 1; }
-static int inactive() { return 0; }
+static int active(struct context *ctx)   { return 1; }
+static int inactive(struct context *ctx) { return 0; }
 
 static int is_eos(struct context *ctx) {
     return peek_char(ctx) == '\0';

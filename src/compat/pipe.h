@@ -47,6 +47,7 @@ enum criterion_std_fd {
 };
 
 enum pipe_opt {
+    PIPE_NOOPT = 0,
     PIPE_DUP   = 1 << 0,
     PIPE_CLOSE = 1 << 1,
 };
