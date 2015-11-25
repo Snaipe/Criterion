@@ -93,3 +93,8 @@ Environment variables are alternatives to command line switches when set to 1.
   to its value. (\*nix only)
 * ``CRITERION_DISABLE_TIME_MEASUREMENTS``: Disables any time measurements on
   the tests.
+* ``CRITERION_OUTPUTS``:         Can be set to a comma-separated list of
+  ``PROVIDER:FILE`` entries. For instance, setting the variable to
+  ``tap:foo.tap,xml:bar.xml`` has the same effect as specifying ``--tap=foo.tap``
+  and ``--xml=bar.xml`` at once.
+* ``CRITERION_ENABLE_TAP``:      (Deprecated, use CRITERION_OUTPUTS) Same as ``--tap``.

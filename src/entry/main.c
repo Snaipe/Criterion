@@ -200,10 +200,42 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
 
     opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
 
+    bool quiet = false;
+
+    // CRITERION_ENABLE_TAP backward compatibility.
+    // The environment variable is otherwise deprecated.
+    if (!strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"))) {
+        quiet = true;
+        criterion_add_output("tap", DEF(optarg, "-"));
+    }
+
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
-    bool quiet = false;
+
+    const char *outputs = getenv("CRITERION_OUTPUTS");
+    if (outputs) {
+        char *out = strdup(outputs);
+        char *buf = NULL;
+        strtok_r(out, ",", &buf);
+
+        for (char *s = out; s; s = strtok_r(NULL, ",", &buf)) {
+            s = strdup(s);
+            char *buf2      = NULL;
+            char *provider  = strtok_r(s, ":", &buf2);
+            char *path      = strtok_r(NULL, ":", &buf2);
+
+            if (provider == NULL || path == NULL) {
+                do_print_usage = true;
+                goto end;
+            }
+
+            quiet = true;
+            criterion_add_output(provider, path);
+        }
+        free(out);
+    }
+
     for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
@@ -241,6 +273,8 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
+
+end:
     if (quiet)
         criterion_options.logging_threshold = CRITERION_LOG_LEVEL_QUIET;
 
