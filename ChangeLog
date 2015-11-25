@@ -1,3 +1,9 @@
+2015-11-25  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.1.1
+    * Fix: Fixed bug where the TAP output access the assert message after
+      it has been freed, causing it to print garbage.
+
 2015-09-21  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.1.0
