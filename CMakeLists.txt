@@ -38,6 +38,22 @@ endif ()
 
 include(Languages)
 
+# Check for C++11
+
+if (NOT MSVC AND CMAKE_CXX_COMPILER_WORKS)
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+
+  if(COMPILER_SUPPORTS_CXX11)
+    set(CXX11_FLAG "-std=c++11")
+  elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CXX11_FLAG "-std=c++0x")
+  else()
+    message(FATAL_ERROR "Compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+  endif()
+endif()
+
 # Project setup & environment variables
 
 set(PROJECT_VERSION "2.1.0")
@@ -53,7 +69,7 @@ set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS}")
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
   if (CMAKE_CXX_COMPILER_WORKS)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g ${CXX11_FLAG}")
   endif ()
 endif ()
 

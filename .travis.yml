@@ -32,6 +32,15 @@ matrix:
         CONFIGURATION: RelWithDebInfo
         CMAKE_OPTS: -DLANG_OBJC=ON
         DEPLOY: true
+    # Linux Debug, GCC 4.6
+    - compiler: gcc
+      env: CONFIGURATION=Debug TESTS=OFF
+    # Linux Release, GCC 4.6
+    - compiler: gcc
+      env: CONFIGURATION=Release TESTS=OFF
+    # Linux RelWithDebInfo, GCC 4.6
+    - compiler: gcc
+      env: CONFIGURATION=RelWithDebInfo TESTS=OFF
     # OSX Debug, GCC 4.9
     - os: osx
       compiler: gcc-4.9
@@ -67,6 +76,9 @@ matrix:
         CMAKE_OPTS: -DLANG_OBJC=ON
         DEPLOY: true
 
+  allow_failures:
+    - compiler: gcc
+
 before_install:
   - |
       if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "clang" ]; then
@@ -83,14 +95,19 @@ script:
   - >
       cmake
       -Wno-dev
-      -DCTESTS=ON
+      -DCTESTS=${TESTS:-ON}
       -DCOVERALLS=${COVERAGE:-OFF}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
       ${CMAKE_OPTS}
       ..
-  - TERM=dumb cmake --build . --target criterion_tests -- -j4
-  - ctest -j4
+  - |
+      if [ "$TESTS" = "ON" ]; then
+        TERM=dumb cmake --build . --target criterion_tests -- -j4
+        ctest -j4
+      else
+        TERM=dumb cmake --build . -- -j4
+      fi
 
 after_success:
   - |
@@ -100,7 +117,10 @@ after_success:
       fi
 
 after_failure:
-  - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
+  - |
+      if [ "$TESTS" = "ON" ]; then
+        cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
+      fi
 
 before_deploy:
   - make install

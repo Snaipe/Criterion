@@ -20,8 +20,10 @@ public:
             std::ios::rdbuf(&*fbuf);
         }
 
+# if __cplusplus > 199711L
         stream_mixin(const stream_mixin& other) = delete;
         stream_mixin& operator=(const stream_mixin& other) = delete;
+# endif
 
         stream_mixin(stream_mixin&& other) :
             fbuf(std::move(other.fbuf)),
@@ -45,47 +47,41 @@ public:
     };
 
     template <typename CharT>
-    using ofstream_mixin = stream_mixin<CharT, std::basic_ofstream<CharT>>;
-
-    template <typename CharT>
-    using ifstream_mixin = stream_mixin<CharT, std::basic_ifstream<CharT>>;
-
-    template <typename CharT>
-    using fstream_mixin = stream_mixin<CharT, std::basic_fstream<CharT>>;
-
-    template <typename CharT>
-    class basic_ofstream : public ofstream_mixin<CharT> {
+    class basic_ofstream : public stream_mixin<CharT, std::basic_ofstream<CharT>> {
+        typedef stream_mixin<CharT, std::basic_ofstream<CharT>> super;
     public:
         basic_ofstream(FILE* f)
-            : ofstream_mixin<CharT>(f)
+            : super(f)
         {}
 
         basic_ofstream(basic_ofstream&& other)
-            : ofstream_mixin<CharT>(std::move(other))
+            : super(std::move(other))
         {}
     };
 
     template <typename CharT>
-    class basic_ifstream : public ifstream_mixin<CharT> {
+    class basic_ifstream : public stream_mixin<CharT, std::basic_ifstream<CharT>> {
+        typedef stream_mixin<CharT, std::basic_ifstream<CharT>> super;
     public:
         basic_ifstream(FILE* f)
-            : ifstream_mixin<CharT>(f)
+            : super(f)
         {}
 
         basic_ifstream(basic_ifstream&& other)
-            : ifstream_mixin<CharT>(std::move(other))
+            : super(std::move(other))
         {}
     };
 
     template <typename CharT>
-    class basic_fstream : public fstream_mixin<CharT> {
+    class basic_fstream : public stream_mixin<CharT, std::basic_fstream<CharT>> {
+        typedef stream_mixin<CharT, std::basic_fstream<CharT>> super;
     public:
         basic_fstream(FILE* f)
-            : fstream_mixin<CharT>(f)
+            : super(f)
         {}
 
         basic_fstream(basic_fstream&& other)
-            : fstream_mixin<CharT>(std::move(other))
+            : super(std::move(other))
         {}
     };
 

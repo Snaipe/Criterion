@@ -42,7 +42,11 @@
 # endif
 
 # ifdef __cplusplus
-#  define CR_ATTRIBUTE(Arg) [[gnu::Arg]]
+#  ifdef __GNUC__
+#   define CR_ATTRIBUTE(Arg) __attribute__((Arg))
+#  else
+#   define CR_ATTRIBUTE(Arg) [[gnu::Arg]]
+#  endif
 #  define CR_BEGIN_C_API extern "C" {
 #  define CR_END_C_API }
 # else

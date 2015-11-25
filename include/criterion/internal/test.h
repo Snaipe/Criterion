@@ -58,7 +58,7 @@
 # define CR_TEST_BASE(Category, Name, ...)                                     \
     CR_TEST_PROTOTYPE_(Category, Name);                                        \
     struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
+        CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,             \
             .lang_ = CR_LANG,                                                  \
             .kind_ = CR_TEST_NORMAL,                                           \
             .param_ = (struct criterion_test_params(*)(void)) NULL,            \
@@ -80,7 +80,7 @@
 
 # define CR_SUITE_BASE(Name, ...)                                              \
     struct criterion_test_extra_data CR_SUITE_IDENTIFIER_(Name, extra) =       \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
+        CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,             \
             .file_    = __FILE__,                                              \
             .line_    = 0,                                                     \
             __VA_ARGS__                                                        \

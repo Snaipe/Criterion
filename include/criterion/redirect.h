@@ -91,9 +91,9 @@ CR_END_C_API
 
 namespace criterion {
 
-    using ofstream = internal::basic_ofstream<char>;
-    using ifstream = internal::basic_ifstream<char>;
-    using fstream  = internal::basic_fstream<char>;
+    typedef internal::basic_ofstream<char> ofstream;
+    typedef internal::basic_ifstream<char> ifstream;
+    typedef internal::basic_fstream<char>  fstream;
 
     static inline ofstream& get_redirected_cin(void) {
         return internal::get_redirected_out_stream_::call(cr_get_redirected_stdin());

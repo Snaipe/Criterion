@@ -55,7 +55,7 @@ CR_END_C_API
 
 # ifdef __cplusplus
 #  define CR_TH_VA_NUM(Type, ...)     criterion_va_num__(__VA_ARGS__)
-#  define CR_TH_TEMP_ARRAY(Type, ...) []() { static Type arr[] = { __VA_ARGS__ }; return &arr; }()
+#  define CR_TH_TEMP_ARRAY(Type, ...) []() -> Type* { static Type arr[] = { __VA_ARGS__ }; return reinterpret_cast<Type*>(&arr); }()
 # else
 #  define CR_TH_VA_NUM(Type, ...) sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type)
 #  define CR_TH_TEMP_ARRAY(Type, ...) &(Type[]) { __VA_ARGS__ }
