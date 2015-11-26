@@ -2,7 +2,7 @@ language: c
 
 sudo: false
 
-addons:
+_gcc-4.9-packages: &gcc49-packages
   apt:
     sources:
     - ubuntu-toolchain-r-test
@@ -20,6 +20,7 @@ matrix:
   include:
     # Linux Debug, GCC 4.9
     - compiler: gcc-4.9
+      addons: *gcc49-packages
       env:
         - CONFIGURATION=Debug
         - GCOV=gcov-4.9
@@ -27,11 +28,13 @@ matrix:
         - COVERAGE=ON
     # Linux Release, GCC 4.9
     - compiler: gcc-4.9
+      addons: *gcc49-packages
       env:
         - CONFIGURATION=Release
         - CMAKE_OPTS=-DLANG_OBJC=ON
     # Linux RelWithDebInfo, GCC 4.9
     - compiler: gcc-4.9
+      addons: *gcc49-packages
       env:
         - CONFIGURATION=RelWithDebInfo
         - CMAKE_OPTS=-DLANG_OBJC=ON
