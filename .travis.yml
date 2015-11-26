@@ -12,6 +12,10 @@ addons:
     - gobjc-4.9
     - gnustep-devel
 
+env:
+  global:
+    - TESTS=ON
+
 matrix:
   include:
     # Linux Debug, GCC 4.9
