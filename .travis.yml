@@ -17,21 +17,21 @@ matrix:
     # Linux Debug, GCC 4.9
     - compiler: gcc-4.9
       env:
-        CONFIGURATION: Debug
-        GCOV: gcov-4.9
-        CMAKE_OPTS: -DLANG_OBJC=ON
-        COVERAGE: ON
+        - CONFIGURATION=Debug
+        - GCOV=gcov-4.9
+        - CMAKE_OPTS=-DLANG_OBJC=ON
+        - COVERAGE=ON
     # Linux Release, GCC 4.9
     - compiler: gcc-4.9
       env:
-        CONFIGURATION: Release
-        CMAKE_OPTS: -DLANG_OBJC=ON
+        - CONFIGURATION=Release
+        - CMAKE_OPTS=-DLANG_OBJC=ON
     # Linux RelWithDebInfo, GCC 4.9
     - compiler: gcc-4.9
       env:
-        CONFIGURATION: RelWithDebInfo
-        CMAKE_OPTS: -DLANG_OBJC=ON
-        DEPLOY: true
+        - CONFIGURATION=RelWithDebInfo
+        - CMAKE_OPTS=-DLANG_OBJC=ON
+        - DEPLOY=true
     # Linux Debug, GCC 4.6
     - compiler: gcc
       env: CONFIGURATION=Debug TESTS=OFF
@@ -45,9 +45,9 @@ matrix:
     - os: osx
       compiler: gcc-4.9
       env:
-        CONFIGURATION: Debug
-        GCOV: gcov-4.9
-        COVERAGE: ON
+        - CONFIGURATION=Debug
+        - GCOV=gcov-4.9
+        - COVERAGE=ON
     # OSX Release, GCC 4.9
     - os: osx
       compiler: gcc-4.9
@@ -60,21 +60,21 @@ matrix:
     - os: osx
       compiler: clang
       env:
-        CONFIGURATION: Debug
-        CMAKE_OPTS: -DLANG_OBJC=ON
+        - CONFIGURATION=Debug
+        - CMAKE_OPTS=-DLANG_OBJC=ON
     # OSX Release, Clang
     - os: osx
       compiler: clang
       env:
-        CONFIGURATION: Release
-        CMAKE_OPTS: -DLANG_OBJC=ON
+        - CONFIGURATION=Release
+        - CMAKE_OPTS=-DLANG_OBJC=ON
     # OSX RelWithDebInfo, Clang
     - os: osx
       compiler: clang
       env:
-        CONFIGURATION: RelWithDebInfo
-        CMAKE_OPTS: -DLANG_OBJC=ON
-        DEPLOY: true
+        - CONFIGURATION=RelWithDebInfo
+        - CMAKE_OPTS=-DLANG_OBJC=ON
+        - DEPLOY=true
 
   allow_failures:
     - compiler: gcc
