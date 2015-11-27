@@ -36,10 +36,10 @@ using std::size_t;
 # include "internal/common.h"
 
 enum criterion_language {
-    CR_LANG_C,
-    CR_LANG_CXX,
-    CR_LANG_OBJC,
-    CR_LANG_OBJCXX,
+    CR_LANG_C,              /// C
+    CR_LANG_CXX,            /// C++
+    CR_LANG_OBJC,           /// Objective-C
+    CR_LANG_OBJCXX,         /// Objective-C++
 
     CR_LANG_SIZE_ // leave this at the end
 };
@@ -54,6 +54,13 @@ enum criterion_test_kind {
 struct criterion_test_params;
 
 struct criterion_test_extra_data {
+    // Start of private API
+    /*
+     * Warning: the fields below are not meant to be set manually.
+     *  Setting them improperly *will* wreck havock in your tests.
+     *
+     * You've been warned.
+     */
     int sentinel_;
     enum criterion_language lang_;
     enum criterion_test_kind kind_;
@@ -61,6 +68,8 @@ struct criterion_test_extra_data {
     const char *identifier_;
     const char *file_;
     unsigned line_;
+    // Enf of private API
+
     void (*init)(void);
     void (*fini)(void);
     int signal;
