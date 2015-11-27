@@ -30,12 +30,6 @@
 
 # include "internal/assert.h"
 
-CR_BEGIN_C_API
-
-CR_API char *cr_translate_assert_msg(int msg_index, ...);
-
-CR_END_C_API
-
 // Base assertions
 
 # define cr_assert_fail(...) CR_EXPAND(cr_fail(CR_FAIL_ABORT_,     __VA_ARGS__))

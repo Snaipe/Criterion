@@ -70,6 +70,12 @@ enum criterion_assert_messages {
     CRITERION_ASSERT_MSG_NONE_THROW,
 };
 
+CR_BEGIN_C_API
+
+CR_API char *cr_translate_assert_msg(int msg_index, ...);
+
+CR_END_C_API
+
 # define CR_GET_CONDITION(Condition, ...) Condition
 # define CR_GET_CONDITION_STR(Condition, ...) #Condition
 # define CR_VA_SKIP(_, ...) __VA_ARGS__
