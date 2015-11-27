@@ -14,7 +14,6 @@ set(SAMPLES
   more-suites.c
   description.c
   simple.c
-  theories.c
   timeout.c
   redirect.c
   parameterized.c
@@ -31,10 +30,16 @@ if (CMAKE_CXX_COMPILER_WORKS)
     more-suites.cc
     description.cc
     simple.cc
-    theories.cc
     redirect.cc
     parameterized.cc
   )
+endif ()
+
+if (THEORIES)
+  set(SAMPLES ${SAMPLES} theories.c)
+  if (CMAKE_CXX_COMPILER_WORKS)
+    set(SAMPLES ${SAMPLES} theories.cc)
+  endif ()
 endif ()
 
 set(SCRIPTS

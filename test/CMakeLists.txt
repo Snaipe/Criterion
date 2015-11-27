@@ -9,8 +9,13 @@ include_directories(../include ../src)
 
 set(TEST_SOURCES
     ordered-set.c
-    asprintf.c
 )
+
+if (THEORIES)
+  set(TEST_SOURCES ${TEST_SOURCES}
+    asprintf.c
+  )
+endif ()
 
 if (CMAKE_CXX_COMPILER_WORKS)
   set(TEST_SOURCES ${TEST_SOURCES}

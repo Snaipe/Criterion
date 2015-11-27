@@ -7,6 +7,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 set(LIBCSPTR_DISABLE_TESTS ON)
 set(LIBCSPTR_DISABLE_COVERALLS ON)
 
+# Content options
+
+option(THEORIES "Activate the support for theories" ON)
+
+# Initialization
+
 include(Submodules)
 include(Capabilities)
 
@@ -15,7 +21,11 @@ if (MSVC)
 endif ()
 
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
-add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
+
+if (THEORIES)
+  add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
+  include_directories(dependencies/dyncall/dyncall/)
+endif ()
 
 include_directories(SYSTEM
   /usr/local/include
@@ -24,7 +34,6 @@ include_directories(SYSTEM
 
 include_directories(
   dependencies/libcsptr/include/
-  dependencies/dyncall/dyncall/
   dependencies/valgrind/include/
   dependencies/klib/
 )
@@ -140,7 +149,6 @@ set(SOURCE_FILES
   src/core/stats.c
   src/core/stats.h
   src/core/ordered-set.c
-  src/core/theories.c
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h
@@ -180,6 +188,12 @@ set(SOURCE_FILES
   src/config.h
 )
 
+if (THEORIES)
+  set (SOURCE_FILES ${SOURCE_FILES}
+    src/core/theories.c
+  )
+endif ()
+
 if (PCRE_FOUND)
   set (SOURCE_FILES ${SOURCE_FILES}
     src/string/extmatch.c
@@ -215,7 +229,6 @@ set(INTERFACE_FILES
   include/criterion/types.h
   include/criterion/options.h
   include/criterion/stats.h
-  include/criterion/theories.h
   include/criterion/alloc.h
   include/criterion/parameterized.h
   include/criterion/redirect.h
@@ -227,7 +240,6 @@ set(INTERFACE_FILES
   include/criterion/internal/asprintf-compat.h
   include/criterion/internal/designated-initializer-compat.h
   include/criterion/internal/preprocess.h
-  include/criterion/internal/theories.h
   include/criterion/internal/parameterized.h
   include/criterion/internal/stdio_filebuf.hxx
   include/criterion/internal/stream.hxx
@@ -235,6 +247,13 @@ set(INTERFACE_FILES
   include/criterion/internal/redirect.h
   include/criterion/internal/stdio_filebuf.hxx
 )
+
+if (THEORIES)
+  set(INTERFACE_FILES ${INTERFACE_FILES}
+    include/criterion/theories.h
+    include/criterion/internal/theories.h
+  )
+endif()
 
 # Generate the configure file
 
@@ -245,7 +264,11 @@ configure_file(
 
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
-target_link_libraries(criterion csptr dyncall_s)
+target_link_libraries(criterion csptr)
+
+if (THEORIES)
+  target_link_libraries(criterion dyncall_s)
+endif ()
 
 if (MSVC)
   target_link_libraries(criterion wingetopt)
