@@ -27,6 +27,8 @@
 # include "criterion/types.h"
 # include "internal.h"
 
+typedef void (*cr_worker_func)(struct criterion_test *, struct criterion_suite *);
+
 struct proc_handle {
 #ifdef VANILLA_WIN32
     HANDLE handle;
