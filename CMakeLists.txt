@@ -174,7 +174,7 @@ set(SOURCE_FILES
   src/string/i18n.c
   src/string/i18n.h
   src/entry/options.c
-  src/entry/main.c
+  src/entry/params.c
   src/entry/entry.c
   src/common.h
   src/config.h
