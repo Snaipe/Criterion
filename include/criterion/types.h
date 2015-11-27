@@ -35,6 +35,9 @@ using std::size_t;
 # endif
 # include "internal/common.h"
 
+/**
+ *  Enumerates the supported languages for tests
+ */
 enum criterion_language {
     CR_LANG_C,              /// C
     CR_LANG_CXX,            /// C++
@@ -46,13 +49,23 @@ enum criterion_language {
 
 extern const char *const cr_language_names[CR_LANG_SIZE_];
 
+/**
+ *  Enumerates the supported kinds of tests
+ */
 enum criterion_test_kind {
     CR_TEST_NORMAL,
     CR_TEST_PARAMETERIZED,
 };
 
+/**
+ *  Represents a set of parameters for a parameterized test.
+ */
 struct criterion_test_params;
 
+/**
+ *  Contains all the options that can be set for a test, through
+ *  the Test and TestSuite macros, or other means.
+ */
 struct criterion_test_extra_data {
     // Start of private API
     /*
@@ -70,16 +83,19 @@ struct criterion_test_extra_data {
     unsigned line_;
     // Enf of private API
 
-    void (*init)(void);
-    void (*fini)(void);
-    int signal;
-    int exit_code;
-    bool disabled;
-    const char *description;
-    double timeout;
-    void *data;
+    void (*init)(void);         /// The setup test fixture
+    void (*fini)(void);         /// The setup test fixture
+    int signal;                 /// The expected signal raised by the test (or 0 if none)
+    int exit_code;              /// The expected exit code returned by the test
+    bool disabled;              /// Whether the test is disabled or not
+    const char *description;    /// The description of a test
+    double timeout;             /// A timeout for the test in seconds
+    void *data;                 /// Extra user data
 };
 
+/**
+ *  Represents a test
+ */
 struct criterion_test {
     const char *name;
     const char *category;
@@ -87,6 +103,9 @@ struct criterion_test {
     struct criterion_test_extra_data *data;
 };
 
+/**
+ *  Represents a test suite
+ */
 struct criterion_suite {
     const char *name;
     struct criterion_test_extra_data *data;
