@@ -27,6 +27,48 @@
 # include "test.h"
 # include "../types.h"
 
+struct criterion_test_params {
+    size_t size;
+    void *params;
+    size_t length;
+    void (*cleanup)(struct criterion_test_params *);
+
+# ifdef __cplusplus
+    constexpr criterion_test_params(size_t size, void *params, size_t length)
+        : size(size)
+        , params(params)
+        , length(length)
+        , cleanup(nullptr)
+    {}
+
+    constexpr criterion_test_params(size_t size, void *params, size_t length,
+            void (*cleanup)(struct criterion_test_params *))
+        : size(size)
+        , params(params)
+        , length(length)
+        , cleanup(cleanup)
+    {}
+
+    template <typename T>
+    constexpr criterion_test_params(std::vector<T, criterion::allocator<T>>& vec,
+            void (*cleanup)(criterion_test_params *) = nullptr)
+        : size(sizeof (T))
+        , params(&vec[0])
+        , length(vec.size())
+        , cleanup(cleanup)
+    {}
+
+    template <typename T, unsigned int N>
+    constexpr criterion_test_params(T (&arr)[N],
+            void (*cleanup)(criterion_test_params *) = nullptr)
+        : size(sizeof (arr[0]))
+        , params(static_cast<void*>(&arr))
+        , length(N)
+        , cleanup(cleanup)
+    {}
+# endif
+};
+
 # ifdef __cplusplus
 #  define CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name) \
     extern "C" void CR_IDENTIFIER_(Category, Name, impl)(Param)
