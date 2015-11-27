@@ -2,19 +2,16 @@ language: c
 
 sudo: false
 
-_gcc-4.9-packages: &gcc49-packages
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-4.9
-    - g++-4.9
-    - gobjc-4.9
-    - gnustep-devel
-
-env:
-  global:
-    - TESTS=ON
+_anchors:
+  - &gcc49-packages
+    apt:
+      sources:
+      - ubuntu-toolchain-r-test
+      packages:
+      - gcc-4.9
+      - g++-4.9
+      - gobjc-4.9
+      - gnustep-devel
 
 matrix:
   include:
@@ -22,23 +19,23 @@ matrix:
     - compiler: gcc-4.9
       addons: *gcc49-packages
       env:
-        - CONFIGURATION=Debug
-        - GCOV=gcov-4.9
-        - CMAKE_OPTS=-DLANG_OBJC=ON
-        - COVERAGE=ON
+        CONFIGURATION: Debug
+        GCOV: gcov-4.9
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        COVERAGE: "ON"
     # Linux Release, GCC 4.9
     - compiler: gcc-4.9
       addons: *gcc49-packages
       env:
-        - CONFIGURATION=Release
-        - CMAKE_OPTS=-DLANG_OBJC=ON
+        CONFIGURATION: Release
+        CMAKE_OPTS: -DLANG_OBJC=ON
     # Linux RelWithDebInfo, GCC 4.9
     - compiler: gcc-4.9
       addons: *gcc49-packages
       env:
-        - CONFIGURATION=RelWithDebInfo
-        - CMAKE_OPTS=-DLANG_OBJC=ON
-        - DEPLOY=true
+        CONFIGURATION: RelWithDebInfo
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        DEPLOY: true
     # Linux Debug, GCC 4.6
     - compiler: gcc
       env: CONFIGURATION=Debug TESTS=OFF
@@ -52,9 +49,9 @@ matrix:
     - os: osx
       compiler: gcc-4.9
       env:
-        - CONFIGURATION=Debug
-        - GCOV=gcov-4.9
-        - COVERAGE=ON
+        CONFIGURATION: Debug
+        GCOV: gcov-4.9
+        COVERAGE: "ON"
     # OSX Release, GCC 4.9
     - os: osx
       compiler: gcc-4.9
@@ -67,21 +64,21 @@ matrix:
     - os: osx
       compiler: clang
       env:
-        - CONFIGURATION=Debug
-        - CMAKE_OPTS=-DLANG_OBJC=ON
+        CONFIGURATION: Debug
+        CMAKE_OPTS: -DLANG_OBJC=ON
     # OSX Release, Clang
     - os: osx
       compiler: clang
       env:
-        - CONFIGURATION=Release
-        - CMAKE_OPTS=-DLANG_OBJC=ON
+        CONFIGURATION: Release
+        CMAKE_OPTS: -DLANG_OBJC=ON
     # OSX RelWithDebInfo, Clang
     - os: osx
       compiler: clang
       env:
-        - CONFIGURATION=RelWithDebInfo
-        - CMAKE_OPTS=-DLANG_OBJC=ON
-        - DEPLOY=true
+        CONFIGURATION: RelWithDebInfo
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        DEPLOY: true
 
   allow_failures:
     - compiler: gcc
@@ -109,7 +106,7 @@ script:
       ${CMAKE_OPTS}
       ..
   - |
-      if [ "$TESTS" = "ON" ]; then
+      if [ "${TESTS:-ON}" = "ON" ]; then
         TERM=dumb cmake --build . --target criterion_tests -- -j4
         ctest -j4
       else
