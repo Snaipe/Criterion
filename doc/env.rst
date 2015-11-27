@@ -24,19 +24,20 @@ Command line arguments
 * ``-S or --short-filename``: The filenames are displayed in their short form.
 * ``--always-succeed``: The process shall exit with a status of ``0``.
 * ``--tap[=FILE]``: Writes a TAP (Test Anything Protocol) report to FILE.
-  No file or ``"-"`` means ``stderr``. This option is equivalent to
-  ``--output=tap:FILE``.
+  No file or ``"-"`` means ``stderr`` and implies ``--quiet``. This option is
+  equivalent to ``--output=tap:FILE``.
 * ``--xml[=FILE]``: Writes JUnit4 XML report to FILE.
-  No file or ``"-"`` means ``stderr``. This option is equivalent to
-  ``--output=xml:FILE``.
+  No file or ``"-"`` means ``stderr`` and implies ``--quiet``. This option is
+  equivalent to ``--output=tap:FILE``.
 * ``--json[=FILE]``: Writes a JSON report to FILE.
-  No file or ``"-"`` means ``stderr``. This option is equivalent to
-  ``--output=json:FILE``.
+  No file or ``"-"`` means ``stderr`` and implies ``--quiet``. This option is
+  equivalent to ``--output=tap:FILE``.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
   sets the verbosity level to that integer.
 * ``-OPROVIDER:FILE or --output=PROVIDER:FILE``: Write a test report to FILE
-  using the output provider named by PROVIDER. FILE may be a relative path, or
-  ``"-"`` to write to ``stderr``.
+  using the output provider named by PROVIDER.
+  If FILE is ``"-"``, it implies ``--quiet``, and the report shall be written
+  to ``stderr``.
 
 Shell Wildcard Pattern
 ----------------------
