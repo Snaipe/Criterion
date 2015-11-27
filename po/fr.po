@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-11-11 00:24+0100\n"
+"POT-Creation-Date: 2015-11-27 12:16+0100\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -185,7 +185,7 @@ msgstr "L'instruction `%1$s` a levé une instance de l'exception `%2$s`."
 msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` n'a pas levé d'instance de l'exception `%2$s`."
 
-#: src/core/runner.c:56
+#: src/core/runner.c:58
 #, c-format
 msgid ""
 "%1$sWarning! Criterion has detected that it is running under valgrind, but "
@@ -196,7 +196,7 @@ msgstr ""
 "l'option no_early_exit est explicitement désactivée. Les rapports d'erreur "
 "ne seront pas précis!%2$s\n"
 
-#: src/core/runner.c:60
+#: src/core/runner.c:62
 #, c-format
 msgid ""
 "%1$sWarning! Criterion has detected that it is running under valgrind, but "
@@ -206,3 +206,13 @@ msgstr ""
 "%1$sAttention! Criterion a détecté qu'il a été lancé avec valgrind, mais le "
 "nombre de tâches est explicitement défini. Les rapports d'erreur risquent "
 "d'être déroutants!%2$s\n"
+
+#: src/io/output.c:12
+#, c-format
+msgid "Could not open the file @ `%1$s` for %2$s reporting.\n"
+msgstr "Impossible d'ouvrir le fichier `%1$s` pour faire le rapport %2$s.\n"
+
+#: src/io/output.c:13
+#, c-format
+msgid "Writing %1$s report in `%2$s`.\n"
+msgstr "Écriture du rapport %1$s dans `%2$s`.\n"

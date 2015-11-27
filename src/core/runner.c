@@ -462,9 +462,8 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
         goto cleanup;
 
     report(POST_ALL, stats);
-    log(post_all, stats);
-
     process_all_output(stats);
+    log(post_all, stats);
 
 cleanup:
     sfree(g_worker_pipe);

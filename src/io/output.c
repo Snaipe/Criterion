@@ -3,6 +3,18 @@
 #include <khash.h>
 #include <kvec.h>
 #include "criterion/output.h"
+#include "criterion/logging.h"
+#include "string/i18n.h"
+
+typedef const char *const msg_t;
+
+#ifdef ENABLE_NLS
+static msg_t msg_err = N_("Could not open the file @ `%1$s` for %2$s reporting.\n");
+static msg_t msg_ok  = N_("Writing %1$s report in `%2$s`.\n");
+#else
+static msg_t msg_err = "Could not open the file @ `%s` for %s reporting.\n";
+static msg_t msg_ok  = "Writing %s report in `%s`.\n";
+#endif
 
 typedef kvec_t(const char *) str_vec;
 
@@ -69,7 +81,8 @@ void process_all_output(struct criterion_global_stats *stats) {
             continue;
 
         criterion_reporter *report = kh_value(reporters, k);
-        khint_t ko = kh_get(ht_path, outputs, kh_key(reporters, k));
+        const char *name = kh_key(reporters, k);
+        khint_t ko = kh_get(ht_path, outputs, name);
         if (ko == kh_end(outputs))
             continue;
 
@@ -83,6 +96,12 @@ void process_all_output(struct criterion_global_stats *stats) {
             else
                 f = fopen(path, "w");
 
+            if (!f) {
+                criterion_perror(_(msg_err), path, name);
+                continue;
+            }
+
+            criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_ok), name, path);
             report(f, stats);
         }
     }

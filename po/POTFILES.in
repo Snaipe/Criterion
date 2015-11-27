@@ -2,3 +2,4 @@
 src/log/normal.c
 src/string/i18n.c
 src/core/runner.c
+src/io/output.c
