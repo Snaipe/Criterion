@@ -2,6 +2,7 @@
 #include <string.h>
 #include <khash.h>
 #include <kvec.h>
+#include <errno.h>
 #include "criterion/output.h"
 #include "criterion/logging.h"
 #include "string/i18n.h"
@@ -9,10 +10,10 @@
 typedef const char *const msg_t;
 
 #ifdef ENABLE_NLS
-static msg_t msg_err = N_("Could not open the file @ `%1$s` for %2$s reporting.\n");
+static msg_t msg_err = N_("Could not open the file @ `%1$s` for %2$s reporting: %3$s.\n");
 static msg_t msg_ok  = N_("Writing %1$s report in `%2$s`.\n");
 #else
-static msg_t msg_err = "Could not open the file @ `%s` for %s reporting.\n";
+static msg_t msg_err = "Could not open the file @ `%s` for %s reporting: %s.\n";
 static msg_t msg_ok  = "Writing %s report in `%s`.\n";
 #endif
 
@@ -97,7 +98,8 @@ void process_all_output(struct criterion_global_stats *stats) {
                 f = fopen(path, "w");
 
             if (!f) {
-                criterion_perror(_(msg_err), path, name);
+                int errno2 = errno;
+                criterion_perror(_(msg_err), path, name, strerror(errno2));
                 continue;
             }
 

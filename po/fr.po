@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2015-11-27 12:16+0100\n"
+"POT-Creation-Date: 2015-11-27 12:24+0100\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -207,12 +207,13 @@ msgstr ""
 "nombre de tâches est explicitement défini. Les rapports d'erreur risquent "
 "d'être déroutants!%2$s\n"
 
-#: src/io/output.c:12
-#, c-format
-msgid "Could not open the file @ `%1$s` for %2$s reporting.\n"
-msgstr "Impossible d'ouvrir le fichier `%1$s` pour faire le rapport %2$s.\n"
-
 #: src/io/output.c:13
+#, fuzzy, c-format
+msgid "Could not open the file @ `%1$s` for %2$s reporting: %3$s.\n"
+msgstr ""
+"Impossible d'ouvrir le fichier `%1$s` pour faire le rapport %2$s: %3$s.\n"
+
+#: src/io/output.c:14
 #, c-format
 msgid "Writing %1$s report in `%2$s`.\n"
 msgstr "Écriture du rapport %1$s dans `%2$s`.\n"
