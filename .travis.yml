@@ -112,6 +112,11 @@ script:
       else
         TERM=dumb cmake --build . -- -j4
       fi
+  - |
+      make DESTDIR=out install
+      diff <(find ../include/            | sed 's/^..\///g') \
+           <(find out/usr/local/include/ | sed 's/out\/usr\/local\///g') \
+        || exit 1
 
 after_success:
   - |
