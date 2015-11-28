@@ -8,10 +8,12 @@ set(CPACK_DEBIAN_BUILD_DEPENDS
   cmake
   gettext
   libpcre3-dev
-  gcc-4.9
-  g++-4.9
-  gobjc-4.9
+  gobjc
   gnustep-devel
+)
+
+set(CPACK_DEBIAN_CMAKE_OPTIONS
+  "-DLANG_OBJC=ON"
 )
 
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/description.txt")
