@@ -294,13 +294,13 @@ endif()
 
 foreach (F ${INTERFACE_FILES})
   get_filename_component(DEST "${F}" PATH)
-  install(FILES "${F}" DESTINATION "${DEST}")
+  install(FILES "${F}" DESTINATION "${DEST}" COMPONENT dev)
 endforeach ()
 
 install(TARGETS criterion
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  ARCHIVE DESTINATION lib COMPONENT dev
 )
 
 add_custom_target(criterion_tests)
@@ -319,7 +319,7 @@ add_subdirectory(test)
 endif ()
 
 # Add toolchain patch number for incremental deb builds
-set(PROJECT_VERSION "${PROJECT_VERSION}-5")
+set(PROJECT_VERSION "${PROJECT_VERSION}-6")
 
 include (PackageConfig)
 
