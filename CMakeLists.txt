@@ -66,7 +66,8 @@ endif()
 # Project setup & environment variables
 
 set(PROJECT_VERSION "2.1.0")
-set(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
+set(LOCALEDIR_REL "share/locale")
+set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${LOCALEDIR_REL}")
 set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
 
@@ -315,4 +316,15 @@ if (CTESTS)
 enable_testing()
 add_subdirectory(samples)
 add_subdirectory(test)
+endif ()
+
+# Add toolchain patch number for incremental deb builds
+set(PROJECT_VERSION "${PROJECT_VERSION}-4")
+
+include (PackageConfig)
+
+option(UPLOAD_DEB "Upload package to launchpad" OFF)
+
+if (UNIX AND UPLOAD_DEB)
+  include (DebConfig)
 endif ()
