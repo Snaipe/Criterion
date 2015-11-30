@@ -66,10 +66,9 @@ Example main
     int main(int argc, char *argv[]) {
         struct criterion_test_set *tests = criterion_initialize();
 
-        if (!criterion_handle_args(argc, argv, true))
-            return 0;
-
-        int result = !criterion_run_all_tests(set);
+        int result = 0;
+        if (criterion_handle_args(argc, argv, true))
+            result = !criterion_run_all_tests(set);
 
         criterion_finalize(set);
         return result;
