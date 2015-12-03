@@ -87,7 +87,7 @@ void run_worker(struct worker_context *ctx) {
     fflush(NULL); // flush all opened streams
     if (criterion_options.no_early_exit)
         return;
-    _Exit(0);
+    exit(0);
 }
 
 struct worker *spawn_test_worker(struct execution_context *ctx,
