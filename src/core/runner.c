@@ -488,3 +488,24 @@ int criterion_run_all_tests(struct criterion_test_set *set) {
 
     return criterion_options.always_succeed || res;
 }
+
+void run_single_test_by_name(const char *testname) {
+    struct criterion_test_set *set = criterion_init();
+
+    g_event_pipe = pipe_file_open(NULL);
+
+    FOREACH_SET(struct criterion_suite_set *s, set->suites) {
+        size_t tests = s->tests ? s->tests->size : 0;
+        if (!tests)
+            continue;
+
+        FOREACH_SET(struct criterion_test *t, s->tests) {
+            char name[1024];
+            snprintf(name, sizeof (name), "%s::%s", s->suite.name, t->name);
+            if (!strncmp(name, testname, 1024))
+                run_test_child(t, &s->suite);
+        }
+    }
+
+    sfree(set);
+}

@@ -79,4 +79,6 @@ extern s_pipe_handle *stdout_redir;
 extern s_pipe_handle *stderr_redir;
 extern s_pipe_handle *stdin_redir;
 
+s_pipe_file_handle *pipe_file_open(const char *path);
+
 #endif /* !PIPE_H_ */

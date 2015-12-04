@@ -318,3 +318,25 @@ static s_pipe_handle stdin_redir_;
 s_pipe_handle *stdout_redir = &stdout_redir_;
 s_pipe_handle *stderr_redir = &stderr_redir_;
 s_pipe_handle *stdin_redir  = &stdin_redir_;
+
+s_pipe_file_handle *pipe_file_open(const char *path) {
+    s_pipe_file_handle *h = smalloc(
+            .size = sizeof (s_pipe_file_handle),
+            .dtor = close_pipe_file_handle);
+#ifdef VANILLA_WIN32
+    if (!path)
+        path = "nul";
+    h->fh = CreateFile(path,
+                GENERIC_READ | GENERIC_WRITE,
+                0,
+                NULL,
+                OPEN_EXISTING,
+                FILE_ATTRIBUTE_NORMAL,
+                NULL);
+#else
+    if (!path)
+        path = "/dev/null";
+    h->fd = open(path, O_RDWR);
+#endif
+    return h;
+}

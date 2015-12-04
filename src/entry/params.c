@@ -149,6 +149,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"jobs",            required_argument,  0, 'j'},
         {"fail-fast",       no_argument,        0, 'f'},
         {"short-filename",  no_argument,        0, 'S'},
+        {"single",          required_argument,  0, 's'},
 #ifdef HAVE_PCRE
         {"pattern",         required_argument,  0, 'p'},
 #endif
@@ -245,6 +246,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
+            case 's': run_single_test_by_name(optarg); return 0;
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif

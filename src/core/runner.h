@@ -43,4 +43,6 @@ void run_test_child(struct criterion_test *test, struct criterion_suite *suite);
             Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
             ++Suite)
 
+void run_single_test_by_name(const char *testname);
+
 #endif /* !CRITERION_RUNNER_H_ */
