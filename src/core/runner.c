@@ -84,8 +84,8 @@ CR_IMPL_SECTION_LIMITS(struct criterion_test*, cr_tst);
 CR_IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
 // This is here to make the test suite & test sections non-empty
-TestSuite();
-Test(,) {}
+CR_SECTION_("cr_sts") struct criterion_suite *dummy_suite = NULL;
+CR_SECTION_("cr_tst") struct criterion_test  *dummy_test = NULL;
 
 static INLINE void nothing(void) {}
 
