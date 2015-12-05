@@ -113,6 +113,9 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
 CR_API void criterion_register_test(struct criterion_test_set *tests,
                                     struct criterion_test *test);
 
+extern const struct criterion_test  *const criterion_current_test;
+extern const struct criterion_suite *const criterion_current_suite;
+
 CR_END_C_API
 
 #endif /* !CRITERION_H_ */

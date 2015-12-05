@@ -133,9 +133,6 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
-  src/core/wrappers/wrap.h
-  src/core/wrappers/wrap.c
-  src/core/wrappers/wrappers.c
   src/core/abort.c
   src/core/abort.h
   src/core/report.c
@@ -203,10 +200,6 @@ if (PCRE_FOUND)
   set(HAVE_PCRE 1)
 endif ()
 
-if (CMAKE_CXX_COMPILER_WORKS)
-  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.cc)
-endif ()
-
 if (CMAKE_ObjectiveC_COMPILER_WORKS)
   set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
   if ("${CMAKE_ObjectiveC_COMPILER_ID}" STREQUAL "Clang" AND APPLE)
@@ -217,7 +210,6 @@ if (CMAKE_ObjectiveC_COMPILER_WORKS)
   if (NOT WIN32)
     set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} -fPIC")
   endif ()
-  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.m)
 endif ()
 
 set(INTERFACE_FILES

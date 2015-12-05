@@ -27,28 +27,35 @@
 #include "core/report.h"
 #include "compat/time.h"
 #include "io/event.h"
-#include "wrap.h"
+
+extern const struct criterion_test  *criterion_current_test;
+extern const struct criterion_suite *criterion_current_suite;
 
 static INLINE void nothing(void) {}
 
-void c_wrap(struct criterion_test *test, struct criterion_suite *suite) {
+void criterion_internal_test_setup(void) {
+    const struct criterion_suite *suite = criterion_current_suite;
+    const struct criterion_test *test = criterion_current_test;
 
     criterion_send_event(PRE_INIT, NULL, 0);
     if (suite->data)
         (suite->data->init ? suite->data->init : nothing)();
     (test->data->init ? test->data->init : nothing)();
+}
+
+void criterion_internal_test_main(void (*fn)(void)) {
+    const struct criterion_test *test = criterion_current_test;
+
     criterion_send_event(PRE_TEST, NULL, 0);
 
     struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
         timer_start(&ts);
-        if (test->test) {
-            if (!test->data->param_) {
-                test->test();
-            } else {
-                void(*param_test_func)(void *) = (void(*)(void*)) test->test;
-                param_test_func(g_worker_context.param->ptr);
-            }
+        if (!test->data->param_) {
+            fn();
+        } else {
+            void(*param_test_func)(void *) = (void(*)(void*)) fn;
+            param_test_func(g_worker_context.param->ptr);
         }
     }
 
@@ -57,9 +64,15 @@ void c_wrap(struct criterion_test *test, struct criterion_suite *suite) {
         elapsed_time = -1;
 
     criterion_send_event(POST_TEST, &elapsed_time, sizeof(double));
+}
+
+void criterion_internal_test_teardown(void) {
+    const struct criterion_suite *suite = criterion_current_suite;
+    const struct criterion_test *test = criterion_current_test;
+
     (test->data->fini ? test->data->fini : nothing)();
     if (suite->data)
         (suite->data->fini ? suite->data->fini : nothing)();
     criterion_send_event(POST_FINI, NULL, 0);
-
 }
+
