@@ -452,6 +452,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
                 strerror(errno));
         abort();
     }
+    init_proc_compat();
 
     struct criterion_global_stats *stats = stats_init();
     run_tests_async(set, stats);
@@ -466,6 +467,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     log(post_all, stats);
 
 cleanup:
+    free_proc_compat();
     sfree(g_worker_pipe);
     sfree(stats);
     return result;

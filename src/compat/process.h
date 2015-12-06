@@ -60,4 +60,7 @@ bool is_current_process(s_proc_handle *proc);
 unsigned long long get_process_id(void);
 unsigned long long get_process_id_of(s_proc_handle *proc);
 
+void init_proc_compat(void);
+void free_proc_compat(void);
+
 #endif /* !COMPAT_PROCESS_H_ */

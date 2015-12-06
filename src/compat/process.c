@@ -88,6 +88,8 @@ static int get_win_status(HANDLE handle) {
     }
     return sig ? sig : exit_code << 8;
 }
+#else
+# include <pthread.h>
 #endif
 
 struct worker_context g_worker_context = {.test = NULL};
@@ -115,9 +117,7 @@ static struct full_context local_ctx;
 #  error Unsupported compiler. Use GCC or Clang under *nixes.
 # endif
 
-static void handle_sigchld(CR_UNUSED int sig) {
-    assert(sig == SIGCHLD);
-
+static void handle_sigchld_pump(void) {
     int fd = g_worker_pipe->fds[1];
     pid_t pid;
     int status;
@@ -142,7 +142,48 @@ static void handle_sigchld(CR_UNUSED int sig) {
         }
     }
 }
+
+/*
+ * This child reaping logic is a dirty hack to prevent deadlocks
+ * when the pipe is overflowing and a child terminates.
+ *
+ * (Windows doesn't have this issue as the waitpid logic is threaded by
+ * RegisterWaitForSingleObject)
+ *
+ * REMOVE WHEN REFACTORING I/O LAYER
+ */
+static pthread_t child_pump;
+static bool child_pump_running;
+
+static void *chld_pump_thread_main(void *nil) {
+    child_pump_running = true;
+
+    do {
+        handle_sigchld_pump();
+        usleep(1000);
+    } while (child_pump_running);
+
+    return nil;
+}
 #endif
+
+void init_proc_compat(void) {
+#ifndef VANILLA_WIN32
+    pthread_attr_t attr;
+    int err = pthread_attr_init(&attr)
+           || pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)
+           || pthread_create(&child_pump, &attr, chld_pump_thread_main, NULL)
+           || pthread_attr_destroy(&attr);
+    if (err) {
+        perror(0);
+        exit(1);
+    }
+#endif
+}
+
+void free_proc_compat(void) {
+    child_pump_running = false;
+}
 
 #ifdef VANILLA_WIN32
 struct wait_context {
@@ -251,16 +292,6 @@ int resume_child(void) {
     free(param);
     return 1;
 #else
-# if defined(__unix__) || defined(__APPLE__)
-    struct sigaction sa;
-    sa.sa_handler = &handle_sigchld;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
-    if (sigaction(SIGCHLD, &sa, 0) == -1) {
-        perror(0);
-        exit(1);
-    }
-# endif
     return 0;
 #endif
 }
