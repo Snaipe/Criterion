@@ -28,7 +28,18 @@
 
 CR_BEGIN_C_API
 
+/**
+ *  Aborts the current test, marking it as failed.
+ *
+ *  This function does not return.
+ */
 CR_API CR_NORETURN void criterion_abort_test(void);
+
+/**
+ *  Continues the current test.
+ *
+ *  Used as a counterpart to criterion_abort_test.
+ */
 CR_INLINE static void criterion_continue_test(void) {}
 
 CR_END_C_API
