@@ -8,14 +8,13 @@ set(CPACK_DEBIAN_BUILD_DEPENDS
   cmake
   gettext
   libpcre3-dev
-  gobjc
-  gnustep-devel
 )
 
-set(CPACK_DEBIAN_CMAKE_OPTIONS
-  "-DLANG_OBJC=ON"
+set(CPACK_DEBIAN_PACKAGE_DEPENDS
+  libpcre3
 )
 
+set(CPACK_DEBIAN_CMAKE_OPTIONS)
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/description.txt")
 
 set(CPACK_DEBIAN_PACKAGE_SOURCE_COPY "${CMAKE_SOURCE_DIR}/.cmake/copy-source.sh")
