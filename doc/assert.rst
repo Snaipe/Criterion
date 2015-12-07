@@ -118,30 +118,30 @@ File Assertions
 ---------------
 
 =================================================================================== ============================================================================ ===========================================
-Macro                                                                                Passes if and only if                                                        Notes
+Macro                                                                               Passes if and only if                                                        Notes
 =================================================================================== ============================================================================ ===========================================
-cr_assert_file_contents_eq_str(File, ExpectedContents, [FormatString, [Args...]])    The contents of ``File`` are equal to the string ``ExpectedContents``.
+cr_assert_file_contents_eq_str(File, ExpectedContents, [FormatString, [Args...]])   The contents of ``File`` are equal to the string ``ExpectedContents``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_file_contents_neq_str(File, ExpectedContents, [FormatString, [Args...]])   The contents of ``File`` are not equal to the string ``ExpectedContents``.
+cr_assert_file_contents_neq_str(File, ExpectedContents, [FormatString, [Args...]])  The contents of ``File`` are not equal to the string ``ExpectedContents``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stdout_eq_str(ExpectedContents, [FormatString, [Args...]])                 The contents of ``stdout`` are equal to the string ``ExpectedContents``.
+cr_assert_stdout_eq_str(ExpectedContents, [FormatString, [Args...]])                The contents of ``stdout`` are equal to the string ``ExpectedContents``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stdout_neq_str(ExpectedContents, [FormatString, [Args...]])                The contents of ``stdout`` are not equal to the string ``ExpectedContents``.
+cr_assert_stdout_neq_str(ExpectedContents, [FormatString, [Args...]])               The contents of ``stdout`` are not equal to the string ``ExpectedContents``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stderr_eq_str(ExpectedContents, [FormatString, [Args...]])                 The contents of ``stderr`` are equal to the string ``ExpectedContents``.
+cr_assert_stderr_eq_str(ExpectedContents, [FormatString, [Args...]])                The contents of ``stderr`` are equal to the string ``ExpectedContents``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stderr_neq_str(ExpectedContents, [FormatString, [Args...]])                The contents of ``stderr`` are not equal to the string ``ExpectedContents``.
+cr_assert_stderr_neq_str(ExpectedContents, [FormatString, [Args...]])               The contents of ``stderr`` are not equal to the string ``ExpectedContents``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_file_contents_eq(File, RefFile, [FormatString, [Args...]])                 The contents of ``File`` are equal to the contents of ``RefFile``.
+cr_assert_file_contents_eq(File, RefFile, [FormatString, [Args...]])                The contents of ``File`` are equal to the contents of ``RefFile``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_file_contents_neq(File, RefFile, [FormatString, [Args...]])                The contents of ``File`` are not equal to the contents of ``RefFile``.
+cr_assert_file_contents_neq(File, RefFile, [FormatString, [Args...]])               The contents of ``File`` are not equal to the contents of ``RefFile``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stdout_eq(RefFile, [FormatString, [Args...]])                              The contents of ``stdout`` are equal to the contents of ``RefFile``.
+cr_assert_stdout_eq(RefFile, [FormatString, [Args...]])                             The contents of ``stdout`` are equal to the contents of ``RefFile``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stdout_neq(RefFile, [FormatString, [Args...]])                             The contents of ``stdout`` are not equal to the contents of ``RefFile``.
+cr_assert_stdout_neq(RefFile, [FormatString, [Args...]])                            The contents of ``stdout`` are not equal to the contents of ``RefFile``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stderr_eq(RefFile, [FormatString, [Args...]])                              The contents of ``stderr`` are equal to the contents of ``RefFile``.
+cr_assert_stderr_eq(RefFile, [FormatString, [Args...]])                             The contents of ``stderr`` are equal to the contents of ``RefFile``.
 ----------------------------------------------------------------------------------- ---------------------------------------------------------------------------- -------------------------------------------
-cr_assert_stderr_neq(RefFile, [FormatString, [Args...]])                             The contents of ``stderr`` are not equal to the contents of ``RefFile``.
+cr_assert_stderr_neq(RefFile, [FormatString, [Args...]])                            The contents of ``stderr`` are not equal to the contents of ``RefFile``.
 =================================================================================== ============================================================================ ===========================================
 
