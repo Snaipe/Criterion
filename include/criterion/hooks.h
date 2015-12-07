@@ -26,6 +26,9 @@
 
 # include "internal/hooks.h"
 
+/**
+ *  This enum lists all the phases of the runner lifecycle.
+ */
 typedef enum {
     PRE_ALL,
     PRE_SUITE,
@@ -42,6 +45,24 @@ typedef enum {
 
 typedef void (*f_report_hook)();
 
+/**
+ *  ReportHook(Kind)(Type *param) { Function Body }
+ *
+ *  Defines a report hook for the phase defined by Kind.
+ *
+ *  The type of the parameter depends on the phase:
+ *
+ *  - struct criterion_test_set for PRE_ALL.
+ *  - struct criterion_suite_set for PRE_SUITE.
+ *  - struct criterion_test for PRE_INIT and PRE_TEST.
+ *  - struct criterion_assert_stats for ASSERT.
+ *  - struct criterion_theory_stats for THEORY_FAIL.
+ *  - struct criterion_test_stats for POST_TEST, POST_FINI, and TEST_CRASH.
+ *  - struct criterion_suite_stats for POST_SUITE.
+ *  - struct criterion_global_stats for POST_ALL.
+ *
+ *  @param Kind The report phase to hook the function onto.
+ */
 # define ReportHook(Kind) CR_REPORT_HOOK_IMPL(Kind)
 
 #endif /* !CRITERION_HOOKS_H_ */
