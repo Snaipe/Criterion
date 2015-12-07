@@ -182,7 +182,9 @@ void init_proc_compat(void) {
 }
 
 void free_proc_compat(void) {
+#ifndef VANILLA_WIN32
     child_pump_running = false;
+#endif
 }
 
 #ifdef VANILLA_WIN32
