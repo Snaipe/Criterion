@@ -28,7 +28,23 @@
 
 typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
 
+/**
+ *  Register an output provider.
+ *
+ *  @param[in] name The name the output provider shall be registered as.
+ *  @param[in] reporter The output reporting function.
+ *  @returns 1 if no output provider is registered at that name, 0 otherwise,
+ *    and -1 on error.
+ */
 int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
+
+/**
+ *  Use an output provider to write a report in a specific path.
+ *
+ *  @param[in] provider The name of a registered output provider.
+ *  @param[in] path The path to the file to write the report to.
+ *  @returns -1 on error.
+ */
 int criterion_add_output(const char *provider, const char *path);
 
 #endif /* !CRITERION_OUTPUT_H_ */
