@@ -104,10 +104,10 @@ struct criterion_test_params {
     static struct criterion_test_params CR_IDENTIFIER_(Category, Name, param)(void)
 
 # ifdef __cplusplus
-#  define cr_make_param_array(Type, Array, ...) \
+#  define cr_make_param_array_(Type, Array, ...) \
     criterion_test_params(sizeof (Type), (Array), __VA_ARGS__)
 # else
-#  define cr_make_param_array(Type, Array, ...) \
+#  define cr_make_param_array_(Type, Array, ...) \
     (struct criterion_test_params) { .size = sizeof (Type), (void*)(Array), __VA_ARGS__ }
 # endif
 
