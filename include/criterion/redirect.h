@@ -35,17 +35,67 @@
 
 CR_BEGIN_C_API
 
+/**
+ *  Redirect stdout for testing.
+ */
 CR_API void cr_redirect_stdout(void);
+
+/**
+ *  Redirect stderr for testing.
+ */
 CR_API void cr_redirect_stderr(void);
+
+/**
+ *  Redirect stdin for testing.
+ *  This is implicitely called before each test.
+ */
 CR_API void cr_redirect_stdin(void);
 
+/**
+ *  Get a file handle representing the read-end of the redirected stdout.
+ *
+ *  @returns the file handle.
+ */
 CR_API CR_STDN FILE* cr_get_redirected_stdout(void);
+
+/**
+ *  Get a file handle representing the read-end of the redirected stderr.
+ *
+ *  @returns the file handle.
+ */
 CR_API CR_STDN FILE* cr_get_redirected_stderr(void);
+
+/**
+ *  Get a file handle representing the write-end of the redirected stdin.
+ *
+ *  @returns the file handle.
+ */
 CR_API CR_STDN FILE* cr_get_redirected_stdin(void);
 
+/**
+ *  Compare the contents of a file with a string.
+ *
+ *  @param[in] f    The file to compare the contents to.
+ *  @param[in] str  The string to compare the contents to.
+ *  @returns 1 if the contents of the file is equal to the string, 0 otherwise.
+ */
 CR_API int cr_file_match_str(CR_STDN FILE* f, const char *str);
+
+/**
+ *  Compare the contents of a file with the contents of another file.
+ *
+ *  @param[in] f    The first file to compare the contents to.
+ *  @param[in] ref  The second file to compare the contents to.
+ *  @returns 1 if the contents of the files are equal, 0 otherwise.
+ */
 CR_API int cr_file_match_file(CR_STDN FILE* f, CR_STDN FILE* ref);
 
+/**
+ *  Create a file mock.
+ *
+ *  @param[in] max_size The maximum size in bytes of the file mock.
+ *  @returns the file handle representing the mock.
+ */
 CR_API CR_STDN FILE *cr_mock_file_size(size_t max_size);
 
 CR_END_C_API
