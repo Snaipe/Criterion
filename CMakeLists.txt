@@ -43,11 +43,12 @@ if (MSVC)
   include_directories(dependencies/wingetopt/src/)
 endif ()
 
-# Language support
-
-include(Languages)
-
 # Check for C++11
+
+option(LANG_CXX "Turn on C++ support" ON)
+if (LANG_CXX)
+  enable_language(CXX)
+endif ()
 
 if (NOT MSVC AND CMAKE_CXX_COMPILER_WORKS)
   include(CheckCXXCompilerFlag)
@@ -199,18 +200,6 @@ if (PCRE_FOUND)
     src/string/extmatch.h
   )
   set(HAVE_PCRE 1)
-endif ()
-
-if (CMAKE_ObjectiveC_COMPILER_WORKS)
-  set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
-  if ("${CMAKE_ObjectiveC_COMPILER_ID}" STREQUAL "Clang" AND APPLE)
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -framework Foundation")
-  endif ()
-  add_definitions(-D_NATIVE_OBJC_EXCEPTIONS)
-
-  if (NOT WIN32)
-    set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} -fPIC")
-  endif ()
 endif ()
 
 set(INTERFACE_FILES
