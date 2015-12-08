@@ -36,6 +36,10 @@ set(CPACK_COMPONENT_DEV_DISPLAY_NAME "Criterion library development files")
 set(CPACK_COMPONENT_DEV_DESCRIPTION "These are the development files.")
 set(CPACK_COMPONENT_DEV_SECTION "devel")
 
+set(CPACK_COMPONENT_DEV_DEPENDS
+  criterion
+)
+
 set(CPACK_COMPONENT_DEV_DOCS "")
 set(CPACK_COMPONENT_DEV_INSTALL "/usr/include")
 
