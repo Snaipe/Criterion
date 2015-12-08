@@ -25,19 +25,25 @@
 # define EVENT_H_
 
 # include "criterion/event.h"
+# include "core/worker.h"
 # include <stdio.h>
 
-extern FILE *g_event_pipe;
+extern s_pipe_file_handle *g_event_pipe;
 
 struct event {
+    unsigned long long pid;
     int kind;
     void *data;
+
+    struct worker *worker;
+    size_t worker_index;
 };
 
 enum other_event_kinds {
     WORKER_TERMINATED = 1 << 30,
+    TEST_ABORT,
 };
 
-struct event *read_event(FILE *f);
+struct event *read_event(s_pipe_file_handle *f);
 
 #endif /* !EVENT_H_ */

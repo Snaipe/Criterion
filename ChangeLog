@@ -1,3 +1,38 @@
+2015-12-08  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.2.0
+    * Breaking: Renamed all unprefixed internal macros and functions that were
+      exposed in the API, and moved them to criterion/internal.
+      This shouldn't break your code if you did not use these in the first
+      place.
+    * Change: Added language-specific wrapping logic to decouple the language
+      the tests are written in from the test runner.
+    * Change: Rewrote the reporting logic to allow multiple test reports to be
+      written using any format.
+    * Addition: Added parallel jobs for the test runner.
+    * Addition: Added C++ allocator for STL collections based on
+      cr_malloc/cr_free.
+    * Addition: Added criterion::parameters in C++ for simpler parameter list
+      generation.
+    * Addition: Added saner defaults when the tests detect they run under
+      valgrind.
+    * Addition: Added basic Objective-C language support.
+    * Addition: Added JUnit XML reporting.
+    * Addition: Added JSON reporting.
+    * Addition: Added dynamic reporter registration.
+    * Addition: Added back support for GCC 4.6 when compiling C tests.
+    * Addition: Added single test execution mode.
+    * Removal: Removed all deprecated 1.x unprefixed assertion macros.
+    * Fix: Fixed some memory corruption happening on rare occasions on assert
+      messages.
+    * Fix: Fixed deadlocks happening at random when a large quantity of assert
+      is present.
+    * Fix: Fixed the library not compiling with the intel compiler collection.
+    * Deprecation: All cr_assume_strings_* macros are deprecated in favor of
+      cr_assume_str_*.
+    * Deprecation: All cr_assume_arrays_* macros are deprecated in favor of
+      cr_assume_arr_*.
+
 2015-11-25  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.1.1

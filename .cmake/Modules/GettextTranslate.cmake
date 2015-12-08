@@ -252,13 +252,29 @@ macro(GettextTranslate)
 
     else()
 
-      add_custom_target(${PO_TARGET}
-        COMMAND ${GettextTranslate_MSGMERGE_EXECUTABLE} --lang=${lang}
-          ${PO_FILE_NAME} ${TEMPLATE_FILE_ABS} 
-          -o ${PO_FILE_NAME}.new
-        COMMAND mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}
-        DEPENDS ${TEMPLATE_FILE_ABS}
+      execute_process(
+        COMMAND ${GettextTranslate_MSGMERGE_EXECUTABLE} --version
+        OUTPUT_VARIABLE MSGMERGE_VERSION_MSG
       )
+      string(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" MSGMERGE_VERSION "${MSGMERGE_VERSION_MSG}")
+
+      if ("${MSGMERGE_VERSION}" VERSION_GREATER "0.17")
+          add_custom_target(${PO_TARGET}
+            COMMAND ${GettextTranslate_MSGMERGE_EXECUTABLE} --lang=${lang}
+              ${PO_FILE_NAME} ${TEMPLATE_FILE_ABS} 
+              -o ${PO_FILE_NAME}.new
+            COMMAND mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}
+            DEPENDS ${TEMPLATE_FILE_ABS}
+          )
+      else ()
+          add_custom_target(${PO_TARGET}
+            COMMAND ${GettextTranslate_MSGMERGE_EXECUTABLE}
+              ${PO_FILE_NAME} ${TEMPLATE_FILE_ABS} 
+              -o ${PO_FILE_NAME}.new
+            COMMAND mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}
+            DEPENDS ${TEMPLATE_FILE_ABS}
+          )
+      endif ()
 
     endif()
 
@@ -271,7 +287,7 @@ macro(GettextTranslate)
     add_dependencies(${PO_TARGET} ${MAKEVAR_DOMAIN}.pot-update)
 
     install(FILES ${GMO_FILE_NAME} DESTINATION
-      ${LOCALEDIR}/${lang}/LC_MESSAGES
+      ${LOCALEDIR_REL}/${lang}/LC_MESSAGES
       RENAME ${MAKEVAR_DOMAIN}.mo
     )
 

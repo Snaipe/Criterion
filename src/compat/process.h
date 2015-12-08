@@ -27,6 +27,8 @@
 # include "criterion/types.h"
 # include "internal.h"
 
+typedef void (*cr_worker_func)(struct criterion_test *, struct criterion_suite *);
+
 struct proc_handle {
 #ifdef VANILLA_WIN32
     HANDLE handle;
@@ -40,7 +42,7 @@ typedef struct proc_handle s_proc_handle;
 struct worker_context {
     struct criterion_test *test;
     struct criterion_suite *suite;
-    f_worker_func func;
+    cr_worker_func func;
     struct pipe_handle *pipe;
     struct test_single_param *param;
 };
@@ -54,5 +56,11 @@ void wait_process(s_proc_handle *handle, int *status);
 
 s_proc_handle *get_current_process();
 bool is_current_process(s_proc_handle *proc);
+
+unsigned long long get_process_id(void);
+unsigned long long get_process_id_of(s_proc_handle *proc);
+
+void init_proc_compat(void);
+void free_proc_compat(void);
 
 #endif /* !COMPAT_PROCESS_H_ */

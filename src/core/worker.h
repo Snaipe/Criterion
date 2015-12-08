@@ -29,7 +29,30 @@
 # include "compat/process.h"
 # include "compat/pipe.h"
 
-struct process;
+struct test_single_param {
+    size_t size;
+    void *ptr;
+};
+
+struct execution_context {
+    bool test_started;
+    bool normal_finish;
+    bool cleaned_up;
+    bool aborted;
+    struct criterion_global_stats *stats;
+    struct criterion_test *test;
+    struct criterion_test_stats *test_stats;
+    struct criterion_suite *suite;
+    struct criterion_suite_stats *suite_stats;
+    struct test_single_param *param;
+};
+
+struct worker {
+    int active;
+    s_proc_handle *proc;
+    s_pipe_file_handle *in;
+    struct execution_context ctx;
+};
 
 enum status_kind {
     EXIT_STATUS,
@@ -47,22 +70,22 @@ struct worker_status {
     struct process_status status;
 };
 
-struct test_single_param {
-    size_t size;
-    void *ptr;
+struct worker_set {
+    struct worker **workers;
+    size_t max_workers;
 };
+
+extern s_pipe_handle *g_worker_pipe;
 
 void run_worker(struct worker_context *ctx);
 void set_runner_process(void);
 void unset_runner_process(void);
 bool is_runner(void);
-struct process_status wait_proc(struct process *proc);
+struct process_status wait_proc(struct worker *proc);
 struct process_status get_status(int status);
-struct process *spawn_test_worker(struct criterion_test *test,
-                                  struct criterion_suite *suite,
-                                  f_worker_func func,
-                                  s_pipe_handle *pipe,
-                                  struct test_single_param *param);
-struct event *worker_read_event(struct process *proc);
+struct worker *spawn_test_worker(struct execution_context *ctx,
+                                  cr_worker_func func,
+                                  s_pipe_handle *pipe);
+struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe);
 
 #endif /* !PROCESS_H_ */

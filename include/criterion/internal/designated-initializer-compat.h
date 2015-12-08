@@ -112,11 +112,11 @@
     CR_EXPAND(CRITERION_APPLY(CRITERION_ADD_PREFIX_ONCE, __VA_ARGS__))
 
 # ifdef __cplusplus
-#  define CRITERION_MAKE_STRUCT(Type, ...) []() {       \
-        Type t;                                         \
-        std::memset(&t, 0, sizeof (t));                 \
-        CR_EXPAND(CRITERION_ADD_PREFIX(t, __VA_ARGS__)) \
-        return t;                                       \
+#  define CRITERION_MAKE_STRUCT(Type, ...) []() -> Type {   \
+        Type t;                                             \
+        std::memset(&t, 0, sizeof (t));                     \
+        CR_EXPAND(CRITERION_ADD_PREFIX(t, __VA_ARGS__))     \
+        return t;                                           \
     }()
 # else
 #  define CRITERION_MAKE_STRUCT(Type, ...) { __VA_ARGS__ }

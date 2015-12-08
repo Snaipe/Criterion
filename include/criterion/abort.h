@@ -24,12 +24,25 @@
 #ifndef CRITERION_ABORT_H_
 # define CRITERION_ABORT_H_
 
-# include "common.h"
+# include "internal/common.h"
 
 CR_BEGIN_C_API
 
-CR_API NORETURN void criterion_abort_test(void);
+/**
+ *  Aborts the current test, marking it as failed.
+ *
+ *  This function does not return.
+ */
+CR_API CR_NORETURN void criterion_abort_test(void);
+
+/**
+ *  Continues the current test.
+ *
+ *  Used as a counterpart to criterion_abort_test.
+ */
 CR_INLINE static void criterion_continue_test(void) {}
+
+CR_API void criterion_test_die(const char *msg, ...);
 
 CR_END_C_API
 

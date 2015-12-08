@@ -25,10 +25,15 @@
 # define PIPE_H_
 
 # include <stdio.h>
+# include <stdlib.h>
 # include "common.h"
+# include "criterion/logging.h"
 
 struct pipe_handle;
 typedef struct pipe_handle s_pipe_handle;
+
+struct pipe_file_handle;
+typedef struct pipe_file_handle s_pipe_file_handle;
 
 enum pipe_end {
     PIPE_READ = 0,
@@ -42,6 +47,7 @@ enum criterion_std_fd {
 };
 
 enum pipe_opt {
+    PIPE_NOOPT = 0,
     PIPE_DUP   = 1 << 0,
     PIPE_CLOSE = 1 << 1,
 };
@@ -50,20 +56,29 @@ s_pipe_handle *stdpipe();
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts);
 FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts);
 
+s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts);
+s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts);
+
 int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
 void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
 
-INLINE FILE* get_std_file(int fd_kind) {
+int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe);
+int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe);
+
+INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
     switch (fd_kind) {
         case CR_STDIN:  return stdin;
         case CR_STDOUT: return stdout;
         case CR_STDERR: return stderr;
     }
-    return NULL;
+    criterion_perror("get_std_file: invalid parameter.\n");
+    abort();
 }
 
 extern s_pipe_handle *stdout_redir;
 extern s_pipe_handle *stderr_redir;
 extern s_pipe_handle *stdin_redir;
+
+s_pipe_file_handle *pipe_file_open(const char *path);
 
 #endif /* !PIPE_H_ */

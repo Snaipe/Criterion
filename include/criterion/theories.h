@@ -24,71 +24,71 @@
 #ifndef CRITERION_THEORIES_H_
 # define CRITERION_THEORIES_H_
 
-# ifdef __cplusplus
-#  include <cstddef>
-using std::size_t;
-# else
-#  include <stddef.h>
-# endif
-
 # include "criterion.h"
-
-# ifdef __cplusplus
-template <typename... T>
-constexpr size_t criterion_va_num__(const T &...) {
-    return sizeof...(T);
-}
-# endif
+# include "internal/theories.h"
 
 CR_BEGIN_C_API
 
-struct criterion_theory_context;
-
-CR_API struct criterion_theory_context* cr_theory_init(void);
-CR_API void cr_theory_push_arg(struct criterion_theory_context *ctx, bool is_float, size_t size, void *ptr);
-CR_API void cr_theory_free(struct criterion_theory_context *ctx);
+/**
+ *  Aborts the current theory iteration.
+ *  This function does not return.
+ */
 CR_API void cr_theory_abort(void);
-CR_API int cr_theory_mark(void);
 
-CR_API void cr_theory_reset(struct criterion_theory_context *ctx);
-CR_API void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void));
+CR_END_C_API
 
-# define TheoryDataPoints(Category, Name) \
-    static struct criterion_datapoints IDENTIFIER_(Category, Name, dps)[]
+// Theory and datapoint macros
 
-# define TheoryDataPoint(Category, Name) \
-    (IDENTIFIER_(Category, Name, dps))
+/**
+ *  Theory((Params...), Suite, Name, [Options...]) { Function Body }
+ *
+ *  Defines a new theory test.
+ *
+ *  The parameters are selected from a cartesian product defined by a
+ *  TheoryDataPoints macro.
+ *
+ *  @param Params  A list of function parameters.
+ *  @param Suite   The name of the test suite containing this test.
+ *  @param Name    The name of the test.
+ *  @param Options An optional sequence of designated initializer key/value
+ *    pairs as described in the `criterion_test_extra_data` structure
+ *    (see criterion/types.h).
+ *    Example: .exit_code = 1
+ */
+# define Theory(Args, ...) CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
 
-# ifdef __cplusplus
-#  define CR_TH_VA_NUM(Type, ...)     criterion_va_num__(__VA_ARGS__)
-#  define CR_TH_TEMP_ARRAY(Type, ...) []() { static Type arr[] = { __VA_ARGS__ }; return &arr; }()
-# else
-#  define CR_TH_VA_NUM(Type, ...) sizeof ((Type[]) { __VA_ARGS__ }) / sizeof (Type)
-#  define CR_TH_TEMP_ARRAY(Type, ...) &(Type[]) { __VA_ARGS__ }
-# endif
+/**
+ *  TheoryDataPoints(Suite, Name) = { Datapoints... };
+ *
+ *  Defines an array of data points.
+ *
+ *  The types of the specified data points *must* match the types of the
+ *  associated theory.
+ *
+ *  Each entry in the array must be the result of the DataPoints macro.
+ *
+ *  @param Suite   The name of the test suite containing this test.
+ *  @param Name    The name of the test.
+ */
+# define TheoryDataPoints(Category, Name) CR_TH_INTERNAL_TDPS(Category, Name)
 
-# define DataPoints(Type, ...) { \
-        sizeof (Type), \
-        CR_EXPAND(CR_TH_VA_NUM(Type, __VA_ARGS__)), \
-        #Type, \
-        CR_EXPAND(CR_TH_TEMP_ARRAY(Type, __VA_ARGS__)), \
-    }
+/**
+ *  DataPoints(Type, Values...)
+ *
+ *  Defines a new set of data points.
+ *
+ *  @param Type    The type of each data point in the set.
+ *  @param Values  The data points in the set.
+ */
+# define DataPoints(Type, ...) CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
-struct criterion_datapoints {
-    size_t size;
-    size_t len;
-    const char *name;
-    void *arr;
-};
-
-# define CR_NB_DATAPOINTS(Var) \
-    (sizeof (Var) / sizeof (struct criterion_datapoints))
+// Theory invariants
 
 # define cr_assume(Condition) \
     do { \
         if (!(Condition)) \
             cr_theory_abort(); \
-    } while (0);
+    } while (0)
 
 # define cr_assume_not(Condition) cr_assume(!(Condition))
 
@@ -111,35 +111,31 @@ struct criterion_datapoints {
     cr_assume((Expected) - (Actual) > (Epsilon)         \
            || (Actual) - (Expected) > (Epsilon))
 
-# define cr_assume_strings_op_(Op, Actual, Expected) \
+# define cr_assume_str_op_(Op, Actual, Expected) \
     cr_assume(strcmp((Actual), (Expected)) Op 0)
 
-# define cr_assume_strings_eq(Actual, Expected)  cr_assume_strings_op_(==, Actual, Expected)
-# define cr_assume_strings_neq(Actual, Expected) cr_assume_strings_op_(!=, Actual, Expected)
-# define cr_assume_strings_lt(Actual, Expected)  cr_assume_strings_op_(<, Actual, Expected)
-# define cr_assume_strings_leq(Actual, Expected) cr_assume_strings_op_(<=, Actual, Expected)
-# define cr_assume_strings_gt(Actual, Expected)  cr_assume_strings_op_(>, Actual, Expected)
-# define cr_assume_strings_geq(Actual, Expected) cr_assume_strings_op_(>=, Actual, Expected)
+# define cr_assume_str_eq(Actual, Expected)  cr_assume_str_op_(==, Actual, Expected)
+# define cr_assume_str_neq(Actual, Expected) cr_assume_str_op_(!=, Actual, Expected)
+# define cr_assume_str_lt(Actual, Expected)  cr_assume_str_op_(<, Actual, Expected)
+# define cr_assume_str_leq(Actual, Expected) cr_assume_str_op_(<=, Actual, Expected)
+# define cr_assume_str_gt(Actual, Expected)  cr_assume_str_op_(>, Actual, Expected)
+# define cr_assume_str_geq(Actual, Expected) cr_assume_str_op_(>=, Actual, Expected)
 
-# define cr_assume_arrays_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
-# define cr_assume_arrays_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
+# define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
+# define cr_assume_arr_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
 
-CR_API void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void));
+// Deprecated
 
-# define CR_VAARG_ID(Suffix, Category, Name, ...) \
-    IDENTIFIER_(Category, Name, Suffix)
+# ifndef CRITERION_NO_COMPAT
+#  define cr_assume_strings_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_eq, cr_assume_str_eq) cr_assume_str_eq(__VA_ARGS__)
+#  define cr_assume_strings_neq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_neq, cr_assume_str_neq) cr_assume_str_neq(__VA_ARGS__)
+#  define cr_assume_strings_lt(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_lt, cr_assume_str_lt) cr_assume_str_lt(__VA_ARGS__)
+#  define cr_assume_strings_leq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_leq, cr_assume_str_leq) cr_assume_str_leq(__VA_ARGS__)
+#  define cr_assume_strings_gt(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_gt, cr_assume_str_gt) cr_assume_str_gt(__VA_ARGS__)
+#  define cr_assume_strings_geq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_geq, cr_assume_str_geq) cr_assume_str_geq(__VA_ARGS__)
 
-# define Theory(Args, ...)                                                      \
-    void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args;                      \
-    CR_EXPAND(Test_(__VA_ARGS__, .sentinel_ = 0)) {                             \
-        cr_theory_main(                                                         \
-                CR_EXPAND(CR_VAARG_ID(dps, __VA_ARGS__,)),                      \
-                CR_NB_DATAPOINTS(CR_EXPAND(CR_VAARG_ID(dps, __VA_ARGS__,))),    \
-                (void(*)(void)) CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))    \
-            );                                                                  \
-    }                                                                           \
-    void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args
-
-CR_END_C_API
+#  define cr_assume_arrays_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_eq, cr_assume_arr_eq) cr_assume_arr_eq(__VA_ARGS__)
+#  define cr_assume_arrays_neq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_neq, cr_assume_arr_neq) cr_assume_arr_neq(__VA_ARGS__)
+# endif
 
 #endif /* !CRITERION_THEORIES_H_ */

@@ -23,6 +23,7 @@
  */
 #include <assert.h>
 #include <string.h>
+#include <errno.h>
 #include <csptr/smalloc.h>
 #include "core/worker.h"
 #include "core/runner.h"
@@ -87,6 +88,8 @@ static int get_win_status(HANDLE handle) {
     }
     return sig ? sig : exit_code << 8;
 }
+#else
+# include <pthread.h>
 #endif
 
 struct worker_context g_worker_context = {.test = NULL};
@@ -97,7 +100,7 @@ struct full_context {
     struct criterion_test_extra_data test_data;
     struct criterion_suite suite;
     struct criterion_test_extra_data suite_data;
-    f_worker_func func;
+    cr_worker_func func;
     struct pipe_handle pipe;
     struct test_single_param param;
     HANDLE sync;
@@ -114,9 +117,7 @@ static struct full_context local_ctx;
 #  error Unsupported compiler. Use GCC or Clang under *nixes.
 # endif
 
-static void handle_sigchld(UNUSED int sig) {
-    assert(sig == SIGCHLD);
-
+static void handle_sigchld_pump(void) {
     int fd = g_worker_pipe->fds[1];
     pid_t pid;
     int status;
@@ -126,15 +127,65 @@ static void handle_sigchld(UNUSED int sig) {
             (s_proc_handle) { pid }, get_status(status)
         };
 
-        char buf[sizeof (int) + sizeof (struct worker_status)];
-        memcpy(buf, &kind, sizeof (kind));
-        memcpy(buf + sizeof (kind), &ws, sizeof (ws));
+        unsigned long long pid_ull = (unsigned long long) pid;
 
-        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf))
+        char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
+        memcpy(buf, &kind, sizeof (kind));
+        memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
+        memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
+
+        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf)) {
+            criterion_perror("Could not write the WORKER_TERMINATED event "
+                    "down the event pipe: %s.\n",
+                    strerror(errno));
             abort();
+        }
     }
 }
+
+/*
+ * This child reaping logic is a dirty hack to prevent deadlocks
+ * when the pipe is overflowing and a child terminates.
+ *
+ * (Windows doesn't have this issue as the waitpid logic is threaded by
+ * RegisterWaitForSingleObject)
+ *
+ * REMOVE WHEN REFACTORING I/O LAYER
+ */
+static pthread_t child_pump;
+static bool child_pump_running;
+
+static void *chld_pump_thread_main(void *nil) {
+    child_pump_running = true;
+
+    do {
+        handle_sigchld_pump();
+        usleep(1000);
+    } while (child_pump_running);
+
+    return nil;
+}
 #endif
+
+void init_proc_compat(void) {
+#ifndef VANILLA_WIN32
+    pthread_attr_t attr;
+    int err = pthread_attr_init(&attr)
+           || pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)
+           || pthread_create(&child_pump, &attr, chld_pump_thread_main, NULL)
+           || pthread_attr_destroy(&attr);
+    if (err) {
+        perror(0);
+        exit(1);
+    }
+#endif
+}
+
+void free_proc_compat(void) {
+#ifndef VANILLA_WIN32
+    child_pump_running = false;
+#endif
+}
 
 #ifdef VANILLA_WIN32
 struct wait_context {
@@ -143,7 +194,7 @@ struct wait_context {
 };
 
 static void CALLBACK handle_child_terminated(PVOID lpParameter,
-                                             UNUSED BOOLEAN TimerOrWaitFired) {
+                                             CR_UNUSED BOOLEAN TimerOrWaitFired) {
 
     assert(!TimerOrWaitFired);
 
@@ -155,9 +206,12 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
         (s_proc_handle) { wctx->proc_handle }, get_status(status)
     };
 
-    char buf[sizeof (int) + sizeof (struct worker_status)];
+    unsigned long long pid_ull = (unsigned long long) GetProcessId(wctx->proc_handle);
+
+    char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
     memcpy(buf, &kind, sizeof (kind));
-    memcpy(buf + sizeof (kind), &ws, sizeof (ws));
+    memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
+    memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
 
     DWORD written;
     WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), &written, NULL);
@@ -240,16 +294,6 @@ int resume_child(void) {
     free(param);
     return 1;
 #else
-# if defined(__unix__) || defined(__APPLE__)
-    struct sigaction sa;
-    sa.sa_handler = &handle_sigchld;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
-    if (sigaction(SIGCHLD, &sa, 0) == -1) {
-        perror(0);
-        exit(1);
-    }
-# endif
     return 0;
 #endif
 }
@@ -379,16 +423,6 @@ failure:
 #endif
 }
 
-void wait_process(s_proc_handle *handle, int *status) {
-#ifdef VANILLA_WIN32
-    WaitForSingleObject(handle->handle, INFINITE);
-    *status = get_win_status(handle->handle);
-    CloseHandle(handle->handle);
-#else
-    waitpid(handle->pid, status, 0);
-#endif
-}
-
 s_proc_handle *get_current_process() {
     s_proc_handle *handle = smalloc(sizeof (s_proc_handle));
 #ifdef VANILLA_WIN32
@@ -404,5 +438,21 @@ bool is_current_process(s_proc_handle *proc) {
     return GetProcessId(proc->handle) == GetProcessId(GetCurrentProcess());
 #else
     return proc->pid == getpid();
+#endif
+}
+
+unsigned long long get_process_id(void) {
+#ifdef VANILLA_WIN32
+    return (unsigned long long) GetCurrentProcessId();
+#else
+    return (unsigned long long) getpid();
+#endif
+}
+
+unsigned long long get_process_id_of(s_proc_handle *proc) {
+#ifdef VANILLA_WIN32
+    return (unsigned long long) GetProcessId(proc->handle);
+#else
+    return (unsigned long long) proc->pid;
 #endif
 }

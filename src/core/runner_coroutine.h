@@ -21,39 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_ORDERED_SET_H_
-# define CRITERION_ORDERED_SET_H_
+#ifndef RUNNER_COROUTINE_H_
+# define RUNNER_COROUTINE_H_
 
-# include "types.h"
+# include "coroutine.h"
 
-typedef int (*f_criterion_cmp)(void *, void *);
+struct worker *run_next_test(struct criterion_test_set *p_set,
+                             struct criterion_global_stats *p_stats,
+                             ccrContParam);
 
-struct criterion_ordered_set {
-    struct criterion_ordered_set_node *first;
-    size_t size;
-    f_criterion_cmp cmp;
-    void (*const dtor)(void *, void *);
-};
-
-struct criterion_ordered_set_node {
-    struct criterion_ordered_set_node *next;
-    char data[0];
-};
-
-CR_BEGIN_C_API
-
-CR_API struct criterion_ordered_set *new_ordered_set(f_criterion_cmp cmp,
-                                              void (*dtor)(void *, void *));
-
-CR_API void *insert_ordered_set(struct criterion_ordered_set *l,
-                         void *ptr,
-                         size_t size);
-
-CR_END_C_API
-
-# define FOREACH_SET(Elt, Set)                                              \
-    for (struct criterion_ordered_set_node *n = Set->first; n; n = n->next) \
-        for (int cond = 1; cond;)                                           \
-            for (Elt = (void*) n->data; cond && (cond = 0, 1);)
-
-#endif /* !CRITERION_ORDERED_SET_H_ */
+#endif /* !RUNNER_COROUTINE_H_ */

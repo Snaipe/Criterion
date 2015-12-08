@@ -10,13 +10,16 @@
 !doc/*
 
 !*.c
+!*.m
 !*.cc
 !*.h
+!*.hxx
 !*.rst
 !*.po
 !*.in
+!.cmake/Modules/*.cmake
 !samples/tests/*.sh
-!samples/*.expected
+!samples/**/*.expected
 
 !LICENSE
 !HEADER

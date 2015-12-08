@@ -7,7 +7,8 @@ Prerequisites
 The library is supported on Linux, OS X, FreeBSD, and Windows.
 
 The following compilers are supported to compile both the library and the tests:
-* GCC 4.9+
+
+* GCC 4.9+ (Can be relaxed to GCC 4.6+ when not using C++)
 * Clang 3.4+
 * MSVC 14+ (Included in Visual Studio 2015 or later)
 

@@ -28,8 +28,11 @@
 #include <csptr/smalloc.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
-#include "criterion/ordered-set.h"
+#include "criterion/internal/ordered-set.h"
+#include "compat/posix.h"
+#include "compat/strtok.h"
 #include "core/runner.h"
+#include "io/output.h"
 #include "config.h"
 #include "common.h"
 
@@ -52,21 +55,28 @@
     "usage: %s OPTIONS\n"                                   \
     "options: \n"                                           \
     "    -h or --help: prints this message\n"               \
+    "    -q or --quiet: disables all logging\n"             \
     "    -v or --version: prints the version of criterion " \
             "these tests have been linked against\n"        \
     "    -l or --list: prints all the tests in a list\n"    \
+    "    -jN or --jobs N: use N concurrent jobs\n"          \
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
             "or colors in the output\n"                     \
     "    -S or --short-filename: only display the base "    \
             "name of the source file on a failure\n"        \
     PATTERN_USAGE                                           \
-    "    --tap: enables TAP formatting\n"                   \
+    "    --tap[=FILE]: writes TAP report in FILE "          \
+            "(no file or \"-\" means stderr)\n"             \
+    "    --xml[=FILE]: writes XML report in FILE "          \
+            "(no file or \"-\" means stderr)\n"             \
     "    --always-succeed: always exit with 0\n"            \
     "    --no-early-exit: do not exit the test worker "     \
             "prematurely after the test\n"                  \
     "    --verbose[=level]: sets verbosity to level "       \
-            "(1 by default)\n"
+            "(1 by default)\n"                              \
+    "    -OP:F or --output=PROVIDER=FILE: write test "      \
+            "report to FILE using the specified provider\n"
 
 int print_usage(char *progname) {
     fprintf(stderr, USAGE, progname);
@@ -102,7 +112,7 @@ int list_tests(bool unicode) {
         if (!tests)
             continue;
 
-        printf("%s: " SIZE_T_FORMAT " test%s\n",
+        printf("%s: " CR_SIZE_T_FORMAT " test%s\n",
                 s->suite.name,
                 tests,
                 tests == 1 ? "" : "s");
@@ -120,68 +130,166 @@ int list_tests(bool unicode) {
     return 0;
 }
 
+int atou(const char *str) {
+    int res = atoi(str);
+    return res < 0 ? 0 : res;
+}
+
 int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
+        {"quiet",           no_argument,        0, 'q'},
         {"version",         no_argument,        0, 'v'},
-        {"tap",             no_argument,        0, 't'},
+        {"tap",             optional_argument,  0, 't'},
+        {"xml",             optional_argument,  0, 'x'},
+        {"json",            optional_argument,  0, 'n'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
+        {"jobs",            required_argument,  0, 'j'},
         {"fail-fast",       no_argument,        0, 'f'},
         {"short-filename",  no_argument,        0, 'S'},
+        {"single",          required_argument,  0, 's'},
 #ifdef HAVE_PCRE
         {"pattern",         required_argument,  0, 'p'},
 #endif
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
+        {"output",          required_argument,  0, 'O'},
         {0,                 0,                  0,  0 }
     };
-
-    bool use_ascii = !strcmp("1", DEF(getenv("CRITERION_USE_ASCII"), "0"))
-                  || !strcmp("dumb", DEF(getenv("TERM"), "dumb"));
 
     setlocale(LC_ALL, "");
 #if ENABLE_NLS
     textdomain (PACKAGE "-test");
 #endif
 
+    if (!handle_unknown_arg)
+        opterr = 0;
+
+    char *env_always_succeed    = getenv("CRITERION_ALWAYS_SUCCEED");
+    char *env_no_early_exit     = getenv("CRITERION_NO_EARLY_EXIT");
+    char *env_fail_fast         = getenv("CRITERION_FAIL_FAST");
+    char *env_use_ascii         = getenv("CRITERION_USE_ASCII");
+    char *env_jobs              = getenv("CRITERION_JOBS");
+    char *env_logging_threshold = getenv("CRITERION_VERBOSITY_LEVEL");
+    char *env_short_filename    = getenv("CRITERION_SHORT_FILENAME");
+
+    bool is_term_dumb = !strcmp("dumb", DEF(getenv("TERM"), "dumb"));
+
     struct criterion_options *opt = &criterion_options;
-    opt->always_succeed    = !strcmp("1", DEF(getenv("CRITERION_ALWAYS_SUCCEED"), "0"));
-    opt->no_early_exit     = !strcmp("1", DEF(getenv("CRITERION_NO_EARLY_EXIT") , "0"));
-    opt->fail_fast         = !strcmp("1", DEF(getenv("CRITERION_FAIL_FAST")     , "0"));
-    opt->use_ascii         = use_ascii;
-    opt->logging_threshold = atoi(DEF(getenv("CRITERION_VERBOSITY_LEVEL"), "2"));
-    opt->short_filename    = !strcmp("1", DEF(getenv("CRITERION_SHORT_FILENAME"), "0"));
+    if (env_always_succeed)
+        opt->always_succeed    = !strcmp("1", env_always_succeed);
+    if (env_no_early_exit)
+        opt->no_early_exit     = !strcmp("1", env_no_early_exit);
+    if (env_fail_fast)
+        opt->fail_fast         = !strcmp("1", env_fail_fast);
+    if (env_use_ascii)
+        opt->use_ascii         = !strcmp("1", env_use_ascii) || is_term_dumb;
+    if (env_jobs)
+        opt->jobs              = atou(env_jobs);
+    if (env_logging_threshold)
+        opt->logging_threshold = (enum criterion_logging_level) atou(env_logging_threshold);
+    if (env_short_filename)
+        opt->short_filename    = !strcmp("1", env_short_filename);
+
 #ifdef HAVE_PCRE
-    opt->pattern           = getenv("CRITERION_TEST_PATTERN");
+    char *env_pattern = getenv("CRITERION_TEST_PATTERN");
+    if (env_pattern)
+        opt->pattern = env_pattern;
 #endif
 
-    bool use_tap = !strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"));
+    opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
+
+    bool quiet = false;
+
+    // CRITERION_ENABLE_TAP backward compatibility.
+    // The environment variable is otherwise deprecated.
+    if (!strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"))) {
+        quiet = true;
+        criterion_add_output("tap", DEF(optarg, "-"));
+    }
 
     bool do_list_tests = false;
     bool do_print_version = false;
     bool do_print_usage = false;
-    for (int c; (c = getopt_long(argc, argv, "hvlfS", opts, NULL)) != -1;) {
+
+    const char *outputs = getenv("CRITERION_OUTPUTS");
+    if (outputs) {
+        char *out = strdup(outputs);
+        char *buf = NULL;
+        strtok_r(out, ",", &buf);
+
+        for (char *s = out; s; s = strtok_r(NULL, ",", &buf)) {
+            s = strdup(s);
+            char *buf2      = NULL;
+            char *provider  = strtok_r(s, ":", &buf2);
+            char *path      = strtok_r(NULL, ":", &buf2);
+
+            if (provider == NULL || path == NULL) {
+                do_print_usage = true;
+                goto end;
+            }
+
+            quiet = true;
+            criterion_add_output(provider, path);
+        }
+        free(out);
+    }
+
+    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:", opts, NULL)) != -1;) {
         switch (c) {
-            case 'b': criterion_options.logging_threshold = atoi(DEF(optarg, "1")); break;
+            case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': criterion_options.no_early_exit     = true; break;
             case 'k': criterion_options.use_ascii         = true; break;
+            case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
+            case 's': run_single_test_by_name(optarg); return 0;
 #ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
 #endif
-            case 't': use_tap = true; break;
+            case 'q': quiet = true; break;
+
+            {
+                const char *provider;
+            case 't': provider = "tap";  goto provider_def;
+            case 'x': provider = "xml";  goto provider_def;
+            case 'n': provider = "json"; goto provider_def;
+
+            provider_def: {}
+                const char *path = DEF(optarg, "-");
+                quiet = !strcmp(path, "-");
+                criterion_add_output(provider, path);
+            } break;
+
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
             case 'h': do_print_usage = true; break;
+            case 'O': {
+                char *arg = strdup(optarg);
+                char *buf = NULL;
+                strtok_r(arg,  ":", &buf);
+
+                char *path = strtok_r(NULL, ":", &buf);
+                if (arg == NULL || path == NULL) {
+                    do_print_usage = true;
+                    break;
+                }
+
+                quiet = !strcmp(path, "-");
+                criterion_add_output(arg, path);
+            } break;
+            case '?':
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
-    if (use_tap)
-        criterion_options.output_provider = TAP_LOGGING;
+
+end:
+    if (quiet)
+        criterion_options.logging_threshold = CRITERION_LOG_LEVEL_QUIET;
+
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)

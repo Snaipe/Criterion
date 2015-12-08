@@ -24,9 +24,9 @@
 #ifndef POSIX_COMPAT_H_
 # define POSIX_COMPAT_H_
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
-# define VANILLA_WIN32
-#endif
+# if defined(_WIN32) && !defined(__CYGWIN__)
+#  define VANILLA_WIN32
+# endif
 
 # if defined(BSD) \
   || defined(__FreeBSD__) \
@@ -40,7 +40,22 @@
 #  define _POSIX_SOURCE 1
 #  define TMP_POSIX
 # endif
+# if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
+#  include "off_t.h"
+
+#  if !defined(__MINGW64__)
+#   define off_t cr_off32
+#  else
+#   define off_t cr_off64
+#  endif
+#  define off64_t cr_off64
+# endif
 # include <stdio.h>
+# include <string.h>
+# if defined(MINGW_DEFINE_OFF_T) && defined(__MINGW32__) || defined(__MINGW64__)
+#  undef off_t
+#  undef off64_t
+# endif
 # ifdef TMP_POSIX
 #  undef _POSIX_SOURCE
 #  undef TMP_POSIX
@@ -54,8 +69,8 @@
 
 #  define SIGPROF 27
 #  define CR_EXCEPTION_TIMEOUT 0xC0001042
+
 # else
-#  include <sys/param.h>
 #  include <sys/wait.h>
 # endif
 

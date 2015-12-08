@@ -25,7 +25,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "criterion/asprintf-compat.h"
+#include "criterion/internal/asprintf-compat.h"
 
 int cr_asprintf(char **strp, const char *fmt, ...) {
     va_list ap;

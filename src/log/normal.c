@@ -29,21 +29,13 @@
 #include "criterion/stats.h"
 #include "criterion/logging.h"
 #include "criterion/options.h"
-#include "criterion/ordered-set.h"
+#include "criterion/internal/ordered-set.h"
 #include "compat/posix.h"
+#include "compat/strtok.h"
 #include "compat/time.h"
 #include "string/i18n.h"
 #include "config.h"
 #include "common.h"
-
-#ifdef VANILLA_WIN32
-// fallback to strtok on windows since strtok_s is not available everywhere
-# define strtok_r(str, delim, saveptr) strtok(str, delim)
-#endif
-
-#ifdef _MSC_VER
-# define strdup _strdup
-#endif
 
 typedef const char *const msg_t;
 
@@ -61,6 +53,7 @@ static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
+static msg_t msg_test_abort = N_("%1$s::%2$s: %3$s\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
 static msg_t msg_test_abnormal_exit = N_("%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n");
 static msg_t msg_pre_suite[] = N_s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
@@ -77,10 +70,11 @@ static msg_t msg_post_test = "%s::%s\n";
 static msg_t msg_post_suite_test = "%s::%s: Test is disabled\n";
 static msg_t msg_post_suite_suite = "%s::%s: Suite is disabled\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
-static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: %s\n";
+static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
+static msg_t msg_test_abort = N_("%s::%s: %s\n");
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
 static msg_t msg_test_abnormal_exit = "%sWarning! The test `%s::%s` exited during its setup or teardown.%s\n";
 static msg_t msg_pre_suite[] = { "Running %s%lu%s test from %s%s%s:\n",
@@ -92,7 +86,7 @@ static msg_t msg_post_all = "%sSynthesis: Tested: %s%lu%s "
             "%s\n";
 #endif
 
-void normal_log_pre_all(UNUSED struct criterion_test_set *set) {
+void normal_log_pre_all(CR_UNUSED struct criterion_test_set *set) {
     criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_pre_all), VERSION);
 }
 
@@ -148,37 +142,28 @@ void normal_log_post_all(struct criterion_global_stats *stats) {
 
     criterion_pimportant(CRITERION_PREFIX_EQUALS,
             _(msg_post_all),
-            FG_BOLD,
-            FG_BLUE,  (unsigned long) tested,               FG_BOLD,
-            FG_GREEN, (unsigned long) stats->tests_passed,  FG_BOLD,
-            FG_RED,   (unsigned long) stats->tests_failed,  FG_BOLD,
-            FG_RED,   (unsigned long) stats->tests_crashed, FG_BOLD,
-            RESET);
+                         CR_FG_BOLD,
+                         CR_FG_BLUE,  (unsigned long) tested, CR_FG_BOLD,
+                         CR_FG_GREEN, (unsigned long) stats->tests_passed, CR_FG_BOLD,
+                         CR_FG_RED,   (unsigned long) stats->tests_failed, CR_FG_BOLD,
+                         CR_FG_RED,   (unsigned long) stats->tests_crashed, CR_FG_BOLD,
+                         CR_RESET);
 }
 
 void normal_log_assert(struct criterion_assert_stats *stats) {
     if (!stats->passed) {
         char *dup       = strdup(*stats->message ? stats->message : "");
-
-#ifdef VANILLA_WIN32
-        char *line      = strtok(dup, "\n");
-#else
         char *saveptr   = NULL;
         char *line      = strtok_r(dup, "\n", &saveptr);
-#endif
 
         bool sf = criterion_options.short_filename;
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_fail),
-                FG_BOLD, sf ? basename_compat(stats->file) : stats->file, RESET,
-                FG_RED,  stats->line, RESET,
+                             CR_FG_BOLD, sf ? basename_compat(stats->file) : stats->file, CR_RESET,
+                             CR_FG_RED,  stats->line, CR_RESET,
                 line);
 
-#ifdef VANILLA_WIN32
-        while ((line = strtok(NULL, "\n")))
-#else
         while ((line = strtok_r(NULL, "\n", &saveptr)))
-#endif
             criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
         free(dup);
     }
@@ -188,30 +173,30 @@ void normal_log_test_crash(struct criterion_test_stats *stats) {
     bool sf = criterion_options.short_filename;
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_crash_line),
-            FG_BOLD, sf ? basename_compat(stats->file) : stats->file, RESET,
-            FG_RED,  stats->progress, RESET);
+                         CR_FG_BOLD, sf ? basename_compat(stats->file) : stats->file, CR_RESET,
+                         CR_FG_RED,  stats->progress, CR_RESET);
     criterion_pimportant(CRITERION_PREFIX_FAIL, _(msg_test_crash),
             stats->test->category,
             stats->test->name);
 }
 
-void normal_log_other_crash(UNUSED struct criterion_test_stats *stats) {
+void normal_log_other_crash(CR_UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_other_crash),
-            FG_BOLD, stats->test->category, stats->test->name, RESET);
+                         CR_FG_BOLD, stats->test->category, stats->test->name, CR_RESET);
 }
 
-void normal_log_abnormal_exit(UNUSED struct criterion_test_stats *stats) {
+void normal_log_abnormal_exit(CR_UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_abnormal_exit),
-            FG_BOLD, stats->test->category, stats->test->name, RESET);
+                         CR_FG_BOLD, stats->test->category, stats->test->name, CR_RESET);
 }
 
 void normal_log_pre_suite(struct criterion_suite_set *set) {
     criterion_pinfo(CRITERION_PREFIX_EQUALS,
             _s(msg_pre_suite[0], msg_pre_suite[1], set->tests->size),
-            FG_BLUE, (unsigned long) set->tests->size, RESET,
-            FG_GOLD, set->suite.name,  RESET);
+                    CR_FG_BLUE, (unsigned long) set->tests->size, CR_RESET,
+                    CR_FG_GOLD, set->suite.name, CR_RESET);
 }
 
 void normal_log_theory_fail(struct criterion_theory_stats *stats) {
@@ -222,7 +207,7 @@ void normal_log_theory_fail(struct criterion_theory_stats *stats) {
             stats->formatted_args);
 }
 
-void normal_log_test_timeout(UNUSED struct criterion_test_stats *stats) {
+void normal_log_test_timeout(CR_UNUSED struct criterion_test_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_FAIL,
             _(msg_test_timeout),
             stats->test->category,
@@ -230,7 +215,25 @@ void normal_log_test_timeout(UNUSED struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
-struct criterion_output_provider normal_logging = {
+void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const char *msg) {
+
+    char *dup       = strdup(msg);
+    char *saveptr   = NULL;
+    char *line      = strtok_r(dup, "\n", &saveptr);
+
+    criterion_pimportant(CRITERION_PREFIX_DASHES,
+            _(msg_test_abort),
+            stats->test->category,
+            stats->test->name,
+            line);
+
+    while ((line = strtok_r(NULL, "\n", &saveptr)))
+        criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
+
+    free(dup);
+}
+
+struct criterion_logger normal_logging = {
     .log_pre_all        = normal_log_pre_all,
     .log_pre_init       = normal_log_pre_init,
     .log_pre_suite      = normal_log_pre_suite,
@@ -238,6 +241,7 @@ struct criterion_output_provider normal_logging = {
     .log_theory_fail    = normal_log_theory_fail,
     .log_test_timeout   = normal_log_test_timeout,
     .log_test_crash     = normal_log_test_crash,
+    .log_test_abort     = normal_log_test_abort,
     .log_other_crash    = normal_log_other_crash,
     .log_abnormal_exit  = normal_log_abnormal_exit,
     .log_post_test      = normal_log_post_test,

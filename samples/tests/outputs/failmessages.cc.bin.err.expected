@@ -21,7 +21,7 @@
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m28[0m: Assertion failed: The statement `throw std::exception()` did throw an instance of the `std::exception` exception.
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m29[0m: Assertion failed: The statement `{}` did not throw any exception.
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m30[0m: Assertion failed: The statement `throw std::exception()` threw some exception.
-[[0;31mFAIL[0m] messages::default: (0.00s)
+[[0;31mFAIL[0m] messages::default
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m34[0m: Assertion failed: foo bar
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m35[0m: Assertion failed: foo bar
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m36[0m: Assertion failed: foo bar
@@ -45,5 +45,5 @@
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m57[0m: Assertion failed: foo bar
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m58[0m: Assertion failed: foo bar
 [[0;34m----[0m] [0;1mfailmessages.cc[0m:[0;31m59[0m: Assertion failed: foo bar
-[[0;31mFAIL[0m] messages::user: (0.00s)
+[[0;31mFAIL[0m] messages::user
 [[0;34m====[0m] [0;1mSynthesis: Tested: [0;34m2[0;1m | Passing: [0;32m0[0;1m | Failing: [0;31m2[0;1m | Crashing: [0;31m0[0;1m [0m

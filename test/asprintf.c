@@ -1,6 +1,6 @@
 #include "criterion/criterion.h"
 #include "criterion/theories.h"
-#include "criterion/asprintf-compat.h"
+#include "criterion/internal/asprintf-compat.h"
 
 #include <stdio.h>
 
@@ -54,12 +54,3 @@ Theory((struct format_test *fmt), asprintf, valid) {
 
     free(actual);
 }
-
-#if defined(__unix__) && defined(__GNUC__)
-# pragma GCC diagnostic ignored "-Wformat"
-
-Test(asprintf, invalid) {
-    char *actual;
-    cr_expect_lt(cr_asprintf(&actual, "%"), 0);
-}
-#endif

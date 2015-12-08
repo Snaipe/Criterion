@@ -21,23 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_ASPRINTF_COMPAT_H_
-# define CRITERION_ASPRINTF_COMPAT_H_
+#ifndef CR_OFF_T_DEFINED
+# define CR_OFF_T_DEFINED
 
-# ifdef __cplusplus
-#  include <cstdarg>
-# else
-#  include <stdarg.h>
-# endif
+# include <stdint.h>
 
-# include "common.h"
+typedef int32_t cr_off32;
+typedef int64_t cr_off64;
 
-CR_BEGIN_C_API
-
-FORMAT(printf, 2, 3)
-CR_API int cr_asprintf(char **strp, const char *fmt, ...);
-CR_API int cr_vasprintf(char **strp, const char *fmt, va_list ap);
-
-CR_END_C_API
-
-#endif /* !CRITERION_ASPRINTF_COMPAT_H_ */
+#endif /* !CR_OFF_T_DEFINED */

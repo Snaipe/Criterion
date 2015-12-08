@@ -1,49 +1,130 @@
 language: c
-os:
-- linux
-- osx
-
-compiler:
-- gcc-4.9
 
 sudo: false
 
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-4.9
-    - g++-4.9
-env:
-  global:
-    GCOV: gcov-4.9
-    CXX: g++-4.9
-  matrix:
-    - CONFIGURATION=Debug          COVERAGE=ON
-    - CONFIGURATION=Release        COVERAGE=OFF
-    - CONFIGURATION=RelWithDebInfo COVERAGE=OFF
+_anchors:
+  - &gcc49-packages
+    apt:
+      sources:
+      - ubuntu-toolchain-r-test
+      packages:
+      - gcc-4.9
+      - g++-4.9
+      - gobjc-4.9
+      - gnustep-devel
+
+matrix:
+  include:
+    # Linux Debug, GCC 4.9
+    - compiler: gcc-4.9
+      addons: *gcc49-packages
+      env:
+        CONFIGURATION: Debug
+        GCOV: gcov-4.9
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        COVERAGE: "ON"
+    # Linux Release, GCC 4.9
+    - compiler: gcc-4.9
+      addons: *gcc49-packages
+      env:
+        CONFIGURATION: Release
+        CMAKE_OPTS: -DLANG_OBJC=ON
+    # Linux RelWithDebInfo, GCC 4.9
+    - compiler: gcc-4.9
+      addons: *gcc49-packages
+      env:
+        CONFIGURATION: RelWithDebInfo
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        DEPLOY: true
+    # Linux Debug, GCC 4.6
+    - compiler: gcc
+      env: CONFIGURATION=Debug TESTS=OFF
+    # Linux Release, GCC 4.6
+    - compiler: gcc
+      env: CONFIGURATION=Release TESTS=OFF
+    # Linux RelWithDebInfo, GCC 4.6
+    - compiler: gcc
+      env: CONFIGURATION=RelWithDebInfo TESTS=OFF
+    # OSX Debug, GCC 4.9
+    - os: osx
+      compiler: gcc-4.9
+      env:
+        CONFIGURATION: Debug
+        GCOV: gcov-4.9
+        COVERAGE: "ON"
+    # OSX Release, GCC 4.9
+    - os: osx
+      compiler: gcc-4.9
+      env: CONFIGURATION=Release
+    # OSX RelWithDebInfo, GCC 4.9
+    - os: osx
+      compiler: gcc-4.9
+      env: CONFIGURATION=RelWithDebInfo
+    # OSX Debug, Clang
+    - os: osx
+      compiler: clang
+      env:
+        CONFIGURATION: Debug
+        CMAKE_OPTS: -DLANG_OBJC=ON
+    # OSX Release, Clang
+    - os: osx
+      compiler: clang
+      env:
+        CONFIGURATION: Release
+        CMAKE_OPTS: -DLANG_OBJC=ON
+    # OSX RelWithDebInfo, Clang
+    - os: osx
+      compiler: clang
+      env:
+        CONFIGURATION: RelWithDebInfo
+        CMAKE_OPTS: -DLANG_OBJC=ON
+        DEPLOY: true
+
+  allow_failures:
+    - compiler: gcc
+
+before_install:
+  - |
+      if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "clang" ]; then
+        brew update
+        brew unlink cmake
+        brew install llvm cmake
+      fi
+  - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
+  - $CC --version
+  - $CXX --version
 
 script:
-  - mkdir -p build
-  - cd build
+  - mkdir -p build && cd $_
   - >
       cmake
       -Wno-dev
-      -DCOVERALLS=${COVERAGE}
+      -DCTESTS=${TESTS:-ON}
+      -DCOVERALLS=${COVERAGE:-OFF}
       -DCMAKE_BUILD_TYPE=${CONFIGURATION}
       -DCMAKE_INSTALL_PREFIX=criterion-${TRAVIS_TAG}
+      ${CMAKE_OPTS}
       ..
-  - make
-  - make criterion_tests
-  - make test
+  - |
+      if [ "${TESTS:-ON}" = "ON" ]; then
+        TERM=dumb cmake --build . --target criterion_tests -- -j4
+        ctest -j4
+      else
+        TERM=dumb cmake --build . -- -j4
+      fi
 
 after_success:
-  - make gcov
-  - bash <(curl -s https://codecov.io/bash)
+  - |
+      if [ "$COVERAGE" = "ON" ]; then
+        make gcov
+        bash <(curl -s https://codecov.io/bash)
+      fi
 
 after_failure:
-  - cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
+  - |
+      if [ "$TESTS" = "ON" ]; then
+        cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
+      fi
 
 before_deploy:
   - make install
@@ -58,4 +139,4 @@ deploy:
   on:
     repo: Snaipe/Criterion
     tags: true
-    condition: $CONFIGURATION = RelWithDebInfo
+    condition: $DEPLOY = true

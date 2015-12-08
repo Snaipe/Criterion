@@ -23,6 +23,7 @@
  */
 #include "alloc.h"
 #include "internal.h"
+#include "criterion/logging.h"
 #include <stdlib.h>
 
 #ifdef VANILLA_WIN32
@@ -51,7 +52,7 @@ void init_inheritable_heap(void) {
         HeapDestroy(h->handle);
 
     if (g_heap == (HANDLE) NULL) {
-        fputs("Could not create the private inheritable heap.", stderr);
+        criterion_perror("Could not create the private inheritable heap.\n");
         abort();
     }
 }

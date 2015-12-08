@@ -1,7 +1,8 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <stdlib.h>
-#include "criterion/common.h"
+#include "criterion/internal/common.h"
+#include "criterion/options.h"
 #include "compat/time.h"
 #include "compat/posix.h"
 
@@ -28,6 +29,9 @@ extern __attribute__ ((weak)) int clock_gettime(clockid_t, struct timespec *);
 #endif
 
 bool can_measure_time(void) {
+    if (!criterion_options.measure_time)
+        return false;
+
 #if defined(__unix__) && !defined(__CYGWIN__)
     return clock_gettime != NULL;
 #else
@@ -128,11 +132,6 @@ int setup_timeout(uint64_t nanos) {
     CloseHandle(thread);
     return 0;
 #elif defined(__unix__)
-    if (!can_measure_time()) {
-        errno = ENOTSUP;
-        return -1;
-    }
-
     timer_t timer;
     int res = timer_create(CLOCK_MONOTONIC, &(struct sigevent) {
             .sigev_notify = SIGEV_SIGNAL,

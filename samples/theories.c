@@ -87,35 +87,21 @@ TheoryDataPoints(theory, misc) = {
 };
 
 Theory((char c, bool b, short s, int i, long l, long long ll, float f, double d, char *str, const char *cstr, struct my_object *obj), theory, misc) {
+    float reff = 3.14f;
+    double refd = 3.14;
+
     cr_assert(b);
     cr_assert_eq(c, 'a');
     cr_assert_eq(s, 1);
     cr_assert_eq(i, 1);
     cr_assert_eq(l, 1);
     cr_assert_eq(ll, 1);
-    cr_assert_eq(f, 3.14f);
-    cr_assert_eq(d, 3.14);
+    cr_assert_eq(f, reff);
+    cr_assert_eq(d, refd);
     cr_assert_str_eq(str, "test");
     cr_assert_str_eq(cstr, "other test");
     cr_assert_eq(obj->foo, 42);
 
     // abort to see the formatted string of all parameters
     cr_assert_fail();
-}
-
-// Manually generate datapoints
-
-TheoryDataPoints(theory, gen) = {
-    DataPoints(int, 0), // placeholder
-};
-
-static void generate_datapoints(void) {
-    static int arr[] = {1, 2, 3, 4, 5};
-    TheoryDataPoint(theory, gen)[0].len = 5;
-    TheoryDataPoint(theory, gen)[0].arr = &arr;
-}
-
-Theory((int i), theory, gen, .init = generate_datapoints) {
-    (void) i;
-    cr_assert_fail(); // we fail to display the parameter
 }

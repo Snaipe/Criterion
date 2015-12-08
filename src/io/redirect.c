@@ -49,7 +49,7 @@ void cr_redirect_stdin(void) {
 FILE* cr_get_redirected_stdout(void) {
     static FILE *f;
     if (!f) {
-        f = pipe_in(stdout_redir, 0);
+        f = pipe_in(stdout_redir, PIPE_NOOPT);
         if (!f)
             cr_assert_fail("Could not get redirected stdout read end.");
     }
@@ -59,7 +59,7 @@ FILE* cr_get_redirected_stdout(void) {
 FILE* cr_get_redirected_stderr(void) {
     static FILE *f;
     if (!f) {
-        f = pipe_in(stderr_redir, 0);
+        f = pipe_in(stderr_redir, PIPE_NOOPT);
         if (!f)
             cr_assert_fail("Could not get redirected stderr read end.");
     }
@@ -69,7 +69,7 @@ FILE* cr_get_redirected_stderr(void) {
 FILE* cr_get_redirected_stdin(void) {
     static FILE *f;
     if (!f) {
-        f = pipe_out(stdin_redir, 0);
+        f = pipe_out(stdin_redir, PIPE_NOOPT);
         if (!f)
             cr_assert_fail("Could not get redirected stdin write end.");
     }

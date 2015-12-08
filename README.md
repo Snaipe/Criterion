@@ -8,6 +8,8 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
 [![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
 
+![Analytics](https://ga-beacon.appspot.com/UA-68371536-1/Criterion/README.md?pixel)
+
 A dead-simple, yet extensible, C and C++ unit testing framework.
 
 ![Screencast](./doc/screencast.gif)
@@ -39,10 +41,19 @@ the user would have with other frameworks:
 
 ## Downloads
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.1.0/criterion-v2.1.0-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.1.0/criterion-v2.1.0-osx-x86_64.tar.bz2)
-* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.1.0/criterion-v2.1.0-windows-msvc-x86_64.tar.bz2)
-* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.1.0/criterion-v2.1.0-windows-mingw-x86_64.tar.bz2)
+### Packages
+
+* Mac OS X: `brew install snaipe/soft/criterion`
+* [AUR](https://aur.archlinux.org/packages/criterion/): `yaourt -S criterion`
+
+### Binary archives
+
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-linux-x86_64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-osx-x86_64.tar.bz2)
+* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-windows-msvc-x86_64.tar.bz2)
+* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-windows-mingw-x86_64.tar.bz2)
+
+[comment]: # (Don't forget to change x86_64 to x64 on windows links on the next release)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
@@ -66,26 +77,12 @@ Sample tests can be found in the [sample directory][samples].
 
 ### Getting help
 
-Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
+IRC channel: [#criterion][irc-chan] on irc.freenode.net  
 
 ### Misc
 
 * [CMake find module for Criterion][find-module]
-
-## F.A.Q.
-
-**Q. What's wrong with other C test frameworks?**  
-A. I worked with CUnit and Check, and I must say that they do their job
-   very well -- the only thing that bugs me is that setting up a test
-   suite from scratch is a pain, it should really be simpler. Most
-   (if not all) high-level languages have test frameworks with automatic
-   test registration, but all the ones for C require you to set up a
-   main, manually register suites, then tests. Criterion tries to
-   fix these shortcomings.
-
-**Q. Where has this been tested?**  
-A. Currently, on Linux 2.6.32 and Linux 3.15.7, although it should work on
-   most \*nix systems; Mac OS X Yosemite 10.10, FreeBSD 10.0, Windows 7 and 2K.
 
 ## Credits
 
@@ -105,3 +102,5 @@ Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
 [sample-report]: ./samples/report.c
 
 [find-module]: ./dev/FindCriterion.cmake
+
+[irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e

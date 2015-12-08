@@ -31,7 +31,6 @@
 #include "criterion/redirect.h"
 
 #ifdef __unix__
-#include <sys/types.h>
 
 # ifdef BSD
 typedef int cr_count;

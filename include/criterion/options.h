@@ -28,18 +28,90 @@
 # include "logging.h"
 
 struct criterion_options {
+
+    /**
+     *  The current logging threshold.
+     *
+     *  default: 1
+     */
     enum criterion_logging_level logging_threshold;
-    struct criterion_output_provider *output_provider;
+
+    /**
+     *  The logger that will be used during the execution of the runner.
+     *
+     *  default: normal logger
+     */
+    struct criterion_logger *logger;
+
+    /**
+     *  Don't exit the child immediately after finishing to run the test
+     *  function, and perform a full cleanup.
+     *
+     *  Useful when tracking memory leaks, and is immediately implied when
+     *  running the process under valgrind.
+     *
+     *  default: false
+     */
     bool no_early_exit;
+
+    /**
+     *  Always return a success from criterion_run_all_tests.
+     *
+     *  default: false
+     */
     bool always_succeed;
+
+    /**
+     *  Disable unicode and ansi coloring from the logging system.
+     *
+     *  default: false
+     */
     bool use_ascii;
+
+    /**
+     *  Exit immediately after the first test failure.
+     *
+     *  default: false
+     */
     bool fail_fast;
+
+    /**
+     *  Disable all tests not matching this extglob pattern.
+     *  if NULL, don't filter tests.
+     *
+     *  default: NULL
+     */
     const char *pattern;
+
+    /**
+     *  Only print the base file name compound of the source file containing
+     *  the tests during reporting.
+     *
+     *  default: false
+     */
     bool short_filename;
+
+    /**
+     *  The maximum number of parallel jobs that the test runner will spawn.
+     *  0 means that this number shall be the number of cores on your system.
+     *
+     *  default: 0
+     */
+    size_t jobs;
+
+    /**
+     *  Measure and report times.
+     *
+     *  default: true
+     */
+    bool measure_time;
 };
 
 CR_BEGIN_C_API
 
+/**
+ *  The runtime options for the test runner.
+ */
 extern struct criterion_options criterion_options;
 
 CR_END_C_API

@@ -1,6 +1,6 @@
 #include "i18n.h"
 #include "criterion/assert.h"
-#include "criterion/asprintf-compat.h"
+#include "criterion/internal/asprintf-compat.h"
 
 void init_i18n(void) {
 #if ENABLE_NLS
@@ -8,7 +8,7 @@ void init_i18n(void) {
 #endif
 }
 
-char *translate_assert_msg(int msg_index, ...) {
+char *cr_translate_assert_msg(int msg_index, ...) {
     static char *messages[] = {
         [CRITERION_ASSERT_MSG_FAIL] = N_("The conditions for this assertion were not met."),
         [CRITERION_ASSERT_MSG_EXPR_FALSE] = N_("The expression %s is false."),

@@ -24,6 +24,8 @@
 #ifndef SECTION_H_
 # define SECTION_H_
 
+# include "criterion/internal/common.h"
+
 # ifdef _WIN32
 void *get_win_section_start(const char *section);
 void *get_win_section_end(const char *section);
@@ -39,8 +41,8 @@ void *get_osx_section_end(const char *section);
 #  define GET_SECTION_START(Name) get_osx_section_start(CR_STRINGIFY(Name))
 #  define GET_SECTION_END(Name)   get_osx_section_end(CR_STRINGIFY(Name))
 # else
-#  define GET_SECTION_START(Name) SECTION_START(Name)
-#  define GET_SECTION_END(Name)   SECTION_END(Name)
+#  define GET_SECTION_START(Name) CR_SECTION_START(Name)
+#  define GET_SECTION_END(Name)   CR_SECTION_END(Name)
 # endif
 
 #endif /* !SECTION_H_ */

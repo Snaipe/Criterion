@@ -1,0 +1,61 @@
+TAP version 13
+1..2
+# Criterion v2.1.0
+
+# Running 2 tests from misc
+ok - misc::passing  (0.00s)
+not ok - misc::failing  (0.00s)
+  simple.c:4: Assertion failed: The expression 0 is false.
+TAP version 13
+1..3
+# Criterion v2.1.0
+
+# Running 3 tests from simple
+not ok - simple::wrong_signal  (0.00s)
+not ok - simple::uncaught unexpected signal after signal.c:16
+ok - simple::caught  (0.00s)
+TAP version 13
+1..6
+# Criterion v2.1.0
+
+# Running 6 tests from asserts
+ok - asserts::string  (0.00s)
+not ok - asserts::old_school  (0.00s)
+  asserts.c:18: Assertion failed: The conditions for this assertion were not met.
+  asserts.c:17: Assertion failed: You can fail an assertion with a message from anywhere
+ok - asserts::native  (0.00s)
+ok - asserts::float  (0.00s)
+not ok - asserts::base  (0.00s)
+  asserts.c:12: Assertion failed: This assert runs
+  asserts.c:11: Assertion failed: assert is fatal, expect isn't
+ok - asserts::array  (0.00s)
+TAP version 13
+1..3
+# Criterion v2.1.0
+
+# Running 1 tests from suite2
+ok - suite2::test  (0.00s)
+
+# Running 1 tests from suite1
+ok - suite1::test  (0.00s)
+
+# Running 1 tests from disabled
+ok - disabled::test  # SKIP suite is disabled
+TAP version 13
+1..1
+# Criterion v2.1.0
+
+# Running 1 tests from sample
+not ok - sample::long_msg  (0.00s)
+  long-messages.c:4: Assertion failed: This is
+    A long message
+    Spawning multiple lines.
+    Formatting is respected.
+TAP version 13
+1..2
+# Criterion v2.1.0
+
+# Running 2 tests from misc
+ok - misc::skipped This one is skipped # SKIP test is disabled
+not ok - misc::failing Just a failing test (0.00s)
+  description.c:4: Assertion failed: The expression 0 is false.

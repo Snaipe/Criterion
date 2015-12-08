@@ -1,4 +1,4 @@
-version: 2.1.0_b{build}-{branch}
+version: 2.2.0_b{build}-{branch}
 
 os: Visual Studio 2015
 
@@ -15,14 +15,17 @@ environment:
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
+    CXXFLAGS: -D__NO_INLINE__
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015"
+    CFLAGS: /MP
+    CXXFLAGS: /MP
 
 clone_depth: 5
 
 platform:
   - x86
-  - x86_64
+  - x64
 
 configuration:
   - Debug
@@ -38,8 +41,11 @@ install:
   - >
       cmake
       -Wno-dev
+      -DCTESTS=ON
+      -DI18N=OFF
       -DCMAKE_INSTALL_PREFIX="criterion-%RELEASE_NAME%"
       -DCMAKE_BUILD_TYPE="%CONFIGURATION%"
+      %CMAKE_OPTS%
       -G "%GENERATOR%"
       ..
 
@@ -56,7 +62,11 @@ before_deploy:
 
 test_script:
   - cmake --build . --target criterion_tests
-  - ps: try { ctest } catch { type Testing/Temporary/LastTest.log }
+  - ps: |
+        ctest -j2
+        if (-not $lastexitcode -eq 0) {
+            type Testing/Temporary/LastTest.log
+        }
 
 #after_test:
 #  - 'make coveralls'

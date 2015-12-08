@@ -24,73 +24,97 @@
 #ifndef CRITERION_H_
 # define CRITERION_H_
 
-# include "designated-initializer-compat.h"
-# include "common.h"
 # include "types.h"
 # include "assert.h"
 # include "alloc.h"
 
-# define IDENTIFIER_(Category, Name, Suffix) \
-    Category ## _ ## Name ## _ ## Suffix
+# include "internal/test.h"
 
-# ifdef __cplusplus
-#  define TEST_PROTOTYPE_(Category, Name) \
-    extern "C" void IDENTIFIER_(Category, Name, impl)(void)
-# else
-#  define TEST_PROTOTYPE_(Category, Name) \
-    void IDENTIFIER_(Category, Name, impl)(void)
-# endif
+/**
+ *  Test(Suite, Name, [Options...]) { Function body }
+ *
+ *  Defines a new test.
+ *
+ *  @param Suite   The name of the test suite containing this test.
+ *  @param Name    The name of the test.
+ *  @param Options An optional sequence of designated initializer key/value
+ *    pairs as described in the `criterion_test_extra_data` structure
+ *    (see criterion/types.h).
+ *    Example: .exit_code = 1
+ */
+# define Test(...) CR_EXPAND(CR_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
 
-# define SUITE_IDENTIFIER_(Name, Suffix) \
-    suite_ ## Name ## _ ## Suffix
-
-# define Test(...) CR_EXPAND(Test_(__VA_ARGS__, .sentinel_ = 0))
-# define Test_(Category, Name, ...)                                            \
-    TEST_PROTOTYPE_(Category, Name);                                           \
-    struct criterion_test_extra_data IDENTIFIER_(Category, Name, extra) =      \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
-            .kind_ = CR_TEST_NORMAL,                                           \
-            .param_ = (struct criterion_test_params(*)(void)) NULL,            \
-            .identifier_ = #Category "/" #Name,                                \
-            .file_    = __FILE__,                                              \
-            .line_    = __LINE__,                                              \
-            __VA_ARGS__                                                        \
-        ));                                                                    \
-    struct criterion_test IDENTIFIER_(Category, Name, meta) = {                \
-        #Name,                                                                 \
-        #Category,                                                             \
-        IDENTIFIER_(Category, Name, impl),                                     \
-        &IDENTIFIER_(Category, Name, extra)                                    \
-    };                                                                         \
-    SECTION_("cr_tst")                                                         \
-    struct criterion_test *IDENTIFIER_(Category, Name, ptr)                    \
-            = &IDENTIFIER_(Category, Name, meta) SECTION_SUFFIX_;              \
-    TEST_PROTOTYPE_(Category, Name)
-
-# define TestSuite(...) CR_EXPAND(TestSuite_(__VA_ARGS__, .sentinel_ = 0))
-# define TestSuite_(Name, ...)                                                 \
-    struct criterion_test_extra_data SUITE_IDENTIFIER_(Name, extra) =          \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(struct criterion_test_extra_data,      \
-            .file_    = __FILE__,                                              \
-            .line_    = 0,                                                     \
-            __VA_ARGS__                                                        \
-        ));                                                                    \
-    struct criterion_suite SUITE_IDENTIFIER_(Name, meta) = {                   \
-        #Name,                                                                 \
-        &SUITE_IDENTIFIER_(Name, extra),                                       \
-    };                                                                         \
-    SECTION_("cr_sts")                                                         \
-    struct criterion_suite *SUITE_IDENTIFIER_(Name, ptr)                       \
-	    = &SUITE_IDENTIFIER_(Name, meta) SECTION_SUFFIX_
+/**
+ *  TestSuite(Name, [Options...]);
+ *
+ *  Explicitely defines a test suite and its options.
+ *
+ *  @param Name    The name of the test suite.
+ *  @param Options An optional sequence of designated initializer key/value
+ *    pairs as described in the `criterion_test_extra_data` structure
+ *    (see criterion/types.h).
+ *    These options will provide the defaults for each test.
+ */
+# define TestSuite(...) CR_EXPAND(CR_SUITE_BASE(__VA_ARGS__, .sentinel_ = 0))
 
 CR_BEGIN_C_API
 
+/**
+ *  Initializes criterion and builds a set of all discovered tests.
+ *
+ *  Using any of the functions and macros provided by criterion before calling
+ *  this results in undefined behaviour.
+ *
+ *  @returns the set of tests
+ */
 CR_API struct criterion_test_set *criterion_initialize(void);
+
+/**
+ *  Release all resources allocated by criterion.
+ *
+ *  Using any of the functions and macros provided by criterion except
+ *  criterion_initialize after this function is called results in undefined
+ *  behaviour.
+ */
 CR_API void criterion_finalize(struct criterion_test_set *tests);
+
+/**
+ *  Run all the tests in the test set.
+ *
+ *  @param[in] tests The set of tests that are to be executed.
+ *
+ *  @returns 1 if all tests succeeded or criterion_options.always_succeed
+ *    is true, 0 otherwise.
+ */
 CR_API int criterion_run_all_tests(struct criterion_test_set *tests);
+
+/**
+ *  Handles all default command-line parameters, as documented in:
+ *  <http://criterion.readthedocs.org/en/latest/env.html>, and appropriately
+ *  sets criterion_options.
+ *
+ *  @param[in] argc The number of arguments in argv.
+ *  @param[in] argv A null-terminated array of strings representing the arguments.
+ *  @param[in] handle_unknown_arg Whether the function should print a message
+ *    and exit when an unknown parameter is encountered. Use false if you want
+ *    to handle additional parameters yourself.
+ *
+ *  @returns 0 if the process should exit immediately after, for instance after
+ *    printing the help message.
+ */
 CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg);
+
+/**
+ *  Manually registers a new test within the specified test set.
+ *
+ *  @param[in] tests The set of tests you want to insert the test in.
+ *  @param[in] test  The newly created test.
+ */
 CR_API void criterion_register_test(struct criterion_test_set *tests,
                                     struct criterion_test *test);
+
+extern const struct criterion_test  *const criterion_current_test;
+extern const struct criterion_suite *const criterion_current_suite;
 
 CR_END_C_API
 

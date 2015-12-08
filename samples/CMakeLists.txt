@@ -1,6 +1,6 @@
 if (NOT MSVC)
-  set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -pedantic")
-  set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -pedantic")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEFAULT} -std=c99 -Wall -Wextra -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEFAULT} ${CXX11_FLAG} -Wall -Wextra -pedantic")
 endif ()
 
 include_directories(../include)
@@ -14,25 +14,38 @@ set(SAMPLES
   more-suites.c
   description.c
   simple.c
-  theories.c
   timeout.c
   redirect.c
   parameterized.c
 
-  signal.cc
-  report.cc
-  suites.cc
-  fixtures.cc
-  asserts.cc
-  more-suites.cc
-  description.cc
-  simple.cc
-  theories.cc
-  redirect.cc
 )
+
+if (CMAKE_CXX_COMPILER_WORKS)
+  set(SAMPLES ${SAMPLES}
+    signal.cc
+    report.cc
+    suites.cc
+    fixtures.cc
+    asserts.cc
+    more-suites.cc
+    description.cc
+    simple.cc
+    redirect.cc
+    parameterized.cc
+  )
+endif ()
+
+if (THEORIES)
+  set(SAMPLES ${SAMPLES} theories.c)
+  if (CMAKE_CXX_COMPILER_WORKS)
+    set(SAMPLES ${SAMPLES} theories.cc)
+  endif ()
+endif ()
 
 set(SCRIPTS
   tap_test
+  xml_test
+  json_test
   early_exit
   verbose
   list
@@ -65,6 +78,8 @@ macro(add_samples DIR_ SAMPLES_)
                 ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
                 ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
                 ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
+                ENVIRONMENT "CRITERION_JOBS=1" # for output ordering
+                ENVIRONMENT "CRITERION_DISABLE_TIME_MEASUREMENTS=1" # do not compare timings
             )
         endif ()
     endforeach()
@@ -75,18 +90,19 @@ add_samples("${CMAKE_CURRENT_LIST_DIR}/tests" "${SAMPLES}")
 if (NOT MSVC) # we disable the scripted tests when building with MSVC
 
 foreach(script ${SCRIPTS})
-    add_test(${script} sh ${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh)
+    add_test(${script} sh "${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh")
     set_property(TEST ${script} PROPERTY
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
     )
 
-    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" tests/${script})
+    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" "tests/${script}.sh")
     set_property(TEST ${script}_compare PROPERTY
         ENVIRONMENT "LC_ALL=en_US.utf8"
         ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
         ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
         ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
+        ENVIRONMENT "CRITERION_JOBS=1" # for output ordering
     )
 endforeach()
 

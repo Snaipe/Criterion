@@ -28,7 +28,7 @@ Field               Type                               Description
 =================== ================================== ==============================================================
 logging_threshold   enum criterion_logging_level       The logging level
 ------------------- ---------------------------------- --------------------------------------------------------------
-output_provider     struct criterion_output_provider * The output provider (see below)
+logger              struct criterion_logger *          The logger (see below)
 ------------------- ---------------------------------- --------------------------------------------------------------
 no_early_exit       bool                               True iff the test worker should exit early
 ------------------- ---------------------------------- --------------------------------------------------------------
@@ -66,24 +66,23 @@ Example main
     int main(int argc, char *argv[]) {
         struct criterion_test_set *tests = criterion_initialize();
 
-        if (!criterion_handle_args(argc, argv, true))
-            return 0;
-
-        int result = !criterion_run_all_tests(set);
+        int result = 0;
+        if (criterion_handle_args(argc, argv, true))
+            result = !criterion_run_all_tests(set);
 
         criterion_finalize(set);
         return result;
     }
 
-Implementing your own output provider
--------------------------------------
+Implementing your own logger
+----------------------------
 
-In case you are not satisfied by the default output provider, you can implement
-yours. To do so, simply set the ``output_provider`` option to your custom
-output provider.
+In case you are not satisfied by the default logger, you can implement
+yours. To do so, simply set the ``logger`` option to your custom
+logger.
 
 Each function contained in the structure is called during one of the standard
 phase of the criterion runner.
 
-For more insight on how to implement this, see other existing output providers
+For more insight on how to implement this, see other existing loggers
 in ``src/log/``.

@@ -26,28 +26,45 @@
 #include <string.h>
 #include <csptr/smalloc.h>
 #include "criterion/stats.h"
-#include "criterion/common.h"
+#include "criterion/internal/common.h"
 #include "criterion/hooks.h"
+#include "criterion/logging.h"
 #include "core/worker.h"
 #include "event.h"
 
-FILE *g_event_pipe = NULL;
+s_pipe_file_handle *g_event_pipe = NULL;
 
-void destroy_event(void *ptr, UNUSED void *meta) {
+void destroy_event(void *ptr, CR_UNUSED void *meta) {
     struct event *ev = ptr;
     free(ev->data);
 }
 
-void destroy_assert_event(void *ptr, UNUSED void *meta) {
+void destroy_assert_event(void *ptr, CR_UNUSED void *meta) {
     struct event *ev = ptr;
     free((void*) ((struct criterion_assert_stats *) ev->data)->message);
     free(ev->data);
 }
 
-struct event *read_event(FILE *f) {
+#ifdef __GNUC__
+# define unlikely(x) __builtin_expect((x),0)
+#else
+# define unlikely(x) (x)
+#endif
+
+#define ASSERT(Cond)                                                        \
+    do {                                                                    \
+        if (unlikely(!(Cond))){                                             \
+            criterion_perror("Corrupted event IO in the worker pipe.\n");   \
+            abort();                                                        \
+        }                                                                   \
+    } while (0)
+
+struct event *read_event(s_pipe_file_handle *f) {
     unsigned kind;
-    if (fread(&kind, sizeof (unsigned), 1, f) == 0)
-        return NULL;
+    ASSERT(pipe_read(&kind, sizeof (unsigned), f) == 1);
+
+    unsigned long long pid;
+    ASSERT(pipe_read(&pid, sizeof (unsigned long long), f) == 1);
 
     switch (kind) {
         case ASSERT: {
@@ -56,16 +73,13 @@ struct event *read_event(FILE *f) {
             char *msg = NULL;
 
             buf = malloc(assert_size);
-            if (fread(buf, assert_size, 1, f) == 0)
-                goto fail_assert;
+            ASSERT(pipe_read(buf, assert_size, f) == 1);
 
             size_t len = 0;
-            if (fread(&len, sizeof (size_t), 1, f) == 0)
-                goto fail_assert;
+            ASSERT(pipe_read(&len, sizeof (size_t), f) == 1);
 
             msg = malloc(len);
-            if (fread(msg, len, 1, f) == 0)
-                goto fail_assert;
+            ASSERT(pipe_read(msg, len, f) == 1);
 
             buf->message = msg;
 
@@ -73,73 +87,77 @@ struct event *read_event(FILE *f) {
                     .size = sizeof (struct event),
                     .dtor = destroy_assert_event
                 );
-            *ev = (struct event) { .kind = kind, .data = buf };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = buf };
             return ev;
-
-fail_assert:
-            free(buf);
-            free(msg);
-            return NULL;
         }
-        case THEORY_FAIL: {
-            size_t len = 0;
-            if (fread(&len, sizeof (size_t), 1, f) == 0)
-                return NULL;
+        case TEST_ABORT: {
+            char *msg = NULL;
 
-            char *buf = malloc(len);
-            if (fread(buf, len, 1, f) == 0) {
-                free(buf);
-                return NULL;
-            }
+            size_t len = 0;
+            ASSERT(pipe_read(&len, sizeof (size_t), f) == 1);
+
+            msg = malloc(len);
+            ASSERT(pipe_read(msg, len, f) == 1);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
                     .dtor = destroy_event
                 );
-            *ev = (struct event) { .kind = kind, .data = buf };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = msg };
+            return ev;
+        }
+        case THEORY_FAIL: {
+            size_t len = 0;
+            ASSERT(pipe_read(&len, sizeof (size_t), f) == 1);
+
+            char *buf = malloc(len);
+            ASSERT(pipe_read(buf, len, f) == 1);
+
+            struct event *ev = smalloc(
+                    .size = sizeof (struct event),
+                    .dtor = destroy_event
+                );
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = buf };
             return ev;
         }
         case POST_TEST: {
             double *elapsed_time = malloc(sizeof (double));
-            if (fread(elapsed_time, sizeof (double), 1, f) == 0) {
-                free(elapsed_time);
-                return NULL;
-            }
+            ASSERT(pipe_read(elapsed_time, sizeof (double), f) == 1);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
                     .dtor = destroy_event
                 );
-            *ev = (struct event) { .kind = kind, .data = elapsed_time };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = elapsed_time };
             return ev;
         }
         case WORKER_TERMINATED: {
             struct worker_status *status = malloc(sizeof (struct worker_status));
-            if (fread(status, sizeof (struct worker_status), 1, f) == 0) {
-                free(status);
-                return NULL;
-            }
+            ASSERT(pipe_read(status, sizeof (struct worker_status), f) == 1);
 
             struct event *ev = smalloc(
                     .size = sizeof (struct event),
                     .dtor = destroy_event
                 );
-            *ev = (struct event) { .kind = kind, .data = status };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = status };
             return ev;
         }
         default: {
             struct event *ev = smalloc(sizeof (struct event));
-            *ev = (struct event) { .kind = kind, .data = NULL };
+            *ev = (struct event) { .pid = pid, .kind = kind, .data = NULL };
             return ev;
         }
     }
 }
 
-void send_event(int kind, void *data, size_t size) {
-    unsigned char *buf = malloc(sizeof (int) + size);
+void criterion_send_event(int kind, void *data, size_t size) {
+    unsigned long long pid = get_process_id();
+
+    unsigned char *buf = malloc(sizeof (int) + sizeof (pid) + size);
     memcpy(buf, &kind, sizeof (int));
-    memcpy(buf + sizeof (int), data, size);
-    if (fwrite(buf, sizeof (int) + size, 1, g_event_pipe) == 0)
-        abort();
+    memcpy(buf + sizeof (int), &pid, sizeof (pid));
+    memcpy(buf + sizeof (int) + sizeof (pid), data, size);
+    ASSERT(pipe_write(buf, sizeof (int) + sizeof (pid) + size, g_event_pipe) == 1);
+
     free(buf);
 }

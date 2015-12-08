@@ -23,6 +23,7 @@
  */
 #include <stdlib.h>
 #include <stdbool.h>
+#include <errno.h>
 #include <csptr/smalloc.h>
 
 #include "criterion/types.h"
@@ -31,11 +32,6 @@
 #include "io/event.h"
 #include "compat/posix.h"
 #include "worker.h"
-
-struct process {
-    s_proc_handle *proc;
-    FILE *in;
-};
 
 static s_proc_handle *g_current_proc;
 
@@ -51,22 +47,42 @@ bool is_runner(void) {
     return is_current_process(g_current_proc);
 }
 
-static void close_process(void *ptr, UNUSED void *meta) {
-    struct process *proc = ptr;
-    fclose(proc->in);
+static void close_process(void *ptr, CR_UNUSED void *meta) {
+    struct worker *proc = ptr;
+    sfree(proc->in);
+    sfree(proc->ctx.suite_stats);
+    sfree(proc->ctx.test_stats);
+    sfree(proc->ctx.stats);
     sfree(proc->proc);
 }
 
-struct event *worker_read_event(struct process *proc) {
-    return read_event(proc->in);
+struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe) {
+    struct event *ev = read_event(pipe);
+    if (ev) {
+        ev->worker_index = -1;
+        for (size_t i = 0; i < workers->max_workers; ++i) {
+            if (!workers->workers[i])
+                continue;
+
+            if (get_process_id_of(workers->workers[i]->proc) == ev->pid) {
+                ev->worker = workers->workers[i];
+                ev->worker_index = i;
+                return ev;
+            }
+        }
+        criterion_perror("Could not link back the event PID to the active workers.\n");
+        criterion_perror("The event pipe might have been corrupted.\n");
+        abort();
+    }
+    return NULL;
 }
 
 void run_worker(struct worker_context *ctx) {
     cr_redirect_stdin();
-    g_event_pipe = pipe_out(ctx->pipe, PIPE_CLOSE);
+    g_event_pipe = pipe_out_handle(ctx->pipe, PIPE_CLOSE);
 
     ctx->func(ctx->test, ctx->suite);
-    fclose(g_event_pipe);
+    sfree(g_event_pipe);
 
     fflush(NULL); // flush all opened streams
     if (criterion_options.no_early_exit)
@@ -74,35 +90,41 @@ void run_worker(struct worker_context *ctx) {
     _Exit(0);
 }
 
-struct process *spawn_test_worker(struct criterion_test *test,
-                                  struct criterion_suite *suite,
-                                  f_worker_func func,
-                                  s_pipe_handle *pipe,
-                                  struct test_single_param *param) {
+struct worker *spawn_test_worker(struct execution_context *ctx,
+                                  cr_worker_func func,
+                                  s_pipe_handle *pipe) {
     g_worker_context = (struct worker_context) {
-        .test = test,
-        .suite = suite,
+        .test = ctx->test,
+        .suite = ctx->suite,
         .func = func,
         .pipe = pipe,
-        .param = param,
+        .param = ctx->param,
     };
 
-    struct process *ptr = NULL;
+    struct worker *ptr = NULL;
 
     s_proc_handle *proc = fork_process();
     if (proc == (void *) -1) {
+        criterion_perror("Could not fork the current process and start a worker: %s.\n", strerror(errno));
         abort();
     } else if (proc == NULL) {
         run_worker(&g_worker_context);
+        sfree(ctx->test_stats);
+        sfree(ctx->suite_stats);
+        sfree(ctx->stats);
         return NULL;
     }
 
     ptr = smalloc(
-            .size = sizeof (struct process),
-            .kind = UNIQUE,
+            .size = sizeof (struct worker),
+            .kind = SHARED,
             .dtor = close_process);
 
-    *ptr = (struct process) { .proc = proc, .in = pipe_in(pipe, PIPE_DUP) };
+    *ptr = (struct worker) {
+        .proc = proc,
+        .in = pipe_in_handle(pipe, PIPE_DUP),
+        .ctx = *ctx,
+    };
     return ptr;
 }
 
@@ -120,11 +142,4 @@ struct process_status get_status(int status) {
         };
 
     return (struct process_status) { .kind = STOPPED };
-}
-
-struct process_status wait_proc(struct process *proc) {
-    int status;
-    wait_process(proc->proc, &status);
-
-    return get_status(status);
 }

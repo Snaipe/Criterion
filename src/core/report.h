@@ -25,11 +25,13 @@
 # define REPORT_H_
 
 # include "criterion/hooks.h"
+# include "criterion/options.h"
 
-# define report(Kind, Data) call_report_hooks_##Kind(Data)
+# define report(Kind, Data) report_(Kind, Data)
+# define report_(Kind, Data) call_report_hooks_##Kind(Data)
 
 # define DECL_CALL_REPORT_HOOKS(Kind)                         \
-    DECL_SECTION_LIMITS(f_report_hook, HOOK_SECTION(Kind));   \
+    CR_DECL_SECTION_LIMITS(f_report_hook, CR_HOOK_SECTION(Kind));   \
     void call_report_hooks_##Kind(void *data)
 
 DECL_CALL_REPORT_HOOKS(PRE_ALL);
@@ -44,9 +46,9 @@ DECL_CALL_REPORT_HOOKS(POST_FINI);
 DECL_CALL_REPORT_HOOKS(POST_SUITE);
 DECL_CALL_REPORT_HOOKS(POST_ALL);
 
-#define log(Type, Arg) \
-    log_(criterion_options.output_provider->log_ ## Type, Arg);
-#define log_(Log, Arg) \
-    (Log ? Log(Arg) : nothing());
+#define log(Type, ...) \
+    log_(criterion_options.logger->log_ ## Type, __VA_ARGS__);
+#define log_(Log, ...) \
+    (Log ? Log(__VA_ARGS__) : nothing());
 
 #endif /* !REPORT_H_ */

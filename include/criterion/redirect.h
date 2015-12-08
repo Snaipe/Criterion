@@ -24,85 +24,81 @@
 #ifndef CRITERION_REDIRECT_H_
 # define CRITERION_REDIRECT_H_
 
-# include "common.h"
-# include "assert.h"
+# include "internal/common.h"
+# include "internal/redirect.h"
 
 # ifdef __cplusplus
 #  include <cstdio>
-#  include <memory>
-#  include <fstream>
-
-#  ifdef __GNUC__
-#   if defined(__MINGW32__) || defined(__MINGW64__)
-#    define off_t _off_t
-#    define off64_t _off64_t
-#   endif
-#   include <ext/stdio_sync_filebuf.h>
-#   if defined(__MINGW32__) || defined(__MINGW64__)
-#    undef off_t
-#    undef off64_t
-#   endif
-#  endif
 # else
 #  include <stdio.h>
 # endif
 
 CR_BEGIN_C_API
 
+/**
+ *  Redirect stdout for testing.
+ */
 CR_API void cr_redirect_stdout(void);
+
+/**
+ *  Redirect stderr for testing.
+ */
 CR_API void cr_redirect_stderr(void);
+
+/**
+ *  Redirect stdin for testing.
+ *  This is implicitely called before each test.
+ */
 CR_API void cr_redirect_stdin(void);
 
+/**
+ *  Get a file handle representing the read-end of the redirected stdout.
+ *
+ *  @returns the file handle.
+ */
 CR_API CR_STDN FILE* cr_get_redirected_stdout(void);
+
+/**
+ *  Get a file handle representing the read-end of the redirected stderr.
+ *
+ *  @returns the file handle.
+ */
 CR_API CR_STDN FILE* cr_get_redirected_stderr(void);
+
+/**
+ *  Get a file handle representing the write-end of the redirected stdin.
+ *
+ *  @returns the file handle.
+ */
 CR_API CR_STDN FILE* cr_get_redirected_stdin(void);
 
+/**
+ *  Compare the contents of a file with a string.
+ *
+ *  @param[in] f    The file to compare the contents to.
+ *  @param[in] str  The string to compare the contents to.
+ *  @returns 1 if the contents of the file is equal to the string, 0 otherwise.
+ */
 CR_API int cr_file_match_str(CR_STDN FILE* f, const char *str);
+
+/**
+ *  Compare the contents of a file with the contents of another file.
+ *
+ *  @param[in] f    The first file to compare the contents to.
+ *  @param[in] ref  The second file to compare the contents to.
+ *  @returns 1 if the contents of the files are equal, 0 otherwise.
+ */
 CR_API int cr_file_match_file(CR_STDN FILE* f, CR_STDN FILE* ref);
 
+/**
+ *  Create a file mock.
+ *
+ *  @param[in] max_size The maximum size in bytes of the file mock.
+ *  @returns the file handle representing the mock.
+ */
 CR_API CR_STDN FILE *cr_mock_file_size(size_t max_size);
 
 CR_END_C_API
-
-# define cr_assert_redir_op_(Fail, Fun, Op, File, Str, ...)     \
-    CR_EXPAND(cr_assert_impl(                                   \
-            Fail,                                               \
-            !(Fun((File), (Str)) Op 0),                         \
-            dummy,                                              \
-            CRITERION_ASSERT_MSG_FILE_STR_MATCH,                \
-            (CR_STR(File), Str),                                \
-            __VA_ARGS__                                         \
-    ))
-
-# define cr_assert_redir_op_va_(Fail, Fun, Op, ...)             \
-    CR_EXPAND(cr_assert_redir_op_(                              \
-            Fail,                                               \
-            Fun,                                                \
-            Op,                                                 \
-            CR_VA_HEAD(__VA_ARGS__),                            \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
-            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))                 \
-    ))
-
-# define cr_assert_redir_f_op_(Fail, Fun, Op, File, Ref, ...)   \
-    CR_EXPAND(cr_assert_impl(                                   \
-            Fail,                                               \
-            !(Fun((File), (Ref)) Op 0),                         \
-            dummy,                                              \
-            CRITERION_ASSERT_MSG_FILE_MATCH,                    \
-            (CR_STR(File), CR_STR(Ref)),                        \
-            __VA_ARGS__                                         \
-    ))
-
-# define cr_assert_redir_f_op_va_(Fail, Fun, Op, ...)           \
-    CR_EXPAND(cr_assert_redir_op_(                              \
-            Fail,                                               \
-            Fun,                                                \
-            Op,                                                 \
-            CR_VA_HEAD(__VA_ARGS__),                            \
-            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
-            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))                 \
-    ))
 
 # define cr_assert_file_contents_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, __VA_ARGS__))
 # define cr_expect_file_contents_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, __VA_ARGS__))
@@ -141,134 +137,24 @@ CR_END_C_API
 # define cr_expect_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, cr_get_redirected_stderr(), __VA_ARGS__))
 
 # ifdef __cplusplus
+#  include "internal/stream.hxx"
+
 namespace criterion {
 
-    template <typename CharT, typename Super>
-    class stream_mixin : public Super {
-public:
-        stream_mixin(FILE* f)
-#  ifdef __GNUC__
-            : Super()
-            , fbuf(new ::__gnu_cxx::stdio_sync_filebuf<CharT>(f))
-#  else
-            : Super(f)
-#  endif
-            , file(f)
-        {
-#  ifdef __GNUC__
-            std::ios::rdbuf(&*fbuf);
-#  endif
-        }
-
-        stream_mixin(const stream_mixin& other) = delete;
-        stream_mixin& operator=(const stream_mixin& other) = delete;
-
-        stream_mixin(stream_mixin&& other) :
-#  ifdef __GNUC__
-            fbuf(std::move(other.fbuf)),
-#  endif
-            file(std::move(other.file))
-        {}
-
-        stream_mixin& operator=(stream_mixin&& other) {
-#  ifdef __GNUC__
-            fbuf = std::move(other.fbuf);
-#  endif
-            file = std::move(other.file);
-        }
-
-        void close(void) {
-            Super::flush();
-            Super::close();
-            std::fclose(file);
-        }
-
-    private:
-#  ifdef __GNUC__
-        std::shared_ptr<::__gnu_cxx::stdio_sync_filebuf<CharT>> fbuf;
-#  endif
-        std::FILE* file;
-    };
-
-    template <typename CharT>
-    using ofstream_mixin = stream_mixin<CharT, std::basic_ofstream<CharT>>;
-
-    template <typename CharT>
-    using ifstream_mixin = stream_mixin<CharT, std::basic_ifstream<CharT>>;
-
-    template <typename CharT>
-    using fstream_mixin = stream_mixin<CharT, std::basic_fstream<CharT>>;
-
-    template <typename CharT>
-    class basic_ofstream : public ofstream_mixin<CharT> {
-    public:
-        basic_ofstream(FILE* f)
-            : ofstream_mixin<CharT>(f)
-        {}
-
-        basic_ofstream(basic_ofstream&& other)
-            : ofstream_mixin<CharT>(std::move(other))
-        {}
-    };
-
-    template <typename CharT>
-    class basic_ifstream : public ifstream_mixin<CharT> {
-    public:
-        basic_ifstream(FILE* f)
-            : ifstream_mixin<CharT>(f)
-        {}
-
-        basic_ifstream(basic_ifstream&& other)
-            : ifstream_mixin<CharT>(std::move(other))
-        {}
-    };
-
-    template <typename CharT>
-    class basic_fstream : public fstream_mixin<CharT> {
-    public:
-        basic_fstream(FILE* f)
-            : fstream_mixin<CharT>(f)
-        {}
-
-        basic_fstream(basic_fstream&& other)
-            : fstream_mixin<CharT>(std::move(other))
-        {}
-    };
-
-    using ofstream = basic_ofstream<char>;
-    using ifstream = basic_ifstream<char>;
-    using fstream  = basic_fstream<char>;
-
-    struct get_redirected_out_stream_ {
-        static inline ofstream& call(std::FILE* f) {
-            static std::unique_ptr<ofstream> stream;
-
-            if (!stream)
-                stream.reset(new ofstream(f));
-            return *stream;
-        }
-
-    };
-
-    struct get_redirected_in_stream_ {
-        static inline ifstream& call(std::FILE* f) {
-            static std::unique_ptr<ifstream> stream;
-            if (!stream)
-                stream.reset(new ifstream(f));
-            return *stream;
-        }
-    };
+    typedef internal::basic_ofstream<char> ofstream;
+    typedef internal::basic_ifstream<char> ifstream;
+    typedef internal::basic_fstream<char>  fstream;
 
     static inline ofstream& get_redirected_cin(void) {
-        return get_redirected_out_stream_::call(cr_get_redirected_stdin());
+        return internal::get_redirected_out_stream_::call(cr_get_redirected_stdin());
     }
 
     static inline ifstream& get_redirected_cout(void) {
-        return get_redirected_in_stream_::call(cr_get_redirected_stdout());
+        return internal::get_redirected_in_stream_::call(cr_get_redirected_stdout());
     }
 
     static inline ifstream& get_redirected_cerr(void) {
-        return get_redirected_in_stream_::call(cr_get_redirected_stderr());
+        return internal::get_redirected_in_stream_::call(cr_get_redirected_stderr());
     }
 
 #  if __GNUC__ >= 5

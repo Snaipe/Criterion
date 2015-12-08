@@ -25,5 +25,6 @@
 
 struct criterion_options criterion_options = {
     .logging_threshold = CRITERION_IMPORTANT,
-    .output_provider   = &normal_logging,
+    .logger            = &normal_logging,
+    .measure_time      = true,
 };

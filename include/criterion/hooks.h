@@ -24,9 +24,11 @@
 #ifndef CRITERION_HOOKS_H_
 # define CRITERION_HOOKS_H_
 
-# include "common.h"
-# include "types.h"
+# include "internal/hooks.h"
 
+/**
+ *  This enum lists all the phases of the runner lifecycle.
+ */
 typedef enum {
     PRE_ALL,
     PRE_SUITE,
@@ -43,57 +45,24 @@ typedef enum {
 
 typedef void (*f_report_hook)();
 
-# define HOOK_IDENTIFIER_(Suffix) HOOK_IDENTIFIER__(__LINE__, Suffix)
-# define HOOK_IDENTIFIER__(Line, Suffix) HOOK_IDENTIFIER___(Line, Suffix)
-# define HOOK_IDENTIFIER___(Line, Suffix) hook_l ## Line ## _ ## Suffix
-
-# ifdef __cplusplus
-#  define HOOK_PROTOTYPE_ \
-    extern "C" void HOOK_IDENTIFIER_(impl)
-# else
-#  define HOOK_PROTOTYPE_ \
-    void HOOK_IDENTIFIER_(impl)
-# endif
-
-// Section abbreviations
-# define HOOK_SECTION_PRE_ALL       cr_pra
-# define HOOK_SECTION_PRE_SUITE     cr_prs
-# define HOOK_SECTION_PRE_INIT      cr_pri
-# define HOOK_SECTION_PRE_TEST      cr_prt
-# define HOOK_SECTION_ASSERT        cr_ast
-# define HOOK_SECTION_THEORY_FAIL   cr_thf
-# define HOOK_SECTION_TEST_CRASH    cr_tsc
-# define HOOK_SECTION_POST_TEST     cr_pot
-# define HOOK_SECTION_POST_FINI     cr_pof
-# define HOOK_SECTION_POST_SUITE    cr_pos
-# define HOOK_SECTION_POST_ALL      cr_poa
-
-# define HOOK_SECTION(Kind) HOOK_SECTION_ ## Kind
-
-# define HOOK_SECTION_STRINGIFY__(Sec) #Sec
-# define HOOK_SECTION_STRINGIFY_(Sec) HOOK_SECTION_STRINGIFY__(Sec)
-# define HOOK_SECTION_STRINGIFY(Kind) HOOK_SECTION_STRINGIFY_(HOOK_SECTION(Kind))
-
-# define HOOK_PARAM_TYPE_PRE_ALL        struct criterion_test_set *
-# define HOOK_PARAM_TYPE_PRE_SUITE      struct criterion_suite_set *
-# define HOOK_PARAM_TYPE_PRE_INIT       struct criterion_test *
-# define HOOK_PARAM_TYPE_PRE_TEST       struct criterion_test *
-# define HOOK_PARAM_TYPE_ASSERT         struct criterion_assert_stats *
-# define HOOK_PARAM_TYPE_THEORY_FAIL    struct criterion_theory_stats *
-# define HOOK_PARAM_TYPE_TEST_CRASH     struct criterion_test_stats *
-# define HOOK_PARAM_TYPE_POST_TEST      struct criterion_test_stats *
-# define HOOK_PARAM_TYPE_POST_FINI      struct criterion_test_stats *
-# define HOOK_PARAM_TYPE_POST_SUITE     struct criterion_suite_stats *
-# define HOOK_PARAM_TYPE_POST_ALL       struct criterion_global_stats *
-
-# define HOOK_PARAM_TYPE(Kind) HOOK_PARAM_TYPE_ ## Kind
-
-# define ReportHook(Kind)                                                      \
-    HOOK_PROTOTYPE_(HOOK_PARAM_TYPE(Kind));                                    \
-    SECTION_(HOOK_SECTION_STRINGIFY(Kind))                                     \
-    f_report_hook HOOK_IDENTIFIER_(func) =                                     \
-        (f_report_hook) HOOK_IDENTIFIER_(impl)                                 \
-    SECTION_SUFFIX_; \
-    HOOK_PROTOTYPE_
+/**
+ *  ReportHook(Kind)(Type *param) { Function Body }
+ *
+ *  Defines a report hook for the phase defined by Kind.
+ *
+ *  The type of the parameter depends on the phase:
+ *
+ *  - struct criterion_test_set for PRE_ALL.
+ *  - struct criterion_suite_set for PRE_SUITE.
+ *  - struct criterion_test for PRE_INIT and PRE_TEST.
+ *  - struct criterion_assert_stats for ASSERT.
+ *  - struct criterion_theory_stats for THEORY_FAIL.
+ *  - struct criterion_test_stats for POST_TEST, POST_FINI, and TEST_CRASH.
+ *  - struct criterion_suite_stats for POST_SUITE.
+ *  - struct criterion_global_stats for POST_ALL.
+ *
+ *  @param Kind The report phase to hook the function onto.
+ */
+# define ReportHook(Kind) CR_REPORT_HOOK_IMPL(Kind)
 
 #endif /* !CRITERION_HOOKS_H_ */

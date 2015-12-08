@@ -31,8 +31,10 @@
 
 #ifdef ENABLE_NLS
 # define LOG_FORMAT "[%1$s%2$s%3$s] %4$s"
+# define ERROR_FORMAT "[%1$s%2$s%3$s] %4$s%5$s%6$s%7$s"
 #else
 # define LOG_FORMAT "[%s%s%s] %s"
+# define ERROR_FORMAT "[%s%s%s] %s%s%s%s"
 #endif
 
 const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
@@ -42,6 +44,7 @@ const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
     [CRITERION_LOGGING_PREFIX_SKIP]     = { "SKIP", CRIT_FG_GOLD  },
     [CRITERION_LOGGING_PREFIX_PASS]     = { "PASS", CRIT_FG_GREEN },
     [CRITERION_LOGGING_PREFIX_FAIL]     = { "FAIL", CRIT_FG_RED   },
+    [CRITERION_LOGGING_PREFIX_ERR]      = { "ERR ", CRIT_FG_RED   },
     { NULL, NULL }
 };
 
@@ -56,11 +59,23 @@ void criterion_plog(enum criterion_logging_level level, const struct criterion_p
     vsnprintf(formatted_msg, sizeof formatted_msg, msg, args);
     va_end(args);
 
-    fprintf(stderr, _(LOG_FORMAT),
+    if (prefix == &g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_ERR]) {
+        fprintf(stderr, _(ERROR_FORMAT),
             CRIT_COLOR_NORMALIZE(prefix->color),
             prefix->prefix,
-            RESET,
+                CR_RESET,
+                CR_FG_RED,
+                CR_FG_BOLD,
+            formatted_msg,
+                CR_RESET);
+    } else {
+        fprintf(stderr, _(LOG_FORMAT),
+            CRIT_COLOR_NORMALIZE(prefix->color),
+            prefix->prefix,
+                CR_RESET,
             formatted_msg);
+    }
+
 }
 
 void criterion_log(enum criterion_logging_level level, const char *msg, ...) {

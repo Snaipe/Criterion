@@ -30,7 +30,22 @@
 #  undef _WIN32_WINNT
 #  define _WIN32_WINNT 0x0502
 #  include <windows.h>
+
+#  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
+#   include "off_t.h"
+
+#   if !defined(__MINGW64__)
+#    define off_t cr_off32
+#   else
+#    define off_t cr_off64
+#   endif
+#   define off64_t cr_off64
+#  endif
 #  include <io.h>
+#  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
+#   undef off_t
+#   undef off64_t
+#  endif
 #  include <fcntl.h>
 #  include <winnt.h>
 #  include <stdint.h>
@@ -40,6 +55,15 @@
 #  include <sys/wait.h>
 #  include <sys/signal.h>
 #  include <sys/fcntl.h>
+#  include <sys/param.h>
+#  ifdef BSD
+#   include <sys/types.h>
+typedef unsigned long u_long;
+typedef unsigned int u_int;
+typedef unsigned short u_short;
+typedef unsigned char u_char;
+#   include <sys/sysctl.h>
+#  endif
 # endif
 
 # include "posix.h"
