@@ -301,7 +301,7 @@ add_subdirectory(test)
 endif ()
 
 # Add toolchain patch number for incremental deb builds
-set(PROJECT_VERSION "${PROJECT_VERSION}-6")
+set(PROJECT_VERSION "${PROJECT_VERSION}-1")
 
 include (PackageConfig)
 
