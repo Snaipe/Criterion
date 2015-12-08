@@ -27,7 +27,7 @@
 #include <errno.h>
 #include <csptr/smalloc.h>
 #include <valgrind/valgrind.h>
-#include "criterion/criterion.h"
+#include "criterion/internal/test.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
 #include "criterion/logging.h"
@@ -35,7 +35,6 @@
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"
-#include "wrappers/wrap.h"
 #include "string/i18n.h"
 #include "io/event.h"
 #include "io/output.h"
@@ -159,6 +158,9 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
+const struct criterion_test  *criterion_current_test;
+const struct criterion_suite *criterion_current_suite;
+
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
@@ -166,19 +168,16 @@ void run_test_child(struct criterion_test *test,
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
 
+    criterion_current_test = test;
+    criterion_current_suite = suite;
+
     if (suite->data && suite->data->timeout != 0 && test->data->timeout == 0)
         setup_timeout((uint64_t) (suite->data->timeout * 1e9));
     else if (test->data->timeout != 0)
         setup_timeout((uint64_t) (test->data->timeout * 1e9));
 
-    if (g_wrappers[test->data->lang_]) {
-        g_wrappers[test->data->lang_](test, suite);
-    } else {
-        criterion_test_die(
-            "The test is compiled in the %s programming language, but the \n"
-            "criterion runner have been compiled without its language support.",
-            cr_language_names[test->data->lang_]);
-    }
+    if (test->test)
+        test->test();
 }
 
 #define push_event(...)                                             \

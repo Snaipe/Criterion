@@ -43,11 +43,12 @@ if (MSVC)
   include_directories(dependencies/wingetopt/src/)
 endif ()
 
-# Language support
-
-include(Languages)
-
 # Check for C++11
+
+option(LANG_CXX "Turn on C++ support" ON)
+if (LANG_CXX)
+  enable_language(CXX)
+endif ()
 
 if (NOT MSVC AND CMAKE_CXX_COMPILER_WORKS)
   include(CheckCXXCompilerFlag)
@@ -133,9 +134,6 @@ find_package(PCRE)
 # List sources and headers
 
 set(SOURCE_FILES
-  src/core/wrappers/wrap.h
-  src/core/wrappers/wrap.c
-  src/core/wrappers/wrappers.c
   src/core/abort.c
   src/core/abort.h
   src/core/report.c
@@ -150,6 +148,7 @@ set(SOURCE_FILES
   src/core/stats.c
   src/core/stats.h
   src/core/ordered-set.c
+  src/core/test.c
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h
@@ -201,23 +200,6 @@ if (PCRE_FOUND)
     src/string/extmatch.h
   )
   set(HAVE_PCRE 1)
-endif ()
-
-if (CMAKE_CXX_COMPILER_WORKS)
-  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.cc)
-endif ()
-
-if (CMAKE_ObjectiveC_COMPILER_WORKS)
-  set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} ${CMAKE_C_FLAGS} -fobjc-exceptions")
-  if ("${CMAKE_ObjectiveC_COMPILER_ID}" STREQUAL "Clang" AND APPLE)
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -framework Foundation")
-  endif ()
-  add_definitions(-D_NATIVE_OBJC_EXCEPTIONS)
-
-  if (NOT WIN32)
-    set(CMAKE_ObjectiveC_FLAGS "${CMAKE_ObjectiveC_FLAGS} -fPIC")
-  endif ()
-  set(SOURCE_FILES ${SOURCE_FILES} src/core/wrappers/wrap.m)
 endif ()
 
 set(INTERFACE_FILES

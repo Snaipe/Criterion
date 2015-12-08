@@ -29,6 +29,4 @@
 
 extern jmp_buf g_pre_test;
 
-void criterion_test_die(const char *msg, ...);
-
 #endif /* !ABORT_H_ */

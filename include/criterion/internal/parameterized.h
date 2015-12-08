@@ -79,6 +79,7 @@ struct criterion_test_params {
 
 # define CR_PARAM_TEST_BASE(Param, Category, Name, ...)                        \
     CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name);                           \
+    CR_TEST_TRAMPOLINE_(Category, Name)                                        \
     struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
         CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,             \
             .lang_ = CR_LANG,                                                  \
@@ -92,7 +93,7 @@ struct criterion_test_params {
     struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {             \
         #Name,                                                                 \
         #Category,                                                             \
-        (void(*)(void)) CR_IDENTIFIER_(Category, Name, impl),                  \
+        CR_IDENTIFIER_(Category, Name, jmp),                                   \
         &CR_IDENTIFIER_(Category, Name, extra)                                 \
     };                                                                         \
     CR_SECTION_("cr_tst")                                                      \
