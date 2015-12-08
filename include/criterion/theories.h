@@ -29,16 +29,57 @@
 
 CR_BEGIN_C_API
 
+/**
+ *  Aborts the current theory iteration.
+ *  This function does not return.
+ */
 CR_API void cr_theory_abort(void);
 
 CR_END_C_API
 
 // Theory and datapoint macros
 
+/**
+ *  Theory((Params...), Suite, Name, [Options...]) { Function Body }
+ *
+ *  Defines a new theory test.
+ *
+ *  The parameters are selected from a cartesian product defined by a
+ *  TheoryDataPoints macro.
+ *
+ *  @param Params  A list of function parameters.
+ *  @param Suite   The name of the test suite containing this test.
+ *  @param Name    The name of the test.
+ *  @param Options An optional sequence of designated initializer key/value
+ *    pairs as described in the `criterion_test_extra_data` structure
+ *    (see criterion/types.h).
+ *    Example: .exit_code = 1
+ */
 # define Theory(Args, ...) CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
 
+/**
+ *  TheoryDataPoints(Suite, Name) = { Datapoints... };
+ *
+ *  Defines an array of data points.
+ *
+ *  The types of the specified data points *must* match the types of the
+ *  associated theory.
+ *
+ *  Each entry in the array must be the result of the DataPoints macro.
+ *
+ *  @param Suite   The name of the test suite containing this test.
+ *  @param Name    The name of the test.
+ */
 # define TheoryDataPoints(Category, Name) CR_TH_INTERNAL_TDPS(Category, Name)
-# define TheoryDataPoint(Category, Name) CR_TH_INTERNAL_TDP(Category, Name)
+
+/**
+ *  DataPoints(Type, Values...)
+ *
+ *  Defines a new set of data points.
+ *
+ *  @param Type    The type of each data point in the set.
+ *  @param Values  The data points in the set.
+ */
 # define DataPoints(Type, ...) CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
 // Theory invariants
