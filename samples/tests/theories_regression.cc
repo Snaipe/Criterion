@@ -35,20 +35,3 @@ Theory((char c, bool b, short s, int i, float f, double d, char *str, const char
     // abort to see the formatted string of all parameters
     cr_assert_fail();
 }
-
-// Manually generate datapoints
-
-TheoryDataPoints(theory, gen) = {
-    DataPoints(int, 0), // placeholder
-};
-
-static void generate_datapoints(void) {
-    static int arr[] = {1, 2, 3, 4, 5};
-    TheoryDataPoint(theory, gen)[0].len = 5;
-    TheoryDataPoint(theory, gen)[0].arr = &arr;
-}
-
-Theory((int i), theory, gen, .init = generate_datapoints) {
-    (void) i;
-    cr_assert_fail(); // we fail to display the parameter
-}
