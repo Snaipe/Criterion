@@ -147,6 +147,7 @@ set(SOURCE_FILES
   src/core/stats.c
   src/core/stats.h
   src/core/ordered-set.c
+  src/core/test.c
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h

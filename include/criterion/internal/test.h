@@ -79,65 +79,65 @@ static const char *const cr_msg_test_fini_std_exception = "Caught an unexpected 
 static const char *const cr_msg_test_fini_other_exception = "Caught some unexpected exception during the test finalization.";
 
 # ifdef __cplusplus
-# define CR_TEST_TRAMPOLINE_(Category, Name)                                    \
-    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {              \
-        try {                                                                   \
-            criterion_internal_test_setup();                                    \
-        } catch (const std::exception &e) {                                     \
-            criterion_test_die(cr_msg_test_init_std_exception, e.what());       \
-        } catch (...) {                                                         \
-            criterion_test_die(cr_msg_test_init_other_exception);               \
-        }                                                                       \
-        try {                                                                   \
-            criterion_internal_test_main(CR_IDENTIFIER_(Category, Name, impl)); \
-        } catch (const std::exception &e) {                                     \
-            criterion_test_die(cr_msg_test_main_std_exception, e.what());       \
-        } catch (...) {                                                         \
-            criterion_test_die(cr_msg_test_main_other_exception);               \
-        }                                                                       \
-        try {                                                                   \
-            criterion_internal_test_teardown();                                 \
-        } catch (const std::exception &e) {                                     \
-            criterion_test_die(cr_msg_test_fini_std_exception, e.what());       \
-        } catch (...) {                                                         \
-            criterion_test_die(cr_msg_test_fini_other_exception);               \
-        }                                                                       \
+# define CR_TEST_TRAMPOLINE_(Category, Name)                                                        \
+    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {                                  \
+        try {                                                                                       \
+            criterion_internal_test_setup();                                                        \
+        } catch (const std::exception &e) {                                                         \
+            criterion_test_die(cr_msg_test_init_std_exception, e.what());                           \
+        } catch (...) {                                                                             \
+            criterion_test_die(cr_msg_test_init_other_exception);                                   \
+        }                                                                                           \
+        try {                                                                                       \
+            criterion_internal_test_main((void(*)(void)) CR_IDENTIFIER_(Category, Name, impl));     \
+        } catch (const std::exception &e) {                                                         \
+            criterion_test_die(cr_msg_test_main_std_exception, e.what());                           \
+        } catch (...) {                                                                             \
+            criterion_test_die(cr_msg_test_main_other_exception);                                   \
+        }                                                                                           \
+        try {                                                                                       \
+            criterion_internal_test_teardown();                                                     \
+        } catch (const std::exception &e) {                                                         \
+            criterion_test_die(cr_msg_test_fini_std_exception, e.what());                           \
+        } catch (...) {                                                                             \
+            criterion_test_die(cr_msg_test_fini_other_exception);                                   \
+        }                                                                                           \
     }
 # else
 #  if defined(__OBJC__) && defined(__EXCEPTIONS)
-#   define CR_TEST_TRAMPOLINE_(Category, Name)                                          \
-    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {                      \
-        @try {                                                                          \
-            criterion_internal_test_setup();                                            \
-        } @catch (NSException *e) {                                                     \
-            NSString *reason = [e reason];                                              \
-            criterion_test_die(cr_msg_test_init_std_exception, [reason UTF8String]);    \
-        } @catch (...) {                                                                \
-            criterion_test_die(cr_msg_test_init_other_exception);                       \
-        }                                                                               \
-        @try {                                                                          \
-            criterion_internal_test_main(CR_IDENTIFIER_(Category, Name, impl));         \
-        } @catch (NSException *e) {                                                     \
-            NSString *reason = [e reason];                                              \
-            criterion_test_die(cr_msg_test_main_std_exception, [reason UTF8String]);    \
-        } @catch (...) {                                                                \
-            criterion_test_die(cr_msg_test_main_other_exception);                       \
-        }                                                                               \
-        @try {                                                                          \
-            criterion_internal_test_teardown();                                         \
-        } @catch (NSException *e) {                                                     \
-            NSString *reason = [e reason];                                              \
-            criterion_test_die(cr_msg_test_fini_std_exception, [reason UTF8String]);    \
-        } @catch (...) {                                                                \
-            criterion_test_die(cr_msg_test_fini_other_exception);                       \
-        }                                                                               \
+#   define CR_TEST_TRAMPOLINE_(Category, Name)                                                      \
+    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {                                  \
+        @try {                                                                                      \
+            criterion_internal_test_setup();                                                        \
+        } @catch (NSException *e) {                                                                 \
+            NSString *reason = [e reason];                                                          \
+            criterion_test_die(cr_msg_test_init_std_exception, [reason UTF8String]);                \
+        } @catch (...) {                                                                            \
+            criterion_test_die(cr_msg_test_init_other_exception);                                   \
+        }                                                                                           \
+        @try {                                                                                      \
+            criterion_internal_test_main((void(*)(void)) CR_IDENTIFIER_(Category, Name, impl));     \
+        } @catch (NSException *e) {                                                                 \
+            NSString *reason = [e reason];                                                          \
+            criterion_test_die(cr_msg_test_main_std_exception, [reason UTF8String]);                \
+        } @catch (...) {                                                                            \
+            criterion_test_die(cr_msg_test_main_other_exception);                                   \
+        }                                                                                           \
+        @try {                                                                                      \
+            criterion_internal_test_teardown();                                                     \
+        } @catch (NSException *e) {                                                                 \
+            NSString *reason = [e reason];                                                          \
+            criterion_test_die(cr_msg_test_fini_std_exception, [reason UTF8String]);                \
+        } @catch (...) {                                                                            \
+            criterion_test_die(cr_msg_test_fini_other_exception);                                   \
+        }                                                                                           \
     }
 #  else
-#   define CR_TEST_TRAMPOLINE_(Category, Name)                                 \
-    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {             \
-        criterion_internal_test_setup();                                       \
-        criterion_internal_test_main(CR_IDENTIFIER_(Category, Name, impl));    \
-        criterion_internal_test_teardown();                                    \
+#   define CR_TEST_TRAMPOLINE_(Category, Name)                                                      \
+    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {                                  \
+        criterion_internal_test_setup();                                                            \
+        criterion_internal_test_main((void(*)(void)) CR_IDENTIFIER_(Category, Name, impl));         \
+        criterion_internal_test_teardown();                                                         \
     }
 #  endif
 # endif

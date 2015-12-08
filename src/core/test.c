@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "criterion/internal/test.h"
 #include "core/abort.h"
 #include "core/stats.h"
 #include "core/worker.h"

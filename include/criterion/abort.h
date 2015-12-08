@@ -31,6 +31,8 @@ CR_BEGIN_C_API
 CR_API CR_NORETURN void criterion_abort_test(void);
 CR_INLINE static void criterion_continue_test(void) {}
 
+CR_API void criterion_test_die(const char *msg, ...);
+
 CR_END_C_API
 
 #endif /* !CRITERION_ABORT_H_ */
