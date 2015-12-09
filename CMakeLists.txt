@@ -32,10 +32,33 @@ include_directories(SYSTEM
   /usr/include/GNUstep
 )
 
+include(ExternalProject)
+
+externalproject_add(
+    nanomsg
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/nanomsg"
+    PREFIX "${CMAKE_CURRENT_BINARY_DIR}/nanomsg"
+
+    UPDATE_COMMAND <SOURCE_DIR>/autogen.sh
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-examples
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+)
+
+externalproject_get_property(nanomsg install_dir)
+set(NANOMSG_INSTALL_DIR "${install_dir}")
+
 include_directories(
   dependencies/libcsptr/include/
   dependencies/valgrind/include/
   dependencies/klib/
+  dependencies/nanopb/
+
+  ${CMAKE_CURRENT_BINARY_DIR}/nanomsg/include/
+)
+
+link_directories(
+  ${CMAKE_CURRENT_BINARY_DIR}/nanomsg/lib/
 )
 
 if (MSVC)
@@ -188,6 +211,11 @@ set(SOURCE_FILES
   src/protocol/criterion.pb.h
   src/common.h
   src/config.h
+
+  dependencies/nanopb/pb_encode.c
+  dependencies/nanopb/pb_encode.h
+  dependencies/nanopb/pb_decode.c
+  dependencies/nanopb/pb_decode.h
 )
 
 if (THEORIES)
@@ -249,7 +277,8 @@ configure_file(
 
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
-target_link_libraries(criterion csptr)
+add_dependencies(criterion nanomsg)
+target_link_libraries(criterion csptr libnanomsg.a)
 
 if (THEORIES)
   target_link_libraries(criterion dyncall_s)
