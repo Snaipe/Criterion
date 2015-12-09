@@ -1,0 +1,77 @@
+package criterion;
+
+message msg {
+
+    enum msg_type {
+        BIRTH = 0;
+        PRE_INIT = 1;
+        PRE_TEST = 2;
+        POST_TEST = 3;
+        POST_FINI = 4;
+        DEATH = 5;
+        ASSERT = 6;
+    }
+
+    message id_msg {
+
+        enum id_type {
+            PID = 0;
+        }
+
+        required id_type type = 1 [default = PID];
+        optional int64   id_int = 2;
+        optional string  id_str = 3;
+    }
+
+    required int32 version = 1 [default = 1];
+    required id_msg id = 2;
+    required msg_type type = 3;
+
+    extensions 100 to max;
+}
+
+message birth {
+    extend msg { optional birth     data = 100; }
+}
+
+message pre_init {
+    extend msg { optional pre_init  data = 101; }
+}
+
+message pre_test {
+    extend msg { optional pre_test  data = 102; }
+
+    optional int64 timestamp = 1;
+}
+
+message post_test {
+    extend msg { optional post_test data = 103; }
+
+    optional int64 timestamp = 1;
+}
+
+message post_fini {
+    extend msg { optional post_fini data = 104; }
+}
+
+message death {
+    extend msg { optional death     data = 105; }
+
+    enum result_type {
+        NORMAL = 0;
+        CRASH = 1;
+        TIMEOUT = 2;
+    }
+
+    optional result_type result = 1;
+    optional int64 status = 2;
+}
+
+message assert {
+    extend msg { optional assert    data = 106; }
+
+    required string message = 1;
+    required bool passed = 2;
+    optional string file = 3;
+    optional int64 line = 4;
+}
