@@ -212,6 +212,8 @@ set(SOURCE_FILES
   src/common.h
   src/config.h
 
+  dependencies/nanopb/pb_common.c
+  dependencies/nanopb/pb_common.h
   dependencies/nanopb/pb_encode.c
   dependencies/nanopb/pb_encode.h
   dependencies/nanopb/pb_decode.c
@@ -278,7 +280,7 @@ configure_file(
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
 add_dependencies(criterion nanomsg)
-target_link_libraries(criterion csptr libnanomsg.a)
+target_link_libraries(criterion csptr anl libnanomsg.a)
 
 if (THEORIES)
   target_link_libraries(criterion dyncall_s)
