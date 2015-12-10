@@ -209,6 +209,7 @@ set(SOURCE_FILES
   src/entry/entry.c
   src/protocol/criterion.pb.c
   src/protocol/criterion.pb.h
+  src/protocol/protocol.c
   src/common.h
   src/config.h
 
