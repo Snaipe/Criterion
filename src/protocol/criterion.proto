@@ -1,31 +1,13 @@
-package criterion;
+package criterion.protocol;
 
 message msg {
 
-    enum msg_type {
-        BIRTH = 0;
-        PRE_INIT = 1;
-        PRE_TEST = 2;
-        POST_TEST = 3;
-        POST_FINI = 4;
-        DEATH = 5;
-        ASSERT = 6;
-    }
-
-    message id_msg {
-
-        enum id_type {
-            PID = 0;
-        }
-
-        required id_type type = 1 [default = PID];
-        optional int64   id_int = 2;
-        optional string  id_str = 3;
+    message mid {
+        optional int64 pid = 1;
     }
 
     required int32 version = 1 [default = 1];
-    required id_msg id = 2;
-    required msg_type type = 3;
+    required mid id = 2;
 
     extensions 100 to max;
 }
