@@ -1,44 +1,24 @@
 package criterion.protocol;
 
-message msg {
-
-    message mid {
-        optional int64 pid = 1;
-    }
-
-    required int32 version = 1 [default = 1];
-    required mid id = 2;
-
-    extensions 100 to max;
-}
 
 message birth {
-    extend msg { optional birth     data = 100; }
 }
 
 message pre_init {
-    extend msg { optional pre_init  data = 101; }
 }
 
 message pre_test {
-    extend msg { optional pre_test  data = 102; }
-
     optional int64 timestamp = 1;
 }
 
 message post_test {
-    extend msg { optional post_test data = 103; }
-
     optional int64 timestamp = 1;
 }
 
 message post_fini {
-    extend msg { optional post_fini data = 104; }
 }
 
 message death {
-    extend msg { optional death     data = 105; }
-
     enum result_type {
         NORMAL = 0;
         CRASH = 1;
@@ -50,10 +30,31 @@ message death {
 }
 
 message assert {
-    extend msg { optional assert    data = 106; }
-
     required string message = 1;
     required bool passed = 2;
     optional string file = 3;
     optional int64 line = 4;
+}
+
+message submessage {
+
+    optional criterion.protocol.birth       birth      = 1;
+    optional criterion.protocol.pre_init    pre_init   = 2;
+    optional criterion.protocol.pre_test    pre_test   = 3;
+    optional criterion.protocol.post_test   post_test  = 4;
+    optional criterion.protocol.post_fini   post_fini  = 5;
+    optional criterion.protocol.death       death      = 6;
+    optional criterion.protocol.assert      assert     = 7;
+
+}
+
+message msg {
+
+    required int32 version = 1 [default = 1];
+
+    oneof id {
+        int64 pid = 2;
+    }
+
+    required submessage data = 16;
 }
