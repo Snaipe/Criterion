@@ -38,13 +38,15 @@ message assert {
 
 message submessage {
 
-    optional criterion.protocol.birth       birth      = 1;
-    optional criterion.protocol.pre_init    pre_init   = 2;
-    optional criterion.protocol.pre_test    pre_test   = 3;
-    optional criterion.protocol.post_test   post_test  = 4;
-    optional criterion.protocol.post_fini   post_fini  = 5;
-    optional criterion.protocol.death       death      = 6;
-    optional criterion.protocol.assert      assert     = 7;
+    oneof value {
+        criterion.protocol.birth       birth      = 1;
+        criterion.protocol.pre_init    pre_init   = 2;
+        criterion.protocol.pre_test    pre_test   = 3;
+        criterion.protocol.post_test   post_test  = 4;
+        criterion.protocol.post_fini   post_fini  = 5;
+        criterion.protocol.death       death      = 6;
+        criterion.protocol.assert      assert     = 7;
+    }
 
 }
 
