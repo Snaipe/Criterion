@@ -237,12 +237,12 @@ static int transform(const char *pattern, char *result, const char **errmsg) {
  *
  * let num be the function that yields the number of occurences of a string.
  * let spec be the set {(s, num(s)) | ∀s}
- * ∀s, lenght(T(s)) = length(s) + Σ((c_i, n_i) ∈ spec, n_i * diff(c_i))
+ * ∀s, length(T(s)) = length(s) + Σ((c_i, n_i) ∈ spec, n_i * diff(c_i))
  *
  * let S = {'*', '!()', '|', '.', '(', ')'}.
  * since ∀s ∉ S, diff(s) = 0, we can simplify the above equation as:
  *
- * ∀s, lenght(T(s)) = length(s) + num('*') + num('|') + num('.')
+ * ∀s, length(T(s)) = length(s) + num('*') + num('|') + num('.')
  *                              + num('(') + num(')') + 4 * num('!()').
  *
  * We must now find the maximal length L such as ∀s, L >= length(T(s))
@@ -255,7 +255,7 @@ static int transform(const char *pattern, char *result, const char **errmsg) {
  * let Q = length(u(s)) mod 3,
  * hence num('!()') = N.
  *
- * ∀s | lenght(s) = length(u(s)),
+ * ∀s | length(s) = length(u(s)),
  *     length(T(s)) <= length(T(u(s)))
  *                  <= length(u(s))         | the original length
  *                      + 4 * N             | the expansion of all '!()'
