@@ -172,6 +172,8 @@ set(SOURCE_FILES
   src/core/stats.h
   src/core/ordered-set.c
   src/core/test.c
+  src/core/client.c
+  src/core/client.h
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h
@@ -210,6 +212,8 @@ set(SOURCE_FILES
   src/protocol/criterion.pb.c
   src/protocol/criterion.pb.h
   src/protocol/protocol.c
+  src/protocol/connect.c
+  src/protocol/connect.h
   src/common.h
   src/config.h
 
