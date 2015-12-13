@@ -212,6 +212,8 @@ set(SOURCE_FILES
   src/protocol/criterion.pb.c
   src/protocol/criterion.pb.h
   src/protocol/protocol.c
+  src/protocol/messages.c
+  src/protocol/messages.h
   src/protocol/connect.c
   src/protocol/connect.h
   src/common.h

@@ -35,6 +35,7 @@
 #include "criterion/internal/preprocess.h"
 #include "protocol/protocol.h"
 #include "protocol/connect.h"
+#include "protocol/messages.h"
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"
@@ -295,25 +296,20 @@ static void run_tests_async(struct criterion_test_set *set,
         goto cleanup;
 
     criterion_protocol_msg msg = criterion_protocol_msg_init_zero;
-    unsigned char *buf = NULL;
-    int length;
-    while ((length = nn_recv(socket, &buf, NN_MSG, 0)) > 0) {
-        pb_istream_t in = pb_istream_from_buffer(buf, length);
-        if (pb_decode(&in, criterion_protocol_msg_fields, &msg)) {
-            struct client_ctx *cctx = process_client_message(&sctx, &msg);
-            if (cctx->state == CS_DEATH && cctx->kind == WORKER) {
-                remove_client_by_pid(&sctx, get_process_id_of(cctx->worker->proc));
-                sfree(cctx->worker);
+    while (read_message(socket, &msg) == 1) {
+        struct client_ctx *cctx = process_client_message(&sctx, &msg);
+        if (cctx->state == CS_DEATH && cctx->kind == WORKER) {
+            remove_client_by_pid(&sctx, get_process_id_of(cctx->worker->proc));
+            sfree(cctx->worker);
 
-                cctx = spawn_next_client(&sctx, &ctx);
-                if (!is_runner())
-                    goto cleanup;
+            cctx = spawn_next_client(&sctx, &ctx);
+            if (!is_runner())
+                goto cleanup;
 
-                if (cctx == NULL)
-                    --active_workers;
-            }
+            if (cctx == NULL)
+                --active_workers;
         }
-        nn_freemsg(buf);
+
         if (!active_workers)
             break;
     }
