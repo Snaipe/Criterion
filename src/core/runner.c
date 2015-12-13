@@ -384,7 +384,8 @@ int criterion_run_all_tests(struct criterion_test_set *set) {
 void run_single_test_by_name(const char *testname) {
     struct criterion_test_set *set = criterion_init();
 
-    g_event_pipe = pipe_file_open(NULL);
+    // FIXME: initialize null sink for pipe system.
+    abort();
 
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         size_t tests = s->tests ? s->tests->size : 0;

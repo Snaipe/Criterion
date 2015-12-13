@@ -34,8 +34,6 @@
 
 CR_BEGIN_C_API
 
-CR_API void criterion_send_event(int kind, void *data, size_t size);
-
 CR_API void criterion_send_assert(struct criterion_assert_stats *stats);
 
 CR_END_C_API

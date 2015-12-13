@@ -29,8 +29,6 @@
 # include <stdio.h>
 # include <pb.h>
 
-extern s_pipe_file_handle *g_event_pipe;
-extern pb_ostream_t g_event_stream;
 extern int g_client_socket;
 
 struct event {
