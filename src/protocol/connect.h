@@ -21,30 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef EVENT_H_
-# define EVENT_H_
+#ifndef CONNECT_H_
+# define CONNECT_H_
 
-# include "criterion/event.h"
-# include "core/worker.h"
-# include <stdio.h>
-# include <pb.h>
+int connect_client(void);
+int bind_server(void);
 
-extern s_pipe_file_handle *g_event_pipe;
-extern pb_ostream_t g_event_stream;
-extern int g_client_socket;
-
-struct event {
-    unsigned long long pid;
-    int kind;
-    void *data;
-
-    struct worker *worker;
-    size_t worker_index;
-};
-
-enum other_event_kinds {
-    WORKER_TERMINATED = 1 << 30,
-    TEST_ABORT,
-};
-
-#endif /* !EVENT_H_ */
+#endif /* !CONNECT_H_ */

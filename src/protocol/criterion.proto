@@ -18,11 +18,20 @@ message post_test {
 message post_fini {
 }
 
+message pre_subtest {
+    required string id = 1;
+}
+
+message post_subtest {
+    required string id = 1;
+}
+
 message death {
     enum result_type {
         NORMAL = 0;
         CRASH = 1;
         TIMEOUT = 2;
+        ABORT = 3;
     }
 
     optional result_type result = 1;
@@ -36,16 +45,26 @@ message assert {
     optional int64 line = 4;
 }
 
+message log {
+    required int32 severity = 1;
+    required string message = 2;
+    optional int32 prefix = 3;
+}
+
 message submessage {
 
     oneof value {
-        criterion.protocol.birth       birth      = 1;
-        criterion.protocol.pre_init    pre_init   = 2;
-        criterion.protocol.pre_test    pre_test   = 3;
-        criterion.protocol.post_test   post_test  = 4;
-        criterion.protocol.post_fini   post_fini  = 5;
-        criterion.protocol.death       death      = 6;
-        criterion.protocol.assert      assert     = 7;
+        criterion.protocol.birth        birth           = 1;
+        criterion.protocol.pre_init     pre_init        = 2;
+        criterion.protocol.pre_test     pre_test        = 3;
+        criterion.protocol.post_test    post_test       = 4;
+        criterion.protocol.post_fini    post_fini       = 5;
+        criterion.protocol.death        death           = 6;
+
+        criterion.protocol.log          message         = 7;
+        criterion.protocol.assert       assert          = 8;
+        criterion.protocol.pre_subtest  pre_subtest     = 9;
+        criterion.protocol.post_subtest post_subtest    = 10;
     }
 
 }

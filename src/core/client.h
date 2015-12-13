@@ -21,30 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef EVENT_H_
-# define EVENT_H_
+#ifndef CLIENT_H_
+# define CLIENT_H_
 
-# include "criterion/event.h"
-# include "core/worker.h"
-# include <stdio.h>
-# include <pb.h>
+# include <khash.h>
 
-extern s_pipe_file_handle *g_event_pipe;
-extern pb_ostream_t g_event_stream;
-extern int g_client_socket;
+// order matters here
+enum client_state {
+    CS_BIRTH = 1,
+    CS_PRE_INIT,
+    CS_PRE_TEST,
+    CS_POST_TEST,
+    CS_POST_FINI,
+    CS_DEATH,
 
-struct event {
-    unsigned long long pid;
-    int kind;
-    void *data;
+    CS_PRE_SUBTEST,
+    CS_POST_SUBTEST,
 
+    CS_MAX_CLIENT_STATES // always leave at the end
+};
+
+enum client_kind {
+    WORKER,
+    EXTERN,
+};
+
+struct client_ctx {
+    enum client_kind kind;
     struct worker *worker;
-    size_t worker_index;
+
+    enum client_state state;
+    struct criterion_global_stats *gstats;
+    struct criterion_suite_stats *sstats;
+    struct criterion_test_stats *tstats;
+    struct criterion_test *test;
+    struct criterion_suite *suite;
 };
 
-enum other_event_kinds {
-    WORKER_TERMINATED = 1 << 30,
-    TEST_ABORT,
+typedef struct kh_ht_client_s khash_t(ht_client);
+
+struct server_ctx {
+    khash_t(ht_client) *subprocesses;
 };
 
-#endif /* !EVENT_H_ */
+struct client_ctx *process_client_message(struct server_ctx *ctx, const criterion_protocol_msg *msg);
+
+void init_server_context(struct server_ctx *sctx);
+void destroy_server_context(struct server_ctx *sctx);
+struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, struct worker *w);
+void remove_client_by_pid(struct server_ctx *sctx, int pid);
+
+#endif /* !CLIENT_H_ */

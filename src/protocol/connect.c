@@ -21,30 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef EVENT_H_
-# define EVENT_H_
+#include <errno.h>
+#include <nanomsg/nn.h>
+#include <nanomsg/pubsub.h>
 
-# include "criterion/event.h"
-# include "core/worker.h"
-# include <stdio.h>
-# include <pb.h>
+#define URL "ipc://criterion.sock"
 
-extern s_pipe_file_handle *g_event_pipe;
-extern pb_ostream_t g_event_stream;
-extern int g_client_socket;
+#define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
 
-struct event {
-    unsigned long long pid;
-    int kind;
-    void *data;
+int bind_server(void) {
+    int sock = nn_socket(AF_SP, NN_SUB);
+    if (sock < 0)
+        return -1;
 
-    struct worker *worker;
-    size_t worker_index;
-};
+    if (nn_setsockopt(sock, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) < 0)
+        goto error;
 
-enum other_event_kinds {
-    WORKER_TERMINATED = 1 << 30,
-    TEST_ABORT,
-};
+    if (nn_bind(sock, URL) < 0)
+        goto error;
 
-#endif /* !EVENT_H_ */
+    return sock;
+
+error: {}
+    errno_ignore(nn_close(sock));
+    return -1;
+}
+
+int connect_client(void) {
+    int sock = nn_socket(AF_SP, NN_PUB);
+    if (sock < 0)
+        return -1;
+
+    if (nn_connect (sock, URL) < 0)
+        goto error;
+
+    return sock;
+
+error: {}
+    errno_ignore(nn_close(sock));
+    return -1;
+}

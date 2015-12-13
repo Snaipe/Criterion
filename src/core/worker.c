@@ -25,6 +25,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <csptr/smalloc.h>
+#include <nanomsg/nn.h>
 
 #include "criterion/types.h"
 #include "criterion/options.h"
@@ -32,6 +33,7 @@
 #include "io/event.h"
 #include "compat/posix.h"
 #include "worker.h"
+#include "protocol/connect.h"
 
 static s_proc_handle *g_current_proc;
 
@@ -56,33 +58,12 @@ static void close_process(void *ptr, CR_UNUSED void *meta) {
     sfree(proc->proc);
 }
 
-struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe) {
-    struct event *ev = read_event(pipe);
-    if (ev) {
-        ev->worker_index = -1;
-        for (size_t i = 0; i < workers->max_workers; ++i) {
-            if (!workers->workers[i])
-                continue;
-
-            if (get_process_id_of(workers->workers[i]->proc) == ev->pid) {
-                ev->worker = workers->workers[i];
-                ev->worker_index = i;
-                return ev;
-            }
-        }
-        criterion_perror("Could not link back the event PID to the active workers.\n");
-        criterion_perror("The event pipe might have been corrupted.\n");
-        abort();
-    }
-    return NULL;
-}
-
 void run_worker(struct worker_context *ctx) {
     cr_redirect_stdin();
-    g_event_pipe = pipe_out_handle(ctx->pipe, PIPE_CLOSE);
+    g_client_socket = connect_client();
 
     ctx->func(ctx->test, ctx->suite);
-    sfree(g_event_pipe);
+    nn_close(g_client_socket);
 
     fflush(NULL); // flush all opened streams
     if (criterion_options.no_early_exit)

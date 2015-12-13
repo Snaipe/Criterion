@@ -30,9 +30,13 @@
 #include "criterion/hooks.h"
 #include "criterion/logging.h"
 #include "core/worker.h"
+#include "protocol/protocol.h"
 #include "event.h"
 
 s_pipe_file_handle *g_event_pipe = NULL;
+
+int g_client_socket = -1;
+pb_ostream_t g_event_stream;
 
 void destroy_event(void *ptr, CR_UNUSED void *meta) {
     struct event *ev = ptr;
