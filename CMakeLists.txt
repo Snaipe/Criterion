@@ -67,6 +67,7 @@ endif()
 # Project setup & environment variables
 
 set(PROJECT_VERSION "2.2.0")
+set(PROJECT_SOVERSION 2)
 set(LOCALEDIR_REL "share/locale")
 set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${LOCALEDIR_REL}")
 set(GettextTranslate_ALL 1)
@@ -247,6 +248,11 @@ configure_file(
 
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
+set_target_properties(criterion PROPERTIES
+   VERSION ${PROJECT_VERSION}
+   SOVERSION ${PROJECT_SOVERSION}
+)
+
 target_link_libraries(criterion csptr)
 
 if (THEORIES)
