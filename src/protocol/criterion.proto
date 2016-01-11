@@ -1,41 +1,36 @@
 package criterion.protocol;
 
-
 message birth {
-}
-
-message pre_init {
-}
-
-message pre_test {
     optional int64 timestamp = 1;
 }
 
-message post_test {
-    optional int64 timestamp = 1;
-}
+message phase {
 
-message post_fini {
-}
+    enum kind {
+        SETUP       = 1;
+        MAIN        = 2;
+        TEARDOWN    = 3;
+        END         = 4;
 
-message pre_subtest {
-    required string id = 1;
-}
+        ABORT       = 5;
+        TIMEOUT     = 6;
+    }
 
-message post_subtest {
-    required string id = 1;
+    required kind phase = 1;
+    required string name = 2;
+    optional int64 timestamp = 3;
+    optional string message = 4;
 }
 
 message death {
     enum result_type {
-        NORMAL = 0;
-        CRASH = 1;
-        TIMEOUT = 2;
-        ABORT = 3;
+        NORMAL = 1;
+        CRASH = 2;
     }
 
-    optional result_type result = 1;
+    required result_type result = 1;
     optional int64 status = 2;
+    optional int64 timestamp = 3;
 }
 
 message assert {
@@ -51,20 +46,25 @@ message log {
     optional int32 prefix = 3;
 }
 
+message ack {
+    enum status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    required status status_code = 1;
+    optional string message = 2;
+}
+
 message submessage {
 
     oneof value {
         criterion.protocol.birth        birth           = 1;
-        criterion.protocol.pre_init     pre_init        = 2;
-        criterion.protocol.pre_test     pre_test        = 3;
-        criterion.protocol.post_test    post_test       = 4;
-        criterion.protocol.post_fini    post_fini       = 5;
-        criterion.protocol.death        death           = 6;
+        criterion.protocol.phase        phase           = 2;
+        criterion.protocol.death        death           = 3;
 
-        criterion.protocol.log          message         = 7;
-        criterion.protocol.assert       assert          = 8;
-        criterion.protocol.pre_subtest  pre_subtest     = 9;
-        criterion.protocol.post_subtest post_subtest    = 10;
+        criterion.protocol.log          message         = 4;
+        criterion.protocol.assert       assert          = 5;
     }
 
 }
