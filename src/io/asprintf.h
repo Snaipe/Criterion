@@ -21,38 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <string.h>
-#include "abort.h"
-#include "protocol/protocol.h"
-#include "protocol/messages.h"
-#include "criterion/internal/asprintf-compat.h"
-#include "criterion/criterion.h"
-#include "io/event.h"
+#ifndef ASPRINTF_H_
+# define ASPRINTF_H_
 
-jmp_buf g_pre_test;
+int cr_vasprintf(char **strp, const char *fmt, va_list ap);
+int cr_asprintf(char **strp, const char *fmt, ...);
 
-void criterion_abort_test(void) {
-    longjmp(g_pre_test, 1);
-}
-
-void criterion_test_die(const char *msg, ...) {
-    va_list vl;
-    va_start(vl, msg);
-    char *formatted_msg = NULL;
-    int res = cr_vasprintf(&formatted_msg, msg, vl);
-    va_end(vl);
-
-    if (res < 0)
-        abort();
-
-    criterion_protocol_msg abort_msg = criterion_message(phase,
-            .phase = criterion_protocol_phase_kind_ABORT,
-            .name = (char *) criterion_current_test->name,
-            .message = formatted_msg,
-        );
-    cr_send_to_runner(&abort_msg);
-
-    free(formatted_msg);
-
-    exit(0);
-}
+#endif /* !ASPRINTF_H_ */

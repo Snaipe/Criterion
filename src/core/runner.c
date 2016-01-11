@@ -267,6 +267,8 @@ static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext 
     return add_client_from_worker(sctx, &new_ctx, w);
 }
 
+#include <stdio.h>
+
 static void run_tests_async(struct criterion_test_set *set,
                             struct criterion_global_stats *stats,
                             int socket) {
@@ -275,9 +277,12 @@ static void run_tests_async(struct criterion_test_set *set,
 
     size_t nb_workers = DEF(criterion_options.jobs, get_processor_count());
     size_t active_workers = 0;
+    int has_msg = 0;
 
     struct server_ctx sctx;
     init_server_context(&sctx);
+
+    sctx.socket = socket;
 
     // initialization of coroutine
     run_next_test(set, stats, &ctx);
@@ -296,11 +301,10 @@ static void run_tests_async(struct criterion_test_set *set,
         goto cleanup;
 
     criterion_protocol_msg msg = criterion_protocol_msg_init_zero;
-    while (read_message(socket, &msg) == 1) {
+    while ((has_msg = read_message(socket, &msg)) == 1) {
         struct client_ctx *cctx = process_client_message(&sctx, &msg);
-        if (cctx->state == CS_DEATH && cctx->kind == WORKER) {
+        if (!cctx->alive && cctx->kind == WORKER) {
             remove_client_by_pid(&sctx, get_process_id_of(cctx->worker->proc));
-            sfree(cctx->worker);
 
             cctx = spawn_next_client(&sctx, &ctx);
             if (!is_runner())
@@ -312,11 +316,14 @@ static void run_tests_async(struct criterion_test_set *set,
 
         if (!active_workers)
             break;
+
+        pb_release(criterion_protocol_msg_fields, &msg);
     }
 
-    destroy_server_context(&sctx);
-
 cleanup:
+    if (has_msg)
+        pb_release(criterion_protocol_msg_fields, &msg);
+    destroy_server_context(&sctx);
     ccrAbort(ctx);
 }
 
@@ -338,6 +345,13 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
     int sock = bind_server();
     if (sock < 0) {
         criterion_perror("Could not initialize the message server: %s.\n",
+                strerror(errno));
+        abort();
+    }
+
+    g_client_socket = connect_client();
+    if (g_client_socket < 0) {
+        criterion_perror("Could not initialize the message client: %s.\n",
                 strerror(errno));
         abort();
     }

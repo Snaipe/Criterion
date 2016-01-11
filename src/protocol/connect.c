@@ -23,19 +23,19 @@
  */
 #include <errno.h>
 #include <nanomsg/nn.h>
-#include <nanomsg/pubsub.h>
+#include <nanomsg/reqrep.h>
 
 #define URL "ipc://criterion.sock"
 
 #define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
 
 int bind_server(void) {
-    int sock = nn_socket(AF_SP, NN_SUB);
+    int fstrat = NN_FORK_RESET;
+    nn_setopt(NN_FORK_STRATEGY, &fstrat, sizeof (fstrat));
+
+    int sock = nn_socket(AF_SP, NN_REP);
     if (sock < 0)
         return -1;
-
-    if (nn_setsockopt(sock, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) < 0)
-        goto error;
 
     if (nn_bind(sock, URL) < 0)
         goto error;
@@ -48,7 +48,7 @@ error: {}
 }
 
 int connect_client(void) {
-    int sock = nn_socket(AF_SP, NN_PUB);
+    int sock = nn_socket(AF_SP, NN_REQ);
     if (sock < 0)
         return -1;
 
@@ -60,4 +60,8 @@ int connect_client(void) {
 error: {}
     errno_ignore(nn_close(sock));
     return -1;
+}
+
+void close_socket(int sock) {
+    nn_close(sock);
 }

@@ -30,6 +30,8 @@
 #include "criterion/types.h"
 #include "criterion/options.h"
 #include "criterion/redirect.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
 #include "io/event.h"
 #include "compat/posix.h"
 #include "worker.h"
@@ -51,7 +53,6 @@ bool is_runner(void) {
 
 static void close_process(void *ptr, CR_UNUSED void *meta) {
     struct worker *proc = ptr;
-    sfree(proc->in);
     sfree(proc->ctx.suite_stats);
     sfree(proc->ctx.test_stats);
     sfree(proc->ctx.stats);
@@ -61,9 +62,18 @@ static void close_process(void *ptr, CR_UNUSED void *meta) {
 void run_worker(struct worker_context *ctx) {
     cr_redirect_stdin();
     g_client_socket = connect_client();
+    if (g_client_socket < 0) {
+        criterion_perror("Could not initialize the message client: %s.\n",
+                strerror(errno));
+        abort();
+    }
+
+    // Notify the runner that the test was born
+    criterion_protocol_msg msg = criterion_message(birth);
+    cr_send_to_runner(&msg);
 
     ctx->func(ctx->test, ctx->suite);
-    nn_close(g_client_socket);
+    close_socket(g_client_socket);
 
     fflush(NULL); // flush all opened streams
     if (criterion_options.no_early_exit)
@@ -72,13 +82,11 @@ void run_worker(struct worker_context *ctx) {
 }
 
 struct worker *spawn_test_worker(struct execution_context *ctx,
-                                  cr_worker_func func,
-                                  s_pipe_handle *pipe) {
+                                  cr_worker_func func) {
     g_worker_context = (struct worker_context) {
         .test = ctx->test,
         .suite = ctx->suite,
         .func = func,
-        .pipe = pipe,
         .param = ctx->param,
     };
 
@@ -103,24 +111,7 @@ struct worker *spawn_test_worker(struct execution_context *ctx,
 
     *ptr = (struct worker) {
         .proc = proc,
-        .in = pipe_in_handle(pipe, PIPE_DUP),
         .ctx = *ctx,
     };
     return ptr;
-}
-
-struct process_status get_status(int status) {
-    if (WIFEXITED(status))
-        return (struct process_status) {
-            .kind = EXIT_STATUS,
-            .status = WEXITSTATUS(status)
-        };
-
-    if (WIFSIGNALED(status))
-        return (struct process_status) {
-            .kind = SIGNAL,
-            .status = WTERMSIG(status)
-        };
-
-    return (struct process_status) { .kind = STOPPED };
 }

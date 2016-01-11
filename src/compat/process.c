@@ -27,6 +27,8 @@
 #include <csptr/smalloc.h>
 #include "core/worker.h"
 #include "core/runner.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
 #include "io/event.h"
 #include "process.h"
 #include "internal.h"
@@ -118,28 +120,24 @@ static struct full_context local_ctx;
 # endif
 
 static void handle_sigchld_pump(void) {
-    int fd = g_worker_pipe->fds[1];
     pid_t pid;
     int status;
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        int kind = WORKER_TERMINATED;
-        struct worker_status ws = {
-            (s_proc_handle) { pid }, get_status(status)
-        };
+        int result = WIFEXITED(status)
+            ? criterion_protocol_death_result_type_NORMAL
+            : criterion_protocol_death_result_type_CRASH;
+        int code = WIFEXITED(status)
+            ? WEXITSTATUS(status)
+            : WTERMSIG(status);
 
-        unsigned long long pid_ull = (unsigned long long) pid;
+        criterion_protocol_msg msg = criterion_message(death,
+                .result = result,
+                .has_status = true,
+                .status = code,
+            );
 
-        char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
-        memcpy(buf, &kind, sizeof (kind));
-        memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
-        memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
-
-        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf)) {
-            criterion_perror("Could not write the WORKER_TERMINATED event "
-                    "down the event pipe: %s.\n",
-                    strerror(errno));
-            abort();
-        }
+        msg.id.pid = pid;
+        cr_send_to_runner(&msg);
     }
 }
 

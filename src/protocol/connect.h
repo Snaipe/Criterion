@@ -26,5 +26,6 @@
 
 int connect_client(void);
 int bind_server(void);
+void close_socket(int sock);
 
 #endif /* !CONNECT_H_ */

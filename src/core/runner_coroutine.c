@@ -63,7 +63,7 @@ static struct worker *run_test(struct criterion_global_stats *stats,
         .suite_stats = sref(suite_stats),
         .param = param,
     };
-    return spawn_test_worker(&ctx, run_test_child, g_worker_pipe);
+    return spawn_test_worker(&ctx, run_test_child);
 }
 
 static INLINE bool is_disabled(struct criterion_test *t,
@@ -109,9 +109,11 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
 
     ccrBegin(ctx);
 
-    ctx->set = p_set;
-    ctx->stats = p_stats;
-    ccrReturn(NULL);
+    do {
+        ctx->set = p_set;
+        ctx->stats = p_stats;
+        ccrReturn(NULL);
+    } while (ctx->set == NULL && ctx->stats == NULL);
 
     for (ctx->ns = ctx->set->suites->first; ctx->ns; ctx->ns = ctx->ns->next) {
         ctx->suite_set = (void*) (ctx->ns + 1);

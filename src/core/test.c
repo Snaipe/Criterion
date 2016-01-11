@@ -27,10 +27,20 @@
 #include "core/worker.h"
 #include "core/report.h"
 #include "compat/time.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
 #include "io/event.h"
 
 extern const struct criterion_test  *criterion_current_test;
 extern const struct criterion_suite *criterion_current_suite;
+
+static void send_event(int phase) {
+    criterion_protocol_msg msg = criterion_message(phase,
+            .phase = phase,
+            .name = (char *) criterion_current_test->name,
+        );
+    cr_send_to_runner(&msg);
+}
 
 static INLINE void nothing(void) {}
 
@@ -38,7 +48,7 @@ void criterion_internal_test_setup(void) {
     const struct criterion_suite *suite = criterion_current_suite;
     const struct criterion_test *test = criterion_current_test;
 
-    criterion_send_event(PRE_INIT, NULL, 0);
+    send_event(criterion_protocol_phase_kind_SETUP);
     if (suite->data)
         (suite->data->init ? suite->data->init : nothing)();
     (test->data->init ? test->data->init : nothing)();
@@ -47,7 +57,7 @@ void criterion_internal_test_setup(void) {
 void criterion_internal_test_main(void (*fn)(void)) {
     const struct criterion_test *test = criterion_current_test;
 
-    criterion_send_event(PRE_TEST, NULL, 0);
+    send_event(criterion_protocol_phase_kind_MAIN);
 
     struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
@@ -64,7 +74,7 @@ void criterion_internal_test_main(void (*fn)(void)) {
     if (!timer_end(&elapsed_time, &ts))
         elapsed_time = -1;
 
-    criterion_send_event(POST_TEST, &elapsed_time, sizeof(double));
+    send_event(criterion_protocol_phase_kind_TEARDOWN);
 }
 
 void criterion_internal_test_teardown(void) {
@@ -74,6 +84,7 @@ void criterion_internal_test_teardown(void) {
     (test->data->fini ? test->data->fini : nothing)();
     if (suite->data)
         (suite->data->fini ? suite->data->fini : nothing)();
-    criterion_send_event(POST_FINI, NULL, 0);
+
+    send_event(criterion_protocol_phase_kind_END);
 }
 

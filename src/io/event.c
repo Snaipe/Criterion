@@ -25,15 +25,18 @@
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
 #include "event.h"
+#include "assert.h"
 
 int g_client_socket = -1;
 
 void criterion_send_assert(struct criterion_assert_stats *stats) {
+    assert(stats->message);
     criterion_protocol_msg msg = criterion_message(assert,
-            .message = stats->message,
+            .message = (char *) stats->message,
             .passed = stats->passed,
-            .file = stats->file,
+            .file = (char *) stats->file,
+            .has_line = true,
             .line = stats->line,
         );
-    write_message(g_client_socket, &msg);
+    cr_send_to_runner(&msg);
 }

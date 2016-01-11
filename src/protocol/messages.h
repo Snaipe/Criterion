@@ -24,7 +24,11 @@
 #ifndef MESSAGES_H_
 # define MESSAGES_H_
 
+# include "criterion.pb.h"
+
 int write_message(int sock, const criterion_protocol_msg *message);
 int read_message(int sock, criterion_protocol_msg *message);
+void cr_send_to_runner(const criterion_protocol_msg *message);
+void send_ack(int sock, bool ok, const char *msg, ...);
 
 #endif /* !MESSAGES_H_ */

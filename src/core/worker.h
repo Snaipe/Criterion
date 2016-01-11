@@ -27,7 +27,6 @@
 # include <stdbool.h>
 # include "criterion/types.h"
 # include "compat/process.h"
-# include "compat/pipe.h"
 
 struct test_single_param {
     size_t size;
@@ -50,7 +49,6 @@ struct execution_context {
 struct worker {
     int active;
     s_proc_handle *proc;
-    s_pipe_file_handle *in;
     struct execution_context ctx;
 };
 
@@ -75,17 +73,11 @@ struct worker_set {
     size_t max_workers;
 };
 
-extern s_pipe_handle *g_worker_pipe;
-
 void run_worker(struct worker_context *ctx);
 void set_runner_process(void);
 void unset_runner_process(void);
 bool is_runner(void);
 struct process_status wait_proc(struct worker *proc);
-struct process_status get_status(int status);
-struct worker *spawn_test_worker(struct execution_context *ctx,
-                                  cr_worker_func func,
-                                  s_pipe_handle *pipe);
-struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *pipe);
+struct worker *spawn_test_worker(struct execution_context *ctx, cr_worker_func func);
 
 #endif /* !PROCESS_H_ */

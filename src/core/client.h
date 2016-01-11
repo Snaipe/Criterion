@@ -28,18 +28,19 @@
 
 // order matters here
 enum client_state {
-    CS_BIRTH = 1,
-    CS_PRE_INIT,
-    CS_PRE_TEST,
-    CS_POST_TEST,
-    CS_POST_FINI,
-    CS_DEATH,
+    CS_SETUP,
+    CS_MAIN,
+    CS_TEARDOWN,
+    CS_END,
 
-    CS_PRE_SUBTEST,
-    CS_POST_SUBTEST,
-
-    CS_MAX_CLIENT_STATES // always leave at the end
+    // The states belows are non-states that should not be
+    // added in the state count
+    CS_ABORT,
+    CS_TIMEOUT,
 };
+
+// always make it a power of 2
+# define CS_MAX_CLIENT_STATES 4
 
 enum client_kind {
     WORKER,
@@ -51,6 +52,7 @@ struct client_ctx {
     struct worker *worker;
 
     enum client_state state;
+    bool alive;
     struct criterion_global_stats *gstats;
     struct criterion_suite_stats *sstats;
     struct criterion_test_stats *tstats;
@@ -61,6 +63,7 @@ struct client_ctx {
 typedef struct kh_ht_client_s khash_t(ht_client);
 
 struct server_ctx {
+    int socket;
     khash_t(ht_client) *subprocesses;
 };
 

@@ -108,6 +108,7 @@ static void destroy_test_stats(void *ptr, CR_UNUSED void *meta) {
 static void destroy_assert_stats(void *ptr, CR_UNUSED void *meta) {
     s_assert_stats *stats = ptr;
     free((void *) stats->message);
+    free((void *) stats->file);
 }
 
 s_test_stats *test_stats_init(struct criterion_test *t) {
@@ -192,6 +193,7 @@ static void push_assert(s_glob_stats *stats,
             .dtor = destroy_assert_stats);
     memcpy(dup, data, sizeof (s_assert_stats));
     dup->message = strdup(data->message);
+    dup->file    = strdup(data->file);
 
     dup->next = test->asserts;
     test->asserts = dup;

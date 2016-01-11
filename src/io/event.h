@@ -40,9 +40,6 @@ struct event {
     size_t worker_index;
 };
 
-enum other_event_kinds {
-    WORKER_TERMINATED = 1 << 30,
-    TEST_ABORT,
-};
+void criterion_send_assert(struct criterion_assert_stats *stats);
 
 #endif /* !EVENT_H_ */

@@ -24,10 +24,15 @@
 #ifndef PROTOCOL_H_
 # define PROTOCOL_H_
 
+# include <pb.h>
 # include <pb_encode.h>
 # include <pb_decode.h>
 # include "criterion.pb.h"
 # include "criterion/internal/preprocess.h"
+
+enum protocol_version {
+    PROTOCOL_V1 = 1,
+};
 
 bool pb_write_string(pb_ostream_t *stream, const pb_field_t *field, void * const *arg);
 bool pb_read_string(pb_istream_t *stream, const pb_field_t *field, void **arg);
@@ -45,7 +50,7 @@ pb_istream_t pb_istream_from_fd(int fd);
         .data = {                                                           \
             .which_value = criterion_protocol_submessage_ ## Kind ## _tag,  \
             .value = {                                                      \
-                .Kind = { CR_EXPAND(__VA_ARGS__) },                         \
+                .Kind = { __VA_ARGS__ },                                    \
             }                                                               \
         }                                                                   \
     }
