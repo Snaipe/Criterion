@@ -50,6 +50,8 @@ enum client_kind {
 struct client_ctx {
     enum client_kind kind;
     struct worker *worker;
+    struct criterion_test_extra_data extern_test_data;
+    struct criterion_test extern_test;
 
     enum client_state state;
     bool alive;
@@ -61,15 +63,22 @@ struct client_ctx {
 };
 
 typedef struct kh_ht_client_s khash_t(ht_client);
+typedef struct kh_ht_extern_s khash_t(ht_extern);
 
 struct server_ctx {
     int socket;
+    struct criterion_suite extern_suite;
+    struct criterion_test_extra_data extern_suite_data;
+    struct criterion_global_stats *gstats;
+    struct criterion_suite_stats *extern_sstats;
+
     khash_t(ht_client) *subprocesses;
+    khash_t(ht_extern) *clients;
 };
 
 struct client_ctx *process_client_message(struct server_ctx *ctx, const criterion_protocol_msg *msg);
 
-void init_server_context(struct server_ctx *sctx);
+void init_server_context(struct server_ctx *sctx, struct criterion_global_stats *gstats);
 void destroy_server_context(struct server_ctx *sctx);
 struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, struct worker *w);
 void remove_client_by_pid(struct server_ctx *sctx, int pid);

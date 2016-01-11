@@ -60,25 +60,7 @@ static void close_process(void *ptr, CR_UNUSED void *meta) {
 }
 
 void run_worker(struct worker_context *ctx) {
-    cr_redirect_stdin();
-    g_client_socket = connect_client();
-    if (g_client_socket < 0) {
-        criterion_perror("Could not initialize the message client: %s.\n",
-                strerror(errno));
-        abort();
-    }
-
-    // Notify the runner that the test was born
-    criterion_protocol_msg msg = criterion_message(birth);
-    cr_send_to_runner(&msg);
-
     ctx->func(ctx->test, ctx->suite);
-    close_socket(g_client_socket);
-
-    fflush(NULL); // flush all opened streams
-    if (criterion_options.no_early_exit)
-        return;
-    _Exit(0);
 }
 
 struct worker *spawn_test_worker(struct execution_context *ctx,

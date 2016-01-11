@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+#include "criterion/criterion.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
 #include "event.h"
@@ -38,5 +39,6 @@ void criterion_send_assert(struct criterion_assert_stats *stats) {
             .has_line = true,
             .line = stats->line,
         );
+    criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
 }

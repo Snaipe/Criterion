@@ -40,13 +40,23 @@ bool pb_read_string(pb_istream_t *stream, const pb_field_t *field, void **arg);
 pb_ostream_t pb_ostream_from_fd(int fd);
 pb_istream_t pb_istream_from_fd(int fd);
 
+extern volatile bool is_extern_worker;
+
+# define criterion_message_set_id(Msg)                                      \
+    do {                                                                    \
+        if (is_extern_worker) {                                             \
+            (Msg).id.uid = (char *) criterion_current_test->name;           \
+        } else {                                                            \
+            (Msg).id.pid = get_process_id();                                \
+        }                                                                   \
+    } while (0)
+
 # define criterion_message(Kind, ...)                                       \
     (criterion_protocol_msg) {                                              \
-        .version = 1,                                                       \
-        .which_id = criterion_protocol_msg_pid_tag,                         \
-        .id = {                                                             \
-            .pid = get_process_id(),                                        \
-        },                                                                  \
+        .version = PROTOCOL_V1,                                             \
+        .which_id = is_extern_worker                                        \
+                ? criterion_protocol_msg_uid_tag                            \
+                : criterion_protocol_msg_pid_tag,                           \
         .data = {                                                           \
             .which_value = criterion_protocol_submessage_ ## Kind ## _tag,  \
             .value = {                                                      \

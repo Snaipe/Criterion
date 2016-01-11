@@ -96,6 +96,7 @@ set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
 
 add_definitions(-DCRITERION_BUILDING_DLL=1)
+add_definitions(-DPB_ENABLE_MALLOC=1)
 
 set(CMAKE_C_FLAGS_DEFAULT "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS}")

@@ -50,6 +50,7 @@ void criterion_test_die(const char *msg, ...) {
             .name = (char *) criterion_current_test->name,
             .message = formatted_msg,
         );
+    criterion_message_set_id(abort_msg);
     cr_send_to_runner(&abort_msg);
 
     free(formatted_msg);

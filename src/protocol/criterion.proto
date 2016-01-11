@@ -75,6 +75,7 @@ message msg {
 
     oneof id {
         int64 pid = 2;
+        string uid = 3;
     }
 
     required submessage data = 16;

@@ -156,6 +156,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {"output",          required_argument,  0, 'O'},
+        {"wait",            no_argument,        0, 'w'},
         {0,                 0,                  0,  0 }
     };
 
@@ -237,7 +238,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         free(out);
     }
 
-    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:", opts, NULL)) != -1;) {
+    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:w", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
@@ -281,6 +282,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
                 quiet = !strcmp(path, "-");
                 criterion_add_output(arg, path);
             } break;
+            case 'w': criterion_options.wait_for_clients = true; break;
             case '?':
             default : do_print_usage = handle_unknown_arg; break;
         }

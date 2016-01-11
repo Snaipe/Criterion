@@ -30,5 +30,6 @@ int write_message(int sock, const criterion_protocol_msg *message);
 int read_message(int sock, criterion_protocol_msg *message);
 void cr_send_to_runner(const criterion_protocol_msg *message);
 void send_ack(int sock, bool ok, const char *msg, ...);
+void free_message(criterion_protocol_msg *msg);
 
 #endif /* !MESSAGES_H_ */

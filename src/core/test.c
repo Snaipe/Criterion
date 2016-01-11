@@ -39,6 +39,7 @@ static void send_event(int phase) {
             .phase = phase,
             .name = (char *) criterion_current_test->name,
         );
+    criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
 }
 

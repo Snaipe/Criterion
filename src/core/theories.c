@@ -210,12 +210,14 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                 .phase = criterion_protocol_phase_kind_SETUP,
                 .name = name,
             );
+        criterion_message_set_id(setup_msg);
         cr_send_to_runner(&setup_msg);
 
         criterion_protocol_msg main_msg = criterion_message(phase,
                 .phase = criterion_protocol_phase_kind_MAIN,
                 .name = name,
             );
+        criterion_message_set_id(main_msg);
         cr_send_to_runner(&main_msg);
 
         int theory_aborted = 0;
@@ -253,6 +255,7 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                         .name = name,
                         .message = result.msg
                     );
+                criterion_message_set_id(msg);
                 cr_send_to_runner(&msg);
             }
         }
@@ -262,12 +265,14 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                     .phase = criterion_protocol_phase_kind_TEARDOWN,
                     .name = name,
                 );
+            criterion_message_set_id(teardown_msg);
             cr_send_to_runner(&teardown_msg);
 
             criterion_protocol_msg end_msg = criterion_message(phase,
                     .phase = criterion_protocol_phase_kind_END,
                     .name = name,
                 );
+            criterion_message_set_id(end_msg);
             cr_send_to_runner(&end_msg);
         }
         free(name);

@@ -33,6 +33,7 @@
 #include "criterion/internal/ordered-set.h"
 #include "criterion/logging.h"
 #include "criterion/internal/preprocess.h"
+#include "criterion/redirect.h"
 #include "protocol/protocol.h"
 #include "protocol/connect.h"
 #include "protocol/messages.h"
@@ -51,6 +52,12 @@
 #include "config.h"
 #include "common.h"
 #include "client.h"
+
+#if HAVE_THREADS_H
+# include <threads.h>
+#else
+# include <tinycthread.h>
+#endif
 
 #ifdef HAVE_PCRE
 #include "string/extmatch.h"
@@ -169,6 +176,19 @@ const struct criterion_suite *criterion_current_suite;
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
+    cr_redirect_stdin();
+    g_client_socket = connect_client();
+    if (g_client_socket < 0) {
+        criterion_perror("Could not initialize the message client: %s.\n",
+                strerror(errno));
+        abort();
+    }
+
+    // Notify the runner that the test was born
+    criterion_protocol_msg msg = criterion_message(birth);
+    criterion_message_set_id(msg);
+    cr_send_to_runner(&msg);
+
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
@@ -183,6 +203,17 @@ void run_test_child(struct criterion_test *test,
 
     if (test->test)
         test->test();
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_DISABLE_ERROR_REPORTING;
+#endif
+
+    close_socket(g_client_socket);
+
+    fflush(NULL); // flush all opened streams
+    if (criterion_options.no_early_exit)
+        return;
+    _Exit(0);
 }
 
 #define push_event(...)                                             \
@@ -280,7 +311,7 @@ static void run_tests_async(struct criterion_test_set *set,
     int has_msg = 0;
 
     struct server_ctx sctx;
-    init_server_context(&sctx);
+    init_server_context(&sctx, stats);
 
     sctx.socket = socket;
 
@@ -297,12 +328,17 @@ static void run_tests_async(struct criterion_test_set *set,
         ++active_workers;
     }
 
-    if (!active_workers)
+    if (!active_workers && !criterion_options.wait_for_clients)
         goto cleanup;
 
     criterion_protocol_msg msg = criterion_protocol_msg_init_zero;
     while ((has_msg = read_message(socket, &msg)) == 1) {
         struct client_ctx *cctx = process_client_message(&sctx, &msg);
+
+        // drop invalid messages
+        if (!cctx)
+            continue;
+
         if (!cctx->alive && cctx->kind == WORKER) {
             remove_client_by_pid(&sctx, get_process_id_of(cctx->worker->proc));
 
@@ -314,15 +350,15 @@ static void run_tests_async(struct criterion_test_set *set,
                 --active_workers;
         }
 
-        if (!active_workers)
+        if (!active_workers && !criterion_options.wait_for_clients)
             break;
 
-        pb_release(criterion_protocol_msg_fields, &msg);
+        free_message(&msg);
     }
 
 cleanup:
     if (has_msg)
-        pb_release(criterion_protocol_msg_fields, &msg);
+        free_message(&msg);
     destroy_server_context(&sctx);
     ccrAbort(ctx);
 }
@@ -398,8 +434,8 @@ int criterion_run_all_tests(struct criterion_test_set *set) {
 void run_single_test_by_name(const char *testname) {
     struct criterion_test_set *set = criterion_init();
 
-    // FIXME: initialize null sink for pipe system.
-    abort();
+    struct criterion_test *test = NULL;
+    struct criterion_suite *suite = NULL;
 
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         size_t tests = s->tests ? s->tests->size : 0;
@@ -409,9 +445,20 @@ void run_single_test_by_name(const char *testname) {
         FOREACH_SET(struct criterion_test *t, s->tests) {
             char name[1024];
             snprintf(name, sizeof (name), "%s::%s", s->suite.name, t->name);
-            if (!strncmp(name, testname, 1024))
-                run_test_child(t, &s->suite);
+            if (!strncmp(name, testname, 1024)) {
+                test = t;
+                suite = &s->suite;
+                break;
+            }
         }
+    }
+
+    if (test) {
+        is_extern_worker = true;
+        criterion_current_test = test;
+        criterion_current_suite = suite;
+
+        run_test_child(test, suite);
     }
 
     sfree(set);

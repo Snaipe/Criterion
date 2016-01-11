@@ -83,7 +83,7 @@ void cr_send_to_runner(const criterion_protocol_msg *message) {
     if (write_message(g_client_socket, message) != 1) {
         criterion_perror("Could not write the \"%s\" message down the event pipe: %s.\n",
                 message_names[message->data.which_value],
-                strerror(errno));
+                nn_strerror(errno));
         abort();
     }
 
@@ -91,7 +91,7 @@ void cr_send_to_runner(const criterion_protocol_msg *message) {
     int read = nn_recv(g_client_socket, &buf, NN_MSG, 0);
 
     if (read <= 0) {
-        criterion_perror("Could not read ack: %s.\n", strerror(errno));
+        criterion_perror("Could not read ack: %s.\n", nn_strerror(errno));
         abort();
     }
 
@@ -106,6 +106,7 @@ void cr_send_to_runner(const criterion_protocol_msg *message) {
         criterion_perror("Runner returned an error: %s.\n", ack.message ? ack.message : "Unknown error");
         abort();
     }
+    pb_release(criterion_protocol_ack_fields, &ack);
 
     if (buf)
         nn_freemsg(buf);
@@ -140,9 +141,13 @@ void send_ack(int sock, bool ok, const char *msg, ...) {
 
     int written = nn_send(sock, buf, size, 0);
     if (written <= 0 || written != (int) size) {
-        criterion_perror("Could not send ack: %s.\n", strerror(errno));
+        criterion_perror("Could not send ack: %s.\n", nn_strerror(errno));
         abort();
     }
 
     free(buf);
+}
+
+void free_message(criterion_protocol_msg *msg) {
+    pb_release(criterion_protocol_msg_fields, msg);
 }

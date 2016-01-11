@@ -37,6 +37,7 @@
 static void nothing(void) {};
 
 KHASH_MAP_INIT_INT(ht_client, struct client_ctx)
+KHASH_MAP_INIT_STR(ht_extern, struct client_ctx)
 
 static enum client_state phase_to_state[] = {
     [criterion_protocol_phase_kind_SETUP]    = CS_SETUP,
@@ -77,16 +78,30 @@ static void get_message_id(char *out, size_t n, const criterion_protocol_msg *ms
     switch (msg->which_id) {
         case criterion_protocol_msg_pid_tag:
             snprintf(out, n, "[PID %" PRId64 "]", msg->id.pid); return;
+        case criterion_protocol_msg_uid_tag:
+            snprintf(out, n, "[external \"%s\"]", msg->id.uid); return;
         default: break;
     }
 }
 
-void init_server_context(struct server_ctx *sctx) {
+void init_server_context(struct server_ctx *sctx, struct criterion_global_stats *gstats) {
     sctx->subprocesses = kh_init(ht_client);
+    sctx->clients = kh_init(ht_extern);
+
+    sctx->gstats = gstats;
+    sctx->extern_suite = (struct criterion_suite) {
+        .name = "external",
+        .data = &sctx->extern_suite_data,
+    };
+    sctx->extern_suite_data = (struct criterion_test_extra_data) {
+        .disabled = 0,
+    };
+    sctx->extern_sstats = suite_stats_init(&sctx->extern_suite);
 }
 
 void destroy_client_context(struct client_ctx *ctx) {
-    sfree(ctx->worker);
+    if (ctx->kind == WORKER)
+        sfree(ctx->worker);
 }
 
 void destroy_server_context(struct server_ctx *sctx) {
@@ -99,6 +114,8 @@ void destroy_server_context(struct server_ctx *sctx) {
                 destroy_client_context(&v);
             });
     kh_destroy(ht_client, sctx->subprocesses);
+
+    kh_destroy(ht_extern, sctx->clients);
 }
 
 struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, struct worker *w) {
@@ -117,6 +134,28 @@ void remove_client_by_pid(struct server_ctx *sctx, int pid) {
         destroy_client_context(&kh_value(sctx->subprocesses, k));
         kh_del(ht_client, sctx->subprocesses, k);
     }
+}
+
+struct client_ctx *add_external_client(struct server_ctx *sctx, char *id) {
+    int absent;
+    khint_t k = kh_put(ht_extern, sctx->clients, id, &absent);
+    kh_value(sctx->clients, k) = (struct client_ctx) {
+        .kind = EXTERN,
+        .extern_test = {
+            .name = strdup(id),
+            .category = "external",
+        },
+        .gstats = sctx->gstats,
+        .sstats = sctx->extern_sstats,
+    };
+
+    struct client_ctx *ctx = &kh_value(sctx->clients, k);
+    ctx->test = &ctx->extern_test;
+    ctx->suite = &sctx->extern_suite;
+    ctx->extern_test.data = &ctx->extern_test_data;
+    ctx->tstats = test_stats_init(&ctx->extern_test);
+
+    return ctx;
 }
 
 static void process_client_message_impl(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg) {
@@ -141,15 +180,27 @@ struct client_ctx *process_client_message(struct server_ctx *ctx, const criterio
         return NULL;
     }
 
+    struct client_ctx *client = NULL;
     switch (msg->which_id) {
         case criterion_protocol_msg_pid_tag: {
             khiter_t k = kh_get(ht_client, ctx->subprocesses, msg->id.pid);
             if (k != kh_end(ctx->subprocesses)) {
-                process_client_message_impl(ctx, &kh_value(ctx->subprocesses, k), msg);
-                return &kh_value(ctx->subprocesses, k);
+                client = &kh_value(ctx->subprocesses, k);
             } else {
-                handler_error(ctx, "%s", "", "Received message identified by a PID '%ld'"
+                handler_error(ctx, "%s", "", "Received message identified by a PID '%ld' "
                         "that is not a child process.", msg->id.pid);
+            }
+        } break;
+        case criterion_protocol_msg_uid_tag: {
+            khiter_t k = kh_get(ht_extern, ctx->clients, msg->id.uid);
+            bool client_found = k != kh_end(ctx->clients);
+            if (!client_found && msg->data.which_value == criterion_protocol_submessage_birth_tag) {
+                client = add_external_client(ctx, msg->id.uid);
+            } else if (client_found) {
+                client = &kh_value(ctx->clients, k);
+            } else {
+                handler_error(ctx, "%s", "", "Received message identified by the ID '%s'"
+                        "that did not send a birth message previously.", msg->id.uid);
             }
         } break;
         default: {
@@ -157,7 +208,10 @@ struct client_ctx *process_client_message(struct server_ctx *ctx, const criterio
                     criterion_protocol_msg_pid_tag);
         } break;
     }
-    return NULL;
+
+    if (client)
+        process_client_message_impl(ctx, client, msg);
+    return client;
 }
 
 #define push_event(...)                                             \

@@ -62,3 +62,5 @@ pb_istream_t pb_istream_from_fd(int fd) {
     pb_istream_t stream = {&read_fd_callback, (void*)(intptr_t) fd, SIZE_MAX, NULL};
     return stream;
 }
+
+volatile bool is_extern_worker = false;
