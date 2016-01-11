@@ -199,20 +199,24 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
     struct wait_context *wctx = lpParameter;
 
     int status = get_win_status(wctx->proc_handle);
-    int kind = WORKER_TERMINATED;
-    struct worker_status ws = {
-        (s_proc_handle) { wctx->proc_handle }, get_status(status)
-    };
 
-    unsigned long long pid_ull = (unsigned long long) GetProcessId(wctx->proc_handle);
+    int64_t pid = (int64_t) GetProcessId(wctx->proc_handle);
 
-    char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
-    memcpy(buf, &kind, sizeof (kind));
-    memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
-    memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
+    int result = WIFEXITED(status)
+        ? criterion_protocol_death_result_type_NORMAL
+        : criterion_protocol_death_result_type_CRASH;
+    int code = WIFEXITED(status)
+        ? WEXITSTATUS(status)
+        : WTERMSIG(status);
 
-    DWORD written;
-    WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), &written, NULL);
+    criterion_protocol_msg msg = criterion_message(death,
+            .result = result,
+            .has_status = true,
+            .status = code,
+        );
+
+    msg.id.pid = pid;
+    cr_send_to_runner(&msg);
 
     HANDLE whandle = wctx->wait_handle;
     free(lpParameter);
