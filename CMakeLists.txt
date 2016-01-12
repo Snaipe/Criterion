@@ -261,7 +261,9 @@ endif ()
 
 if (MSVC)
   target_link_libraries(criterion wingetopt)
-else ()
+endif ()
+
+if (NOT WIN32)
   target_link_libraries(criterion pthread)
 endif ()
 
