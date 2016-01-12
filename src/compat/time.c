@@ -8,7 +8,7 @@
 
 #define GIGA 1000000000
 
-#if defined(__unix__) && !defined(__CYGWIN__)
+#if defined(__unix__) && !defined(__CYGWIN__) && !defined(__OpenBSD__)
 
 # ifdef CLOCK_MONOTONIC_RAW
 #  define CLOCK CLOCK_MONOTONIC_RAW
@@ -18,6 +18,9 @@
 
 extern __attribute__ ((weak)) int clock_gettime(clockid_t, struct timespec *);
 
+#elif defined(__OpenBSD__)
+# include <pthread.h>
+# define CLOCK CLOCK_MONOTONIC
 #elif defined(__APPLE__)
 # include <mach/clock.h>
 # include <mach/mach.h>
@@ -32,7 +35,7 @@ bool can_measure_time(void) {
     if (!criterion_options.measure_time)
         return false;
 
-#if defined(__unix__) && !defined(__CYGWIN__)
+#if defined(__unix__) && !defined(__CYGWIN__) && !defined(__OpenBSD__)
     return clock_gettime != NULL;
 #else
     return true;
@@ -99,7 +102,7 @@ DWORD WINAPI win_raise_timeout(LPVOID ptr) {
 }
 #endif
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__OpenBSD__)
 void *wait_and_raise(void *ptr) {
     uint64_t *nanos = ptr;
     struct timespec elapsed = {
@@ -114,7 +117,7 @@ void *wait_and_raise(void *ptr) {
 #endif
 
 int setup_timeout(uint64_t nanos) {
-#if   defined(__APPLE__)
+#if   defined(__APPLE__) || defined(__OpenBSD__)
     uint64_t *nanos_copy = malloc(sizeof (uint64_t));
     *nanos_copy = nanos;
 
