@@ -261,6 +261,8 @@ endif ()
 
 if (MSVC)
   target_link_libraries(criterion wingetopt)
+else ()
+  target_link_libraries(criterion pthread)
 endif ()
 
 if (HAVE_CLOCK_GETTIME)
