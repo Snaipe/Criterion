@@ -53,12 +53,6 @@
 #include "common.h"
 #include "client.h"
 
-#if HAVE_THREADS_H
-# include <threads.h>
-#else
-# include <tinycthread.h>
-#endif
-
 #ifdef HAVE_PCRE
 #include "string/extmatch.h"
 #endif
