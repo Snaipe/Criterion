@@ -34,12 +34,6 @@ enum protocol_version {
     PROTOCOL_V1 = 1,
 };
 
-bool pb_write_string(pb_ostream_t *stream, const pb_field_t *field, void * const *arg);
-bool pb_read_string(pb_istream_t *stream, const pb_field_t *field, void **arg);
-
-pb_ostream_t pb_ostream_from_fd(int fd);
-pb_istream_t pb_istream_from_fd(int fd);
-
 extern volatile bool is_extern_worker;
 
 # define criterion_message_set_id(Msg)                                      \
