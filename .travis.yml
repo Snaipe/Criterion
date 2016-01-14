@@ -126,7 +126,7 @@ after_success:
 
 after_failure:
   - |
-      if [ "$TESTS" = "ON" ]; then
+      if [ "${TESTS:-ON}" = "ON" ]; then
         cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
       fi
 
