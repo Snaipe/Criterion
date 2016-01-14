@@ -96,7 +96,7 @@ void normal_log_pre_init(struct criterion_test *test) {
             test->name);
 
     if (test->data->description)
-        criterion_pinfo(CRITERION_PREFIX_RUN, _(msg_desc),
+        criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_desc),
                 test->data->description);
 }
 
