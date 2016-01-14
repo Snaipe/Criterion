@@ -43,9 +43,9 @@ add_custom_target(cram_tests ${CMAKE_COMMAND} -E env
     "CRITERION_NO_EARLY_EXIT=1" # for coverage
     "CRITERION_JOBS=1" # for output ordering
     "CRITERION_DISABLE_TIME_MEASUREMENTS=1" # do not compare timings
-    cram -i ${CMAKE_CURRENT_SOURCE_DIR})
+    cram -v ${CMAKE_CURRENT_SOURCE_DIR})
 add_dependencies(cram_tests criterion_samples)
 
-add_test(cram_tests cram_tests)
+add_test(cram_tests make cram_tests)
 
 endif ()

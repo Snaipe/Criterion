@@ -90,6 +90,7 @@ before_install:
         brew unlink cmake
         brew install llvm cmake
       fi
+  - pip install cram
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - $CC --version
   - $CXX --version
