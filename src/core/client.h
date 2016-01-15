@@ -62,8 +62,8 @@ struct client_ctx {
     struct criterion_suite *suite;
 };
 
-typedef struct kh_ht_client_s khash_t(ht_client);
-typedef struct kh_ht_extern_s khash_t(ht_extern);
+struct kh_ht_client_s;
+struct kh_ht_extern_s;
 
 struct server_ctx {
     int socket;
@@ -72,8 +72,8 @@ struct server_ctx {
     struct criterion_global_stats *gstats;
     struct criterion_suite_stats *extern_sstats;
 
-    khash_t(ht_client) *subprocesses;
-    khash_t(ht_extern) *clients;
+    struct kh_ht_client_s *subprocesses;
+    struct kh_ht_extern_s *clients;
 };
 
 struct client_ctx *process_client_message(struct server_ctx *ctx, const criterion_protocol_msg *msg);
