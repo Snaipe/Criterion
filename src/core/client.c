@@ -160,7 +160,7 @@ struct client_ctx *add_external_client(struct server_ctx *sctx, char *id) {
 
 static void process_client_message_impl(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg) {
     message_handler *handler = message_handlers[msg->data.which_value];
-    bool ack;
+    bool ack = false;
     if (handler)
         ack = handler(sctx, ctx, msg);
 
@@ -176,7 +176,7 @@ static void process_client_message_impl(struct server_ctx *sctx, struct client_c
 
 struct client_ctx *process_client_message(struct server_ctx *ctx, const criterion_protocol_msg *msg) {
     if (msg->version != PROTOCOL_V1) {
-        handler_error(ctx, "%s", "", "Received message using invalid protocol version number '%d'.", msg->version);
+        handler_error(ctx, "%s", "", "Received message using invalid protocol version number '%" PRIi32 "'.", msg->version);
         return NULL;
     }
 
@@ -187,7 +187,7 @@ struct client_ctx *process_client_message(struct server_ctx *ctx, const criterio
             if (k != kh_end(ctx->subprocesses)) {
                 client = &kh_value(ctx->subprocesses, k);
             } else {
-                handler_error(ctx, "%s", "", "Received message identified by a PID '%ld' "
+                handler_error(ctx, "%s", "", "Received message identified by a PID '%" PRIi64 "' "
                         "that is not a child process.", msg->id.pid);
             }
         } break;

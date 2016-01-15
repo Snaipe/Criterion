@@ -200,7 +200,7 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
     size_t *indices = malloc(sizeof (size_t) * datapoints);
     memset(indices, 0, datapoints * sizeof (size_t));
 
-    int round = 1;
+    volatile int round = 1;
     volatile bool has_next = true;
     while (has_next) {
         char *name = NULL;

@@ -179,7 +179,7 @@ void run_test_child(struct criterion_test *test,
     }
 
     // Notify the runner that the test was born
-    criterion_protocol_msg msg = criterion_message(birth);
+    criterion_protocol_msg msg = criterion_message(birth, .has_timestamp = false);
     criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
 
