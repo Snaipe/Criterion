@@ -1,7 +1,8 @@
 package criterion.protocol;
 
 message birth {
-    optional int64 timestamp = 1;
+    required string name = 1;
+    optional int64 timestamp = 2;
 }
 
 message phase {
@@ -17,7 +18,7 @@ message phase {
     }
 
     required kind phase = 1;
-    required string name = 2;
+    optional string name = 2;
     optional int64 timestamp = 3;
     optional string message = 4;
 }
