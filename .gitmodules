@@ -19,4 +19,3 @@
 [submodule "dependencies/nanomsg-patched"]
 	path = dependencies/nanomsg-patched
 	url = https://github.com/Snaipe/nanomsg.git
-	branch = fork-patch
