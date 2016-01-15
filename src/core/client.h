@@ -53,7 +53,7 @@ struct client_ctx {
     struct criterion_test_extra_data extern_test_data;
     struct criterion_test extern_test;
 
-    enum client_state state;
+    uint32_t state;
     bool alive;
     struct criterion_global_stats *gstats;
     struct criterion_suite_stats *sstats;

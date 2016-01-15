@@ -331,7 +331,7 @@ bool handle_timeout(struct server_ctx *sctx, struct client_ctx *ctx, const crite
     return false;
 }
 
-# define MAX_TEST_DEPTH 15
+# define MAX_TEST_DEPTH 16
 
 bool handle_phase(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg) {
     const criterion_protocol_phase *phase_msg = &msg->data.value.phase;
@@ -347,7 +347,7 @@ bool handle_phase(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
             handler_error(sctx, "%s: ", id, "Cannot spawn a subtest outside of the '%s' test phase.", state_to_string[CS_MAIN]);
             return true;
         }
-        if (ctx->state & (0xff << MAX_TEST_DEPTH * 2)) {
+        if (ctx->state & (0x3 << (MAX_TEST_DEPTH - 1) * 2)) {
             char id[32];
             get_message_id(id, sizeof (id), msg);
 
