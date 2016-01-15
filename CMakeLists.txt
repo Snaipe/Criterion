@@ -36,12 +36,12 @@ include(ExternalProject)
 
 externalproject_add(
     nanomsg
-    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/nanomsg"
-    PREFIX "${CMAKE_CURRENT_BINARY_DIR}/nanomsg"
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/nanomsg-patched"
+    PREFIX "${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched"
 
     UPDATE_COMMAND <SOURCE_DIR>/autogen.sh
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --disable-examples
-    BUILD_COMMAND make
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
+    BUILD_COMMAND make -j4
     INSTALL_COMMAND make install
 )
 
@@ -54,11 +54,11 @@ include_directories(
   dependencies/klib/
   dependencies/nanopb/
 
-  ${CMAKE_CURRENT_BINARY_DIR}/nanomsg/include/
+  ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/include/
 )
 
 link_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}/nanomsg/lib/
+  ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/
 )
 
 if (MSVC)
@@ -287,8 +287,9 @@ configure_file(
 
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
+
 add_dependencies(criterion nanomsg)
-target_link_libraries(criterion csptr anl libnanomsg.a)
+target_link_libraries(criterion csptr anl libnanomsg.a pthread)
 
 if (THEORIES)
   target_link_libraries(criterion dyncall_s)
