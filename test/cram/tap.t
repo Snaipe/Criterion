@@ -17,7 +17,7 @@ Testing multiple samples with --tap
   
   # Running 3 tests from simple
   not ok - simple::wrong_signal 
-  not ok - simple::uncaught unexpected signal after signal.c:16
+  not ok - simple::uncaught unexpected signal after signal.c:12
   ok - simple::caught 
 
   $ asserts.c.bin --tap
