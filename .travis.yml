@@ -108,7 +108,12 @@ before_install:
           curl -L https://bootstrap.pypa.io/get-pip.py | python3.5 - --user
         fi
 
-        pip3 install --user cram
+        pip3 install --user cram==0.6
+
+        # Patch buggy cram on OSX
+        if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+          patch "$(python3 -m site --user-base)/lib/python/site-packages/cram.py" .cmake/cram-osx.patch
+        fi
 
         cram --version
       fi
