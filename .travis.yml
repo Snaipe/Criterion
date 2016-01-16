@@ -2,12 +2,21 @@ language: c
 
 sudo: false
 
+addons:
+  apt:
+    sources:
+    - deadsnakes
+    packages:
+    - python3.5
+
 _anchors:
   - &gcc49-packages
     apt:
       sources:
       - ubuntu-toolchain-r-test
+      - deadsnakes
       packages:
+      - python3.5
       - gcc-4.9
       - g++-4.9
       - gobjc-4.9
@@ -84,15 +93,24 @@ matrix:
     - compiler: gcc
 
 before_install:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update; fi
   - |
       if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "clang" ]; then
-        brew update
         brew unlink cmake
         brew install llvm cmake
       fi
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
-        pip install --user cram
+        if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+          brew install python3
+          export PATH="$(python3 -m site --user-base)/bin:$PATH"
+        else
+          curl -L https://bootstrap.pypa.io/get-pip.py | python3.5 - --user
+        fi
+
+        pip3 install --user cram
+
+        cram --version
       fi
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - $CC --version
