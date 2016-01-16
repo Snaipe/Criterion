@@ -34,18 +34,20 @@ set_property(TEST criterion_unit_tests PROPERTY
 )
 
 if (NOT MSVC) # we disable the scripted tests when building with MSVC
+  add_custom_target(cram_tests)
 
-add_custom_target(cram_tests ${CMAKE_COMMAND} -E env
-    "PATH=$ENV{PATH}:${PROJECT_BINARY_DIR}/samples:${PROJECT_BINARY_DIR}/samples/tests"
-    "LC_ALL=en_US.utf8"
-    "CRITERION_ALWAYS_SUCCEED=1"
-    "CRITERION_SHORT_FILENAME=1"
-    "CRITERION_NO_EARLY_EXIT=1" # for coverage
-    "CRITERION_JOBS=1" # for output ordering
-    "CRITERION_DISABLE_TIME_MEASUREMENTS=1" # do not compare timings
-    cram -v ${CMAKE_CURRENT_SOURCE_DIR}/cram)
-add_dependencies(cram_tests criterion_samples)
+  set(CMD "")
+  set(CMD "${CMD}PATH=$ENV{PATH}:${PROJECT_BINARY_DIR}/samples:${PROJECT_BINARY_DIR}/samples/tests ")
+  set(CMD "${CMD}LC_ALL=en_US.utf8 ")
+  set(CMD "${CMD}CRITERION_ALWAYS_SUCCEED=1 ")
+  set(CMD "${CMD}CRITERION_SHORT_FILENAME=1 ")
+  set(CMD "${CMD}CRITERION_NO_EARLY_EXIT=1 ")
+  set(CMD "${CMD}CRITERION_JOBS=1 ")
+  set(CMD "${CMD}CRITERION_DISABLE_TIME_MEASUREMENTS=1 ")
+  set(CMD "${CMD}cram -v ${CMAKE_CURRENT_SOURCE_DIR}/cram")
+  add_custom_command(TARGET cram_tests POST_BUILD COMMAND sh -c "${CMD}")
+  add_dependencies(cram_tests criterion_samples)
 
-add_test(cram_tests make cram_tests)
+  add_test(cram_tests make cram_tests)
 
 endif ()
