@@ -19,18 +19,16 @@ index 20c4681..3b9f144 100755
                           preexec_fn=makeresetsigpipe(),
                           close_fds=os.name == 'posix')
      salt = 'CRAM%s' % time.time()
-@@ -199,7 +199,9 @@ def test(path, shell, indent=2):
+@@ -199,7 +199,7 @@ def test(path, shell, indent=2):
              after.setdefault(pos, []).append(line)
      stdin.append('echo "\n%s %s $?"\n' % (salt, i + 1))
  
 -    output = p.communicate(input=''.join(stdin))[0]
-+    print(f.encoding) 
-+    print(sys.stdout.encoding) 
 +    output = p.communicate(input=''.join(stdin).encode('utf-8'))[0].decode('utf-8')
      if p.returncode == 80:
          return (refout, None, [])
  
-@@ -336,7 +338,7 @@ def run(paths, tmpdir, shell, quiet=False, verbose=False, patchcmd=None,
+@@ -336,7 +336,7 @@ def run(paths, tmpdir, shell, quiet=False, verbose=False, patchcmd=None,
                  log('!', 'failed\n', verbose)
                  if not quiet:
                      log('\n', None, verbose)
