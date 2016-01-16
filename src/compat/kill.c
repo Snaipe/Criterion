@@ -30,13 +30,14 @@
 #include "io/output.h"
 #include <stdlib.h>
 #include <assert.h>
+#include <signal.h>
 
 static INLINE void nothing(void) {}
 
 #ifdef VANILLA_WIN32
 static HANDLE cr_job;
 #else
-static void handle_sigterm(int signum) {
+static void handle_sigterm(CR_UNUSED int signum) {
     assert(signum == SIGTERM);
 
     kill(-getpid(), SIGTERM);
@@ -47,8 +48,7 @@ static void handle_sigterm(int signum) {
 void setup_parent_job(void) {
 #ifdef VANILLA_WIN32
     // Put runner in its own job
-    SECURITY_ATTRIBUTES attr = {};
-    cr_job = CreateJobObject(&attr, NULL);
+    cr_job = CreateJobObject(NULL, NULL);
     if (!AssignProcessToJobObject(cr_job, GetCurrentProcess()))
         abort();
 #else
