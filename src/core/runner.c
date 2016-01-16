@@ -35,6 +35,7 @@
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"
+#include "compat/kill.h"
 #include "string/i18n.h"
 #include "io/event.h"
 #include "io/output.h"
@@ -270,6 +271,10 @@ static void handle_worker_terminated(struct event *ev,
             }
         }
     }
+
+    if (ctx->test_stats->failed && criterion_options.fail_fast) {
+        cr_terminate(ctx->stats);
+    }
 }
 
 static void handle_event(struct event *ev) {
@@ -356,6 +361,8 @@ struct criterion_test_set *criterion_initialize(void) {
     criterion_register_output_provider("tap", tap_report);
     criterion_register_output_provider("xml", xml_report);
     criterion_register_output_provider("json", json_report);
+
+    setup_parent_job();
 
     return criterion_init();
 }

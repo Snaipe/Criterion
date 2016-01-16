@@ -168,6 +168,8 @@ set(SOURCE_FILES
   src/compat/alloc.h
   src/compat/processor.c
   src/compat/processor.h
+  src/compat/kill.c
+  src/compat/kill.h
   src/io/redirect.c
   src/io/event.c
   src/io/event.h
