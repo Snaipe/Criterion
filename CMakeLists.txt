@@ -23,23 +23,47 @@ endif ()
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 
 include(ExternalProject)
+include(CMakeParseArguments)
 
-macro (add_cmake_subproject _NAME _PATH)
-  set (_OPTS ${ARGN})
+function (add_cmake_subproject _NAME)
+  set (options)
+  set (oneValueArgs GIT PATH PREFIX)
+  set (multiValueArgs OPTS)
+  cmake_parse_arguments (ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT "${ARGS_PREFIX}" STREQUAL "")
+    set (install_prefix ${CMAKE_BINARY_DIR}/external/${ARGS_PREFIX})
+  else ()
+    set (install_prefix ${CMAKE_BINARY_DIR}/external)
+  endif ()
+
+  if (NOT "${ARGS_GIT}" STREQUAL "")
+    string(REPLACE "#" ";" git_opts ${ARGS_GIT})
+    list(LENGTH ${git_opts} git_opts_len)
+    list(GET 0 repo)
+    set (epa_opts GIT_REPOSITORY "${repo}")
+    if (git_opts_len GREATER 1)
+      list(GET 1 object)
+      set (epa_opts ${epa_opts} GIT_TAG "${object}")
+    endif ()
+  elseif (NOT "${ARGS_PATH}" STREQUAL "")
+      set (epa_opts SOURCE_DIR "${CMAKE_SOURCE_DIR}/${ARGS_PATH}")
+  endif ()
 
   externalproject_add(
     ${_NAME}
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/${_PATH}"
+    ${epa_opts}
+
     BINARY_DIR "${CMAKE_BINARY_DIR}/${_NAME}"
 
     CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
-      -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/external
+      -DCMAKE_INSTALL_PREFIX=${install_prefix}
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-      ${_OPTS}
+      ${ARGS_OPTS}
     BUILD_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}"
     INSTALL_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
   )
-endmacro ()
+endfunction ()
 
 include_directories(${CMAKE_BINARY_DIR}/external/include)
 link_directories(${CMAKE_BINARY_DIR}/external/lib)
@@ -55,8 +79,9 @@ include_directories(SYSTEM
 )
 
 if (MSVC)
-
-  add_cmake_subproject(nanomsg-patched dependencies/nanomsg-patched "-DNN_TESTS=OFF")
+  add_cmake_subproject(nanomsg-patched
+    PATH dependencies/nanomsg-patched
+    OPTS "-DNN_TESTS=OFF")
 
 else ()
 
