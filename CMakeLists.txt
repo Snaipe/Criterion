@@ -22,6 +22,28 @@ endif ()
 
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 
+include(ExternalProject)
+
+macro (add_cmake_subproject _NAME _PATH)
+  set (_OPTS ${ARGN})
+
+  externalproject_add(
+    ${_NAME}
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/${_PATH}"
+    BINARY_DIR "${CMAKE_BINARY_DIR}/${_NAME}"
+
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/external
+      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      ${_OPTS}
+    BUILD_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}"
+    INSTALL_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
+  )
+endmacro ()
+
+include_directories(${CMAKE_BINARY_DIR}/external/include)
+link_directories(${CMAKE_BINARY_DIR}/external/lib)
+
 if (THEORIES)
   add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
   include_directories(dependencies/dyncall/dyncall/)
@@ -34,22 +56,7 @@ include_directories(SYSTEM
 
 if (MSVC)
 
-  include(ExternalProject)
-
-  externalproject_add(
-      nanomsg
-      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/nanomsg-patched"
-      PREFIX "${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched"
-
-      UPDATE_COMMAND ""
-      CONFIGURE_COMMAND "${CMAKE_COMMAND} -DNN_TESTS=OFF <SOURCE_DIR>"
-  )
-
-  externalproject_get_property(nanomsg install_dir)
-  set(NANOMSG_INSTALL_DIR "${install_dir}")
-
-  include_directories(${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/include/)
-  link_directories(${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/)
+  add_cmake_subproject(nanomsg-patched dependencies/nanomsg-patched "-DNN_TESTS=OFF")
 
 else ()
 
@@ -312,11 +319,7 @@ add_dependencies(criterion nanomsg)
 target_link_libraries(criterion csptr)
 
 if (WIN32)
-  if (MSVC)
-    target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/nanomsg.lib)
-  else ()
-    target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/dependencies/nanomsg-patched/nanomsg.lib)
-  endif()
+  target_link_libraries(criterion ${CMAKE_BINARY_DIR}/external/lib/nanomsg.lib)
 else ()
   target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/libnanomsg.a)
 endif ()
