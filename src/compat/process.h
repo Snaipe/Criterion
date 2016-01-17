@@ -43,7 +43,6 @@ struct worker_context {
     struct criterion_test *test;
     struct criterion_suite *suite;
     cr_worker_func func;
-    struct pipe_handle *pipe;
     struct test_single_param *param;
 };
 

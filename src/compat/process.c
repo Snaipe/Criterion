@@ -103,7 +103,6 @@ struct full_context {
     struct criterion_suite suite;
     struct criterion_test_extra_data suite_data;
     cr_worker_func func;
-    struct pipe_handle pipe;
     struct test_single_param param;
     HANDLE sync;
     DWORD extra_size;
@@ -281,7 +280,6 @@ int resume_child(void) {
         .test = &local_ctx.test,
         .suite = &local_ctx.suite,
         .func = local_ctx.func,
-        .pipe = &local_ctx.pipe,
         .param = param,
     };
 
@@ -359,7 +357,6 @@ s_proc_handle *fork_process() {
         .test_data = *g_worker_context.test->data,
         .suite     = *g_worker_context.suite,
         .func      = g_worker_context.func,
-        .pipe      = *g_worker_context.pipe,
         .sync      = sync,
     };
 
