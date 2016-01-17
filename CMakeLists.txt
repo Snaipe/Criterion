@@ -79,7 +79,7 @@ include_directories(SYSTEM
 )
 
 if (MSVC)
-  add_cmake_subproject(nanomsg-patched
+  add_cmake_subproject(nanomsg
     PATH dependencies/nanomsg-patched
     OPTS "-DNN_TESTS=OFF")
 
