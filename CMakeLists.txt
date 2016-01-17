@@ -300,7 +300,17 @@ include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
 
 add_dependencies(criterion nanomsg)
-target_link_libraries(criterion csptr libnanomsg.a pthread)
+target_link_libraries(criterion csptr)
+
+if (WIN32)
+  if (MSVC)
+    target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/nanomsg.lib)
+  else ()
+    target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/dependencies/nanomsg-patched/nanomsg.lib)
+  endif()
+else ()
+  target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/libnanomsg.a)
+endif ()
 
 if (NOT WIN32)
   target_link_libraries(criterion csptr pthread)
