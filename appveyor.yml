@@ -63,7 +63,7 @@ before_deploy:
 test_script:
   - cmake --build . --target criterion_tests
   - ps: |
-        ctest -j2
+        ctest
         if (-not $lastexitcode -eq 0) {
             type Testing/Temporary/LastTest.log
         }
