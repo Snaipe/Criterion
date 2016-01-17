@@ -21,13 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <pb_encode.h>
-#include <pb_decode.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-
-#include "criterion/internal/common.h"
 #include "protocol.h"
 
 volatile bool is_extern_worker = false;
