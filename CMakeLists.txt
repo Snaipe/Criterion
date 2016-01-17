@@ -33,17 +33,24 @@ include_directories(SYSTEM
 )
 
 if (MSVC)
-  set(NN_INCL_DIR ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/include)
-  set(NN_INCL_DEST ${NN_INCL_DIR}/nanomsg)
-  set(NN_TESTS OFF)
-  set(NN_TOOLS OFF)
 
-  add_subdirectory(dependencies/nanomsg-patched EXCLUDE_FROM_ALL)
-  file(GLOB NN_HEADERS "dependencies/nanomsg-patched/src/*.h")
-  file(MAKE_DIRECTORY "${NN_INCL_DEST}")
-  file(COPY ${NN_HEADERS} DESTINATION "${NN_INCL_DEST}")
+  include(ExternalProject)
 
-  include_directories("${NN_INCL_DIR}")
+  externalproject_add(
+      nanomsg
+      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/nanomsg-patched"
+      PREFIX "${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched"
+
+      UPDATE_COMMAND ""
+      CONFIGURE_COMMAND "${CMAKE_COMMAND} -DNN_TESTS=OFF <SOURCE_DIR>"
+  )
+
+  externalproject_get_property(nanomsg install_dir)
+  set(NANOMSG_INSTALL_DIR "${install_dir}")
+
+  include_directories(${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/include/)
+  link_directories(${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/)
+
 else ()
 
   include(ExternalProject)
