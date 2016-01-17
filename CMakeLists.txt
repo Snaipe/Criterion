@@ -35,6 +35,8 @@ include_directories(SYSTEM
 if (MSVC)
   set(NN_INCL_DIR ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/include)
   set(NN_INCL_DEST ${NN_INCL_DIR}/nanomsg)
+  set(NN_TESTS OFF)
+  set(NN_TOOLS OFF)
 
   add_subdirectory(dependencies/nanomsg-patched EXCLUDE_FROM_ALL)
   file(GLOB NN_HEADERS "dependencies/nanomsg-patched/src/*.h")
