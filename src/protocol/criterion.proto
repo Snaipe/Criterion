@@ -42,9 +42,14 @@ message assert {
 }
 
 message log {
-    required int32 severity = 1;
+    enum level {
+        INFO    = 0;
+        WARNING = 1;
+        ERROR   = 2;
+    }
+
+    required level severity = 1;
     required string message = 2;
-    optional int32 prefix = 3;
 }
 
 message ack {
