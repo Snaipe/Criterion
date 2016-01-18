@@ -12,6 +12,9 @@ environment:
   CI_NAME: appveyor
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
+  PYTHON: "C:\\Python34"
+  PYTHON_VERSION: "3.4.x"
+  PYTHON_ARCH: "32"
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
@@ -33,6 +36,15 @@ configuration:
   - RelWithDebInfo
 
 install:
+  # Install Python
+  - ps: if (-not(Test-Path($env:PYTHON))) { & .cmake\install_python.ps1 }
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PYTHON%\\bin;%PATH%"
+  # Upgrade pip
+  - "pip install --disable-pip-version-check --user --upgrade pip"
+  # Install cram
+  - "pip install cram"
+  - python -m cram --version
+
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
