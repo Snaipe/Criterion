@@ -5,7 +5,6 @@ os: Visual Studio 2015
 init:
   - git config --global core.autocrlf input
   - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug;%APPVEYOR_BUILD_FOLDER%\build\external\bin;%APPVEYOR_BUILD_FOLDER%\build\external\lib'
-  - mingw-get install libtool
 
 environment:
   COVERALLS_REPO_TOKEN:

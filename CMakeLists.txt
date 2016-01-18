@@ -31,13 +31,13 @@ cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
   OPTS "-DNN_TESTS=OFF"
   CMAKE
-  IF MSVC
+  IF WIN32 AND NOT CYGWIN
 )
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
   AUTOTOOLS
   PARALLELIZE
-  IF NOT MSVC
+  IF NOT WIN32 OR CYGWIN
 )
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
