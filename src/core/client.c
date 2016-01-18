@@ -295,6 +295,9 @@ bool handle_abort(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
     enum client_state curstate = ctx->state & (CS_MAX_CLIENT_STATES - 1);
 
     if (ctx->state < CS_MAX_CLIENT_STATES) {
+        ctx->tstats->failed = 1;
+        log(test_abort, ctx->tstats, msg->message ? msg->message : "");
+
         if (curstate < CS_TEARDOWN) {
             double elapsed_time = 0;
             push_event(POST_TEST, .data = &elapsed_time);
