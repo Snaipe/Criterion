@@ -105,6 +105,13 @@ struct criterion_options {
      *  default: true
      */
     bool measure_time;
+
+    /**
+     *  Whether criterion should wait for incoming connections in server mode
+     *
+     *  default: false
+     */
+    bool wait_for_clients;
 };
 
 CR_BEGIN_C_API

@@ -29,6 +29,10 @@
 #include <assert.h>
 #include <limits.h>
 #include "criterion/theories.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
+#include "io/asprintf.h"
+#include "io/event.h"
 #include "abort.h"
 
 struct criterion_theory_context {
@@ -172,12 +176,14 @@ static void format_arg(char (*arg)[1024], struct criterion_datapoints *dp, void 
     }
 }
 
-static void concat_arg(char (*msg)[4096], struct criterion_datapoints *dps, size_t *indices, size_t i) {
+# define BUFSIZE 4096
+
+static void concat_arg(char (*msg)[BUFSIZE], struct criterion_datapoints *dps, size_t *indices, size_t i) {
     void *data = ((char*) dps[i].arr) + dps[i].size * indices[i];
 
     char arg[1024];
     format_arg(&arg, dps + i, data);
-    strncat(*msg, arg, sizeof (*msg) - 1);
+    strncat(*msg, arg, BUFSIZE - 1);
 }
 
 int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void)) {
@@ -194,8 +200,27 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
     size_t *indices = malloc(sizeof (size_t) * datapoints);
     memset(indices, 0, datapoints * sizeof (size_t));
 
+    volatile int round = 1;
     volatile bool has_next = true;
     while (has_next) {
+        char *name = NULL;
+        cr_asprintf(&name, "%s::%d", criterion_current_test->name, round);
+
+        criterion_protocol_msg setup_msg = criterion_message(phase,
+                .phase = criterion_protocol_phase_kind_SETUP,
+                .name = name,
+            );
+        criterion_message_set_id(setup_msg);
+        cr_send_to_runner(&setup_msg);
+
+        criterion_protocol_msg main_msg = criterion_message(phase,
+                .phase = criterion_protocol_phase_kind_MAIN,
+                .name = name,
+            );
+        criterion_message_set_id(main_msg);
+        cr_send_to_runner(&main_msg);
+
+        int theory_aborted = 0;
         if (!setjmp(theory_jmp)) {
             cr_theory_reset(ctx);
             for (size_t i = 0; i < datapoints; ++i) {
@@ -210,9 +235,11 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
             }
 
             if (!try_call_theory(ctx, fnptr)) {
+                theory_aborted = 1;
+
                 struct {
                     size_t len;
-                    char msg[4096];
+                    char msg[BUFSIZE];
                 } result = { .len = 0 };
 
                 for (size_t i = 0; i < datapoints - 1; ++i) {
@@ -221,10 +248,34 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                 }
                 concat_arg(&result.msg, dps, indices, datapoints - 1);
                 result.len = strlen(result.msg) + 1;
+                result.msg[result.len] = '\0';
 
-                criterion_send_event(THEORY_FAIL, &result, result.len + sizeof(size_t));
+                criterion_protocol_msg msg = criterion_message(phase,
+                        .phase = criterion_protocol_phase_kind_ABORT,
+                        .name = name,
+                        .message = result.msg
+                    );
+                criterion_message_set_id(msg);
+                cr_send_to_runner(&msg);
             }
         }
+
+        if (!theory_aborted) {
+            criterion_protocol_msg teardown_msg = criterion_message(phase,
+                    .phase = criterion_protocol_phase_kind_TEARDOWN,
+                    .name = name,
+                );
+            criterion_message_set_id(teardown_msg);
+            cr_send_to_runner(&teardown_msg);
+
+            criterion_protocol_msg end_msg = criterion_message(phase,
+                    .phase = criterion_protocol_phase_kind_END,
+                    .name = name,
+                );
+            criterion_message_set_id(end_msg);
+            cr_send_to_runner(&end_msg);
+        }
+        free(name);
 
         for (size_t i = 0; i < datapoints; ++i) {
             if (indices[i] == dps[i].len - 1) {
@@ -235,6 +286,7 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
                 break;
             }
         }
+        ++round;
     }
 
     free(indices);

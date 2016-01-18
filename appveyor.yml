@@ -4,7 +4,7 @@ os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
-  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug'
+  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug;%APPVEYOR_BUILD_FOLDER%\build\external\bin;%APPVEYOR_BUILD_FOLDER%\build\external\lib'
 
 environment:
   COVERALLS_REPO_TOKEN:
@@ -63,7 +63,7 @@ before_deploy:
 test_script:
   - cmake --build . --target criterion_tests
   - ps: |
-        ctest -j2
+        ctest
         if (-not $lastexitcode -eq 0) {
             type Testing/Temporary/LastTest.log
         }

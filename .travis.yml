@@ -133,7 +133,7 @@ script:
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         TERM=dumb cmake --build . --target criterion_tests -- -j4
-        ctest -j4
+        ctest
       else
         TERM=dumb cmake --build . -- -j4
       fi

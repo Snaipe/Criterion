@@ -18,6 +18,7 @@
 !*.po
 !*.in
 !*.t
+!*.proto
 !.cmake/Modules/*.cmake
 !samples/tests/*.sh
 !samples/**/*.expected

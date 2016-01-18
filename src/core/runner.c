@@ -27,11 +27,16 @@
 #include <errno.h>
 #include <csptr/smalloc.h>
 #include <valgrind/valgrind.h>
+#include <nanomsg/nn.h>
 #include "criterion/internal/test.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
 #include "criterion/logging.h"
 #include "criterion/internal/preprocess.h"
+#include "criterion/redirect.h"
+#include "protocol/protocol.h"
+#include "protocol/connect.h"
+#include "protocol/messages.h"
 #include "compat/time.h"
 #include "compat/posix.h"
 #include "compat/processor.h"
@@ -47,6 +52,7 @@
 #include "abort.h"
 #include "config.h"
 #include "common.h"
+#include "client.h"
 
 #ifdef HAVE_PCRE
 #include "string/extmatch.h"
@@ -165,6 +171,19 @@ const struct criterion_suite *criterion_current_suite;
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
+    cr_redirect_stdin();
+    g_client_socket = connect_client();
+    if (g_client_socket < 0) {
+        criterion_perror("Could not initialize the message client: %s.\n",
+                strerror(errno));
+        abort();
+    }
+
+    // Notify the runner that the test was born
+    criterion_protocol_msg msg = criterion_message(birth, .name = (char *) test->name);
+    criterion_message_set_id(msg);
+    cr_send_to_runner(&msg);
+
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
@@ -179,6 +198,17 @@ void run_test_child(struct criterion_test *test,
 
     if (test->test)
         test->test();
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_DISABLE_ERROR_REPORTING;
+#endif
+
+    close_socket(g_client_socket);
+
+    fflush(NULL); // flush all opened streams
+    if (criterion_options.no_early_exit)
+        return;
+    _Exit(0);
 }
 
 #define push_event(...)                                             \
@@ -194,135 +224,6 @@ void run_test_child(struct criterion_test *test,
     } while (0)
 
 s_pipe_handle *g_worker_pipe;
-
-static void handle_worker_terminated(struct event *ev,
-        struct execution_context *ctx) {
-
-    struct worker_status *ws = ev->data;
-    struct process_status status = ws->status;
-
-    if (status.kind == SIGNAL) {
-        if (status.status == SIGPROF) {
-            ctx->test_stats->timed_out = true;
-            double elapsed_time = ctx->test->data->timeout;
-            if (elapsed_time == 0 && ctx->suite->data)
-                elapsed_time = ctx->suite->data->timeout;
-            push_event(POST_TEST, .data = &elapsed_time);
-            push_event(POST_FINI);
-            log(test_timeout, ctx->test_stats);
-            return;
-        }
-
-        if (ctx->normal_finish || !ctx->test_started) {
-            log(other_crash, ctx->test_stats);
-            if (!ctx->test_started) {
-                stat_push_event(ctx->stats,
-                        ctx->suite_stats,
-                        ctx->test_stats,
-                        &(struct event) { .kind = TEST_CRASH });
-            }
-            return;
-        }
-        ctx->test_stats->signal = status.status;
-        if (ctx->test->data->signal == 0) {
-            push_event(TEST_CRASH);
-            log(test_crash, ctx->test_stats);
-        } else {
-            double elapsed_time = 0;
-            push_event(POST_TEST, .data = &elapsed_time);
-            log(post_test, ctx->test_stats);
-            push_event(POST_FINI);
-            log(post_fini, ctx->test_stats);
-        }
-    } else {
-        if (ctx->aborted) {
-            if (!ctx->normal_finish) {
-                double elapsed_time = 0;
-                push_event(POST_TEST, .data = &elapsed_time);
-                log(post_test, ctx->test_stats);
-            }
-            if (!ctx->cleaned_up) {
-                push_event(POST_FINI);
-                log(post_fini, ctx->test_stats);
-            }
-            return;
-        }
-        if ((ctx->normal_finish && !ctx->cleaned_up) || !ctx->test_started) {
-            log(abnormal_exit, ctx->test_stats);
-            if (!ctx->test_started) {
-                stat_push_event(ctx->stats,
-                        ctx->suite_stats,
-                        ctx->test_stats,
-                        &(struct event) { .kind = TEST_CRASH });
-            }
-            return;
-        }
-        ctx->test_stats->exit_code = status.status;
-        if (!ctx->normal_finish) {
-            if (ctx->test->data->exit_code == 0) {
-                push_event(TEST_CRASH);
-                log(abnormal_exit, ctx->test_stats);
-            } else {
-                double elapsed_time = 0;
-                push_event(POST_TEST, .data = &elapsed_time);
-                log(post_test, ctx->test_stats);
-                push_event(POST_FINI);
-                log(post_fini, ctx->test_stats);
-            }
-        }
-    }
-
-    if (ctx->test_stats->failed && criterion_options.fail_fast) {
-        cr_terminate(ctx->stats);
-    }
-}
-
-static void handle_event(struct event *ev) {
-    struct execution_context *ctx = &ev->worker->ctx;
-    if (ev->kind < WORKER_TERMINATED)
-        stat_push_event(ctx->stats, ctx->suite_stats, ctx->test_stats, ev);
-    switch (ev->kind) {
-        case PRE_INIT:
-            report(PRE_INIT, ctx->test);
-            log(pre_init, ctx->test);
-            break;
-        case PRE_TEST:
-            report(PRE_TEST, ctx->test);
-            log(pre_test, ctx->test);
-            ctx->test_started = true;
-            break;
-        case THEORY_FAIL: {
-            struct criterion_theory_stats ths = {
-                .formatted_args = (char*) ev->data,
-                .stats = ctx->test_stats,
-            };
-            report(THEORY_FAIL, &ths);
-            log(theory_fail, &ths);
-        } break;
-        case ASSERT:
-            report(ASSERT, ev->data);
-            log(assert, ev->data);
-            break;
-        case TEST_ABORT:
-            log(test_abort, ctx->test_stats, ev->data);
-            ctx->test_stats->failed = 1;
-            ctx->aborted = true;
-            break;
-        case POST_TEST:
-            report(POST_TEST, ctx->test_stats);
-            log(post_test, ctx->test_stats);
-            ctx->normal_finish = true;
-            break;
-        case POST_FINI:
-            report(POST_FINI, ctx->test_stats);
-            log(post_fini, ctx->test_stats);
-            ctx->cleaned_up = true;
-            break;
-        case WORKER_TERMINATED:
-            handle_worker_terminated(ev, ctx);
-            break;
-    }
-}
 
 #ifdef HAVE_PCRE
 void disable_unmatching(struct criterion_test_set *set) {
@@ -377,63 +278,91 @@ void criterion_finalize(struct criterion_test_set *set) {
     criterion_free_output();
 }
 
+static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext *ctx) {
+    struct worker *w = ctx ? run_next_test(NULL, NULL, ctx) : NULL;
+
+    if (!is_runner() || w == NULL)
+        return NULL;
+
+    struct client_ctx new_ctx = (struct client_ctx) {
+        .test = w->ctx.test,
+        .tstats = w->ctx.test_stats,
+        .suite = w->ctx.suite,
+        .sstats = w->ctx.suite_stats,
+        .gstats = w->ctx.stats,
+    };
+
+    return add_client_from_worker(sctx, &new_ctx, w);
+}
+
+#include <stdio.h>
+
 static void run_tests_async(struct criterion_test_set *set,
-                            struct criterion_global_stats *stats) {
+                            struct criterion_global_stats *stats,
+                            int socket) {
 
     ccrContext ctx = 0;
 
     size_t nb_workers = DEF(criterion_options.jobs, get_processor_count());
-    struct worker_set workers = {
-        .max_workers = nb_workers,
-        .workers = calloc(nb_workers, sizeof (struct worker*)),
-    };
-
     size_t active_workers = 0;
+    int has_msg = 0;
 
-    s_pipe_file_handle *event_pipe = pipe_in_handle(g_worker_pipe, PIPE_DUP);
-    struct event *ev = NULL;
+    struct server_ctx sctx;
+    init_server_context(&sctx, stats);
+
+    sctx.socket = socket;
 
     // initialization of coroutine
     run_next_test(set, stats, &ctx);
 
     for (size_t i = 0; i < nb_workers; ++i) {
-        workers.workers[i] = run_next_test(NULL, NULL, &ctx);
+        struct client_ctx *cctx = spawn_next_client(&sctx, &ctx);
         if (!is_runner())
             goto cleanup;
 
-        if (!ctx)
+        if (!cctx)
             break;
         ++active_workers;
     }
 
-    if (!active_workers)
+    if (!active_workers && !criterion_options.wait_for_clients)
         goto cleanup;
 
-    while ((ev = worker_read_event(&workers, event_pipe)) != NULL) {
-        handle_event(ev);
-        size_t wi = ev->worker_index;
-        if (ev->kind == WORKER_TERMINATED) {
-            sfree(workers.workers[wi]);
-            workers.workers[wi] = ctx ? run_next_test(NULL, NULL, &ctx) : NULL;
+    criterion_protocol_msg msg = criterion_protocol_msg_init_zero;
+    while ((has_msg = read_message(socket, &msg)) == 1) {
+        struct client_ctx *cctx = process_client_message(&sctx, &msg);
 
-            if (!is_runner())
-                goto cleanup;
+        // drop invalid messages
+        if (!cctx)
+            continue;
 
-            if (workers.workers[wi] == NULL)
-                --active_workers;
+        if (!cctx->alive) {
+            if (cctx->tstats->failed && criterion_options.fail_fast) {
+                cr_terminate(cctx->gstats);
+            }
+
+            if (cctx->kind == WORKER) {
+                remove_client_by_pid(&sctx, get_process_id_of(cctx->worker->proc));
+
+                cctx = spawn_next_client(&sctx, &ctx);
+                if (!is_runner())
+                    goto cleanup;
+
+                if (cctx == NULL)
+                    --active_workers;
+            }
         }
-        sfree(ev);
-        if (!active_workers)
+
+        if (!active_workers && !criterion_options.wait_for_clients)
             break;
+
+        free_message(&msg);
     }
-    ev = NULL;
 
 cleanup:
-    sfree(event_pipe);
-    sfree(ev);
-    for (size_t i = 0; i < nb_workers; ++i)
-        sfree(workers.workers[i]);
-    free(workers.workers);
+    if (has_msg)
+        free_message(&msg);
+    destroy_server_context(&sctx);
     ccrAbort(ctx);
 }
 
@@ -452,16 +381,24 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
 
     fflush(NULL); // flush everything before forking
 
-    g_worker_pipe = stdpipe();
-    if (g_worker_pipe == NULL) {
-        criterion_perror("Could not initialize the event pipe: %s.\n",
+    int sock = bind_server();
+    if (sock < 0) {
+        criterion_perror("Could not initialize the message server: %s.\n",
                 strerror(errno));
         abort();
     }
+
+    g_client_socket = connect_client();
+    if (g_client_socket < 0) {
+        criterion_perror("Could not initialize the message client: %s.\n",
+                strerror(errno));
+        abort();
+    }
+
     init_proc_compat();
 
     struct criterion_global_stats *stats = stats_init();
-    run_tests_async(set, stats);
+    run_tests_async(set, stats, sock);
 
     int result = is_runner() ? stats->tests_failed == 0 : -1;
 
@@ -474,7 +411,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
 
 cleanup:
     free_proc_compat();
-    sfree(g_worker_pipe);
+    nn_close(sock);
     sfree(stats);
     return result;
 }
@@ -500,7 +437,8 @@ int criterion_run_all_tests(struct criterion_test_set *set) {
 void run_single_test_by_name(const char *testname) {
     struct criterion_test_set *set = criterion_init();
 
-    g_event_pipe = pipe_file_open(NULL);
+    struct criterion_test *test = NULL;
+    struct criterion_suite *suite = NULL;
 
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         size_t tests = s->tests ? s->tests->size : 0;
@@ -510,9 +448,20 @@ void run_single_test_by_name(const char *testname) {
         FOREACH_SET(struct criterion_test *t, s->tests) {
             char name[1024];
             snprintf(name, sizeof (name), "%s::%s", s->suite.name, t->name);
-            if (!strncmp(name, testname, 1024))
-                run_test_child(t, &s->suite);
+            if (!strncmp(name, testname, 1024)) {
+                test = t;
+                suite = &s->suite;
+                break;
+            }
         }
+    }
+
+    if (test) {
+        is_extern_worker = true;
+        criterion_current_test = test;
+        criterion_current_suite = suite;
+
+        run_test_child(test, suite);
     }
 
     sfree(set);

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_EVENT_H_
-# define CRITERION_EVENT_H_
+#ifndef MESSAGES_H_
+# define MESSAGES_H_
 
-# ifdef __cplusplus
-#  include <cstddef>
-# else
-#  include <stddef.h>
-# endif
-# include "internal/common.h"
-# include "stats.h"
+# include "criterion.pb.h"
 
-CR_BEGIN_C_API
+int write_message(int sock, const criterion_protocol_msg *message);
+int read_message(int sock, criterion_protocol_msg *message);
+void cr_send_to_runner(const criterion_protocol_msg *message);
+void send_ack(int sock, bool ok, const char *msg, ...);
+void free_message(criterion_protocol_msg *msg);
 
-CR_API void criterion_send_assert(struct criterion_assert_stats *stats);
-
-CR_END_C_API
-
-#endif /* !CRITERION_EVENT_H_ */
+#endif /* !MESSAGES_H_ */

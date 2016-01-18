@@ -95,32 +95,18 @@ CR_END_C_API
             "" CR_TRANSLATE_DEF_MSG__(CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)))  \
     ))
 
-# define CR_INIT_STATS_(BufSize, MsgVar, ...) CR_EXPAND(                       \
+# define CR_INIT_STATS_(MsgVar, ...) CR_EXPAND(                                \
     do {                                                                       \
         char *def_msg = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));         \
         char *formatted_msg = NULL;                                            \
-        int msglen = cr_asprintf(&formatted_msg,                               \
-                "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                       \
+        cr_asprintf(&formatted_msg, "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));   \
         if (formatted_msg && *formatted_msg) {                                 \
             MsgVar = formatted_msg;                                            \
             CR_STDN free(def_msg);                                             \
         } else {                                                               \
             MsgVar = def_msg;                                                  \
-            msglen = strlen(def_msg);                                          \
             CR_STDN free(formatted_msg);                                       \
         }                                                                      \
-                                                                               \
-        BufSize = sizeof(struct criterion_assert_stats)                        \
-                  + sizeof (size_t) + msglen + 1;                              \
-                                                                               \
-        char *buf = (char*) CR_STDN malloc(BufSize);                           \
-        stat = (struct criterion_assert_stats*) buf;                           \
-        CR_STDN memset(buf, 0, sizeof (struct criterion_assert_stats));        \
-        buf += sizeof (struct criterion_assert_stats);                         \
-        *((size_t*) buf) = msglen + 1;                                         \
-        buf += sizeof (size_t);                                                \
-        CR_STDN strcpy(buf, MsgVar);                                           \
-        CR_STDN free(MsgVar);                                                  \
     } while (0))
 
 # define CR_FAIL_ABORT_ criterion_abort_test
@@ -137,16 +123,16 @@ CR_END_C_API
         bool passed = !!(Condition);                                        \
                                                                             \
         char *msg = NULL;                                                   \
-        size_t bufsize;                                                     \
                                                                             \
-        struct criterion_assert_stats *stat;                                \
-        CR_EXPAND(CR_INIT_STATS_(bufsize, msg, CR_VA_TAIL(__VA_ARGS__)));   \
-        stat->passed = passed;                                              \
-        stat->file = __FILE__;                                              \
-        stat->line = __LINE__;                                              \
+        CR_EXPAND(CR_INIT_STATS_(msg, CR_VA_TAIL(__VA_ARGS__)));            \
+        struct criterion_assert_stats stat;                                 \
+        stat.passed = passed;                                               \
+        stat.file = __FILE__;                                               \
+        stat.line = __LINE__;                                               \
+        stat.message = msg;                                                 \
+        criterion_send_assert(&stat);                                       \
                                                                             \
-        criterion_send_event(ASSERT, stat, bufsize);                        \
-        CR_STDN free(stat);                                                 \
+        CR_STDN free(msg);                                                  \
                                                                             \
         if (!passed)                                                        \
             Fail();                                                         \

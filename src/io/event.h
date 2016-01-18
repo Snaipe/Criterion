@@ -27,8 +27,9 @@
 # include "criterion/event.h"
 # include "core/worker.h"
 # include <stdio.h>
+# include <pb.h>
 
-extern s_pipe_file_handle *g_event_pipe;
+extern int g_client_socket;
 
 struct event {
     unsigned long long pid;
@@ -39,11 +40,6 @@ struct event {
     size_t worker_index;
 };
 
-enum other_event_kinds {
-    WORKER_TERMINATED = 1 << 30,
-    TEST_ABORT,
-};
-
-struct event *read_event(s_pipe_file_handle *f);
+void criterion_send_assert(struct criterion_assert_stats *stats);
 
 #endif /* !EVENT_H_ */

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_EVENT_H_
-# define CRITERION_EVENT_H_
+#include <errno.h>
+#include <nanomsg/nn.h>
+#include <nanomsg/reqrep.h>
 
-# ifdef __cplusplus
-#  include <cstddef>
-# else
-#  include <stddef.h>
-# endif
-# include "internal/common.h"
-# include "stats.h"
+#define URL "ipc://criterion.sock"
 
-CR_BEGIN_C_API
+#define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
 
-CR_API void criterion_send_assert(struct criterion_assert_stats *stats);
+int bind_server(void) {
+    int fstrat = NN_FORK_RESET;
+    nn_setopt(NN_FORK_STRATEGY, &fstrat, sizeof (fstrat));
 
-CR_END_C_API
+    int sock = nn_socket(AF_SP, NN_REP);
+    if (sock < 0)
+        return -1;
 
-#endif /* !CRITERION_EVENT_H_ */
+    if (nn_bind(sock, URL) < 0)
+        goto error;
+
+    return sock;
+
+error: {}
+    errno_ignore(nn_close(sock));
+    return -1;
+}
+
+int connect_client(void) {
+    int sock = nn_socket(AF_SP, NN_REQ);
+    if (sock < 0)
+        return -1;
+
+    if (nn_connect (sock, URL) < 0)
+        goto error;
+
+    return sock;
+
+error: {}
+    errno_ignore(nn_close(sock));
+    return -1;
+}
+
+void close_socket(int sock) {
+    nn_close(sock);
+}

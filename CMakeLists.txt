@@ -22,6 +22,52 @@ endif ()
 
 add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
 
+include(ExternalProject)
+include(CMakeParseArguments)
+
+function (add_cmake_subproject _NAME)
+  set (options)
+  set (oneValueArgs GIT PATH PREFIX)
+  set (multiValueArgs OPTS)
+  cmake_parse_arguments (ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT "${ARGS_PREFIX}" STREQUAL "")
+    set (install_prefix ${CMAKE_BINARY_DIR}/external/${ARGS_PREFIX})
+  else ()
+    set (install_prefix ${CMAKE_BINARY_DIR}/external)
+  endif ()
+
+  if (NOT "${ARGS_GIT}" STREQUAL "")
+    string(REPLACE "#" ";" git_opts ${ARGS_GIT})
+    list(LENGTH ${git_opts} git_opts_len)
+    list(GET 0 repo)
+    set (epa_opts GIT_REPOSITORY "${repo}")
+    if (git_opts_len GREATER 1)
+      list(GET 1 object)
+      set (epa_opts ${epa_opts} GIT_TAG "${object}")
+    endif ()
+  elseif (NOT "${ARGS_PATH}" STREQUAL "")
+      set (epa_opts SOURCE_DIR "${CMAKE_SOURCE_DIR}/${ARGS_PATH}")
+  endif ()
+
+  externalproject_add(
+    ${_NAME}
+    ${epa_opts}
+
+    BINARY_DIR "${CMAKE_BINARY_DIR}/${_NAME}"
+
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
+      -DCMAKE_INSTALL_PREFIX=${install_prefix}
+      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      ${ARGS_OPTS}
+    BUILD_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}"
+    INSTALL_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
+  )
+endfunction ()
+
+include_directories(${CMAKE_BINARY_DIR}/external/include)
+link_directories(${CMAKE_BINARY_DIR}/external/lib)
+
 if (THEORIES)
   add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
   include_directories(dependencies/dyncall/dyncall/)
@@ -32,10 +78,39 @@ include_directories(SYSTEM
   /usr/include/GNUstep
 )
 
+if (MSVC)
+  add_cmake_subproject(nanomsg
+    PATH dependencies/nanomsg-patched
+    OPTS "-DNN_TESTS=OFF")
+
+else ()
+
+  include(ExternalProject)
+
+  externalproject_add(
+      nanomsg
+      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/nanomsg-patched"
+      PREFIX "${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched"
+
+      UPDATE_COMMAND <SOURCE_DIR>/autogen.sh
+      CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
+      BUILD_COMMAND make -j4
+      INSTALL_COMMAND make install
+  )
+
+  externalproject_get_property(nanomsg install_dir)
+  set(NANOMSG_INSTALL_DIR "${install_dir}")
+
+  include_directories(${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/include/)
+  link_directories(${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/)
+
+endif ()
+
 include_directories(
   dependencies/libcsptr/include/
   dependencies/valgrind/include/
   dependencies/klib/
+  dependencies/nanopb/
 )
 
 if (MSVC)
@@ -74,6 +149,7 @@ set(GettextTranslate_ALL 1)
 set(GettextTranslate_GMO_BINARY 1)
 
 add_definitions(-DCRITERION_BUILDING_DLL=1)
+add_definitions(-DPB_ENABLE_MALLOC=1)
 
 set(CMAKE_C_FLAGS_DEFAULT "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS}")
@@ -150,6 +226,8 @@ set(SOURCE_FILES
   src/core/stats.h
   src/core/ordered-set.c
   src/core/test.c
+  src/core/client.c
+  src/core/client.h
   src/compat/internal.h
   src/compat/pipe.c
   src/compat/pipe.h
@@ -187,8 +265,22 @@ set(SOURCE_FILES
   src/entry/options.c
   src/entry/params.c
   src/entry/entry.c
+  src/protocol/criterion.pb.c
+  src/protocol/criterion.pb.h
+  src/protocol/protocol.c
+  src/protocol/messages.c
+  src/protocol/messages.h
+  src/protocol/connect.c
+  src/protocol/connect.h
   src/common.h
   src/config.h
+
+  dependencies/nanopb/pb_common.c
+  dependencies/nanopb/pb_common.h
+  dependencies/nanopb/pb_encode.c
+  dependencies/nanopb/pb_encode.h
+  dependencies/nanopb/pb_decode.c
+  dependencies/nanopb/pb_decode.h
 )
 
 if (THEORIES)
@@ -250,12 +342,27 @@ configure_file(
 
 include_directories(include src)
 add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
+
 set_target_properties(criterion PROPERTIES
    VERSION ${PROJECT_VERSION}
    SOVERSION ${PROJECT_SOVERSION}
 )
 
+add_dependencies(criterion nanomsg)
 target_link_libraries(criterion csptr)
+
+if (WIN32)
+  target_link_libraries(criterion ${CMAKE_BINARY_DIR}/external/lib/nanomsg.lib)
+else ()
+  target_link_libraries(criterion ${CMAKE_CURRENT_BINARY_DIR}/nanomsg-patched/lib/libnanomsg.a)
+endif ()
+
+if (NOT WIN32)
+  target_link_libraries(criterion csptr pthread)
+  if (NOT APPLE)
+    target_link_libraries(criterion csptr anl)
+  endif ()
+endif ()
 
 if (THEORIES)
   target_link_libraries(criterion dyncall_s)

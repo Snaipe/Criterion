@@ -27,6 +27,8 @@
 #include <csptr/smalloc.h>
 #include "core/worker.h"
 #include "core/runner.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
 #include "io/event.h"
 #include "process.h"
 #include "internal.h"
@@ -101,7 +103,6 @@ struct full_context {
     struct criterion_suite suite;
     struct criterion_test_extra_data suite_data;
     cr_worker_func func;
-    struct pipe_handle pipe;
     struct test_single_param param;
     HANDLE sync;
     DWORD extra_size;
@@ -118,28 +119,24 @@ static struct full_context local_ctx;
 # endif
 
 static void handle_sigchld_pump(void) {
-    int fd = g_worker_pipe->fds[1];
     pid_t pid;
     int status;
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        int kind = WORKER_TERMINATED;
-        struct worker_status ws = {
-            (s_proc_handle) { pid }, get_status(status)
-        };
+        int result = WIFEXITED(status)
+            ? criterion_protocol_death_result_type_NORMAL
+            : criterion_protocol_death_result_type_CRASH;
+        int code = WIFEXITED(status)
+            ? WEXITSTATUS(status)
+            : WTERMSIG(status);
 
-        unsigned long long pid_ull = (unsigned long long) pid;
+        criterion_protocol_msg msg = criterion_message(death,
+                .result = result,
+                .has_status = true,
+                .status = code,
+            );
 
-        char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
-        memcpy(buf, &kind, sizeof (kind));
-        memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
-        memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
-
-        if (write(fd, &buf, sizeof (buf)) < (ssize_t) sizeof (buf)) {
-            criterion_perror("Could not write the WORKER_TERMINATED event "
-                    "down the event pipe: %s.\n",
-                    strerror(errno));
-            abort();
-        }
+        msg.id.pid = pid;
+        cr_send_to_runner(&msg);
     }
 }
 
@@ -201,20 +198,24 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
     struct wait_context *wctx = lpParameter;
 
     int status = get_win_status(wctx->proc_handle);
-    int kind = WORKER_TERMINATED;
-    struct worker_status ws = {
-        (s_proc_handle) { wctx->proc_handle }, get_status(status)
-    };
 
-    unsigned long long pid_ull = (unsigned long long) GetProcessId(wctx->proc_handle);
+    int64_t pid = (int64_t) GetProcessId(wctx->proc_handle);
 
-    char buf[sizeof (int) + sizeof (pid_ull) + sizeof (struct worker_status)];
-    memcpy(buf, &kind, sizeof (kind));
-    memcpy(buf + sizeof (kind), &pid_ull, sizeof (pid_ull));
-    memcpy(buf + sizeof (kind) + sizeof (pid_ull), &ws, sizeof (ws));
+    int result = WIFEXITED(status)
+        ? criterion_protocol_death_result_type_NORMAL
+        : criterion_protocol_death_result_type_CRASH;
+    int code = WIFEXITED(status)
+        ? WEXITSTATUS(status)
+        : WTERMSIG(status);
 
-    DWORD written;
-    WriteFile(g_worker_pipe->fhs[1], buf, sizeof (buf), &written, NULL);
+    criterion_protocol_msg msg = criterion_message(death,
+            .result = result,
+            .has_status = true,
+            .status = code,
+        );
+
+    msg.id.pid = pid;
+    cr_send_to_runner(&msg);
 
     HANDLE whandle = wctx->wait_handle;
     free(lpParameter);
@@ -279,7 +280,6 @@ int resume_child(void) {
         .test = &local_ctx.test,
         .suite = &local_ctx.suite,
         .func = local_ctx.func,
-        .pipe = &local_ctx.pipe,
         .param = param,
     };
 
@@ -357,7 +357,6 @@ s_proc_handle *fork_process() {
         .test_data = *g_worker_context.test->data,
         .suite     = *g_worker_context.suite,
         .func      = g_worker_context.func,
-        .pipe      = *g_worker_context.pipe,
         .sync      = sync,
     };
 

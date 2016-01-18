@@ -23,7 +23,10 @@
  */
 #include <string.h>
 #include "abort.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
 #include "criterion/internal/asprintf-compat.h"
+#include "criterion/criterion.h"
 #include "io/event.h"
 
 jmp_buf g_pre_test;
@@ -42,12 +45,14 @@ void criterion_test_die(const char *msg, ...) {
     if (res < 0)
         abort();
 
-    size_t *buf = malloc(sizeof (size_t) + res + 1);
-    *buf = res + 1;
-    memcpy(buf + 1, formatted_msg, res + 1);
+    criterion_protocol_msg abort_msg = criterion_message(phase,
+            .phase = criterion_protocol_phase_kind_ABORT,
+            .name = (char *) criterion_current_test->name,
+            .message = formatted_msg,
+        );
+    criterion_message_set_id(abort_msg);
+    cr_send_to_runner(&abort_msg);
 
-    criterion_send_event(TEST_ABORT, buf, sizeof(size_t) + res + 1);
-    free(buf);
     free(formatted_msg);
 
     exit(0);
