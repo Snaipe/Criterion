@@ -7,7 +7,7 @@ include(CMakeParseArguments)
 
 function (cr_add_subproject _NAME)
   set (options CMAKE AUTOTOOLS)
-  set (oneValueArgs GIT PATH PREFIX)
+  set (oneValueArgs GIT PATH PREFIX GENERATOR)
   set (multiValueArgs OPTS IF)
   cmake_parse_arguments (ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -41,10 +41,14 @@ function (cr_add_subproject _NAME)
   endif ()
 
   if (ARGS_CMAKE)
+    if (NOT ARGS_GENERATOR)
+      set (ARGS_GENERATOR ${CMAKE_GENERATOR})
+    endif ()
     set (build_cmds
       CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
         -DCMAKE_INSTALL_PREFIX=${install_prefix}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -G "${ARGS_GENERATOR}"
         ${ARGS_OPTS}
       BUILD_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}"
       INSTALL_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install

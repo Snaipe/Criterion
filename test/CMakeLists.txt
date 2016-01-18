@@ -36,8 +36,17 @@ set_property(TEST criterion_unit_tests PROPERTY
 if (NOT MSVC) # we disable the scripted tests when building with MSVC
   add_custom_target(cram_tests)
 
+  set(PATH_VAR
+    $ENV{PATH}
+    "${PROJECT_BINARY_DIR}/samples"
+    "${PROJECT_BINARY_DIR}/samples/tests"
+    "${PROJECT_BINARY_DIR}/external/lib"
+    "${PROJECT_BINARY_DIR}/external/bin"
+  )
+  string (REPLACE ";" ":" PATH_VAR "${PATH_VAR}")
+
   set(CMD "")
-  set(CMD "${CMD}PATH=$ENV{PATH}:${PROJECT_BINARY_DIR}/samples:${PROJECT_BINARY_DIR}/samples/tests ")
+  set(CMD "${CMD}PATH=${PATH_VAR} ")
   set(CMD "${CMD}LC_ALL=en_US.utf8 ")
   set(CMD "${CMD}CRITERION_ALWAYS_SUCCEED=1 ")
   set(CMD "${CMD}CRITERION_SHORT_FILENAME=1 ")

@@ -30,6 +30,7 @@ cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
   OPTS "-DNN_TESTS=OFF"
+  GENERATOR "Visual Studio 14 2015"
   CMAKE
   IF WIN32 AND NOT CYGWIN
 )
