@@ -85,6 +85,7 @@ matrix:
 
   allow_failures:
     - compiler: gcc
+    - os: osx # TODO: keep until the nanomsg patch is merged
 
 before_install:
   - |
