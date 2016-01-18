@@ -12,7 +12,6 @@ set(PATH_VAR
 set(NEW_PATH "")
 foreach (P ${PATH_VAR})
   file (TO_NATIVE_PATH "${P}" P)
-  message ("${P}")
   list (APPEND NEW_PATH "${P}")
 endforeach ()
 set (PATH_VAR "${NEW_PATH}")
@@ -24,8 +23,6 @@ else ()
   set(ENV{PATH} "$ENV{PATH};${PATH_VAR}")
 endif ()
 
-message ("path = $ENV{PATH}")
-
 set(ENV{LC_ALL} "en_US.utf8")
 set(ENV{CRITERION_ALWAYS_SUCCEED} "1")
 set(ENV{CRITERION_SHORT_FILENAME} "1")
@@ -33,4 +30,8 @@ set(ENV{CRITERION_NO_EARLY_EXIT} "1")
 set(ENV{CRITERION_JOBS} "1")
 set(ENV{CRITERION_DISABLE_TIME_MEASUREMENTS} "1")
 
-execute_process (COMMAND cram -v ${CRAM_PATH})
+execute_process (COMMAND cram -v "${CRAM_PATH}" TIMEOUT 60 RESULT_VARIABLE RES)
+
+if (NOT RES STREQUAL "0")
+  message (FATAL_ERROR "Cram tests failed")
+endif ()
