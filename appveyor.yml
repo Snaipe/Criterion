@@ -15,6 +15,7 @@ environment:
   PYTHON: "C:\\Python34"
   PYTHON_VERSION: "3.4.x"
   PYTHON_ARCH: "32"
+  PYTHONIOENCODING: "utf-8" # consider cmd encoding to be unicode
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
@@ -44,6 +45,8 @@ install:
   # Install cram
   - "pip install cram"
   - python -m cram --version
+  # Patch buggy cram
+  - sh -c "patch C:/Python34/Lib/site-packages/cram.py .cmake/cram-win.patch"
 
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
   # Hack to make git think it is on the tip of the repo branch
