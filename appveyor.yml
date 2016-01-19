@@ -12,8 +12,8 @@ environment:
   CI_NAME: appveyor
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
-  PYTHON: "C:\\Python34"
-  PYTHON_VERSION: "3.4.x"
+  PYTHON: "C:\\Python35"
+  PYTHON_VERSION: "3.5.x"
   PYTHON_ARCH: "32"
   PYTHONIOENCODING: "utf-8" # consider cmd encoding to be unicode
   matrix:
@@ -46,7 +46,7 @@ install:
   - "pip install cram"
   - python -m cram --version
   # Patch buggy cram
-  - sh -c "patch C:/Python34/Lib/site-packages/cram.py .cmake/cram-win.patch"
+  - sh -c "patch C:/Python35/Lib/site-packages/cram.py .cmake/cram-win.patch"
 
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
   # Hack to make git think it is on the tip of the repo branch
