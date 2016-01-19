@@ -30,7 +30,7 @@ set(ENV{CRITERION_NO_EARLY_EXIT} "1")
 set(ENV{CRITERION_JOBS} "1")
 set(ENV{CRITERION_DISABLE_TIME_MEASUREMENTS} "1")
 
-execute_process (COMMAND cram -v "${CRAM_PATH}" TIMEOUT 60 RESULT_VARIABLE RES)
+execute_process (COMMAND python -m cram -v "${CRAM_PATH}" TIMEOUT 60 RESULT_VARIABLE RES)
 
 if (NOT RES STREQUAL "0")
   message (FATAL_ERROR "Cram tests failed")
