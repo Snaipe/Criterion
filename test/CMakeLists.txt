@@ -2,6 +2,11 @@ if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEFAULT} -std=gnu99 -Wall -Wextra")
   if (CMAKE_CXX_COMPILER_WORKS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEFAULT} ${CXX11_FLAG} -Wall -Wextra")
+
+    if (MINGW)
+      # see http://sourceforge.net/p/mingw/bugs/2250/
+      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__NO_INLINE__")
+    endif ()
   endif ()
 endif ()
 

@@ -1,6 +1,11 @@
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEFAULT} -std=c99 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEFAULT} ${CXX11_FLAG} -Wall -Wextra -pedantic")
+
+  if (MINGW)
+    # see http://sourceforge.net/p/mingw/bugs/2250/
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__NO_INLINE__")
+  endif ()
 endif ()
 
 include_directories(../include)
