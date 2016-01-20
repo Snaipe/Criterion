@@ -103,8 +103,10 @@ before_install:
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
           brew install python3
           export PATH="$(python3 -m site --user-base)/bin:$PATH"
+          export PYTHON_BIN="python3"
         else
           curl -L https://bootstrap.pypa.io/get-pip.py | python3.5 - --user
+          export PYTHON_BIN="python3.5"
         fi
 
         pip3 install --user cram==0.6

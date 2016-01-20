@@ -46,12 +46,10 @@ if (WIN32)
   endif ()
 endif ()
 
-execute_process (COMMAND python3 --version TIMEOUT 1 RESULT_VARIABLE PYTHON3_RES)
-
-if (NOT PYTHON3_RES STREQUAL "0")
+if (NOT ENV{PYTHON_BIN})
   set (PYTHON "python")
 else ()
-  set (PYTHON "python3")
+  set (PYTHON "$ENV{PYTHON_BIN}")
 endif ()
 
 execute_process (COMMAND ${PYTHON} -m cram -v ${CRAM_OPTS} "${CRAM_PATH}" TIMEOUT 60 RESULT_VARIABLE RES)
