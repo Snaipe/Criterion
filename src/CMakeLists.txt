@@ -133,5 +133,13 @@ configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/config.h"
 )
 
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/criterion.pc.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/criterion.pc"
+  @ONLY
+)
+
+install (FILES "${CMAKE_CURRENT_BINARY_DIR}/criterion.pc" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/pkgconfig")
+
 set (SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)
 set (INTERFACE_FILES ${INTERFACE_FILES} PARENT_SCOPE)
