@@ -1,8 +1,16 @@
-diff --git a/cram.py b/cram.py
-index 20c4681..3b9f144 100755
---- a/cram.py
-+++ b/cram.py
-@@ -168,14 +168,14 @@ def test(path, shell, indent=2):
+--- /usr/lib/python3.5/site-packages/cram.py	2016-01-16 20:22:50.188589086 +0100
++++ cram.py	2016-01-20 12:02:14.881815552 +0100
+@@ -12,6 +12,9 @@
+ import shutil
+ import time
+ import tempfile
++import re
++
++_newlines_re = re.compile(r'(\r\n|\r|\r)')
+ 
+ try:
+     import configparser
+@@ -168,14 +171,14 @@
      cmdline = '%s$ ' % indent
      conline = '%s> ' % indent
  
@@ -14,20 +22,22 @@ index 20c4681..3b9f144 100755
      env['TESTFILE'] = os.path.basename(abspath)
      p = subprocess.Popen([shell, '-'], bufsize=-1, stdin=subprocess.PIPE,
                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                          universal_newlines=True, env=env,
+-                         universal_newlines=True, env=env,
++                         universal_newlines=False, env=env,
                           preexec_fn=makeresetsigpipe(),
                           close_fds=os.name == 'posix')
      salt = 'CRAM%s' % time.time()
-@@ -199,7 +199,7 @@ def test(path, shell, indent=2):
+@@ -199,7 +202,8 @@
              after.setdefault(pos, []).append(line)
      stdin.append('echo "\n%s %s $?"\n' % (salt, i + 1))
  
 -    output = p.communicate(input=''.join(stdin))[0]
 +    output = p.communicate(input=''.join(stdin).encode('utf-8'))[0].decode('utf-8')
++    output = _newlines_re.sub('\n', output)
      if p.returncode == 80:
          return (refout, None, [])
  
-@@ -336,7 +336,7 @@ def run(paths, tmpdir, shell, quiet=False, verbose=False, patchcmd=None,
+@@ -336,7 +340,7 @@
                  log('!', 'failed\n', verbose)
                  if not quiet:
                      log('\n', None, verbose)
