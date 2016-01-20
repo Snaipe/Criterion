@@ -82,6 +82,7 @@ test_script:
         ctest
         if (-not $lastexitcode -eq 0) {
             type Testing/Temporary/LastTest.log
+            $host.setshouldexit(1)
         }
 
 #after_test:
