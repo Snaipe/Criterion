@@ -40,6 +40,7 @@ install:
   # Install Python
   - ps: if (-not(Test-Path($env:PYTHON))) { & .cmake\install_python.ps1 }
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PYTHON%\\bin;%PATH%"
+  - python --version
   # Upgrade pip
   - "pip install --disable-pip-version-check --user --upgrade pip"
   # Install cram
