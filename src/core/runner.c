@@ -417,10 +417,13 @@ cleanup:
 }
 
 int criterion_run_all_tests(struct criterion_test_set *set) {
-    #ifdef HAVE_PCRE
-    if (criterion_options.pattern)
+    if (criterion_options.pattern) {
+#ifdef HAVE_PCRE
         disable_unmatching(set);
-    #endif
+#else
+        criterion_perror("Did not filter tests by pattern: Criterion was compiled without extglob support.\n");
+#endif
+    }
 
     set_runner_process();
     int res = criterion_run_all_tests_impl(set);

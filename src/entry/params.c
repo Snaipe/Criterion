@@ -42,14 +42,6 @@
 
 # define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
 
-#ifdef HAVE_PCRE
-# define PATTERN_USAGE                                      \
-    "    --pattern [PATTERN]: run tests matching the "      \
-            "given pattern\n"
-#else
-# define PATTERN_USAGE
-#endif
-
 # define USAGE                                              \
     VERSION_MSG "\n"                                        \
     "usage: %s OPTIONS\n"                                   \
@@ -65,7 +57,8 @@
             "or colors in the output\n"                     \
     "    -S or --short-filename: only display the base "    \
             "name of the source file on a failure\n"        \
-    PATTERN_USAGE                                           \
+    "    --pattern [PATTERN]: run tests matching the "      \
+            "given pattern\n"                               \
     "    --tap[=FILE]: writes TAP report in FILE "          \
             "(no file or \"-\" means stderr)\n"             \
     "    --xml[=FILE]: writes XML report in FILE "          \
@@ -150,9 +143,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"fail-fast",       no_argument,        0, 'f'},
         {"short-filename",  no_argument,        0, 'S'},
         {"single",          required_argument,  0, 's'},
-#ifdef HAVE_PCRE
         {"pattern",         required_argument,  0, 'p'},
-#endif
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {"output",          required_argument,  0, 'O'},
@@ -194,11 +185,9 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     if (env_short_filename)
         opt->short_filename    = !strcmp("1", env_short_filename);
 
-#ifdef HAVE_PCRE
     char *env_pattern = getenv("CRITERION_TEST_PATTERN");
     if (env_pattern)
         opt->pattern = env_pattern;
-#endif
 
     opt->measure_time = !!strcmp("1", DEF(getenv("CRITERION_DISABLE_TIME_MEASUREMENTS"), "0"));
 
@@ -248,9 +237,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
             case 's': run_single_test_by_name(optarg); return 0;
-#ifdef HAVE_PCRE
             case 'p': criterion_options.pattern           = optarg; break;
-#endif
             case 'q': quiet = true; break;
 
             {
