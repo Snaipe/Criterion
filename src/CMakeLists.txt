@@ -53,6 +53,7 @@ set(SOURCE_FILES
   src/io/xml.c
   src/io/json.c
   src/log/logging.c
+  src/log/logging.h
   src/log/normal.c
   src/string/i18n.c
   src/string/i18n.h

@@ -24,7 +24,7 @@
 #include <nanomsg/nn.h>
 #include <stdlib.h>
 #include "protocol/protocol.h"
-#include "criterion/logging.h"
+#include "log/logging.h"
 #include "io/event.h"
 #include "io/asprintf.h"
 

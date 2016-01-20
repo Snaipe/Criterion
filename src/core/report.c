@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include "criterion/types.h"
 #include "criterion/stats.h"
-#include "criterion/logging.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
+#include "log/logging.h"
 #include "report.h"
 #include "config.h"
 #include "compat/posix.h"

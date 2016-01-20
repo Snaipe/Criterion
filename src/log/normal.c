@@ -27,9 +27,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "criterion/stats.h"
-#include "criterion/logging.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
+#include "log/logging.h"
 #include "compat/posix.h"
 #include "compat/strtok.h"
 #include "compat/time.h"
@@ -233,6 +233,10 @@ void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const c
     free(dup);
 }
 
+void normal_log_message(enum criterion_severity severity, const char *msg) {
+    criterion_log_noformat(severity, msg);
+}
+
 struct criterion_logger normal_logging = {
     .log_pre_all        = normal_log_pre_all,
     .log_pre_init       = normal_log_pre_init,
@@ -247,4 +251,5 @@ struct criterion_logger normal_logging = {
     .log_post_test      = normal_log_post_test,
     .log_post_suite     = normal_log_post_suite,
     .log_post_all       = normal_log_post_all,
+    .log_message        = normal_log_message,
 };

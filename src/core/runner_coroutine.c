@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <csptr/smalloc.h>
-#include "criterion/logging.h"
 #include "criterion/internal/parameterized.h"
+#include "log/logging.h"
 #include "runner_coroutine.h"
 #include "worker.h"
 #include "stats.h"

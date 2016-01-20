@@ -23,7 +23,7 @@
  */
 #include "alloc.h"
 #include "internal.h"
-#include "criterion/logging.h"
+#include "log/logging.h"
 #include <stdlib.h>
 
 #ifdef VANILLA_WIN32
