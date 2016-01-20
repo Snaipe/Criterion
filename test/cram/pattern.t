@@ -1,3 +1,9 @@
+Only run on linux
+
+  $ if [ "$(uname -o)" = "Msys" ]; then
+  >   exit 80
+  > fi
+
 Selecting misc::passing
 
   $ simple.c.bin --pattern '*/passing' --verbose
