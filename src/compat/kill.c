@@ -71,6 +71,7 @@ void setup_parent_job(void) {
 }
 
 void cr_killall(void) {
+    fflush(NULL);
 #ifdef VANILLA_WIN32
     if (!TerminateJobObject(cr_job, 1))
         abort();
