@@ -26,6 +26,7 @@
 
 # include "internal/common.h"
 # include "internal/ordered-set.h"
+# include "internal/deprecation.h"
 # include "stats.h"
 
 CR_BEGIN_C_API
@@ -73,6 +74,18 @@ extern struct criterion_logger normal_logging;
 
 CR_END_C_API
 
-#define CR_NORMAL_LOGGING (&normal_logging)
+# define CR_NORMAL_LOGGING (&normal_logging)
+
+// Deprecated old logging system, schedule removal for 3.0
+# ifndef CRITERION_NO_COMPAT
+
+#  define criterion_log(_, ...) CR_DEPRECATED("criterion_log is deprecated, please use cr_log instead.") cr_log_info(__VA_ARGS__)
+#  define criterion_info(...) CR_DEPRECATED("criterion_info is deprecated, please use cr_log_info instead.") cr_log_info(__VA_ARGS__)
+#  define criterion_pinfo(_, ...) CR_DEPRECATED("criterion_pinfo is deprecated, please use cr_log_info instead.") cr_log_info(__VA_ARGS__)
+#  define criterion_important(...) CR_DEPRECATED("criterion_important is deprecated, please use cr_log_info instead.") cr_log_info(__VA_ARGS__)
+#  define criterion_pimportant(_, ...) CR_DEPRECATED("criterion_pimportant is deprecated, please use cr_log_info instead.") cr_log_info(__VA_ARGS__)
+#  define criterion_perror(...) CR_DEPRECATED("criterion_perror is deprecated, please use cr_log_error instead.") cr_log_error(__VA_ARGS__)
+
+# endif /* !CRITERION_NO_COMPAT */
 
 #endif /* !CRITERION_LOGGING_H_ */

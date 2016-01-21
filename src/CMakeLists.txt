@@ -118,6 +118,7 @@ set(INTERFACE_FILES
   include/criterion/internal/hooks.h
   include/criterion/internal/redirect.h
   include/criterion/internal/stdio_filebuf.hxx
+  include/criterion/internal/deprecation.h
 )
 
 if (THEORIES)

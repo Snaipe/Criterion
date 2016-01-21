@@ -78,6 +78,13 @@ extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 # define CRITERION_PREFIX_ERR    (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_ERR   ])
 # define CRITERION_PREFIX_WARN   (&g_criterion_logging_prefixes[CRITERION_LOGGING_PREFIX_WARN  ])
 
+# undef criterion_log
+# undef criterion_info
+# undef criterion_pinfo
+# undef criterion_important
+# undef criterion_pimportant
+# undef criterion_perror
+
 CR_API void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list args);
 
 CR_FORMAT(printf, 3, 4)
