@@ -1,6 +1,6 @@
 Only run on linux
 
-  $ if [ "$(uname -o)" = "Msys" ]; then
+  $ if [ "$CRITERION_TESTS_PATTERN" = "off" ]; then
   >   exit 80
   > fi
 

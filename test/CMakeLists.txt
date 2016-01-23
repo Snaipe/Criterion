@@ -45,6 +45,7 @@ if (NOT MSVC) # we disable the scripted tests when building with MSVC
       COMMAND "${CMAKE_COMMAND}"
         -DPROJECT_BINARY_DIR="${PROJECT_BINARY_DIR}"
         -DCRAM_PATH="${CMAKE_CURRENT_SOURCE_DIR}/cram"
+        -DCRITERION_TESTS_PATTERN="${HAVE_PCRE}"
         -P "${CMAKE_MODULE_PATH}/Cram.cmake"
   )
   add_dependencies(cram_tests criterion_samples)
