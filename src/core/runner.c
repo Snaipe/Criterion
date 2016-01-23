@@ -411,7 +411,10 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
 
 cleanup:
     free_proc_compat();
-    nn_close(sock);
+    if (is_runner()) {
+        close_socket (g_client_socket);
+        close_socket (sock);
+    }
     sfree(stats);
     return result;
 }
