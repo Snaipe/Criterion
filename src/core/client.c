@@ -116,6 +116,8 @@ void destroy_server_context(struct server_ctx *sctx) {
     kh_destroy(ht_client, sctx->subprocesses);
 
     kh_destroy(ht_extern, sctx->clients);
+
+    sfree(sctx->extern_sstats);
 }
 
 struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, struct worker *w) {
