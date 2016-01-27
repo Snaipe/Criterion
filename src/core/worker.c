@@ -25,7 +25,6 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <csptr/smalloc.h>
-#include <nanomsg/nn.h>
 
 #include "criterion/types.h"
 #include "criterion/options.h"

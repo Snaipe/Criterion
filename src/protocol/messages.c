@@ -21,22 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <nanomsg/nn.h>
 #include <stdlib.h>
+#include <zmq.h>
 #include "protocol/protocol.h"
 #include "criterion/logging.h"
 #include "io/event.h"
 #include "io/asprintf.h"
 
-int read_message(int sock, criterion_protocol_msg *message) {
+int read_message(cr_socket sock, criterion_protocol_msg *message) {
     int res;
-    unsigned char *buf = NULL;
-    int read = res = nn_recv(sock, &buf, NN_MSG, 0);
+    zmq_msg_t msg;
+    zmq_msg_init (&msg);
+
+    int read = res = zmq_msg_recv(&msg, sock, 0);
 
     if (read <= 0)
         goto cleanup;
 
-    pb_istream_t stream = pb_istream_from_buffer(buf, read);
+    pb_istream_t stream = pb_istream_from_buffer(zmq_msg_data(&msg), read);
     if (!pb_decode(&stream, criterion_protocol_msg_fields, message)) {
         res = -2;
         goto cleanup;
@@ -44,12 +46,11 @@ int read_message(int sock, criterion_protocol_msg *message) {
 
     res = 1;
 cleanup:
-    if (buf)
-        nn_freemsg(buf);
+    zmq_msg_close(&msg);
     return res;
 }
 
-int write_message(int sock, const criterion_protocol_msg *message) {
+int write_message(cr_socket sock, const criterion_protocol_msg *message) {
     int res = -1;
     size_t size;
     unsigned char *buf = NULL;
@@ -61,7 +62,7 @@ int write_message(int sock, const criterion_protocol_msg *message) {
     if (!pb_encode(&stream, criterion_protocol_msg_fields, message))
         goto cleanup;
 
-    int written = nn_send(sock, buf, size, 0);
+    int written = zmq_send(sock, buf, size, 0);
     if (written <= 0 || written != (int) size)
         goto cleanup;
 
@@ -83,20 +84,22 @@ void cr_send_to_runner(const criterion_protocol_msg *message) {
     if (write_message(g_client_socket, message) != 1) {
         criterion_perror("Could not write the \"%s\" message down the event pipe: %s.\n",
                 message_names[message->data.which_value],
-                nn_strerror(errno));
+                zmq_strerror(errno));
         abort();
     }
 
-    unsigned char *buf = NULL;
-    int read = nn_recv(g_client_socket, &buf, NN_MSG, 0);
+    zmq_msg_t msg;
+    zmq_msg_init (&msg);
+
+    int read = zmq_msg_recv(&msg, g_client_socket, 0);
 
     if (read <= 0) {
-        criterion_perror("Could not read ack: %s.\n", nn_strerror(errno));
+        criterion_perror("Could not read ack: %s.\n", zmq_strerror(errno));
         abort();
     }
 
     criterion_protocol_ack ack;
-    pb_istream_t stream = pb_istream_from_buffer(buf, read);
+    pb_istream_t stream = pb_istream_from_buffer(zmq_msg_data(&msg), read);
     if (!pb_decode(&stream, criterion_protocol_ack_fields, &ack)) {
         criterion_perror("Could not decode ack: %s.\n", PB_GET_ERROR(&stream));
         abort();
@@ -108,11 +111,10 @@ void cr_send_to_runner(const criterion_protocol_msg *message) {
     }
     pb_release(criterion_protocol_ack_fields, &ack);
 
-    if (buf)
-        nn_freemsg(buf);
+    zmq_msg_close(&msg);
 }
 
-void send_ack(int sock, bool ok, const char *msg, ...) {
+void send_ack(cr_socket sock, bool ok, const char *msg, ...) {
     criterion_protocol_ack ack;
     ack.status_code = ok ? criterion_protocol_ack_status_OK : criterion_protocol_ack_status_ERROR;
     ack.message = NULL;
@@ -139,9 +141,9 @@ void send_ack(int sock, bool ok, const char *msg, ...) {
         abort();
     }
 
-    int written = nn_send(sock, buf, size, 0);
+    int written = zmq_send(sock, buf, size, 0);
     if (written <= 0 || written != (int) size) {
-        criterion_perror("Could not send ack: %s.\n", nn_strerror(errno));
+        criterion_perror("Could not send ack: %s.\n", zmq_strerror(errno));
         abort();
     }
 
