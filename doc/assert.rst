@@ -76,11 +76,11 @@ Array Assertions
 =============================================================================== =========================================================================== ===========================================
 Macro                                                                            Passes if and only if                                                       Notes
 =============================================================================== =========================================================================== ===========================================
-cr_assert_arr_eq(Actual, Expected, [FormatString, [Args...]])                    ``Actual`` is byte-to-byte equal to ``Expected``.                           This should not be used on struct arrays,
+cr_assert_arr_eq(Actual, Expected, Size, [FormatString, [Args...]])                    ``Actual`` is byte-to-byte equal to ``Expected``.                           This should not be used on struct arrays,
                                                                                                                                                              consider using ``cr_assert_arr_eq_cmp``
                                                                                                                                                              instead.
 ------------------------------------------------------------------------------- --------------------------------------------------------------------------- -------------------------------------------
-cr_assert_arr_neq(Actual, Unexpected, [FormatString, [Args...]])                 ``Actual`` is not byte-to-byte equal to ``Unexpected``.                     This should not be used on struct arrays,
+cr_assert_arr_neq(Actual, Unexpected, Size, [FormatString, [Args...]])                 ``Actual`` is not byte-to-byte equal to ``Unexpected``.                     This should not be used on struct arrays,
                                                                                                                                                              consider using ``cr_assert_arr_neq_cmp``
                                                                                                                                                              instead.
 ------------------------------------------------------------------------------- --------------------------------------------------------------------------- -------------------------------------------
