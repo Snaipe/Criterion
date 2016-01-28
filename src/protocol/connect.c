@@ -22,53 +22,46 @@
  * THE SOFTWARE.
  */
 #include <errno.h>
-#include <zmq.h>
-#include "connect.h"
+#include <nanomsg/nn.h>
+#include <nanomsg/reqrep.h>
 
 #define URL "ipc://criterion.sock"
 
 #define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
 
-static void *zmq_ctx;
+int bind_server(void) {
+    int fstrat = NN_FORK_RESET;
+    nn_setopt(NN_FORK_STRATEGY, &fstrat, sizeof (fstrat));
 
-void cr_transport_init (void) {
-    zmq_ctx = zmq_ctx_new ();
-}
+    int sock = nn_socket(AF_SP, NN_REP);
+    if (sock < 0)
+        return -1;
 
-void cr_transport_term (void) {
-    zmq_ctx_destroy (zmq_ctx);
-}
-
-cr_socket bind_server(void) {
-    cr_socket sock = zmq_socket(zmq_ctx, ZMQ_REP);
-    if (sock == NULL)
-        goto error;
-
-    if (zmq_bind(sock, URL) < 0)
+    if (nn_bind(sock, URL) < 0)
         goto error;
 
     return sock;
+
 error: {}
-    if (sock)
-        errno_ignore(zmq_close(sock));
-    return NULL;
+    errno_ignore(nn_close(sock));
+    return -1;
 }
 
-cr_socket connect_client(void) {
-    cr_socket sock = zmq_socket(zmq_ctx, ZMQ_REQ);
-    if (sock == NULL)
-        goto error;
+int connect_client(void) {
+    int sock = nn_socket(AF_SP, NN_REQ);
+    if (sock < 0)
+        return -1;
 
-    if (zmq_connect (sock, URL) < 0)
+    if (nn_connect (sock, URL) < 0)
         goto error;
 
     return sock;
+
 error: {}
-    if (sock)
-        errno_ignore(zmq_close(sock));
-    return NULL;
+    errno_ignore(nn_close(sock));
+    return -1;
 }
 
-void close_socket(cr_socket sock) {
-    zmq_close(sock);
+void close_socket(int sock) {
+    nn_close(sock);
 }

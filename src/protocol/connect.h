@@ -24,13 +24,8 @@
 #ifndef CONNECT_H_
 # define CONNECT_H_
 
-typedef void *cr_socket;
-
-void cr_transport_init (void);
-void cr_transport_term (void);
-
-cr_socket connect_client(void);
-cr_socket bind_server(void);
-void close_socket(cr_socket sock);
+int connect_client(void);
+int bind_server(void);
+void close_socket(int sock);
 
 #endif /* !CONNECT_H_ */

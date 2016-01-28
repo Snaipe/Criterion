@@ -13,6 +13,9 @@
 [submodule "dependencies/nanopb"]
 	path = dependencies/nanopb
 	url = https://github.com/nanopb/nanopb.git
-[submodule "dependencies/libzmq"]
-	path = dependencies/libzmq
-	url = https://github.com/zeromq/zeromq4-1
+[submodule "dependencies/nanomsg"]
+	path = dependencies/nanomsg
+	url = https://github.com/nanomsg/nanomsg.git
+[submodule "dependencies/nanomsg-patched"]
+	path = dependencies/nanomsg-patched
+	url = https://github.com/Snaipe/nanomsg.git

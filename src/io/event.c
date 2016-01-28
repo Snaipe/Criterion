@@ -28,7 +28,7 @@
 #include "event.h"
 #include "assert.h"
 
-cr_socket g_client_socket = NULL;
+int g_client_socket = -1;
 
 void criterion_send_assert(struct criterion_assert_stats *stats) {
     assert(stats->message);

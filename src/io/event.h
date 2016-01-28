@@ -26,11 +26,10 @@
 
 # include "criterion/event.h"
 # include "core/worker.h"
-# include "protocol/connect.h"
 # include <stdio.h>
 # include <pb.h>
 
-extern cr_socket g_client_socket;
+extern int g_client_socket;
 
 struct event {
     unsigned long long pid;

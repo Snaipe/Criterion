@@ -27,17 +27,18 @@ include (PackageUtils)
 cr_add_subproject (csptr PATH dependencies/libcsptr CMAKE)
 cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
-cr_add_subproject (zmq
-  PATH dependencies/libzmq
-  LIBNAME libzmq-static
-  OPTS
-    -DZMQ_MAKE_VALGRIND_HAPPY=1
-    -DZMQ_BUILD_FRAMEWORK=OFF
-    -DZMQ_BUILD_TESTS=OFF
-    -DWITH_TWEETNACL=OFF
-    -DWITH_PERF_TOOL=OFF
+cr_add_subproject (nanomsg
+  PATH dependencies/nanomsg-patched
+  OPTS "-DNN_TESTS=OFF"
+  GENERATOR "Visual Studio 14 2015"
   CMAKE
-  PARALLELIZED
+  IF WIN32 AND NOT CYGWIN
+)
+cr_add_subproject (nanomsg
+  PATH dependencies/nanomsg-patched
+  AUTOTOOLS
+  PARALLELIZE
+  IF NOT WIN32 OR CYGWIN
 )
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
@@ -77,7 +78,7 @@ cr_add_library(criterion SHARED
 )
 
 cr_link_subproject(criterion csptr STATIC)
-cr_link_subproject(criterion zmq SHARED)
+cr_link_subproject(criterion nanomsg STATIC)
 cr_link_subproject(criterion dyncall_s STATIC)
 cr_link_subproject(criterion wingetopt STATIC)
 

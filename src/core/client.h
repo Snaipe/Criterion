@@ -66,7 +66,7 @@ struct kh_ht_client_s;
 struct kh_ht_extern_s;
 
 struct server_ctx {
-    cr_socket socket;
+    int socket;
     struct criterion_suite extern_suite;
     struct criterion_test_extra_data extern_suite_data;
     struct criterion_global_stats *gstats;

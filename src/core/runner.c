@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <csptr/smalloc.h>
 #include <valgrind/valgrind.h>
+#include <nanomsg/nn.h>
 #include "criterion/internal/test.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
@@ -170,13 +171,9 @@ const struct criterion_suite *criterion_current_suite;
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
 
-    // Reinitialize transport context after fork
-    cr_transport_term ();
-    cr_transport_init ();
-
     cr_redirect_stdin();
     g_client_socket = connect_client();
-    if (g_client_socket == NULL) {
+    if (g_client_socket < 0) {
         criterion_perror("Could not initialize the message client: %s.\n",
                 strerror(errno));
         abort();
@@ -302,7 +299,7 @@ static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext 
 
 static void run_tests_async(struct criterion_test_set *set,
                             struct criterion_global_stats *stats,
-                            cr_socket socket) {
+                            int socket) {
 
     ccrContext ctx = 0;
 
@@ -384,17 +381,15 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
 
     fflush(NULL); // flush everything before forking
 
-    cr_transport_init ();
-
-    cr_socket sock = bind_server();
-    if (sock == NULL) {
+    int sock = bind_server();
+    if (sock < 0) {
         criterion_perror("Could not initialize the message server: %s.\n",
                 strerror(errno));
         abort();
     }
 
     g_client_socket = connect_client();
-    if (g_client_socket == NULL) {
+    if (g_client_socket < 0) {
         criterion_perror("Could not initialize the message client: %s.\n",
                 strerror(errno));
         abort();
@@ -420,7 +415,6 @@ cleanup:
         close_socket (g_client_socket);
         close_socket (sock);
     }
-    cr_transport_term ();
     sfree(stats);
     return result;
 }
