@@ -30,8 +30,6 @@
 #define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
 
 int bind_server(void) {
-    int fstrat = NN_FORK_RESET;
-    nn_setopt(NN_FORK_STRATEGY, &fstrat, sizeof (fstrat));
 
     int sock = nn_socket(AF_SP, NN_REP);
     if (sock < 0)

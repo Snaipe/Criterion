@@ -36,6 +36,7 @@ cr_add_subproject (nanomsg
 )
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
+  OPTS "--with-fork-strategy=reset"
   AUTOTOOLS
   PARALLELIZE
   IF NOT WIN32 OR CYGWIN
