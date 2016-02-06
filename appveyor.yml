@@ -4,9 +4,9 @@ os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
-  - set "PATH=C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%"
+  - set "PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%"
   - set MSYSTEM=MINGW64
-  - pacman --noconfirm --needed -S base-devel git zip mingw-w64-x86_64-toolchain
+  - pacman --noconfirm --needed -S base-devel git zip mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
   - set "PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug;%APPVEYOR_BUILD_FOLDER%\build\external\bin;%APPVEYOR_BUILD_FOLDER%\build\external\lib"
 
 environment:
