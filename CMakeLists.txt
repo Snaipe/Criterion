@@ -35,6 +35,8 @@ cr_add_subproject (nanomsg
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
 
+add_definitions (-DNN_STATIC_LIB)
+
 include_directories(
   dependencies/valgrind/include/
   dependencies/klib/
@@ -75,8 +77,11 @@ cr_link_subproject(criterion dyncall_s STATIC)
 cr_link_subproject(criterion wingetopt STATIC)
 
 cr_link_libraries(criterion pthread IF NOT WIN32)
-cr_link_libraries(criterion anl IF NOT WIN32 AND NOT APPLE)
 cr_link_libraries(criterion rt IF HAVE_CLOCK_GETTIME)
+
+# Required by nanomsg
+cr_link_libraries(criterion anl IF NOT WIN32 AND NOT APPLE)
+cr_link_libraries(criterion ws2_32 mswsock IF WIN32)
 
 cr_link_package(criterion PCRE)
 cr_link_package(criterion LIBINTL)
