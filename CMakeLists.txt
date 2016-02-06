@@ -29,20 +29,8 @@ cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
-  OPTS "-DNN_TESTS=OFF"
-  GENERATOR "Visual Studio 14 2015"
+  OPTS "-DNN_TESTS=OFF" "-DNN_FORK_STRATEGY=reset"
   CMAKE
-  IF "${CMAKE_GENERATOR}" MATCHES "Visual Studio"
-)
-if (NOT WIN32)
-  set (NN_OPTS "--with-fork-strategy=reset")
-endif ()
-cr_add_subproject (nanomsg
-  PATH dependencies/nanomsg-patched
-  OPTS ${NN_OPTS}
-  AUTOTOOLS
-  PARALLELIZE
-  IF NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio"
 )
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
