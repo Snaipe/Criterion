@@ -20,6 +20,7 @@ environment:
   PYTHON_VERSION: "3.4.2"
   PYTHON_ARCH: "32"
   PYTHONIOENCODING: "utf-8" # consider cmd encoding to be unicode
+  CRAM_SHELL: "C:\\msys64\\usr\\bin\\sh.exe"
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
