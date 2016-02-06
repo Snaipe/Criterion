@@ -22,13 +22,14 @@
  * THE SOFTWARE.
  */
 #include <assert.h>
+#include <stdint.h>
 #include "section.h"
 #include "internal.h"
 
 #ifdef _WIN32
 void *get_win_section_start(const char *section) {
     PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER) GetModuleHandle(NULL);
-    PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((DWORD)(dosHeader) + (dosHeader->e_lfanew));
+    PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((uintptr_t)(dosHeader) + (dosHeader->e_lfanew));
 
     assert(dosHeader->e_magic == IMAGE_DOS_SIGNATURE);
     assert(ntHeader->Signature == IMAGE_NT_SIGNATURE);
@@ -44,7 +45,7 @@ void *get_win_section_start(const char *section) {
 
 void *get_win_section_end(const char *section) {
     PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER) GetModuleHandle(NULL);
-    PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((DWORD)(dosHeader) + (dosHeader->e_lfanew));
+    PIMAGE_NT_HEADERS ntHeader = ntHeader = (PIMAGE_NT_HEADERS) ((uintptr_t)(dosHeader) + (dosHeader->e_lfanew));
 
     assert(dosHeader->e_magic == IMAGE_DOS_SIGNATURE);
     assert(ntHeader->Signature == IMAGE_NT_SIGNATURE);
