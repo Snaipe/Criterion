@@ -111,6 +111,10 @@ struct full_context {
 static TCHAR g_mapping_name[] = TEXT("WinCriterionWorker_%lu");
 
 static struct full_context local_ctx;
+
+static CRITICAL_SECTION wait_sync;
+static CONDITION_VARIABLE wait_cond;
+static LONG volatile wait_threads;
 #endif
 
 #if defined(__unix__) || defined(__APPLE__)
@@ -170,6 +174,10 @@ void init_proc_compat(void) {
         perror(0);
         exit(1);
     }
+#else
+    InitializeConditionVariable(&wait_cond);
+    InitializeCriticalSection(&wait_sync);
+    wait_threads = 0;
 #endif
 }
 
@@ -177,6 +185,13 @@ void free_proc_compat(void) {
 #ifndef VANILLA_WIN32
     child_pump_running = false;
     pthread_join(child_pump, NULL);
+#else
+    EnterCriticalSection(&wait_sync);
+    while (wait_threads > 0)
+        SleepConditionVariableCS(&wait_cond, &wait_sync, INFINITE);
+    LeaveCriticalSection(&wait_sync);
+
+    DeleteCriticalSection(&wait_sync);
 #endif
 }
 
@@ -212,6 +227,9 @@ static void CALLBACK handle_child_terminated(PVOID lpParameter,
 
     msg.id.pid = pid;
     cr_send_to_runner(&msg);
+
+    if (InterlockedDecrement(&wait_threads) == 0)
+        WakeConditionVariable(&wait_cond);
 
     HANDLE whandle = wctx->wait_handle;
     free(lpParameter);
@@ -386,6 +404,7 @@ s_proc_handle *fork_process() {
         .proc_handle = info.hProcess,
     };
 
+    InterlockedIncrement (&wait_threads);
     RegisterWaitForSingleObject(
             &wctx->wait_handle,
             info.hProcess,
