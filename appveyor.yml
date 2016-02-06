@@ -16,6 +16,7 @@ environment:
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
   PYTHON: "C:\\Python34"
+  PYTHON_BIN: "C:\\Python34\\python.exe"
   PYTHON_VERSION: "3.4.2"
   PYTHON_ARCH: "32"
   PYTHONIOENCODING: "utf-8" # consider cmd encoding to be unicode
