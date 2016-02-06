@@ -28,7 +28,7 @@
 #  define VC_EXTRALEAN
 #  define WIN32_LEAN_AND_MEAN
 #  undef _WIN32_WINNT
-#  define _WIN32_WINNT 0x0502
+#  define _WIN32_WINNT 0x0600
 #  include <windows.h>
 
 #  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
