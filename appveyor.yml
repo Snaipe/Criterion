@@ -69,7 +69,8 @@ install:
       ..
 
 build_script:
-  - cmake --build .
+  # open dummy fd 0 to prevent errors at configure time for nanomsg
+  - cmake --build . 0<nul
 
 before_deploy:
   - ps: |
