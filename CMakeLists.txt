@@ -29,7 +29,7 @@ cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
-  OPTS "-DNN_TESTS=OFF" "-DNN_FORK_STRATEGY=reset"
+  OPTS "-DNN_TESTS=OFF" "-DNN_FORK_STRATEGY=reset" "-DNN_STATIC_LIB=ON"
   CMAKE
 )
 
