@@ -295,8 +295,6 @@ static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext 
     return add_client_from_worker(sctx, &new_ctx, w);
 }
 
-#include <stdio.h>
-
 static void run_tests_async(struct criterion_test_set *set,
                             struct criterion_global_stats *stats,
                             int socket) {
