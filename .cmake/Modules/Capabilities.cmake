@@ -4,6 +4,7 @@
 
 include(CheckPrototypeDefinition)
 include(CheckLibraryExists)
+include(CheckFunctionExists)
 include(PackageUtils)
 
 # Check for packages
@@ -21,12 +22,8 @@ cr_find_package (PCRE PKGCONFIG libpcre)
 
 # Check for functions
 
-check_prototype_definition(
-  strtok_s
-  "char *strtok_s(char *strToken, const char *strDelimit, char **context)"
-  NULL
-  "string.h"
-  HAVE_STRTOK_S)
+check_function_exists(strtok_s HAVE_STRTOK_S)
+check_function_exists(strtok_r HAVE_STRTOK_R)
 
 check_library_exists (rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 

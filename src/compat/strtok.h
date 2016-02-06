@@ -27,12 +27,14 @@
 # include "config.h"
 
 # ifdef VANILLA_WIN32
-#  if HAVE_STRTOK_S
-#   define strtok_r strtok_s
-#  else
+#  if !HAVE_STRTOK_R
+#   if HAVE_STRTOK_S
+#    define strtok_r strtok_s
+#   else
 static CR_INLINE char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr) {
   return strtok(str, delim);
 }
+#   endif
 #  endif
 
 #  ifdef _MSC_VER
