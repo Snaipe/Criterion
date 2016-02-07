@@ -54,6 +54,42 @@
 # define WRITE_PROCESS_(Proc, What, Size)                           \
         WriteProcessMemory(Proc, &What, &What, Size, NULL);
 
+# ifndef STATUS_BAD_STACK
+#  define STATUS_BAD_STACK 0xC0000028L
+# endif
+
+/*
+ *  NTSTATUS specification, from ntstatus.h:
+ *
+ *  > Values are 32 bit values laid out as follows:
+ *  >
+ *  >  3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+ *  >  1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+ *  > +---+-+-+-----------------------+-------------------------------+
+ *  > |Sev|C|R|     Facility          |               Code            |
+ *  > +---+-+-+-----------------------+-------------------------------+
+ *  >
+ *  > where
+ *  >
+ *  >     Sev - is the severity code
+ *  >
+ *  >         00 - Success
+ *  >         01 - Informational
+ *  >         10 - Warning
+ *  >         11 - Error
+ *  >
+ *  >     C - is the Customer code flag
+ *  >
+ *  >     R - is a reserved bit
+ *  >
+ *  >     Facility - is the facility code
+ *  >
+ *  >     Code - is the facility's status code
+ *
+ *  We consider that all exit codes with error severity bits that cannot
+ *  be directly translated to translate to SIGSYS.
+ *
+ */
 static int get_win_status(HANDLE handle) {
     DWORD exit_code;
     GetExitCodeProcess(handle, &exit_code);
@@ -82,12 +118,15 @@ static int get_win_status(HANDLE handle) {
         case STATUS_IN_PAGE_ERROR:
         case STATUS_NO_MEMORY:
         case STATUS_INVALID_DISPOSITION:
+        case STATUS_BAD_STACK:
         case STATUS_STACK_OVERFLOW:             sig = SIGSEGV; break;
 
         case STATUS_CONTROL_C_EXIT:             sig = SIGINT; break;
 
         default: break;
     }
+    if (sig == 0 && exit_code & 0xC0000000)
+        sig = SIGSYS;
     return sig ? sig : exit_code << 8;
 }
 #else

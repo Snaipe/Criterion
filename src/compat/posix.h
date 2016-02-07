@@ -68,7 +68,20 @@
 #  define WIFSIGNALED(Status) (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
 
 #  define SIGPROF 27
-#  define CR_EXCEPTION_TIMEOUT 0xC0001042
+#  define SIGSYS 31
+
+/*
+ * We define a custom exception code following the ntstatus specification:
+ *
+ *   1110 1111 1111 1111 1111 1111 1111 1111
+ *   -||| ------------------| -------------|
+ *    |||                   |              `- Code: Unspecified     (-1)
+ *    |||                   `---------------- Facility: Unspecified (-1)
+ *    ||`------------------------------------ Reserved              (0b0)
+ *    |`------------------------------------- Customer code: Yes    (0b1)
+ *    `-------------------------------------- Severity: Error       (0b11)
+ */
+#  define CR_EXCEPTION_TIMEOUT 0xEFFFFFFF
 
 # else
 #  include <sys/wait.h>
