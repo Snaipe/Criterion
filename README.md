@@ -77,8 +77,10 @@ Sample tests can be found in the [sample directory][samples].
 
 ### Getting help
 
-Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
-IRC channel: [#criterion][irc-chan] on irc.freenode.net  
+| Channel | Description |
+| --- | --- |
+[![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)][gitter-chan] | `Snaipe/Criterion` on gitter.im
+[![Join #criterion on freenode](https://img.shields.io/badge/irc-%23criterion-46BC99.svg)][irc-chan] | `#criterion` on irc.freenode.net
 
 ### Misc
 
@@ -86,7 +88,7 @@ IRC channel: [#criterion][irc-chan] on irc.freenode.net
 
 ## Credits
 
-Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
+Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue)
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
@@ -104,3 +106,4 @@ Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
 [find-module]: ./dev/FindCriterion.cmake
 
 [irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e
+[gitter-chan]: https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
