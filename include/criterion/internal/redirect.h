@@ -58,7 +58,7 @@
     ))
 
 # define cr_assert_redir_f_op_va_(Fail, Fun, Op, ...)           \
-    CR_EXPAND(cr_assert_redir_op_(                              \
+    CR_EXPAND(cr_assert_redir_f_op_(                            \
             Fail,                                               \
             Fun,                                                \
             Op,                                                 \
