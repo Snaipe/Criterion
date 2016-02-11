@@ -85,7 +85,7 @@ C++ Exceptions should be handled
   [\x1b[0;34m----\x1b[0m] exception::raise_std_fini: Caught an unexpected exception during the test finalization: Some exception message. (esc)
   [\x1b[0;34m----\x1b[0m] exception::raise_std_init: Caught an unexpected exception during the test initialization: Some exception message. (esc)
   [\x1b[0;31mFAIL\x1b[0m] exception::raise_std_init (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m6\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m6\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 C++ Exceptions should be handled (verbose)
 
@@ -110,4 +110,4 @@ C++ Exceptions should be handled (verbose)
   [\x1b[0;34mRUN \x1b[0m] exception::raise_std_init (esc)
   [\x1b[0;34m----\x1b[0m] exception::raise_std_init: Caught an unexpected exception during the test initialization: Some exception message. (esc)
   [\x1b[0;31mFAIL\x1b[0m] exception::raise_std_init (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m6\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m6\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)

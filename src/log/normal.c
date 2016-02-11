@@ -139,14 +139,16 @@ void normal_log_post_suite(struct criterion_suite_stats *stats) {
 
 void normal_log_post_all(struct criterion_global_stats *stats) {
     size_t tested = stats->nb_tests - stats->tests_skipped;
+    char *tests_crashed_color = (stats->tests_crashed) ? CR_FG_RED : CR_RESET;
+    char *tests_failed_color  = (stats->tests_failed)  ? CR_FG_RED : CR_RESET;
 
     criterion_pimportant(CRITERION_PREFIX_EQUALS,
             _(msg_post_all),
                          CR_FG_BOLD,
                          CR_FG_BLUE,  (unsigned long) tested, CR_FG_BOLD,
                          CR_FG_GREEN, (unsigned long) stats->tests_passed, CR_FG_BOLD,
-                         CR_FG_RED,   (unsigned long) stats->tests_failed, CR_FG_BOLD,
-                         CR_FG_RED,   (unsigned long) stats->tests_crashed, CR_FG_BOLD,
+                         tests_failed_color,  (unsigned long) stats->tests_failed, CR_FG_BOLD,
+                         tests_crashed_color, (unsigned long) stats->tests_crashed, CR_FG_BOLD,
                          CR_RESET);
 }
 

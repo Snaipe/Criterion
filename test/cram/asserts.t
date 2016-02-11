@@ -7,7 +7,7 @@ Test C assertions:
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.c\x1b[0m:\x1b[0;31m17\x1b[0m: Assertion failed: You can fail an assertion with a message from anywhere (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.c\x1b[0m:\x1b[0;31m18\x1b[0m: Assertion failed: The conditions for this assertion were not met. (esc)
   [\x1b[0;31mFAIL\x1b[0m] asserts::old_school (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m6\x1b[0;1m | Passing: \x1b[0;32m4\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m6\x1b[0;1m | Passing: \x1b[0;32m4\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Test C++ assertions:
 
@@ -22,15 +22,15 @@ Test C++ assertions:
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m19\x1b[0m: Assertion failed: You can fail an assertion with a message from anywhere (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m20\x1b[0m: Assertion failed: The conditions for this assertion were not met. (esc)
   [\x1b[0;31mFAIL\x1b[0m] asserts::old_school (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m7\x1b[0;1m | Passing: \x1b[0;32m3\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m7\x1b[0;1m | Passing: \x1b[0;32m3\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Using redirections
 
   $ redirect.c.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m0\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ redirect.cc.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m0\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Testing all assert messages
 
@@ -75,7 +75,7 @@ Testing all assert messages
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m51\x1b[0m: Assertion failed: foo bar (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m52\x1b[0m: Assertion failed: foo bar (esc)
   [\x1b[0;31mFAIL\x1b[0m] messages::user (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ failmessages.cc.bin
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m5\x1b[0m: Assertion failed: The expression 0 is false. (esc)
@@ -126,7 +126,7 @@ Testing all assert messages
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m58\x1b[0m: Assertion failed: foo bar (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m59\x1b[0m: Assertion failed: foo bar (esc)
   [\x1b[0;31mFAIL\x1b[0m] messages::user (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Long assert messages should wrap
 
@@ -136,7 +136,7 @@ Long assert messages should wrap
   [\x1b[0;34m----\x1b[0m]   Spawning multiple lines. (esc)
   [\x1b[0;34m----\x1b[0m]   Formatting is respected. (esc)
   [\x1b[0;31mFAIL\x1b[0m] sample::long_msg (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ long-messages.cc.bin
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mlong-messages.cc\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion failed: This is (esc)
@@ -144,12 +144,12 @@ Long assert messages should wrap
   [\x1b[0;34m----\x1b[0m]   Spawning multiple lines. (esc)
   [\x1b[0;34m----\x1b[0m]   Formatting is respected. (esc)
   [\x1b[0;31mFAIL\x1b[0m] sample::long_msg (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Using redirections
 
   $ redirect.c.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m0\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ redirect.cc.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0;31m0\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
