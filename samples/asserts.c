@@ -65,8 +65,8 @@ Test(asserts, array) {
     int arr1[] = {1, 2, 3, 4};
     int arr2[] = {4, 3, 2, 1};
 
-    cr_assert_arr_eq(arr1, arr1, 4);
-    cr_assert_arr_neq(arr1, arr2, 4);
+    cr_assert_arr_eq(arr1, arr1, 4 * sizeof (int));
+    cr_assert_arr_neq(arr1, arr2, 4 * sizeof (int));
 
 #ifdef __GNUC__
     struct dummy_struct s1[] = {{4, 2}, {2, 4}};
