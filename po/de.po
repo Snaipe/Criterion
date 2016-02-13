@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Criterion \n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-02-12 12:51+0100\n"
+"POT-Creation-Date: 2016-02-13 12:57+0100\n"
 "PO-Revision-Date: 2016-02-12 11:12+0100\n"
 "Last-Translator:  <a1lu@arcor.de>\n"
 "Language-Team: German\n"
@@ -183,7 +183,7 @@ msgstr "Die Anweisung `%1$s` hat eine Instanz der Ausname `%2$s` geworfen."
 msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
 msgstr "Die Anweisung `%1$s` hat keine Instanz der Ausname `%2$s` geworfen."
 
-#: src/core/runner.c:57
+#: src/core/runner.c:64
 #, c-format
 msgid ""
 "%1$sWarning! Criterion has detected that it is running under valgrind, but "
@@ -194,7 +194,7 @@ msgstr ""
 "die no_early_exit option ist explizit deaktiviert. Die Berichte werden nicht "
 "präzise sein!%2$s\n"
 
-#: src/core/runner.c:61
+#: src/core/runner.c:68
 #, c-format
 msgid ""
 "%1$sWarning! Criterion has detected that it is running under valgrind, but "
