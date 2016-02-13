@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 #include <exception>
 #include <new>
+#include <array>
 
 Test(asserts, base) {
     cr_assert(true);
