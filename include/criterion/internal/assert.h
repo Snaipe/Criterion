@@ -99,10 +99,12 @@ CR_END_C_API
     do {                                                                       \
         char *def_msg = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));         \
         char *formatted_msg = NULL;                                            \
+        int shifted__ = 0;                                                     \
         int msglen = cr_asprintf(&formatted_msg,                               \
-                "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                       \
-        if (formatted_msg && *formatted_msg) {                                 \
-            MsgVar = formatted_msg;                                            \
+                "x" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                      \
+        if (formatted_msg && formatted_msg[1]) {                               \
+            MsgVar = formatted_msg + 1;                                        \
+            shifted__ = 1;                                                     \
             CR_STDN free(def_msg);                                             \
         } else {                                                               \
             MsgVar = def_msg;                                                  \
@@ -120,17 +122,11 @@ CR_END_C_API
         *((size_t*) buf) = msglen + 1;                                         \
         buf += sizeof (size_t);                                                \
         CR_STDN strcpy(buf, MsgVar);                                           \
-        CR_STDN free(MsgVar);                                                  \
+        CR_STDN free(MsgVar - shifted__);                                      \
     } while (0))
 
 # define CR_FAIL_ABORT_ criterion_abort_test
 # define CR_FAIL_CONTINUES_ criterion_continue_test
-
-# if defined(__GNUC__) || defined(__clang__)
-// We disable the format-zero-length warning because we use the validity of
-// asprintf(out, "") for empty assertion messages
-#  pragma GCC diagnostic ignored "-Wformat-zero-length"
-# endif
 
 # define cr_assert_impl(Fail, Condition, ...)                               \
     do {                                                                    \
