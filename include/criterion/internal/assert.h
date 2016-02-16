@@ -97,32 +97,32 @@ CR_END_C_API
 
 # define CR_INIT_STATS_(BufSize, MsgVar, ...) CR_EXPAND(                       \
     do {                                                                       \
-        char *def_msg = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));         \
-        char *formatted_msg = NULL;                                            \
-        int shifted__ = 0;                                                     \
-        int msglen = cr_asprintf(&formatted_msg,                               \
+        char *cr_def_msg__ = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));    \
+        char *cr_fmt_msg__ = NULL;                                             \
+        int cr_shifted__ = 0;                                                  \
+        int cr_msglen__ = cr_asprintf(&cr_fmt_msg__,                           \
                 "x" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));                      \
-        if (formatted_msg && formatted_msg[1]) {                               \
-            MsgVar = formatted_msg + 1;                                        \
-            shifted__ = 1;                                                     \
-            CR_STDN free(def_msg);                                             \
+        if (cr_fmt_msg__ && cr_fmt_msg__[1]) {                                 \
+            MsgVar = cr_fmt_msg__ + 1;                                         \
+            cr_shifted__ = 1;                                                  \
+            CR_STDN free(cr_def_msg__);                                        \
         } else {                                                               \
-            MsgVar = def_msg;                                                  \
-            msglen = strlen(def_msg);                                          \
-            CR_STDN free(formatted_msg);                                       \
+            MsgVar = cr_def_msg__;                                             \
+            cr_msglen__ = strlen(cr_def_msg__);                                \
+            CR_STDN free(cr_fmt_msg__);                                        \
         }                                                                      \
                                                                                \
         BufSize = sizeof(struct criterion_assert_stats)                        \
-                  + sizeof (size_t) + msglen + 1;                              \
+                  + sizeof (size_t) + cr_msglen__ + 1;                         \
                                                                                \
-        char *buf = (char*) CR_STDN malloc(BufSize);                           \
-        stat = (struct criterion_assert_stats*) buf;                           \
-        CR_STDN memset(buf, 0, sizeof (struct criterion_assert_stats));        \
-        buf += sizeof (struct criterion_assert_stats);                         \
-        *((size_t*) buf) = msglen + 1;                                         \
-        buf += sizeof (size_t);                                                \
-        CR_STDN strcpy(buf, MsgVar);                                           \
-        CR_STDN free(MsgVar - shifted__);                                      \
+        char *cr_buf__ = (char*) CR_STDN malloc(BufSize);                      \
+        cr_stat__ = (struct criterion_assert_stats*) cr_buf__;                 \
+        CR_STDN memset(cr_buf__, 0, sizeof (struct criterion_assert_stats));   \
+        cr_buf__ += sizeof (struct criterion_assert_stats);                    \
+        *((size_t*) cr_buf__) = cr_msglen__ + 1;                               \
+        cr_buf__ += sizeof (size_t);                                           \
+        CR_STDN strcpy(cr_buf__, MsgVar);                                      \
+        CR_STDN free(MsgVar - cr_shifted__);                                   \
     } while (0))
 
 # define CR_FAIL_ABORT_ criterion_abort_test
@@ -130,21 +130,22 @@ CR_END_C_API
 
 # define cr_assert_impl(Fail, Condition, ...)                               \
     do {                                                                    \
-        bool passed = !!(Condition);                                        \
+        bool cr_passed__ = !!(Condition);                                   \
                                                                             \
-        char *msg = NULL;                                                   \
-        size_t bufsize;                                                     \
+        char *cr_msg__ = NULL;                                              \
+        size_t cr_bufsize__;                                                \
                                                                             \
-        struct criterion_assert_stats *stat;                                \
-        CR_EXPAND(CR_INIT_STATS_(bufsize, msg, CR_VA_TAIL(__VA_ARGS__)));   \
-        stat->passed = passed;                                              \
-        stat->file = __FILE__;                                              \
-        stat->line = __LINE__;                                              \
+        struct criterion_assert_stats *cr_stat__;                           \
+        CR_EXPAND(CR_INIT_STATS_(cr_bufsize__, cr_msg__,                    \
+                    CR_VA_TAIL(__VA_ARGS__)));                              \
+        cr_stat__->passed = cr_passed__;                                    \
+        cr_stat__->file = __FILE__;                                         \
+        cr_stat__->line = __LINE__;                                         \
                                                                             \
-        criterion_send_event(ASSERT, stat, bufsize);                        \
-        CR_STDN free(stat);                                                 \
+        criterion_send_event(ASSERT, cr_stat__, cr_bufsize__);              \
+        CR_STDN free(cr_stat__);                                            \
                                                                             \
-        if (!passed)                                                        \
+        if (!cr_passed__)                                                   \
             Fail();                                                         \
     } while (0)
 
