@@ -76,6 +76,44 @@ CR_END_C_API
 
 # define CR_NORMAL_LOGGING (&normal_logging)
 
+# ifdef __cplusplus
+#  include <sstream>
+
+namespace criterion { namespace logging {
+
+static void (*const log)(enum criterion_severity, const char *, ...) = cr_log;
+
+class streambuf : public std::stringbuf {
+public:
+    streambuf(enum criterion_severity severity__)
+        : std::stringbuf(), severity__(severity__)
+    {}
+
+    virtual int sync() override {
+        criterion::logging::log(severity__, "%s", str().c_str());
+        str(std::string());
+        return 0;
+    }
+private:
+    enum criterion_severity severity__;
+};
+
+class stream : public std::ostream {
+public:
+    stream(enum criterion_severity severity__)
+        : std::ostream(&buf), buf(severity__)
+    {}
+private:
+    streambuf buf;
+};
+
+stream info { CR_LOG_INFO };
+stream warn { CR_LOG_WARNING };
+stream error { CR_LOG_ERROR };
+
+}}
+# endif
+
 // Deprecated old logging system, schedule removal for 3.0
 # ifndef CRITERION_NO_COMPAT
 

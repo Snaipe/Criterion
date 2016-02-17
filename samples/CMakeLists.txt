@@ -37,6 +37,7 @@ if (CMAKE_CXX_COMPILER_WORKS)
     simple.cc
     redirect.cc
     parameterized.cc
+    log.cc
   )
 endif ()
 
