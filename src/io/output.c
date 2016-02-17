@@ -4,7 +4,7 @@
 #include <kvec.h>
 #include <errno.h>
 #include "criterion/output.h"
-#include "criterion/logging.h"
+#include "log/logging.h"
 #include "string/i18n.h"
 
 typedef const char *const msg_t;

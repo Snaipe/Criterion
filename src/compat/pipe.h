@@ -27,7 +27,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include "common.h"
-# include "criterion/logging.h"
+# include "log/logging.h"
 
 struct pipe_handle;
 typedef struct pipe_handle s_pipe_handle;

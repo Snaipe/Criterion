@@ -27,8 +27,8 @@
 #include "compat/strtok.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
-#include "criterion/logging.h"
 #include "criterion/options.h"
+#include "log/logging.h"
 #include "io/event.h"
 #include "report.h"
 #include "stats.h"
@@ -483,6 +483,8 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
 bool handle_message(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg) {
     (void) sctx;
     (void) ctx;
-    (void) msg;
+    const criterion_protocol_log *lg = &msg->data.value.message;
+
+    log(message, (enum criterion_severity) lg->severity, lg->message);
     return false;
 }

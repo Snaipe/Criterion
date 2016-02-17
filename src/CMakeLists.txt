@@ -53,6 +53,7 @@ set(SOURCE_FILES
   src/io/xml.c
   src/io/json.c
   src/log/logging.c
+  src/log/logging.h
   src/log/normal.c
   src/string/i18n.c
   src/string/i18n.h
@@ -117,6 +118,7 @@ set(INTERFACE_FILES
   include/criterion/internal/hooks.h
   include/criterion/internal/redirect.h
   include/criterion/internal/stdio_filebuf.hxx
+  include/criterion/internal/deprecation.h
 )
 
 if (THEORIES)

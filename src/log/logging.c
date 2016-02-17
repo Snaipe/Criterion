@@ -25,8 +25,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#include "criterion/logging.h"
+#include "criterion/criterion.h"
 #include "criterion/options.h"
+#include "compat/process.h"
+#include "log/logging.h"
+#include "io/asprintf.h"
+#include "protocol/protocol.h"
+#include "protocol/messages.h"
 #include "string/i18n.h"
 
 #ifdef ENABLE_NLS
@@ -45,8 +50,45 @@ const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
     [CRITERION_LOGGING_PREFIX_PASS]     = { "PASS", CRIT_FG_GREEN },
     [CRITERION_LOGGING_PREFIX_FAIL]     = { "FAIL", CRIT_FG_RED   },
     [CRITERION_LOGGING_PREFIX_ERR]      = { "ERR ", CRIT_FG_RED   },
+    [CRITERION_LOGGING_PREFIX_WARN]     = { "WARN", CRIT_FG_GOLD  },
     { NULL, NULL }
 };
+
+void criterion_log_noformat(enum criterion_severity severity, const char *msg) {
+    static const struct criterion_prefix_data *prefixes[] = {
+        [CR_LOG_INFO]       = CRITERION_PREFIX_DASHES,
+        [CR_LOG_WARNING]    = CRITERION_PREFIX_WARN,
+        [CR_LOG_ERROR]      = CRITERION_PREFIX_ERR,
+    };
+
+    static enum criterion_logging_level severity_to_level[] = {
+        [CR_LOG_INFO]       = CRITERION_INFO,
+        [CR_LOG_WARNING]    = CRITERION_IMPORTANT,
+        [CR_LOG_ERROR]      = CRITERION_IMPORTANT,
+    };
+
+    if (severity_to_level[severity] < criterion_options.logging_threshold)
+        return;
+
+    const struct criterion_prefix_data *prefix = prefixes[severity];
+    if (severity == CR_LOG_ERROR) {
+        fprintf(stderr, _(ERROR_FORMAT),
+            CRIT_COLOR_NORMALIZE(prefix->color),
+            prefix->prefix,
+            CR_RESET,
+            CR_FG_RED,
+            CR_FG_BOLD,
+            msg,
+            CR_RESET);
+    } else {
+        fprintf(stderr, _(LOG_FORMAT),
+            CRIT_COLOR_NORMALIZE(prefix->color),
+            prefix->prefix,
+            CR_RESET,
+            msg);
+    }
+    fprintf(stderr, "\n");
+}
 
 void criterion_plog(enum criterion_logging_level level, const struct criterion_prefix_data *prefix, const char *msg, ...) {
     va_list args;
@@ -90,4 +132,29 @@ void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list
         return;
 
     vfprintf(stderr, msg, args);
+}
+
+void cr_log_noformat(enum criterion_severity severity, const char *out) {
+    criterion_protocol_msg msg = criterion_message(message,
+            .severity = (criterion_protocol_log_level) severity,
+            .message = (char *) out);
+    criterion_message_set_id(msg);
+    cr_send_to_runner(&msg);
+}
+
+void cr_log(enum criterion_severity severity, const char *msg, ...) {
+    va_list args;
+    char *out = NULL;
+
+    va_start(args, msg);
+    int res = cr_vasprintf(&out, msg, args);
+    va_end(args);
+
+    if (res == -1) {
+        cr_log_noformat(CR_LOG_ERROR, "Could not format log message");
+        abort();
+    }
+
+    cr_log_noformat(severity, out);
+    free(out);
 }

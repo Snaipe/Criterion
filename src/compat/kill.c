@@ -23,7 +23,7 @@
  */
 #include "kill.h"
 #include "internal.h"
-#include "criterion/logging.h"
+#include "log/logging.h"
 #include "core/report.h"
 #include "core/stats.h"
 #include "io/event.h"
