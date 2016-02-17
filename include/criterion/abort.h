@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Functions to abort and continue tests
+ *****************************************************************************/
 #ifndef CRITERION_ABORT_H_
 # define CRITERION_ABORT_H_
 
@@ -42,6 +46,12 @@ CR_API CR_NORETURN void criterion_abort_test(void);
  */
 CR_INLINE static void criterion_continue_test(void) {}
 
+/**
+ *  Kills the current test, marking it as failed.
+ *
+ *  @param[in] msg printf like format string
+ *  @param[in] ... Additional arguments depending on msg
+ */
 CR_API void criterion_test_die(const char *msg, ...);
 
 CR_END_C_API

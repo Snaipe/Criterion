@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Test intern memory managment
+ *****************************************************************************/
 #ifndef CRITERION_ALLOC_H_
 # define CRITERION_ALLOC_H_
 

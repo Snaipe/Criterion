@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Include this to use criterion
+ *****************************************************************************/
 #ifndef CRITERION_H_
 # define CRITERION_H_
 
