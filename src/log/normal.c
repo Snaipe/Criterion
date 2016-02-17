@@ -234,7 +234,15 @@ void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const c
 }
 
 void normal_log_message(enum criterion_severity severity, const char *msg) {
-    criterion_log_noformat(severity, msg);
+    char *dup       = strdup(msg);
+    char *saveptr   = NULL;
+    char *line      = strtok_r(dup, "\n", &saveptr);
+
+    do {
+        if (*line != '\0')
+            criterion_log_noformat(severity, line);
+    } while ((line = strtok_r(NULL, "\n", &saveptr)));
+    free (dup);
 }
 
 struct criterion_logger normal_logging = {
