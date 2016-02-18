@@ -263,7 +263,13 @@ macro(GettextTranslate)
             COMMAND ${GettextTranslate_MSGMERGE_EXECUTABLE} --lang=${lang}
               ${PO_FILE_NAME} ${TEMPLATE_FILE_ABS} 
               -o ${PO_FILE_NAME}.new
-            COMMAND mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}
+            COMMAND if diff ${PO_FILE_NAME} ${PO_FILE_NAME}.new
+                            --unchanged-line-format='' --old-line-format=''
+                    | grep -v 'POT-Creation-Date' >/dev/null\; then
+                        mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}\;
+                else
+                        rm ${PO_FILE_NAME}.new\;
+                fi
             DEPENDS ${TEMPLATE_FILE_ABS}
           )
       else ()
@@ -271,7 +277,13 @@ macro(GettextTranslate)
             COMMAND ${GettextTranslate_MSGMERGE_EXECUTABLE}
               ${PO_FILE_NAME} ${TEMPLATE_FILE_ABS} 
               -o ${PO_FILE_NAME}.new
-            COMMAND mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}
+            COMMAND if diff ${PO_FILE_NAME} ${PO_FILE_NAME}.new
+                            --unchanged-line-format='' --old-line-format=''
+                    | grep -v 'POT-Creation-Date' >/dev/null\; then
+                        mv ${PO_FILE_NAME}.new ${PO_FILE_NAME}\;
+                else
+                        rm ${PO_FILE_NAME}.new\;
+                fi
             DEPENDS ${TEMPLATE_FILE_ABS}
           )
       endif ()

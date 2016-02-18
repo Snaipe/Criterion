@@ -22,7 +22,7 @@ set(SAMPLES
   timeout.c
   redirect.c
   parameterized.c
-
+  log.c
 )
 
 if (CMAKE_CXX_COMPILER_WORKS)
@@ -37,6 +37,7 @@ if (CMAKE_CXX_COMPILER_WORKS)
     simple.cc
     redirect.cc
     parameterized.cc
+    log.cc
   )
 endif ()
 

@@ -9,6 +9,7 @@ Criterion
     starter
     assert
     hooks
+    logging
     env
     output
     parameterized
