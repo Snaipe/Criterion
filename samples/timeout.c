@@ -1,7 +1,7 @@
 #include <criterion/criterion.h>
 
 #ifdef _WIN32
-# include <Windows.h>
+# include <windows.h>
 # define sleep(x) Sleep(x * 1000)
 #else
 # include <unistd.h>

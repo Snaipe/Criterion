@@ -44,6 +44,9 @@ function (cr_add_subproject _NAME)
     if (NOT ARGS_GENERATOR)
       set (ARGS_GENERATOR ${CMAKE_GENERATOR})
     endif ()
+    if (CMAKE_TOOLCHAIN_FILE)
+      set (ARGS_OPTS ${ARGS_OPTS} "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+    endif ()
     set (build_cmds
       CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
         -DCMAKE_INSTALL_PREFIX=${install_prefix}
@@ -78,7 +81,7 @@ function (cr_add_subproject _NAME)
 
   if (WIN32)
     set ("${_NAME}_SHARED_LIB" "${install_prefix}/lib/${_NAME}.dll" PARENT_SCOPE)
-    if (ARGS_GENERATOR MATCHES "(MSYS|MinGW) Makefiles")
+    if (ARGS_GENERATOR MATCHES "(Unix|MSYS|MinGW) Makefiles")
       set ("${_NAME}_STATIC_LIB" "${install_prefix}/lib/lib${_NAME}.a" PARENT_SCOPE)
     else ()
       set ("${_NAME}_STATIC_LIB" "${install_prefix}/lib/${_NAME}.lib" PARENT_SCOPE)
