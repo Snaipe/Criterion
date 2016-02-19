@@ -24,7 +24,9 @@ include (Capabilities)
 include (Subprojects)
 include (PackageUtils)
 
-cr_add_subproject (csptr PATH dependencies/libcsptr CMAKE)
+cr_add_subproject (csptr PATH dependencies/libcsptr
+    OPTS -DLIBCSPTR_TESTS=OFF
+    CMAKE)
 cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
 cr_add_subproject (nanomsg
