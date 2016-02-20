@@ -43,7 +43,6 @@ Shell Wildcard Pattern
 ----------------------
 
 Extglob patterns in criterion are matched against a test's string identifier.
-This feature is only available on \*nix systems where ``PCRE`` is provided.
 
 In the table below, a ``pattern-list`` is a list of patterns separated by ``|``.
 Any extglob pattern can be constructed by combining any of the following

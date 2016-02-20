@@ -57,11 +57,9 @@ set(SCRIPTS
   list
   fail_fast
   help
+  pattern
 )
 
-if (HAVE_PCRE)
-    set(SCRIPTS ${SCRIPTS} pattern)
-endif ()
 
 add_custom_target(criterion_samples)
 add_dependencies(criterion_tests criterion_samples)

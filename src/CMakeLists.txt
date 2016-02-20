@@ -69,6 +69,10 @@ set(SOURCE_FILES
   src/protocol/connect.h
   src/common.h
   src/config.h
+  src/string/extglobmatch.c
+  src/string/extglobmatch.h
+  src/string/brz.c
+  src/string/brz.h
 
   dependencies/nanopb/pb_common.c
   dependencies/nanopb/pb_common.h
@@ -84,12 +88,6 @@ if (THEORIES)
   )
 endif ()
 
-if (PCRE_FOUND)
-  set (SOURCE_FILES ${SOURCE_FILES}
-    src/string/extmatch.c
-    src/string/extmatch.h
-  )
-endif ()
 
 set(INTERFACE_FILES
   include/criterion/assert.h
