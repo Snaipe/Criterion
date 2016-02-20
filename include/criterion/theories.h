@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/*!
+ * @file
+ * @brief Theory tests
+ *****************************************************************************/
 #ifndef CRITERION_THEORIES_H_
 # define CRITERION_THEORIES_H_
 

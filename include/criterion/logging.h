@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Logging functions
+ *****************************************************************************/
 #ifndef CRITERION_LOGGING_H_
 # define CRITERION_LOGGING_H_
 
@@ -45,10 +49,53 @@ enum criterion_severity {
 };
 
 CR_FORMAT(printf, 2, 3)
+
+/**
+ * Prints a log message
+ *
+ * One can use this function, but it is more convenient to use the 3 macros.
+ *
+ * @param[in] severity Severity level of the log message
+ * @param[in] msg printf like format string
+ * @param[in] ... Additional arguments depending on msg
+ *
+ *****************************************************************************/
 CR_API void cr_log(enum criterion_severity severity, const char *msg, ...);
 
+/**
+ * Prints a info message
+ *
+ * Call: cr_log_info(msg, ...)\n
+ * Prints a info message defined by msg and the following optional parameters
+ *
+ * @param[in] msg printf like format string
+ * @param[in] ... Additional arguments depending on msg
+ *
+ *****************************************************************************/
 # define cr_log_info(...) cr_log(CR_LOG_INFO, __VA_ARGS__)
+
+/**
+ * Prints a warning message
+ *
+ * Call: cr_log_warn(msg, ...)\n
+ * Prints a warning message defined by msg and the following optional parameters
+ *
+ * @param[in] msg printf like format string
+ * @param[in] ... Additional arguments depending on msg
+ *
+ *****************************************************************************/
 # define cr_log_warn(...) cr_log(CR_LOG_WARNING, __VA_ARGS__)
+
+/**
+ * Prints a error message
+ *
+ * Call: cr_log_error(msg, ...)\n
+ * Prints a error message defined by msg and the following optional parameters
+ *
+ * @param[in] msg printf like format string
+ * @param[in] ... Additional arguments depending on msg
+ *
+ *****************************************************************************/
 # define cr_log_error(...) cr_log(CR_LOG_ERROR, __VA_ARGS__)
 
 struct criterion_logger {

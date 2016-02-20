@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/*!
+ * @file
+ * @brief Test stats
+ *****************************************************************************/
 #ifndef CRITERION_STATS_H_
 # define CRITERION_STATS_H_
 

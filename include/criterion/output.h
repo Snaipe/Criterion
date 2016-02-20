@@ -21,6 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/*!
+ * @file
+ * @brief Report functions
+ *****************************************************************************/
 #ifndef CRITERION_OUTPUT_H_
 # define CRITERION_OUTPUT_H_
 
