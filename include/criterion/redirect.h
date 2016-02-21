@@ -104,7 +104,6 @@ CR_API CR_STDN FILE *cr_mock_file_size(size_t max_size);
 
 CR_END_C_API
 
-
 /**
  * @defgroup FileAsserts File content assertions
  * @{
@@ -113,9 +112,6 @@ CR_END_C_API
 /**
  * Passes if the contents of \c File are equal to the string \c ExpectedContents
  *
- * Call: \c cr_assert_file_contents_eq_str(File, ExpectedContents,
- * [FormatString, [Args...]])
- *
  * Passes if the contents of \c File are equal to the string
  * \c ExpectedContents.
  * Otherwise the test is marked as failure and the execution of the function
@@ -125,19 +121,15 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] ExpectedContents C string with the ExpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_assert_file_contents_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, __VA_ARGS__))
+# define cr_assert_file_contents_eq_str(File, ExpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are equal to the string \c ExpectedContents
  *
- * Call: \c cr_expect_file_contents_eq_str(File, ExpectedContents,
- * [FormatString, [Args...]])
- *
  * Passes if the contents of \c File are equal to the string
  * \c ExpectedContents.
  * Otherwise the test is marked as failure but the execution will continue.
@@ -146,19 +138,15 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] ExpectedContents C string with the ExpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_file_contents_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, __VA_ARGS__))
+# define cr_expect_file_contents_eq_str(File, ExpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are not equal to the string
  * \c UnexpectedContents
- *
- * Call: \c cr_assert_file_contents_neq_str(File, UnexpectedContents,
- * [FormatString, [Args...]])
  *
  * Passes if the contents of \c File are not equal to the string
  * \c UnexpectedContents.
@@ -169,18 +157,15 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] UnexpectedContents C string with the UnexpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_file_contents_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, __VA_ARGS__))
+# define cr_assert_file_contents_neq_str(File, UnexpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are not equal to the string
  * \c UnexpectedContents
- *
- * Call: \c cr_expect_file_contents_neq_str(File, UnexpectedContents,
- * [FormatString, [Args...]])
  *
  * Passes if the contents of \c File are not equal to the string
  * \c UnexpectedContents.
@@ -190,18 +175,14 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] UnexpectedContents C string with the UnexpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_file_contents_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, __VA_ARGS__))
+# define cr_expect_file_contents_neq_str(File, UnexpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are equal to the contents of \c RefFile
- *
- * Call: \c cr_assert_file_contents_eq(File, RefFile, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c File are equal to the contents of \c RefFile.
  * Otherwise the test is marked as failure and the execution of the function
@@ -211,17 +192,14 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_file_contents_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, ==, __VA_ARGS__))
+# define cr_assert_file_contents_eq(File, RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are equal to the contents of \c RefFile
- *
- * Call: \c cr_expect_file_contents_eq(File, RefFile, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c File are equal to the contents of \c RefFile.
  * Otherwise the test is marked as failure but the execution will continue.
@@ -230,19 +208,15 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_file_contents_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, ==, __VA_ARGS__))
+# define cr_expect_file_contents_eq(File, RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are not equal to the contents of
  * \c RefFile
- *
- * Call: \c cr_assert_file_contents_neq(File, RefFile, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c File are not equal to the contents of
  * \c RefFile.
@@ -253,18 +227,15 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_file_contents_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, !=, __VA_ARGS__))
+# define cr_assert_file_contents_neq(File, RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c File are not equal to the contents of
  * \c RefFile
- *
- * Call: \c cr_expect_file_contents_neq(File, RefFile, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c File are not equal to the contents of
  * \c RefFile.
@@ -274,12 +245,11 @@ CR_END_C_API
  *
  * @param[in] File Pointer to a FILE object that specifies an input stream
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_file_contents_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, __VA_ARGS__))
+# define cr_expect_file_contents_neq(File, RefFile, FormatString, ...) <internal>
 
 /**@}*/
 
@@ -292,9 +262,6 @@ CR_END_C_API
  * Passes if the contents of \c stdout are equal to the contents of the string
  * \c ExpectedContents
  *
- * Call: \c cr_assert_stdout_eq_str(ExpectedContents, [FormatString,
- * [Args...]])
- *
  * Passes if the contents of \c stdout are equal to the contents of the string
  * \c ExpectedContents.
  * Otherwise the test is marked as failure and the execution of the function
@@ -303,18 +270,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] ExpectedContents C string with the ExpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_eq_str(ExpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are equal to the contents of the string
  * \c ExpectedContents
- *
- * Call: \c cr_expect_stdout_eq_str(ExpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stdout are equal to the contents of the string
  * \c ExpectedContents.
@@ -323,19 +287,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] ExpectedContents C string with the ExpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_expect_stdout_eq_str(ExpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of the
  * string \c UnexpectedContents
- *
- * Call: \c cr_assert_stdout_neq_str(UnexpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stdout are not equal to the contents of the
  * string \c UnexpectedContents.
@@ -345,18 +305,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] UnexpectedContents C string with the UnexpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_neq_str(UnexpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of the
  * string \c UnexpectedContents
- *
- * Call: \c cr_expect_stdout_neq_str(UnexpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stdout are not equal to the contents of the
  * string \c UnexpectedContents.
@@ -365,19 +322,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] UnexpectedContents C string with the UnexpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_expect_stdout_neq_str(UnexpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of the string
  * \c ExpectedContents
- *
- * Call: \c cr_assert_stderr_eq_str(ExpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stderr are equal to the contents of the string
  * \c ExpectedContents.
@@ -387,18 +340,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] ExpectedContents C string with the ExpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_eq_str(ExpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of the string
  * \c ExpectedContents
- *
- * Call: \c cr_expect_stderr_eq_str(ExpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stderr are equal to the contents of the string
  * \c ExpectedContents.
@@ -407,19 +357,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] ExpectedContents C string with the ExpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_expect_stderr_eq_str(ExpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of the
  * string \c UnexpectedContents
- *
- * Call: \c cr_assert_sterr_neq_str(UnexpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stderr are not equal to the contents of the
  * string \c UnexpectedContents.
@@ -429,18 +375,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] UnexpectedContents C string with the UnexpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_neq_str(UnexpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of the
  * string \c UnexpectedContents
- *
- * Call: \c cr_expect_sterr_neq_str(UnexpectedContents, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stderr are not equal to the contents of the
  * string \c UnexpectedContents.
@@ -449,18 +392,14 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] UnexpectedContents C string with the UnexpectedContents
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_expect_stderr_neq_str(UnexpectedContents, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are equal to the contents of \c RefFile
- *
- * Call: \c cr_assert_stdout_eq(RefFile, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stdout are equal to the contents of \c RefFile.
  * Otherwise the test is marked as failure and the execution of the function
@@ -469,17 +408,14 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stdout_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_eq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are equal to the contents of \c RefFile
- *
- * Call: \c cr_expect_stdout_eq(RefFile, [FormatString,
- * [Args...]])
  *
  * Passes if the contents of \c stdout are equal to the contents of \c RefFile.
  * Otherwise the test is marked as failure but the execution will continue.
@@ -487,18 +423,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stdout_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_expect_stdout_eq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of \c
  * RefFile
- *
- * Call: \c cr_assert_stout_neq(RefFile, [FormatString, [Args...]])
  *
  * Passes if the contents of \c stdout are not equal to the contents of \c
  * RefFile.
@@ -508,17 +441,15 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stdout_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_neq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of \c
  * RefFile
- *
- * Call: \c cr_expect_stout_neq(RefFile, [FormatString, [Args...]])
  *
  * Passes if the contents of \c stdout are not equal to the contents of \c
  * RefFile.
@@ -527,17 +458,14 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stdout_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_expect_stdout_neq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of \c RefFile
- *
- * Call: \c cr_assert_stderr_eq(RefFile, [FormatString, [Args...]])
  *
  * Passes if the contents of \c stderr are equal to the contents of \c RefFile.
  * Otherwise the test is marked as failure and the execution of the function
@@ -546,16 +474,14 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stderr_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_eq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of \c RefFile
- *
- * Call: \c cr_expect_stderr_eq(RefFile, [FormatString, [Args...]])
  *
  * Passes if the contents of \c stderr are equal to the contents of \c RefFile.
  * Otherwise the test is marked as failure but the execution will continue.
@@ -563,53 +489,46 @@ CR_END_C_API
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-
-# define cr_expect_stderr_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_expect_stderr_eq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of \c
  * RefFile
- *
- * Call: \c cr_expect_sterr_neq(RefFile, [FormatString, [Args...]])
  *
  * Passes if the contents of \c stderr are not equal to the contents of \c
  * RefFile.
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
- *
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_neq(RefFile, FormatString, ...) <internal>
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of \c
  * RefFile
  *
- * Call: \c cr_expect_sterr_neq(RefFile, [FormatString, [Args...]])
- *
  * Passes if the contents of \c stderr are not equal to the contents of \c
  * RefFile.
  * Otherwise the test is marked as failure but the execution will continue.
  *
- *
  * The optional string is printed on failure.
  *
  * @param[in] RefFile Pointer to a FILE object that specifies an input stream
- * @param[in] FormatString printf like format string
- * @param[in] Args Additional arguments depending on FormatString
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_expect_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_expect_stderr_neq(RefFile, FormatString, ...) <internal>
 
 /**@}*/
 
