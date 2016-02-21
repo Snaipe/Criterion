@@ -894,6 +894,10 @@
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -901,8 +905,7 @@
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Expected>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -915,6 +918,10 @@
  * Passes if Actual is comparatively equal to Expected.
  * Otherwise the test is marked as failure but the execution will continue.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -922,8 +929,7 @@
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Expected>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -938,6 +944,10 @@
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -945,8 +955,7 @@
  * @param[in] Actual Array to test
  * @param[in] Unexpected Unexpected array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Unexpected>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -960,6 +969,10 @@
  * Passes if Actual is not comparatively equal to Unexpected.
  * Otherwise the test is marked as failure but the execution will continue.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -967,8 +980,7 @@
  * @param[in] Actual Array to test
  * @param[in] Unexpected Unexpected array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Unexpected>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -982,6 +994,10 @@
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -989,8 +1005,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1003,6 +1018,10 @@
  * Passes if Actual is  comparatively less than Reference.
  * Otherwise the test is marked as failure but the execution will continue.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1010,8 +1029,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1026,6 +1044,10 @@
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1033,8 +1055,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1048,6 +1069,10 @@
  * Passes if Actual is  comparatively less or equal to Reference.
  * Otherwise the test is marked as failure but the execution will continue.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1055,8 +1080,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1070,6 +1094,10 @@
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1077,8 +1105,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1091,6 +1118,10 @@
  * Passes if Actual is  comparatively greater than Reference.
  * Otherwise the test is marked as failure but the execution will continue.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1098,8 +1129,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1114,6 +1144,10 @@
  * Otherwise the test is marked as failure and the execution of the function
  * is aborted.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1121,8 +1155,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
@@ -1136,6 +1169,10 @@
  * Passes if Actual is  comparatively greater or equal to Reference.
  * Otherwise the test is marked as failure but the execution will continue.
  *
+ * The macro takes a `int (*comparator)(typeof(Actual) a, typeof(Expected) b)`
+ * function pointer, that returns -1, 0, or 1 when `a` is respectively less,
+ * equal to, or greater than `b`.
+ *
  * The optional string is printed on failure.
  *
  * @note This macro is only available on C++ and GNU C compilers.
@@ -1143,8 +1180,7 @@
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
  * @param[in] Size Number of bytes to check
- * @param[in] Cmp Function pointer to a function int fn(<type of Actual>,
- * <type of Reference>) to do the comparison
+ * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
