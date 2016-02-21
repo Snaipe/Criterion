@@ -13,10 +13,25 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext"))
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
 
+# hack for readthedocs to cause it to run doxygen first
+# https://github.com/rtfd/readthedocs.org/issues/388
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+  from subprocess import call
+  call('doxygen')
+
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.todo',
+    'sphinx.ext.viewcode',
+    'breathe',
+]
+
+breathe_projects = { "criterion-doxygen": "doxyxml/" }
+breathe_default_project = "criterion-doxygen"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
