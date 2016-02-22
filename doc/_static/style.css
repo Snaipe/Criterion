@@ -1,7 +1,25 @@
 .breatheparameterlist li p {
-        display: inline;
+    display: inline;
 }
 
 .breatheenumvalues li p {
-        display: inline;
+    display: inline;
+}
+
+.container > dl > dt {
+    display: block;
+    width: 100%;
+    clear: both;
+}
+
+.container > dl > dt:before {
+    content: " ▼ ";
+}
+
+.container > dl > dt.open:before {
+    content: " ▶ ";
+}
+
+.container > dl {
+    margin-bottom: 0 !important; /* Dirty hack */
 }
