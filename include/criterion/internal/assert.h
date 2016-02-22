@@ -105,6 +105,7 @@ CR_END_C_API
         if (cr_fmt_msg__ && cr_fmt_msg__[1]) {                                 \
             MsgVar = cr_fmt_msg__ + 1;                                         \
             cr_shifted__ = 1;                                                  \
+            --cr_msglen__;                                                     \
             CR_STDN free(cr_def_msg__);                                        \
         } else {                                                               \
             MsgVar = cr_def_msg__;                                             \
