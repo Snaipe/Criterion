@@ -80,12 +80,6 @@ CR_END_C_API
 # define CR_GET_CONDITION_STR(Condition, ...) #Condition
 # define CR_VA_SKIP(_, ...) __VA_ARGS__
 
-# ifdef __cplusplus
-#  define CR_STDN std::
-# else
-#  define CR_STDN
-# endif
-
 # define CR_TRANSLATE_DEF_MSG__(Arg) \
     CR_IDENTITY Arg
 
