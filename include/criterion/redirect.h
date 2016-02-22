@@ -29,7 +29,6 @@
 # define CRITERION_REDIRECT_H_
 
 # include "internal/common.h"
-# include "internal/redirect.h"
 
 # ifdef __cplusplus
 #  include <cstdio>
@@ -564,5 +563,7 @@ namespace criterion {
 #  endif
 }
 # endif
+
+# include "internal/redirect.h"
 
 #endif /* !CRITERION_REDIRECT_H_ */
