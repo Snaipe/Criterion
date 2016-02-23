@@ -41,7 +41,10 @@ CR_API void cr_theory_abort(void);
 
 CR_END_C_API
 
-// Theory and datapoint macros
+/**
+ * @defgroup TheoryDatapoints Theory and datapoint macros
+ * @{
+ */
 
 /**
  *  Theory((Params...), Suite, Name, [Options...]) { Function Body }
@@ -86,31 +89,177 @@ CR_END_C_API
  */
 # define DataPoints(Type, ...) CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
-// Theory invariants
+/**@}*/
 
+/**
+ * @defgroup TheoryInvariants Theory invariants
+ * @{
+ */
+
+/**
+ * Assumes `Condition` is true
+ *
+ * Evaluates `Condition` and continues execution if it is true.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Condition Condition to test
+ *
+ *****************************************************************************/
 # define cr_assume(Condition) \
     do { \
         if (!(Condition)) \
             cr_theory_abort(); \
     } while (0)
 
+/**
+ * Assumes `Condition` is false
+ *
+ * Evaluates `Condition` and continues execution if it is false.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Condition Condition to test
+ *
+ *****************************************************************************/
 # define cr_assume_not(Condition) cr_assume(!(Condition))
 
 # define cr_assume_op_(Op, Actual, Expected) cr_assume((Actual) Op (Expected))
-# define cr_assume_eq(Actual, Expected)  cr_assume_op_(==, Actual, Expected)
-# define cr_assume_neq(Actual, Expected) cr_assume_op_(!=, Actual, Expected)
-# define cr_assume_gt(Actual, Expected)  cr_assume_op_(>, Actual, Expected)
-# define cr_assume_geq(Actual, Expected) cr_assume_op_(>=, Actual, Expected)
-# define cr_assume_lt(Actual, Expected)  cr_assume_op_(<, Actual, Expected)
-# define cr_assume_leq(Actual, Expected) cr_assume_op_(<=, Actual, Expected)
 
+/**
+ * Assumes `Actual` is equal to `Expected`
+ *
+ * Continues execution if `Actual` is equal to `Expected`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Expected Expected value
+ *
+ *****************************************************************************/
+# define cr_assume_eq(Actual, Expected)  cr_assume_op_(==, Actual, Expected)
+
+/**
+ * Assumes `Actual` is not equal to `Unexpected`
+ *
+ * Continues execution if `Actual` is not equal to `Unexpected`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Unexpected Unexpected value
+ *
+ *****************************************************************************/
+# define cr_assume_neq(Actual, Unexpected) cr_assume_op_(!=, Actual, Unexpected)
+
+/**
+ * Assumes `Actual` is greater than `Reference`
+ *
+ * Continues execution if `Actual` is greater than `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_gt(Actual, Reference)  cr_assume_op_(>, Actual, Reference)
+
+/**
+ * Assumes `Actual` is greater or equal to `Reference`
+ *
+ * Continues execution if `Actual` is greater or equal to `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_geq(Actual, Reference) cr_assume_op_(>=, Actual, Reference)
+
+/**
+ * Assumes `Actual` is less than `Reference`
+ *
+ * Continues execution if `Actual` is less than `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_lt(Actual, Reference)  cr_assume_op_(<, Actual, Reference)
+
+/**
+ * Assumes `Actual` is less or equal to `Reference`
+ *
+ * Continues execution if `Actual` is less or equal to `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_leq(Actual, Reference) cr_assume_op_(<=, Actual, Reference)
+
+/**
+ * Assumes `Value` is NULL.
+ *
+ * Continues execution if `Value` is NULL.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Value Value to test
+ *
+ *****************************************************************************/
 # define cr_assume_null(Value)     cr_assume_eq(Value, NULL)
+
+/**
+ * Assumes `Value` is not NULL.
+ *
+ * Continues execution if `Value` is not NULL.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Value Value to test
+ *
+ *****************************************************************************/
 # define cr_assume_not_null(Value) cr_assume_neq(Value, NULL)
 
+/**
+ * Assumes `Actual` is equal to `Expected` with a tolerance of `Epsilon`
+ *
+ * Continues execution if `Actual` is equal to `Expected` with a tolerance of Epsilon.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @note Use this to test equality between floats
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Expected Expected value
+ * @param[in] Epsilon Tolerance between Actual and Expected
+ *
+ *****************************************************************************/
 # define cr_assume_float_eq(Actual, Expected, Epsilon)  \
     cr_assume((Expected) - (Actual) <= (Epsilon)        \
            && (Actual) - (Expected) <= (Epsilon))
 
+/**
+ * Assumes `Actual` is not equal to `Expected` with a tolerance of `Epsilon`
+ *
+ * Continues execution if `Actual` is not equal to `Expected` with a tolerance of Epsilon.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @note Use this to test equality between floats
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Expected Expected value
+ * @param[in] Epsilon Tolerance between Actual and Expected
+ *
+ *****************************************************************************/
 # define cr_assume_float_neq(Actual, Expected, Epsilon) \
     cr_assume((Expected) - (Actual) > (Epsilon)         \
            || (Actual) - (Expected) > (Epsilon))
@@ -118,16 +267,114 @@ CR_END_C_API
 # define cr_assume_str_op_(Op, Actual, Expected) \
     cr_assume(strcmp((Actual), (Expected)) Op 0)
 
+/**
+ * Assumes `Actual` is lexicographically equal to `Expected`
+ *
+ * Continues execution if `Actual` is lexicographically equal to `Expected`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual String to test
+ * @param[in] Expected Expected string
+ *
+ *****************************************************************************/
 # define cr_assume_str_eq(Actual, Expected)  cr_assume_str_op_(==, Actual, Expected)
-# define cr_assume_str_neq(Actual, Expected) cr_assume_str_op_(!=, Actual, Expected)
-# define cr_assume_str_lt(Actual, Expected)  cr_assume_str_op_(<, Actual, Expected)
-# define cr_assume_str_leq(Actual, Expected) cr_assume_str_op_(<=, Actual, Expected)
-# define cr_assume_str_gt(Actual, Expected)  cr_assume_str_op_(>, Actual, Expected)
-# define cr_assume_str_geq(Actual, Expected) cr_assume_str_op_(>=, Actual, Expected)
 
-# define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((A), (B), (Size)))
-# define cr_assume_arr_neq(Actual, Expected, Size) cr_assume(memcmp((A), (B), (Size)))
+/**
+ * Assumes `Actual` is not lexicographically equal to `Unexpected`
+ *
+ * Continues execution if `Actual` is not lexicographically equal to `Unexpected`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual String to test
+ * @param[in] Unexpected Unexpected string
+ *
+ *****************************************************************************/
+# define cr_assume_str_neq(Actual, Unexpected) cr_assume_str_op_(!=, Actual, Unexpected)
 
+/**
+ * Assumes `Actual` is lexicographically less than `Reference`
+ *
+ * Continues execution if `Actual` is lexicographically less than `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_str_lt(Actual, Reference)  cr_assume_str_op_(<, Actual, Reference)
+
+/**
+ * Assumes `Actual` is lexicographically less or equal to `Reference`
+ *
+ * Continues execution if `Actual` is lexicographically less or equal to `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_str_leq(Actual, Reference) cr_assume_str_op_(<=, Actual, Reference)
+
+/**
+ * Assumes `Actual` is lexicographically greater than `Reference`
+ *
+ * Continues execution if `Actual` is lexicographically greater than `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_str_gt(Actual, Reference)  cr_assume_str_op_(>, Actual, Reference)
+
+/**
+ * Assumes `Actual` is lexicographically greater or equal to `Reference`
+ *
+ * Continues execution if `Actual` is lexicographically greater or equal to `Reference`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @param[in] Actual Value to test
+ * @param[in] Reference Reference value
+ *
+ *****************************************************************************/
+# define cr_assume_str_geq(Actual, Reference) cr_assume_str_op_(>=, Actual, Reference)
+
+/**
+ * Assumes `Actual` is byte-to-byte equal to `Expected`
+ *
+ * Continues execution if `Actual` is byte-to-byte equal to `Expected`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @warning This should not be used on struct arrays
+ *
+ * @param[in] Actual Array to test
+ * @param[in] Expected Expected array
+ *
+ *****************************************************************************/
+# define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((Actual), (Expected), (Size)))
+/**
+ * Assumes `Actual` is not byte-to-byte equal to `Unexpected`
+ *
+ * Continues execution if `Actual` is not byte-to-byte equal to `Unexpected`.
+ * Otherwise the current theory iteration aborts without marking the test as
+ * failure.
+ *
+ * @warning This should not be used on struct arrays
+ *
+ * @param[in] Actual Array to test
+ * @param[in] Unexpected Unexpected array
+ *
+ *****************************************************************************/
+# define cr_assume_arr_neq(Actual, Unexpected, Size) cr_assume(memcmp((Actual), (Unexpected), (Size)))
+
+/**@}*/
 // Deprecated
 
 # ifndef CRITERION_NO_COMPAT
