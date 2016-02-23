@@ -10,6 +10,8 @@ parameters known as "data points".
 Adding theories
 ---------------
 
+.. doxygengroup:: TheoryBase
+
 Adding theories is done by defining data points and a theory function:
 
 .. code-block:: c
