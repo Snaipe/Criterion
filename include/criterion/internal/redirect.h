@@ -27,6 +27,15 @@
 # include "common.h"
 # include "assert.h"
 
+CR_BEGIN_C_API
+
+CR_API int cr_stdout_match_file(CR_STDN FILE* ref);
+CR_API int cr_stdout_match_str(const char* ref);
+CR_API int cr_stderr_match_file(CR_STDN FILE* ref);
+CR_API int cr_stderr_match_str(const char* ref);
+
+CR_END_C_API
+
 # define cr_assert_redir_op_(Fail, Fun, Op, File, Str, ...)     \
     CR_EXPAND(cr_assert_impl(                                   \
             Fail,                                               \
@@ -67,5 +76,44 @@
             CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))                 \
     ))
 
+# define cr_assert_redir_unop_(Fail, Fun, Op, File, Str, ...)     \
+    CR_EXPAND(cr_assert_impl(                                   \
+            Fail,                                               \
+            !(Fun((Str)) Op 0),                         \
+            dummy,                                              \
+            CRITERION_ASSERT_MSG_FILE_STR_MATCH,                \
+            (CR_STR(File), Str),                                \
+            __VA_ARGS__                                         \
+    ))
+
+# define cr_assert_redir_unop_va_(Fail, Fun, Op, ...)             \
+    CR_EXPAND(cr_assert_redir_unop_(                              \
+            Fail,                                               \
+            Fun,                                                \
+            Op,                                                 \
+            CR_VA_HEAD(__VA_ARGS__),                            \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
+            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))                 \
+    ))
+
+# define cr_assert_redir_f_unop_(Fail, Fun, Op, File, Ref, ...)   \
+    CR_EXPAND(cr_assert_impl(                                   \
+            Fail,                                               \
+            !(Fun((Ref)) Op 0),                         \
+            dummy,                                              \
+            CRITERION_ASSERT_MSG_FILE_MATCH,                    \
+            (CR_STR(File), CR_STR(Ref)),                        \
+            __VA_ARGS__                                         \
+    ))
+
+# define cr_assert_redir_f_unop_va_(Fail, Fun, Op, ...)           \
+    CR_EXPAND(cr_assert_redir_f_unop_(                            \
+            Fail,                                               \
+            Fun,                                                \
+            Op,                                                 \
+            CR_VA_HEAD(__VA_ARGS__),                            \
+            CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)),                \
+            CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))                 \
+    ))
 
 #endif /* !CRITERION_INTERNAL_REDIRECT_H_ */

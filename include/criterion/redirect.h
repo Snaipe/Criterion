@@ -24,14 +24,14 @@
 #ifndef CRITERION_REDIRECT_H_
 # define CRITERION_REDIRECT_H_
 
-# include "internal/common.h"
-# include "internal/redirect.h"
-
 # ifdef __cplusplus
 #  include <cstdio>
 # else
 #  include <stdio.h>
 # endif
+
+# include "internal/common.h"
+# include "internal/redirect.h"
 
 CR_BEGIN_C_API
 
@@ -112,29 +112,29 @@ CR_END_C_API
 # define cr_assert_file_contents_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, !=, __VA_ARGS__))
 # define cr_expect_file_contents_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, __VA_ARGS__))
 
-# define cr_assert_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, cr_get_redirected_stdout(), __VA_ARGS__))
-# define cr_expect_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_,     cr_stdout_match_str, ==, stdout, __VA_ARGS__))
+# define cr_expect_stdout_eq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_str, ==, stdout, __VA_ARGS__))
 
-# define cr_assert_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, cr_get_redirected_stdout(), __VA_ARGS__))
-# define cr_expect_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_,     cr_stdout_match_str, !=, stdout, __VA_ARGS__))
+# define cr_expect_stdout_neq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_str, !=, stdout, __VA_ARGS__))
 
-# define cr_assert_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, ==, cr_get_redirected_stderr(), __VA_ARGS__))
-# define cr_expect_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_,     cr_stderr_match_str, ==, stderr, __VA_ARGS__))
+# define cr_expect_stderr_eq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_str, ==, stderr, __VA_ARGS__))
 
-# define cr_assert_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_ABORT_,     cr_file_match_str, !=, cr_get_redirected_stderr(), __VA_ARGS__))
-# define cr_expect_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_op_va_(CR_FAIL_CONTINUES_, cr_file_match_str, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_,     cr_stderr_match_str, !=, stderr, __VA_ARGS__))
+# define cr_expect_stderr_neq_str(...) CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_str, !=, stderr, __VA_ARGS__))
 
-# define cr_assert_stdout_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, ==, cr_get_redirected_stdout(), __VA_ARGS__))
-# define cr_expect_stdout_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, ==, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_eq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_,     cr_stdout_match_file, ==, stdout, __VA_ARGS__))
+# define cr_expect_stdout_eq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_file, ==, stdout, __VA_ARGS__))
 
-# define cr_assert_stdout_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, !=, cr_get_redirected_stdout(), __VA_ARGS__))
-# define cr_expect_stdout_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, cr_get_redirected_stdout(), __VA_ARGS__))
+# define cr_assert_stdout_neq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_,     cr_stdout_match_file, !=, stdout, __VA_ARGS__))
+# define cr_expect_stdout_neq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_file, !=, stdout, __VA_ARGS__))
 
-# define cr_assert_stderr_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, ==, cr_get_redirected_stderr(), __VA_ARGS__))
-# define cr_expect_stderr_eq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, ==, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_eq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_,     cr_stderr_match_file, ==, stderr, __VA_ARGS__))
+# define cr_expect_stderr_eq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_file, ==, stderr, __VA_ARGS__))
 
-# define cr_assert_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_ABORT_,     cr_file_match_file, !=, cr_get_redirected_stderr(), __VA_ARGS__))
-# define cr_expect_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, cr_get_redirected_stderr(), __VA_ARGS__))
+# define cr_assert_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_,     cr_stderr_match_file, !=, stderr, __VA_ARGS__))
+# define cr_expect_stderr_neq(...) CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_file, !=, stderr, __VA_ARGS__))
 
 # ifdef __cplusplus
 #  include "internal/stream.hxx"
