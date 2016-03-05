@@ -169,11 +169,7 @@ static void *chld_pump_thread_main(void *nil) {
 
 void init_proc_compat(void) {
 #ifndef VANILLA_WIN32
-    pthread_attr_t attr;
-    int err = pthread_attr_init(&attr)
-           || pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)
-           || pthread_create(&child_pump, &attr, chld_pump_thread_main, NULL)
-           || pthread_attr_destroy(&attr);
+    int err = pthread_create(&child_pump, NULL, chld_pump_thread_main, NULL);
     if (err) {
         perror(0);
         exit(1);
@@ -184,6 +180,7 @@ void init_proc_compat(void) {
 void free_proc_compat(void) {
 #ifndef VANILLA_WIN32
     child_pump_running = false;
+    pthread_join(child_pump, NULL);
 #endif
 }
 
