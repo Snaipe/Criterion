@@ -66,7 +66,7 @@ endif()
 
 # Project setup & environment variables
 
-set(PROJECT_VERSION "2.2.0")
+set(PROJECT_VERSION "2.2.1")
 set(LOCALEDIR_REL "share/locale")
 set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${LOCALEDIR_REL}")
 set(GettextTranslate_ALL 1)
