@@ -154,10 +154,10 @@ struct worker *run_next_test(struct criterion_test_set *p_set,
                 if (ctx->params.cleanup)
                     ctx->params.cleanup(&ctx->params);
             } else {
-                ctx->test_stats = test_stats_init(ctx->test);
-
                 if (skip_disabled(ctx))
                     continue;
+
+                ctx->test_stats = test_stats_init(ctx->test);
 
                 worker = run_test(ctx->stats,
                         ctx->suite_stats,
