@@ -359,6 +359,7 @@ CR_END_C_API
  *
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
+ * @param[in] Size The size of both arrays
  *
  *****************************************************************************/
 # define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((Actual), (Expected), (Size)))
@@ -373,6 +374,7 @@ CR_END_C_API
  *
  * @param[in] Actual Array to test
  * @param[in] Unexpected Unexpected array
+ * @param[in] Size The size of both arrays
  *
  *****************************************************************************/
 # define cr_assume_arr_neq(Actual, Unexpected, Size) cr_assume(memcmp((Actual), (Unexpected), (Size)))

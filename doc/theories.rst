@@ -55,53 +55,7 @@ making the test fail.
 
 On top of those, more ``assume`` macro functions are available for common operations:
 
-======================================================= ====================================================
-Macro                                                   Description
-======================================================= ====================================================
-``cr_assume_not(Condition)``                            Assumes Condition is false.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_null(Ptr)``                                 Assumes Ptr is NULL.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_not_null(Ptr)``                             Assumes Ptr is not NULL.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_eq(Actual, Expected)``                      Assumes Actual == Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_neq(Actual, Unexpected)``                   Assumes Actual != Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_lt(Actual, Expected)``                      Assumes Actual < Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_leq(Actual, Expected)``                     Assumes Actual <= Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_gt(Actual, Expected)``                      Assumes Actual > Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_geq(Actual, Expected)``                     Assumes Actual >= Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_float_eq(Actual, Expected, Epsilon)``       Assumes Actual == Expected with an error of Epsilon.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_float_neq(Actual, Unexpected, Epsilon)``    Assumes Actual != Expected with an error of Epsilon.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_str_eq(Actual, Expected)``                  Assumes Actual and Expected are the same string.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_str_neq(Actual, Unexpected)``               Assumes Actual and Expected are not the same string.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_str_lt(Actual, Expected)``                  Assumes Actual is less than Expected
-                                                        lexicographically.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_str_leq(Actual, Expected)``                 Assumes Actual is less or equal to Expected
-                                                        lexicographically.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_str_gt(Actual, Expected)``                  Assumes Actual is greater than Expected
-                                                        lexicographically.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_str_geq(Actual, Expected)``                 Assumes Actual is greater or equal to Expected
-                                                        lexicographically.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_arr_eq(Actual, Expected, Size)``            Assumes all elements of Actual (from 0 to Size - 1)
-                                                        are equals to those of Expected.
-------------------------------------------------------- ----------------------------------------------------
-``cr_assume_arr_neq(Actual, Unexpected, Size)``         Assumes one or more elements of Actual (from 0 to
-                                                        Size - 1) differs from their counterpart in Expected.
-======================================================= ====================================================
+.. doxygengroup:: TheoryInvariants
 
 Configuring theories
 --------------------
