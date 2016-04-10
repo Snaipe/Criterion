@@ -1346,6 +1346,8 @@
 # endif
 /**@}*/
 
+/** @cond CRITERION_DOC_DEPRECATED */
+
 // The section below is here for backward compatibility purposes.
 // It shall be removed in the next major version of Criterion
 # ifndef CRITERION_NO_COMPAT
@@ -1381,6 +1383,8 @@
 #  define cr_assert_arrays_neq_cmp(...) CRITERION_ASSERT_DEPRECATED_B(cr_assert_arrays_neq_cmp, cr_assert_arr_neq_cmp) cr_assert_arr_neq_cmp(__VA_ARGS__)
 
 # endif
+
+/** @endcond */
 
 # include "internal/assert.h"
 
