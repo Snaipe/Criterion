@@ -29,7 +29,6 @@
 # define CRITERION_THEORIES_H_
 
 # include "criterion.h"
-# include "internal/theories.h"
 
 CR_BEGIN_C_API
 
@@ -42,50 +41,59 @@ CR_API void cr_theory_abort(void);
 CR_END_C_API
 
 /**
- * @defgroup TheoryDatapoints Theory and datapoint macros
+ * @defgroup TheoryBase Theory and datapoint macros
  * @{
  */
 
 /**
- *  Theory((Params...), Suite, Name, [Options...]) { Function Body }
- *
  *  Defines a new theory test.
  *
  *  The parameters are selected from a cartesian product defined by a
  *  TheoryDataPoints macro.
  *
+ *  Example:
+ *  @code{.c}
+ *  Theory((int arg0, double arg1), suite, test) {
+ *      // function body
+ *  };
+ *  @endcode
+ *
  *  @param Params  A list of function parameters.
  *  @param Suite   The name of the test suite containing this test.
  *  @param Name    The name of the test.
- *  @param Options An optional sequence of designated initializer key/value
+ *  @param ...     An optional sequence of designated initializer key/value
  *    pairs as described in the `criterion_test_extra_data` structure
  *    (see criterion/types.h).
  *    Example: .exit_code = 1
  */
-# define Theory(Args, ...) CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
+# define Theory(Params, Suite, Name, ...) <internal>
 
 /**
- *  TheoryDataPoints(Suite, Name) = { Datapoints... };
- *
  *  Defines an array of data points.
  *
  *  The types of the specified data points *must* match the types of the
  *  associated theory.
  *
- *  Each entry in the array must be the result of the DataPoints macro.
+ *  Each entry in the array must be the result of the `DataPoints` macro.
+ *
+ *  Example:
+ *  @code{.c}
+ *  TheoryDataPoints(suite, test) = {
+ *      DataPoints(int, 1, 2, 3),               // first theory parameter
+ *      DataPoints(double, 4.2, 0, -INFINITY),  // second theory parameter
+ *  };
+ *  @endcode
  *
  *  @param Suite   The name of the test suite containing this test.
  *  @param Name    The name of the test.
  */
-# define TheoryDataPoints(Category, Name) CR_TH_INTERNAL_TDPS(Category, Name)
+# define TheoryDataPoints(Suite, Name) CR_TH_INTERNAL_TDPS(Suite, Name)
 
 /**
- *  DataPoints(Type, Values...)
- *
  *  Defines a new set of data points.
  *
- *  @param Type    The type of each data point in the set.
- *  @param Values  The data points in the set.
+ *  @param Type The type of each data point in the set.
+ *  @param ...  The data points in the set.
  */
 # define DataPoints(Type, ...) CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
@@ -123,8 +131,6 @@ CR_END_C_API
  *
  *****************************************************************************/
 # define cr_assume_not(Condition) cr_assume(!(Condition))
-
-# define cr_assume_op_(Op, Actual, Expected) cr_assume((Actual) Op (Expected))
 
 /**
  * Assumes `Actual` is equal to `Expected`
@@ -264,9 +270,6 @@ CR_END_C_API
     cr_assume((Expected) - (Actual) > (Epsilon)         \
            || (Actual) - (Expected) > (Epsilon))
 
-# define cr_assume_str_op_(Op, Actual, Expected) \
-    cr_assume(strcmp((Actual), (Expected)) Op 0)
-
 /**
  * Assumes `Actual` is lexicographically equal to `Expected`
  *
@@ -356,6 +359,7 @@ CR_END_C_API
  *
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
+ * @param[in] Size The size of both arrays
  *
  *****************************************************************************/
 # define cr_assume_arr_eq(Actual, Expected, Size)  cr_assume(!memcmp((Actual), (Expected), (Size)))
@@ -370,11 +374,13 @@ CR_END_C_API
  *
  * @param[in] Actual Array to test
  * @param[in] Unexpected Unexpected array
+ * @param[in] Size The size of both arrays
  *
  *****************************************************************************/
 # define cr_assume_arr_neq(Actual, Unexpected, Size) cr_assume(memcmp((Actual), (Unexpected), (Size)))
 
 /**@}*/
+
 // Deprecated
 
 # ifndef CRITERION_NO_COMPAT
@@ -388,5 +394,7 @@ CR_END_C_API
 #  define cr_assume_arrays_eq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_eq, cr_assume_arr_eq) cr_assume_arr_eq(__VA_ARGS__)
 #  define cr_assume_arrays_neq(...) CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_neq, cr_assume_arr_neq) cr_assume_arr_neq(__VA_ARGS__)
 # endif
+
+# include "internal/theories.h"
 
 #endif /* !CRITERION_THEORIES_H_ */

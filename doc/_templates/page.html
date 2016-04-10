@@ -1,0 +1,17 @@
+{% extends "!page.html" %}
+
+{% set css_files = css_files + ["_static/style.css"] %}
+
+
+{% block footer %}
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".container > dl > *").hide();
+        $(".container > dl > dt").show();
+        $(".container > dl > dt").click(function() {
+            $(this).parent().children().not("dt").toggle(400);
+            $(this).parent().children("dt").toggleClass("open");
+        })
+    });
+</script>
+{% endblock %}

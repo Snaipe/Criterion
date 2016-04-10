@@ -151,4 +151,10 @@
 #  endif
 # endif
 
+# ifdef __cplusplus
+#  define CR_STDN std::
+# else
+#  define CR_STDN
+# endif
+
 #endif /* !CRITERION_COMMON_H_ */

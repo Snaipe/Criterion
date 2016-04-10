@@ -91,4 +91,12 @@ CR_END_C_API
     }                                                                          \
     void CR_EXPAND(CR_VAARG_ID(theory, __VA_ARGS__,))Args
 
+# define cr_assume_op_(Op, Actual, Expected) cr_assume((Actual) Op (Expected))
+
+# define cr_assume_str_op_(Op, Actual, Expected) \
+    cr_assume(strcmp((Actual), (Expected)) Op 0)
+
+# undef Theory
+# define Theory(Args, ...) CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
+
 #endif /* !CRITERION_INTERNAL_THEORIES_H_ */

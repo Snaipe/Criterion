@@ -112,4 +112,13 @@ struct criterion_test_params {
     (struct criterion_test_params) { .size = sizeof (Type), (void*)(Array), __VA_ARGS__ }
 # endif
 
+# undef ParameterizedTest
+# define ParameterizedTest(...) CR_EXPAND(CR_PARAM_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
+
+# undef ParameterizedTestParameters
+# define ParameterizedTestParameters(Suite, Name) CR_PARAM_TEST_PARAMS(Suite, Name)
+
+# undef cr_make_param_array
+# define cr_make_param_array(...) CR_EXPAND(cr_make_param_array_(__VA_ARGS__))
+
 #endif /* !CRITERION_INTERNAL_PARAMETERIZED_H_ */

@@ -89,14 +89,78 @@ struct criterion_test_extra_data {
     // Enf of private API
     /// @endcond
 
-    void (*init)(void);         //!< The setup test fixture
-    void (*fini)(void);         //!< The setup test fixture
-    int signal;                 //!< The expected signal raised by the test (or 0 if none)
-    int exit_code;              //!< The expected exit code returned by the test
-    bool disabled;              //!< Whether the test is disabled or not
-    const char *description;    //!< The description of a test
-    double timeout;             //!< A timeout for the test in seconds
-    void *data;                 //!< Extra user data
+    /**
+     * The setup test fixture.
+     *
+     * This function, if provided, will be executed during the initialization
+     * of the test.
+     */
+    void (*init)(void);
+
+    /**
+     * The teardown test fixture.
+     *
+     * This function, if provided, will be executed during the finalization
+     * of the test.
+     */
+    void (*fini)(void);
+
+    /**
+     * The expected signal to be raised by the test.
+     *
+     * If the test does not raise the specified signal, then the test is
+     * marked as failed.
+     *
+     * A value of 0 means that is it not expected for the test to raise any
+     * signal.
+     */
+    int signal;
+
+    /**
+     * The expected exit status to be returned by the test.
+     *
+     * By default, criterion exits the test process with a value of 0. If it
+     * is expected for the test to exit with a non-zero status, this option
+     * can be used.
+     */
+    int exit_code;
+
+    /**
+     * If `true`, disables the test.
+     *
+     * The test will still appear in the test list, but will be marked as
+     * skipped and will not be executed.
+     */
+    bool disabled;
+
+    /**
+     * The long description of a test.
+     *
+     * If a description is provided, it will be printed in test reports, and
+     * logged if the runner runs in verbose mode.
+     */
+    const char *description;
+
+    /**
+     * The timeout for the test, in seconds.
+     *
+     * If the realtime execution of a test takes longer than the specified
+     * value, then the test is immediately aborted and reported as timing out.
+     *
+     * A value of `0` is equivalent to `+INFINITY` and means that the test
+     * does not timeout.
+     *
+     * It is unspecified behaviour for the value of `timeout` to be negative
+     * or `NaN`.
+     */
+    double timeout;
+
+    /**
+     * Extra user data.
+     *
+     * This field is currently unused.
+     */
+    void *data;
 };
 
 /**

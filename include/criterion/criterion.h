@@ -32,34 +32,28 @@
 # include "assert.h"
 # include "alloc.h"
 
-# include "internal/test.h"
-
 /**
- *  Test(Suite, Name, [Options...]) { Function body }
- *
  *  Defines a new test.
  *
  *  @param Suite   The name of the test suite containing this test.
  *  @param Name    The name of the test.
- *  @param Options An optional sequence of designated initializer key/value
+ *  @param ...     An optional sequence of designated initializer key/value
  *    pairs as described in the `criterion_test_extra_data` structure
- *    (see criterion/types.h).
+ *    (see criterion/types.h).\n
  *    Example: .exit_code = 1
  */
-# define Test(...) CR_EXPAND(CR_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
+# define Test(Suite, Name, ...) <internal>
 
 /**
- *  TestSuite(Name, [Options...]);
- *
  *  Explicitely defines a test suite and its options.
  *
- *  @param Name    The name of the test suite.
- *  @param Options An optional sequence of designated initializer key/value
+ *  @param Name The name of the test suite.
+ *  @param ...  An optional sequence of designated initializer key/value
  *    pairs as described in the `criterion_test_extra_data` structure
  *    (see criterion/types.h).
  *    These options will provide the defaults for each test.
  */
-# define TestSuite(...) CR_EXPAND(CR_SUITE_BASE(__VA_ARGS__, .sentinel_ = 0))
+# define TestSuite(Name, ...) <internal>
 
 CR_BEGIN_C_API
 
@@ -121,5 +115,7 @@ extern const struct criterion_test  *const criterion_current_test;
 extern const struct criterion_suite *const criterion_current_suite;
 
 CR_END_C_API
+
+# include "internal/test.h"
 
 #endif /* !CRITERION_H_ */

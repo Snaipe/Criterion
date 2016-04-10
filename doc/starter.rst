@@ -6,6 +6,10 @@ Adding tests
 
 Adding tests is done using the ``Test`` macro:
 
+.. doxygendefine:: Test
+
+Example:
+
 .. code-block:: c
 
     #include <criterion/criterion.h>
@@ -147,27 +151,18 @@ Configuration reference
 Here is an exhaustive list of all possible configuration parameters you can
 pass:
 
-============= =============== ==============================================================
-Parameter     Type            Description
-============= =============== ==============================================================
-.description  const char *    Adds a description. Cannot be ``NULL``.
-------------- --------------- --------------------------------------------------------------
-.init         void (*)(void)  Adds a setup function the be executed before the test.
-------------- --------------- --------------------------------------------------------------
-.fini         void (*)(void)  Adds a teardown function the be executed after the test.
-------------- --------------- --------------------------------------------------------------
-.disabled     bool            Disables the test.
-------------- --------------- --------------------------------------------------------------
-.signal       int             Expect the test to raise the specified signal.
-------------- --------------- --------------------------------------------------------------
-.exit_code    int             Expect the test to exit with the specified status.
-============= =============== ==============================================================
+.. doxygenstruct:: criterion_test_extra_data
+    :members:
 
 Setting up suite-wise configuration
 -----------------------------------
 
 Tests under the same suite can have a suite-wise configuration -- this is done
 using the ``TestSuite`` macro:
+
+.. doxygendefine:: TestSuite
+
+Example:
 
 .. code-block:: c
 

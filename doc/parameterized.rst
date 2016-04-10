@@ -14,6 +14,8 @@ Adding parameterized tests
 Adding parameterized tests is done by defining the parameterized test function,
 and the parameter generator function:
 
+.. doxygengroup:: ParameterizedBase
+
 .. code-block:: c
 
     #include <criterion/parameterized.h>

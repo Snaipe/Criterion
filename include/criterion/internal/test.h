@@ -181,5 +181,9 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
     struct criterion_suite *CR_SUITE_IDENTIFIER_(Name, ptr)                    \
 	    = &CR_SUITE_IDENTIFIER_(Name, meta) CR_SECTION_SUFFIX_
 
+# undef Test
+# define Test(...) CR_EXPAND(CR_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
+# undef TestSuite
+# define TestSuite(...) CR_EXPAND(CR_SUITE_BASE(__VA_ARGS__, .sentinel_ = 0))
 
 #endif /* !CRITERION_INTERNAL_TEST_H_ */
