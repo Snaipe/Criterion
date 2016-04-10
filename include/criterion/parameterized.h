@@ -79,6 +79,8 @@
  */
 # define cr_make_param_array(Type, Array, Len, Cleanup) <internal>
 
+/** @} */
+
 # ifdef __cplusplus
 #  include <vector>
 
@@ -87,18 +89,14 @@ namespace criterion {
     /**
      *  Represents a C++ dynamic parameter list for a parameter generator.
      *
-     *  @param Type     The type of the array subscript.
-     *  @param Array    The array of parameters.
-     *  @param Len      The length of the array.
-     *  @param Cleanup  The optional cleanup function for the array.
-     *  @returns The parameter list.
+     *  @ingroup ParameterizedBase
+     *
+     *  @param T The type of the parameter.
      */
     template <typename T>
     using parameters = std::vector<T, criterion::allocator<T>>;
 }
 # endif
-
-/** @} */
 
 # include "internal/parameterized.h"
 
