@@ -19,7 +19,7 @@ Using parameterized tests
   [\x1b[0;31mFAIL\x1b[0m] params::str (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion failed: Parameter: baz (esc)
   [\x1b[0;31mFAIL\x1b[0m] params::str (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ parameterized.cc.bin
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m74\x1b[0m: Assertion failed: Parameters: (1, 2.000000) (esc)
@@ -40,7 +40,7 @@ Using parameterized tests
   [\x1b[0;31mFAIL\x1b[0m] params::str (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion failed: Parameter: baz (esc)
   [\x1b[0;31mFAIL\x1b[0m] params::str (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Using parameterized tests (verbose)
 
@@ -74,7 +74,7 @@ Using parameterized tests (verbose)
   [\x1b[0;34mRUN \x1b[0m] params::str (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion failed: Parameter: baz (esc)
   [\x1b[0;31mFAIL\x1b[0m] params::str (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ parameterized.cc.bin --verbose
   [\x1b[0;34m----\x1b[0m] Criterion v2.2.1 (esc)
@@ -106,7 +106,7 @@ Using parameterized tests (verbose)
   [\x1b[0;34mRUN \x1b[0m] params::str (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion failed: Parameter: baz (esc)
   [\x1b[0;31mFAIL\x1b[0m] params::str (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0;31m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Parameterized tests should be listed as one test
 
