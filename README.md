@@ -46,12 +46,7 @@ the user would have with other frameworks:
 
 ### Binary archives
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-osx-x86_64.tar.bz2)
-* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-windows-msvc-x86_64.tar.bz2)
-* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.0/criterion-v2.2.0-windows-mingw-x86_64.tar.bz2)
-
-[comment]: # (Don't forget to change x86_64 to x64 on windows links on the next release)
+Binary releases are available [on the release page](https://github.com/Snaipe/Criterion/releases)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
