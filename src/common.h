@@ -24,6 +24,9 @@
 #ifndef COMMON_H_
 # define COMMON_H_
 
+# include <stdio.h>
+# include <stdlib.h>
+
 #ifdef __GNUC__
 # define INLINE __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
@@ -33,5 +36,10 @@
 #endif
 
 # define DEF(X, Y) ((X) ? (X) : (Y))
+
+# define cr_panic(...) do { \
+        fprintf(stderr, __VA_ARGS__); \
+        abort(); \
+    } while (0)
 
 #endif /* !COMMON_H_ */

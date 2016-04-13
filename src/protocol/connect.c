@@ -47,7 +47,8 @@ int bind_server(void) {
 
     char url[256];
     int rc = snprintf(url, sizeof (url), URL, prefix, get_process_id());
-    assert(rc < 256);
+    if (rc == 256)
+        cr_panic("IPC url too long");
 
     if (nn_bind(sock, url) < 0)
         goto error;
@@ -72,7 +73,8 @@ int connect_client(void) {
 
     char url[256];
     int rc = snprintf(url, sizeof (url), URL, prefix, get_runner_process_id());
-    assert(rc < 256);
+    if (rc == 256)
+        cr_panic("IPC url too long");
 
     if (nn_connect (sock, url) < 0)
         goto error;
