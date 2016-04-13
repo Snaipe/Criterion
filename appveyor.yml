@@ -49,7 +49,7 @@ install:
   # Upgrade pip
   - "pip install --disable-pip-version-check --user --upgrade pip"
   # Install cram
-  - "pip install cram"
+  - "pip install cram==0.6"
   - python -m cram --version
   # Patch buggy cram
   - sh -c "patch C:/Python34/Lib/site-packages/cram.py .cmake/cram-win.patch"
