@@ -134,6 +134,7 @@ static int get_win_status(HANDLE handle) {
 #endif
 
 struct worker_context g_worker_context = {.test = NULL};
+unsigned long long g_ppid = 0;
 
 #ifdef VANILLA_WIN32
 struct full_context {
@@ -142,6 +143,7 @@ struct full_context {
     struct criterion_suite suite;
     struct criterion_test_extra_data suite_data;
     cr_worker_func func;
+    unsigned long long ppid;
     struct test_single_param param;
     HANDLE sync;
     DWORD extra_size;
@@ -207,6 +209,8 @@ static void *chld_pump_thread_main(void *nil) {
 
 void init_proc_compat(void) {
 #ifndef VANILLA_WIN32
+    g_ppid = get_process_id();
+
     child_pump_running = true;
     int err = pthread_create(&child_pump, NULL, chld_pump_thread_main, NULL);
     if (err) {
@@ -339,6 +343,8 @@ int resume_child(void) {
     local_ctx.test.data  = &local_ctx.test_data;
     local_ctx.suite.data = &local_ctx.suite_data;
 
+    g_ppid = local_ctx.ppid;
+
     SetEvent(local_ctx.sync);
 
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
@@ -411,6 +417,7 @@ s_proc_handle *fork_process() {
         .suite     = *g_worker_context.suite,
         .func      = g_worker_context.func,
         .sync      = sync,
+        .ppid      = get_process_id(),
     };
 
     if (g_worker_context.param) {
@@ -499,6 +506,14 @@ unsigned long long get_process_id(void) {
     return (unsigned long long) GetCurrentProcessId();
 #else
     return (unsigned long long) getpid();
+#endif
+}
+
+unsigned long long get_runner_process_id(void) {
+#ifdef VANILLA_WIN32
+    return g_ppid;
+#else
+    return is_runner() ? get_process_id() : (unsigned long long) getppid();
 #endif
 }
 

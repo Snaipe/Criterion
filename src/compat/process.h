@@ -57,6 +57,7 @@ s_proc_handle *get_current_process();
 bool is_current_process(s_proc_handle *proc);
 
 unsigned long long get_process_id(void);
+unsigned long long get_runner_process_id(void);
 unsigned long long get_process_id_of(s_proc_handle *proc);
 
 void init_proc_compat(void);

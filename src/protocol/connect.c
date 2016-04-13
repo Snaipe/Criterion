@@ -21,11 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <assert.h>
 #include <errno.h>
 #include <nanomsg/nn.h>
 #include <nanomsg/reqrep.h>
+#include <string.h>
 
-#define URL "ipc://criterion.sock"
+#include "compat/process.h"
+
+#define URL "ipc://%scriterion_%llu.sock"
 
 #define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
 
@@ -35,7 +39,17 @@ int bind_server(void) {
     if (sock < 0)
         return -1;
 
-    if (nn_bind(sock, URL) < 0)
+#ifdef VANILLA_WIN32
+    char *prefix = "";
+#else
+    char *prefix = "/tmp/";
+#endif
+
+    char url[256];
+    int rc = snprintf(url, sizeof (url), URL, prefix, get_process_id());
+    assert(rc < 256);
+
+    if (nn_bind(sock, url) < 0)
         goto error;
 
     return sock;
@@ -50,7 +64,17 @@ int connect_client(void) {
     if (sock < 0)
         return -1;
 
-    if (nn_connect (sock, URL) < 0)
+#ifdef VANILLA_WIN32
+    char *prefix = "";
+#else
+    char *prefix = "/tmp/";
+#endif
+
+    char url[256];
+    int rc = snprintf(url, sizeof (url), URL, prefix, get_runner_process_id());
+    assert(rc < 256);
+
+    if (nn_connect (sock, url) < 0)
         goto error;
 
     return sock;
