@@ -45,7 +45,7 @@ if (WIN32)
   endif ()
 endif ()
 
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/debian.copyright")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/debian.copyright")
 extract_version(${PROJECT_VERSION}
     CPACK_PACKAGE_VERSION_MAJOR
     CPACK_PACKAGE_VERSION_MINOR
@@ -55,21 +55,21 @@ extract_version(${PROJECT_VERSION}
 
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 
-file(GLOB TRASH_FILES "${CMAKE_SOURCE_DIR}/*")
+file(GLOB TRASH_FILES "${PROJECT_SOURCE_DIR}/*")
 set(KEEP_FILES
-  "${CMAKE_SOURCE_DIR}/.cmake"
-  "${CMAKE_SOURCE_DIR}/src"
-  "${CMAKE_SOURCE_DIR}/include"
-  "${CMAKE_SOURCE_DIR}/doc"
-  "${CMAKE_SOURCE_DIR}/dev"
-  "${CMAKE_SOURCE_DIR}/po"
-  "${CMAKE_SOURCE_DIR}/dependencies"
-  "${CMAKE_SOURCE_DIR}/CMakeLists.txt"
-  "${CMAKE_SOURCE_DIR}/README.md"
-  "${CMAKE_SOURCE_DIR}/CONTRIBUTING.md"
-  "${CMAKE_SOURCE_DIR}/LICENSE"
-  "${CMAKE_SOURCE_DIR}/ChangeLog"
-  "${CMAKE_SOURCE_DIR}/description.txt"
+  "${PROJECT_SOURCE_DIR}/.cmake"
+  "${PROJECT_SOURCE_DIR}/src"
+  "${PROJECT_SOURCE_DIR}/include"
+  "${PROJECT_SOURCE_DIR}/doc"
+  "${PROJECT_SOURCE_DIR}/dev"
+  "${PROJECT_SOURCE_DIR}/po"
+  "${PROJECT_SOURCE_DIR}/dependencies"
+  "${PROJECT_SOURCE_DIR}/CMakeLists.txt"
+  "${PROJECT_SOURCE_DIR}/README.md"
+  "${PROJECT_SOURCE_DIR}/CONTRIBUTING.md"
+  "${PROJECT_SOURCE_DIR}/LICENSE"
+  "${PROJECT_SOURCE_DIR}/ChangeLog"
+  "${PROJECT_SOURCE_DIR}/description.txt"
 )
 list(REMOVE_ITEM TRASH_FILES ${KEEP_FILES})
 # Escape any '.' characters

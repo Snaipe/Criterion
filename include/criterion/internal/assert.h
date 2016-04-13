@@ -89,46 +89,42 @@ CR_END_C_API
             "" CR_TRANSLATE_DEF_MSG__(CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)))  \
     ))
 
-# define CR_INIT_STATS_(MsgVar, ...) CR_EXPAND(                                \
+# define CR_INIT_STATS_(MsgVar, Shifted, ...) CR_EXPAND(                       \
     do {                                                                       \
-        char *def_msg = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));         \
-        char *formatted_msg = NULL;                                            \
-        cr_asprintf(&formatted_msg, "" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));   \
-        if (formatted_msg && *formatted_msg) {                                 \
-            MsgVar = formatted_msg;                                            \
-            CR_STDN free(def_msg);                                             \
+        char *cr_def_msg__ = CR_EXPAND(CR_TRANSLATE_DEF_MSG_(__VA_ARGS__));    \
+        char *cr_fmt_msg__ = NULL;                                             \
+        cr_asprintf(&cr_fmt_msg__, "x" CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__)));   \
+        if (cr_fmt_msg__ && cr_fmt_msg__[1]) {                                 \
+            MsgVar = cr_fmt_msg__ + 1;                                         \
+            Shifted = 1;                                                       \
+            CR_STDN free(cr_def_msg__);                                        \
         } else {                                                               \
-            MsgVar = def_msg;                                                  \
-            CR_STDN free(formatted_msg);                                       \
+            MsgVar = cr_def_msg__;                                             \
+            CR_STDN free(cr_fmt_msg__);                                        \
         }                                                                      \
     } while (0))
 
 # define CR_FAIL_ABORT_ criterion_abort_test
 # define CR_FAIL_CONTINUES_ criterion_continue_test
 
-# if defined(__GNUC__) || defined(__clang__)
-// We disable the format-zero-length warning because we use the validity of
-// asprintf(out, "") for empty assertion messages
-#  pragma GCC diagnostic ignored "-Wformat-zero-length"
-# endif
-
 # define cr_assert_impl(Fail, Condition, ...)                               \
     do {                                                                    \
-        bool passed = !!(Condition);                                        \
+        bool cr_passed__ = !!(Condition);                                   \
+        char *cr_msg__ = NULL;                                              \
+        int cr_shifted__ = 0;                                               \
                                                                             \
-        char *msg = NULL;                                                   \
+        CR_EXPAND(CR_INIT_STATS_(cr_msg__, cr_shifted__,                    \
+                    CR_VA_TAIL(__VA_ARGS__)));                              \
+        struct criterion_assert_stats cr_stat__;                            \
+        cr_stat__.passed = cr_passed__;                                     \
+        cr_stat__.file = __FILE__;                                          \
+        cr_stat__.line = __LINE__;                                          \
+        cr_stat__.message = cr_msg__;                                       \
+        criterion_send_assert(&cr_stat__);                                  \
                                                                             \
-        CR_EXPAND(CR_INIT_STATS_(msg, CR_VA_TAIL(__VA_ARGS__)));            \
-        struct criterion_assert_stats stat;                                 \
-        stat.passed = passed;                                               \
-        stat.file = __FILE__;                                               \
-        stat.line = __LINE__;                                               \
-        stat.message = msg;                                                 \
-        criterion_send_assert(&stat);                                       \
+        CR_STDN free(cr_msg__ - cr_shifted__);                              \
                                                                             \
-        CR_STDN free(msg);                                                  \
-                                                                            \
-        if (!passed)                                                        \
+        if (!cr_passed__)                                                   \
             Fail();                                                         \
     } while (0)
 

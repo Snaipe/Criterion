@@ -1,7 +1,7 @@
 Display the help message
 
   $ simple.c.bin --help
-  Tests compiled with Criterion v2.2.0
+  Tests compiled with Criterion v2.2.1
   
   usage: .*simple\.c\.bin(\.exe)? OPTIONS (re)
   options: 
@@ -22,7 +22,7 @@ Display the help message
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
   $ simple.cc.bin --help
-  Tests compiled with Criterion v2.2.0
+  Tests compiled with Criterion v2.2.1
   
   usage: .*simple\.cc\.bin(\.exe)? OPTIONS (re)
   options: 

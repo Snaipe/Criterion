@@ -65,7 +65,6 @@ Test(redirect, stdout_) {
     std::cout << "Foo" << std::flush;
 
     cr_expect_stdout_eq_str("Foo");
-    cr_expect_stdout_neq_str("Bar");
 }
 
 Test(redirect, stderr_) {
@@ -74,7 +73,6 @@ Test(redirect, stderr_) {
     std::cerr << "Foo" << std::flush;
 
     cr_expect_stderr_eq_str("Foo");
-    cr_expect_stderr_neq_str("Bar");
 }
 
 Test(redirect, stdin_) {
@@ -86,5 +84,4 @@ Test(redirect, stdin_) {
     std::cin >> read;
 
     cr_expect_eq(read, "Foo");
-    cr_expect_neq(read, "Bar");
 }

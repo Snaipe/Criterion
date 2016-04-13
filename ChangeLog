@@ -1,3 +1,14 @@
+2016-02-06  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.2.1
+    * Fix: fixed criterion not being embeddable with CMake's `add_directory`
+    * Fix: fixed resource leaks in the child pump thread
+    * Fix: fixed redirected standard streams being leaked by cr_(assert|expect)_std(out|err)
+    * Fix: fixed out of bounds during assert message sending
+    * Fix: fixed naming convention conflicts for internal variables used by the implementation of cr_assert
+    * Fix: fixed empty format string warning with GCC 4.8
+    * Fix: fixed file-to-file comparison assert message being corrupted
+
 2015-12-08  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.2.0
