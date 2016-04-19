@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 #include "criterion/stats.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
@@ -56,7 +57,9 @@
     "failures=\"" CR_SIZE_T_FORMAT "\" "    \
     "errors=\"" CR_SIZE_T_FORMAT "\" "      \
     "disabled=\"" CR_SIZE_T_FORMAT "\" "    \
-    "skipped=\"" CR_SIZE_T_FORMAT "\""
+    "skipped=\"" CR_SIZE_T_FORMAT "\" "     \
+    "time=\"%.3f\""
+
 
 #define XML_TESTSUITE_TEMPLATE_BEGIN            \
     "  <testsuite " TESTSUITE_PROPERTIES ">\n"
@@ -67,7 +70,8 @@
 #define TEST_PROPERTIES                     \
     "name=\"%s\" "                          \
     "assertions=\"" CR_SIZE_T_FORMAT "\" "  \
-    "status=\"%s\""
+    "status=\"%s\" "                        \
+    "time=\"%.3f\""
 
 #define XML_TEST_TEMPLATE_BEGIN            \
     "    <testcase " TEST_PROPERTIES ">\n" \
@@ -98,7 +102,7 @@ static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite 
     return t->data->disabled || (s->data && s->data->disabled);
 }
 
-static CR_INLINE
+static INLINE
 const char *get_status_string(struct criterion_test_stats *ts,
                               struct criterion_suite_stats *ss) {
 
@@ -112,14 +116,33 @@ const char *get_status_string(struct criterion_test_stats *ts,
     return status;
 }
 
+/*
+ * floats are printed locale dependent, but the xml-specification
+ * requires a dot as the decimal separator.
+ * Therefore we set the locale temporarily to print dots.
+ */
+static int fprintf_locale(FILE *restrict stream,
+    const char *restrict format, ...) {
+    va_list args;
+    int result;
+    const char *locale = setlocale(LC_NUMERIC, NULL);
+    setlocale(LC_NUMERIC, "C");
+    va_start(args, format);
+    result = vfprintf(stream, format, args);
+    va_end(args);
+    setlocale(LC_NUMERIC, locale);
+    return result;
+}
+
 static void print_test(FILE *f,
                        struct criterion_test_stats *ts,
                        struct criterion_suite_stats *ss) {
 
-    fprintf(f, XML_TEST_TEMPLATE_BEGIN,
+    fprintf_locale(f, XML_TEST_TEMPLATE_BEGIN,
             ts->test->name,
             (size_t) (ts->passed_asserts + ts->failed_asserts),
-            get_status_string(ts, ss)
+            get_status_string(ts, ss),
+            ts->elapsed_time
         );
 
     if (is_disabled(ts->test, ss->suite)) {
@@ -156,6 +179,15 @@ static void print_test(FILE *f,
     fprintf(f, XML_TEST_TEMPLATE_END);
 }
 
+static INLINE float get_time_elapsed_suite(struct criterion_suite_stats *ss)
+{
+    float result = 0;
+    for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
+        result += ts->elapsed_time;
+    }
+    return result;
+}
+
 void xml_report(FILE *f, struct criterion_global_stats *stats) {
     fprintf(f, XML_BASE_TEMPLATE_BEGIN,
             stats->nb_tests,
@@ -166,13 +198,14 @@ void xml_report(FILE *f, struct criterion_global_stats *stats) {
 
     for (struct criterion_suite_stats *ss = stats->suites; ss; ss = ss->next) {
 
-        fprintf(f, XML_TESTSUITE_TEMPLATE_BEGIN,
+        fprintf_locale(f, XML_TESTSUITE_TEMPLATE_BEGIN,
                 ss->suite->name,
                 ss->nb_tests,
                 ss->tests_failed,
                 ss->tests_crashed,
                 ss->tests_skipped,
-                ss->tests_skipped
+                ss->tests_skipped,
+                get_time_elapsed_suite(ss)
             );
 
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
