@@ -135,7 +135,7 @@ script:
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         TERM=dumb cmake --build . --target criterion_tests -- -j4
-        ctest
+        ctest --output-on-failure
       else
         TERM=dumb cmake --build . -- -j4
       fi
@@ -145,12 +145,6 @@ after_success:
       if [ "$COVERAGE" = "ON" ]; then
         make gcov
         bash <(curl -s https://codecov.io/bash)
-      fi
-
-after_failure:
-  - |
-      if [ "${TESTS:-ON}" = "ON" ]; then
-        cat Testing/Temporary/LastTest.log samples/*.{out,err} ../samples/tests/*.{out,err}
       fi
 
 before_deploy:
