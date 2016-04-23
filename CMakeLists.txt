@@ -18,7 +18,6 @@ endif ()
 # Initialization
 
 include (Options)
-include (Properties)
 include (Submodules)
 include (Capabilities)
 include (Subprojects)
@@ -30,7 +29,9 @@ cr_add_subproject (csptr PATH dependencies/libcsptr
 cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
 if (NOT WIN32)
-    set (ENV{CFLAGS} -fPIC)
+    set (NN_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+else ()
+    set (NN_C_FLAGS "${CMAKE_C_FLAGS}")
 endif ()
 
 cr_add_subproject (nanomsg
@@ -40,11 +41,13 @@ cr_add_subproject (nanomsg
     -DNN_TOOLS=OFF
     -DNN_FORK_STRATEGY=RESET
     -DNN_STATIC_LIB=ON
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+    "-DCMAKE_C_FLAGS=${NN_C_FLAGS}"
   CMAKE
 )
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
+
+include (Properties)
 
 add_definitions (-DNN_STATIC_LIB)
 
