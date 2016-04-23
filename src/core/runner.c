@@ -386,14 +386,14 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set) {
         abort();
     }
 
+    init_proc_compat();
+
     g_client_socket = connect_client();
     if (g_client_socket < 0) {
         criterion_perror("Could not initialize the message client: %s.\n",
                 strerror(errno));
         abort();
     }
-
-    init_proc_compat();
 
     struct criterion_global_stats *stats = stats_init();
     run_tests_async(set, stats, sock);

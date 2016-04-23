@@ -134,9 +134,10 @@ static int get_win_status(HANDLE handle) {
 #endif
 
 struct worker_context g_worker_context = {.test = NULL};
-unsigned long long g_ppid = 0;
 
 #ifdef VANILLA_WIN32
+unsigned long long g_ppid = 0;
+
 struct full_context {
     struct criterion_test test;
     struct criterion_test_extra_data test_data;
@@ -209,8 +210,6 @@ static void *chld_pump_thread_main(void *nil) {
 
 void init_proc_compat(void) {
 #ifndef VANILLA_WIN32
-    g_ppid = get_process_id();
-
     child_pump_running = true;
     int err = pthread_create(&child_pump, NULL, chld_pump_thread_main, NULL);
     if (err) {
@@ -218,6 +217,8 @@ void init_proc_compat(void) {
         exit(1);
     }
 #else
+    g_ppid = get_process_id();
+
     InitializeConditionVariable(&wait_cond);
     InitializeCriticalSection(&wait_sync);
     wait_threads = 0;
