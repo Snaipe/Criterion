@@ -29,9 +29,18 @@ cr_add_subproject (csptr PATH dependencies/libcsptr
     CMAKE)
 cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
+if (NOT WIN32)
+    set (ENV{CFLAGS} -fPIC)
+endif ()
+
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg-patched
-  OPTS "-DNN_TESTS=OFF" "-DNN_FORK_STRATEGY=reset" "-DNN_STATIC_LIB=ON"
+  OPTS
+    -DNN_TESTS=OFF
+    -DNN_TOOLS=OFF
+    -DNN_FORK_STRATEGY=RESET
+    -DNN_STATIC_LIB=ON
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON
   CMAKE
 )
 
