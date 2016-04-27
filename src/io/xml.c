@@ -121,8 +121,8 @@ const char *get_status_string(struct criterion_test_stats *ts,
  * requires a dot as the decimal separator.
  * Therefore we set the locale temporarily to print dots.
  */
-static int fprintf_locale(FILE *restrict stream,
-    const char *restrict format, ...) {
+static int fprintf_locale(FILE *stream,
+                          const char *format, ...) {
     va_list args;
     int result;
     const char *locale = setlocale(LC_NUMERIC, NULL);
