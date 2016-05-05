@@ -48,8 +48,7 @@ if (NOT MSVC) # we disable the scripted tests when building with MSVC
         -DENABLE_PATTERN_TESTS="${HAVE_PCRE}"
         -P "${CMAKE_MODULE_PATH}/Cram.cmake"
   )
-  add_dependencies(cram_tests criterion_samples)
 
-  add_test(cram_tests make cram_tests)
+  add_test(cram_tests cmake --build ${PROJECT_BINARY_DIR} --target cram_tests)
 
 endif ()
