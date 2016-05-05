@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "compat/process.h"
+#include "core/worker.h"
 
 #define URL "ipc://%scriterion_%llu.sock"
 
@@ -61,6 +62,9 @@ error: {}
 }
 
 int connect_client(void) {
+    if (is_single_mode())
+        return 0;
+
     int sock = nn_socket(AF_SP, NN_REQ);
     if (sock < 0)
         return -1;
@@ -87,5 +91,8 @@ error: {}
 }
 
 void close_socket(int sock) {
+    if (is_single_mode())
+        return;
+
     nn_close(sock);
 }

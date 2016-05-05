@@ -77,6 +77,7 @@ void run_worker(struct worker_context *ctx);
 void set_runner_process(void);
 void unset_runner_process(void);
 bool is_runner(void);
+bool is_single_mode(void);
 struct process_status wait_proc(struct worker *proc);
 struct worker *spawn_test_worker(struct execution_context *ctx, cr_worker_func func);
 

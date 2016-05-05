@@ -51,6 +51,10 @@ bool is_runner(void) {
     return is_current_process(g_current_proc);
 }
 
+bool is_single_mode(void) {
+    return g_current_proc == NULL;
+}
+
 static void close_process(void *ptr, CR_UNUSED void *meta) {
     struct worker *proc = ptr;
     sfree(proc->ctx.suite_stats);
