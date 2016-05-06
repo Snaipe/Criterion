@@ -50,7 +50,15 @@ matrix:
       env: CONFIGURATION=Release TESTS=OFF
     # Linux RelWithDebInfo, GCC 4.6
     - compiler: gcc
-      env: CONFIGURATION=RelWithDebInfo TESTS=OFF
+      env:
+        - CONFIGURATION=RelWithDebInfo
+        - TESTS=OFF
+        # Coverity token
+        - secure: >-
+            n6BHG86ISeYSAVE/i7m1K+XVW0j8PrJ5JxoJwhAGBb1
+            hkCn9sWybGo1HzZsf7rxpkQh/5Va4i+eyOrUt7VWAuF
+            EJN2+mEWqERkWZxiXrS3N9xi74cPFI79eDOTFnPm13e
+            diUX8Ts+IuFy890+tsNHqkEn055l6yOVMtj1LWWtRs=
     # OSX Debug, GCC 4.9
     - os: osx
       compiler: gcc-4.9
@@ -150,6 +158,16 @@ after_success:
 before_deploy:
   - make install
   - tar -cvjf criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2 criterion-${TRAVIS_TAG}
+
+addons:
+  coverity_scan:
+    project:
+      name: "Snaipe/Criterion"
+      description: "A KISS, Cross-platform C unit testing framework"
+    notification_email: franklinmathieu@gmail.com
+    build_command_prepend: "cmake ."
+    build_command: "make -j4"
+    branch_pattern: coverity_scan
 
 deploy:
   provider: releases
