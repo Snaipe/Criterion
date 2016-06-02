@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Criterion \n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-02-13 12:57+0100\n"
+"POT-Creation-Date: 2016-06-06 15:16+0200\n"
 "PO-Revision-Date: 2016-02-12 11:12+0100\n"
 "Last-Translator:  <a1lu@arcor.de>\n"
 "Language-Team: German\n"
@@ -130,38 +130,41 @@ msgstr "Der Ausdruck %s ist falsch."
 
 #: src/string/i18n.c:15
 #, c-format
-msgid "The expression (as strings) %s is false."
-msgstr "Der Ausdruck (als Zeichenkette) %s ist falsch."
-
-#: src/string/i18n.c:16
-#, c-format
 msgid "%s is null."
 msgstr "%s ist null."
 
-#: src/string/i18n.c:17
+#: src/string/i18n.c:16
 #, c-format
 msgid "%s is not null."
 msgstr "%s ist nicht null."
 
-#: src/string/i18n.c:18
+#: src/string/i18n.c:17
 #, c-format
 msgid "%s is empty."
 msgstr "%s ist leer."
 
-#: src/string/i18n.c:19
-#, c-format
-msgid "%s is not empty."
-msgstr "%s ist nicht leer."
-
-#: src/string/i18n.c:20
+#: src/string/i18n.c:18
 #, c-format
 msgid "The statement `%s` did not throw any exception."
 msgstr "Die Anweisung `%s` hat keine Ausnahme geworfen."
 
-#: src/string/i18n.c:21
+#: src/string/i18n.c:19
 #, c-format
 msgid "The statement `%s` threw some exception."
 msgstr "Die Anweisung `%s` hat Ausnahmen geworfen."
+
+#: src/string/i18n.c:22
+#, c-format
+msgid ""
+"The expression (as strings) %1$s is false: actual=`%2$s` expected=`%3$s`."
+msgstr ""
+"Der Ausdruck (als Zeichenkette) %1$s ist falsch: tatsächlich=`%2$s` "
+"erwartet=`%3$s`."
+
+#: src/string/i18n.c:23
+#, c-format
+msgid "%1$s (`%2$s`) is not empty."
+msgstr "%1$s (`%2$s`) ist nicht leer."
 
 #: src/string/i18n.c:24
 #, c-format
