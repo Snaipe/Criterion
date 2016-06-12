@@ -251,15 +251,18 @@ CR_END_C_API
 
 // String
 
-# define cr_assert_str_op_empty_(Fail, Op, Msg, Value, ...) \
-    CR_EXPAND(cr_assert_impl(                               \
-            Fail,                                           \
-            (Value)[0] Op '\0',                             \
-            dummy,                                          \
-            Msg,                                            \
-            (CR_STR(Value)),                                \
-            __VA_ARGS__                                     \
-    ))
+# define cr_assert_str_op_empty_(Fail, Op, Msg, Value, ...)                     \
+    do {                                                                        \
+        const char *cr_str_value__ = (Value);                                   \
+        CR_EXPAND(cr_assert_impl(                                               \
+                Fail,                                                           \
+                ((cr_str_value__) != NULL) && (cr_str_value__)[0] Op '\0',      \
+                dummy,                                                          \
+                ((cr_str_value__) != NULL) ? Msg: CRITERION_ASSERT_MSG_IS_NULL, \
+                (CR_STR(Value), cr_str_value__),                                \
+                __VA_ARGS__                                                     \
+        ));                                                                     \
+    } while (0)
 
 # define cr_assert_str_op_empty_va_(Fail, Op, Msg, ...) \
     CR_EXPAND(cr_assert_str_op_empty_(                  \
@@ -270,15 +273,20 @@ CR_END_C_API
             CR_VA_TAIL(__VA_ARGS__)                     \
     ))
 
-# define cr_assert_str_op_(Fail, Op, Actual, Expected, ...) \
-    CR_EXPAND(cr_assert_impl(                               \
-            Fail,                                           \
-            CR_STDN strcmp((Actual), (Expected)) Op 0,      \
-            dummy,                                          \
-            CRITERION_ASSERT_MSG_EXPR_AS_STRINGS_FALSE,     \
-            (CR_STR((Actual) Op (Expected))),               \
-            __VA_ARGS__                                     \
-    ))
+# define cr_assert_str_op_(Fail, Op, Actual, Expected, ...)                           \
+    do {                                                                              \
+        const char *cr_str_actual__ = (Actual);                                       \
+        const char *cr_str_expected__ = (Expected);                                   \
+        CR_EXPAND(cr_assert_impl(                                                     \
+                Fail,                                                                 \
+                ((cr_str_actual__) != NULL) && ((cr_str_expected__) != NULL) &&       \
+                CR_STDN strcmp((cr_str_actual__), (cr_str_expected__)) Op 0,          \
+                dummy,                                                                \
+                CRITERION_ASSERT_MSG_EXPR_AS_STRINGS_FALSE,                           \
+                (CR_STR((Actual) Op (Expected)), cr_str_actual__, cr_str_expected__), \
+                __VA_ARGS__                                                           \
+        ));                                                                           \
+    } while (0)
 
 # define cr_assert_str_op_va_(Fail, Op, ...)        \
     CR_EXPAND(cr_assert_str_op_(                    \

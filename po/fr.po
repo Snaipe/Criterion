@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-02-13 12:57+0100\n"
+"POT-Creation-Date: 2016-06-06 15:16+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -130,38 +130,41 @@ msgstr "L'expression %s est fausse."
 
 #: src/string/i18n.c:15
 #, c-format
-msgid "The expression (as strings) %s is false."
-msgstr "L'expression (en tant que chaînes de caractères) %s est fausse."
-
-#: src/string/i18n.c:16
-#, c-format
 msgid "%s is null."
 msgstr "%s est nul."
 
-#: src/string/i18n.c:17
+#: src/string/i18n.c:16
 #, c-format
 msgid "%s is not null."
 msgstr "%s n'est pas nul."
 
-#: src/string/i18n.c:18
+#: src/string/i18n.c:17
 #, c-format
 msgid "%s is empty."
 msgstr "%s est vide."
 
-#: src/string/i18n.c:19
-#, c-format
-msgid "%s is not empty."
-msgstr "%s n'est pas vide."
-
-#: src/string/i18n.c:20
+#: src/string/i18n.c:18
 #, fuzzy, c-format
 msgid "The statement `%s` did not throw any exception."
 msgstr "L'instruction `%s` n'a pas levé d'exception."
 
-#: src/string/i18n.c:21
+#: src/string/i18n.c:19
 #, fuzzy, c-format
 msgid "The statement `%s` threw some exception."
 msgstr "L'instruction `%1$s` a levé une exception."
+
+#: src/string/i18n.c:22
+#, c-format
+msgid ""
+"The expression (as strings) %1$s is false: actual=`%2$s` expected=`%3$s`."
+msgstr ""
+"L'expression (en tant que chaînes de caractères) %1$s est fausse: actuel=`"
+"%2$s` attendu=`%3$s`."
+
+#: src/string/i18n.c:23
+#, c-format
+msgid "%1$s (`%2$s`) is not empty."
+msgstr "%1$s (`%2$s`) n'est pas vide."
 
 #: src/string/i18n.c:24
 #, c-format
