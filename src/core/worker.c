@@ -78,6 +78,8 @@ struct event *worker_read_event(struct worker_set *workers, s_pipe_file_handle *
 }
 
 void run_worker(struct worker_context *ctx) {
+    reset_proc_compat();
+
     cr_redirect_stdin();
     g_event_pipe = pipe_out_handle(ctx->pipe, PIPE_CLOSE);
 

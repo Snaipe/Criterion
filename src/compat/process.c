@@ -176,10 +176,18 @@ void init_proc_compat(void) {
 #endif
 }
 
-void free_proc_compat(void) {
+void reset_proc_compat(void) {
 #ifndef VANILLA_WIN32
     child_pump_running = false;
     pthread_join(child_pump, NULL);
+#endif
+}
+
+void free_proc_compat(void) {
+#ifndef VANILLA_WIN32
+    if (child_pump_running) {
+        reset_proc_compat();
+    }
 #endif
 }
 
