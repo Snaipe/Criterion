@@ -54,7 +54,7 @@ copyright = u'2015-2016, Franklin "Snaipe" Mathieu'
 # built documents.
 #
 # The short X.Y version.
-version = '2.2.1'
+version = '2.2.2'
 # The full version, including alpha/beta/rc tags.
 release = version
 
