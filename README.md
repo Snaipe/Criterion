@@ -48,10 +48,10 @@ the user would have with other frameworks:
 
 ### Binary archives
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.1/criterion-v2.2.1-linux-x86_64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.1/criterion-v2.2.1-osx-x86_64.tar.bz2)
-* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.1/criterion-v2.2.1-windows-msvc-x64.tar.bz2)
-* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.1/criterion-v2.2.1-windows-mingw-x64.tar.bz2)
+* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-linux-x64.tar.bz2)
+* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-osx-x64.tar.bz2)
+* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-windows-msvc-x64.tar.bz2)
+* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-windows-mingw-x64.tar.bz2)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 

@@ -1,3 +1,10 @@
+2016-06-20  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.2.2
+    * Fix: fixed deadlocks when tests are terminated too fast
+    * Fix: fixed crash during test teardown if spawning new threads in the test
+    * Fix: fixed memory leak in disabled tests
+
 2016-02-06  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.2.1
