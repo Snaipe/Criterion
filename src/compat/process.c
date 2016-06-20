@@ -153,14 +153,14 @@ static void handle_sigchld_pump(void) {
  * REMOVE WHEN REFACTORING I/O LAYER
  */
 static pthread_t child_pump;
-static bool child_pump_running;
+static volatile bool child_pump_running;
 
 static void *chld_pump_thread_main(void *nil) {
-    do {
-        handle_sigchld_pump();
+    handle_sigchld_pump();
+    while (child_pump_running) {
         usleep(1000);
-    } while (child_pump_running);
-
+        handle_sigchld_pump();
+    }
     return nil;
 }
 #endif
@@ -176,10 +176,18 @@ void init_proc_compat(void) {
 #endif
 }
 
-void free_proc_compat(void) {
+void reset_proc_compat(void) {
 #ifndef VANILLA_WIN32
     child_pump_running = false;
     pthread_join(child_pump, NULL);
+#endif
+}
+
+void free_proc_compat(void) {
+#ifndef VANILLA_WIN32
+    if (child_pump_running) {
+        reset_proc_compat();
+    }
 #endif
 }
 
