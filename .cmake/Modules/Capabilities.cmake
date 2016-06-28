@@ -26,6 +26,7 @@ check_function_exists(strtok_s HAVE_STRTOK_S)
 check_function_exists(strtok_r HAVE_STRTOK_R)
 
 check_library_exists (rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
+check_library_exists (anl getaddrinfo_a "" HAVE_GETADDRINFO_A)
 
 # Check for C++11
 
