@@ -86,7 +86,7 @@ Testing all assert messages
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m10\x1b[0m: Assertion failed: The expression (1) > (2) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m11\x1b[0m: Assertion failed: The expression (1) >= (2) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m12\x1b[0m: Assertion failed: "" is not null. (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion failed: __null is null. (esc)
+  \[\\x1b\[0;34m----\\x1b\[0m\] \\x1b\[0;1mfailmessages\.cc\\x1b\[0m:\\x1b\[0;31m13\\x1b\[0m: Assertion failed: (nullptr|__null) is null\. \(esc\) (re)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion failed: The expression (2) - (1) <= (0.1) && (1) - (2) <= (0.1) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m16\x1b[0m: Assertion failed: The expression (2) - (2) > (0.1) || (2) - (2) > (0.1) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m18\x1b[0m: Assertion failed: "foo" (`foo`) is not empty. (esc)
