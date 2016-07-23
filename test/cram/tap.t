@@ -49,7 +49,7 @@ Testing multiple samples with --tap
   ok - suite1::test 
   
   # Running 1 tests from disabled
-  ok - disabled::test  # SKIP suite is disabled
+  ok - disabled::test  # SKIP test was skipped
 
   $ long-messages.c.bin --tap
   TAP version 13
@@ -69,7 +69,7 @@ Testing multiple samples with --tap
   # Criterion v2.2.1
   
   # Running 2 tests from misc
-  ok - misc::skipped This one is skipped # SKIP test is disabled
+  ok - misc::skipped This one is skipped # SKIP test was skipped
   not ok - misc::failing Just a failing test
     description.c:4: Assertion failed: The expression 0 is false.
 
@@ -96,3 +96,14 @@ Testing CRITERION_OUTPUTS
   ok - misc::passing 
   not ok - misc::failing 
     simple.c:4: Assertion failed: The expression 0 is false.
+
+
+
+  $ skip.c.bin --tap
+  TAP version 13
+  1..2
+  # Criterion v2.2.1
+  
+  # Running 2 tests from misc
+  ok - misc::skipping  # SKIP test was skipped
+  ok - misc::message  # SKIP Skips may take printf-like messages

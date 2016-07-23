@@ -32,7 +32,7 @@
 #include "runner.h"
 #include "report.h"
 
-static INLINE void nothing(void) {}
+static CR_INLINE void nothing(void) {}
 
 ccrBeginDefineContextType(run_next_context);
 
@@ -66,7 +66,7 @@ static struct worker *run_test(struct criterion_global_stats *stats,
     return spawn_test_worker(&ctx, run_test_child);
 }
 
-static INLINE bool is_disabled(struct criterion_test *t,
+static CR_INLINE bool is_disabled(struct criterion_test *t,
                                struct criterion_suite *s) {
 
     return t->data->disabled || (s->data && s->data->disabled);
@@ -90,6 +90,7 @@ static struct worker *cleanup_and_return_worker(struct run_next_context *ctx,
 static int skip_disabled(struct run_next_context *ctx) {
     if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
         ctx->test_stats = test_stats_init(ctx->test);
+        ctx->test_stats->test_status = CR_STATUS_SKIPPED;
         stat_push_event(ctx->stats,
                 ctx->suite_stats,
                 ctx->test_stats,

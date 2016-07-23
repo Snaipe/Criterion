@@ -98,22 +98,12 @@
 #define XML_TIMEOUT_MSG_ENTRY \
     "      <error type=\"timeout\" message=\"The test timed out.\" />"
 
-static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
-    return t->data->disabled || (s->data && s->data->disabled);
-}
 
-static INLINE
-const char *get_status_string(struct criterion_test_stats *ts,
-                              struct criterion_suite_stats *ss) {
-
-    const char *status = "PASSED";
-    if (ts->crashed || ts->timed_out)
-        status = "ERRORED";
-    else if (ts->failed)
-        status = "FAILED";
-    else if (is_disabled(ts->test, ss->suite))
-        status = "SKIPPED";
-    return status;
+static CR_INLINE const char *get_status_string(struct criterion_test_stats *ts){
+    return (ts->crashed || ts->timed_out)         ? "ERRORED" :
+            ts->test_status == CR_STATUS_FAILED   ? "FAILED"  :
+            ts->test_status == CR_STATUS_SKIPPED  ? "SKIPPED" :
+                                                    "PASSED";
 }
 
 /*
@@ -134,25 +124,23 @@ static int fprintf_locale(FILE *stream,
     return result;
 }
 
-static void print_test(FILE *f,
-                       struct criterion_test_stats *ts,
-                       struct criterion_suite_stats *ss) {
+static void print_test(FILE *f, struct criterion_test_stats *ts){
 
     fprintf_locale(f, XML_TEST_TEMPLATE_BEGIN,
             ts->test->name,
             (size_t) (ts->passed_asserts + ts->failed_asserts),
-            get_status_string(ts, ss),
+            get_status_string(ts),
             ts->elapsed_time
         );
 
-    if (is_disabled(ts->test, ss->suite)) {
+    if (ts->test_status == CR_STATUS_SKIPPED){
         fprintf(f, XML_TEST_SKIPPED);
     } else if (ts->crashed) {
         fprintf(f, XML_CRASH_MSG_ENTRY);
     } else if (ts->timed_out) {
         fprintf(f, XML_TIMEOUT_MSG_ENTRY);
     } else {
-        if (ts->failed) {
+        if (ts->test_status == CR_STATUS_FAILED) {
             fprintf(f, XML_TEST_FAILED_TEMPLATE_BEGIN, ts->failed_asserts);
             for (struct criterion_assert_stats *asrt = ts->asserts; asrt; asrt = asrt->next) {
                 if (!asrt->passed) {
@@ -179,7 +167,7 @@ static void print_test(FILE *f,
     fprintf(f, XML_TEST_TEMPLATE_END);
 }
 
-static INLINE float get_time_elapsed_suite(struct criterion_suite_stats *ss)
+static CR_INLINE float get_time_elapsed_suite(struct criterion_suite_stats *ss)
 {
     float result = 0;
     for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
@@ -209,7 +197,7 @@ void xml_report(FILE *f, struct criterion_global_stats *stats) {
             );
 
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
-            print_test(f, ts, ss);
+            print_test(f, ts);
         }
 
         fprintf(f, XML_TESTSUITE_TEMPLATE_END);

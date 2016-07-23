@@ -15,6 +15,7 @@ message phase {
 
         ABORT       = 5;
         TIMEOUT     = 6;
+        SKIP        = 7;
     }
 
     required kind phase = 1;
@@ -33,6 +34,7 @@ message death {
     optional int64 status = 2;
     optional int64 timestamp = 3;
 }
+
 
 message assert {
     required string message = 1;

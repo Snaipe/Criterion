@@ -128,15 +128,20 @@ CR_END_C_API
             Fail();                                                         \
     } while (0)
 
-# define cr_fail(Fail, ...)                                     \
-    CR_EXPAND(cr_assert_impl(                                   \
-            Fail,                                               \
-            0,                                                  \
-            dummy,                                              \
-            CRITERION_ASSERT_MSG_FAIL,                          \
-            (),                                                 \
-            __VA_ARGS__                                         \
+
+# define cr_fail(Fail, ...)                                                 \
+    CR_EXPAND(cr_assert_impl(                                               \
+            Fail,                                                           \
+            0,                                                              \
+            dummy,                                                          \
+            CRITERION_ASSERT_MSG_FAIL,                                      \
+            (),                                                             \
+            __VA_ARGS__                                                     \
     ))
+
+# define cr_skip(...)                                                       \
+    criterion_skip_test("" __VA_ARGS__)
+
 
 # define cr_assert_(...)                                                    \
     CR_EXPAND(cr_assert_impl(                                               \
@@ -460,6 +465,8 @@ CR_END_C_API
 
 // Actual implementation
 
+# undef cr_skip_test
+# define cr_skip_test(...) CR_EXPAND(cr_skip(__VA_ARGS__))
 # undef cr_assert_fail
 # define cr_assert_fail(...) CR_EXPAND(cr_fail(CR_FAIL_ABORT_,     __VA_ARGS__))
 # undef cr_expect_fail

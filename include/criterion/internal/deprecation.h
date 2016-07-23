@@ -32,4 +32,10 @@
 #  define CR_DEPRECATED_(Msg) _Pragma(#Msg)
 # endif
 
+# ifdef __GNUC__
+#   define CR_DEPRECATED_MEMBER(Member) Member __attribute__((deprecated))
+# else
+#   define CR_DEPRECATED_MEMBER(Member) Member
+# endif
+
 #endif /* !CRITERION_INTERNAL_DEPRECATION_H_ */

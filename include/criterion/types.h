@@ -124,7 +124,7 @@ struct criterion_test_extra_data {
     int exit_code;
 
     /**
-     * If `true`, disables the test.
+     * If `true`, skips the test.
      *
      * The test will still appear in the test list, but will be marked as
      * skipped and will not be executed.

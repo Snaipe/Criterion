@@ -35,25 +35,25 @@ typedef struct criterion_test_stats   s_test_stats;
 typedef struct criterion_assert_stats s_assert_stats;
 
 static void push_pre_suite(s_glob_stats *stats,
-		           s_suite_stats *sstats,
-		           s_test_stats *tstats,
-		           void *data);
+                          s_suite_stats *sstats,
+                          s_test_stats *tstats,
+                          void *data);
 static void push_pre_init(s_glob_stats *stats,
-		           s_suite_stats *sstats,
-		           s_test_stats *tstats,
-		           void *data);
+                          s_suite_stats *sstats,
+                          s_test_stats *tstats,
+                          void *data);
 static void push_assert(s_glob_stats *stats,
-		           s_suite_stats *sstats,
-		           s_test_stats *tstats,
-		           void *data);
+                          s_suite_stats *sstats,
+                          s_test_stats *tstats,
+                          void *data);
 static void push_post_test(s_glob_stats *stats,
-		           s_suite_stats *sstats,
-		           s_test_stats *tstats,
-		           void *data);
+                          s_suite_stats *sstats,
+                          s_test_stats *tstats,
+                          void *data);
 static void push_test_crash(s_glob_stats *stats,
-		           s_suite_stats *sstats,
-		           s_test_stats *tstats,
-		           void *data);
+                          s_suite_stats *sstats,
+                          s_test_stats *tstats,
+                          void *data);
 
 static void nothing(CR_UNUSED s_glob_stats *stats,
                     CR_UNUSED s_suite_stats *sstats,
@@ -103,6 +103,7 @@ static void destroy_test_stats(void *ptr, CR_UNUSED void *meta) {
         next = a->next;
         sfree(a);
     }
+    free((void*)stats->message);
 }
 
 static void destroy_assert_stats(void *ptr, CR_UNUSED void *meta) {
@@ -160,11 +161,6 @@ static void push_pre_suite(s_glob_stats *stats,
     ++stats->nb_suites;
 }
 
-static INLINE bool is_disabled(struct criterion_test *t,
-                               struct criterion_suite *s) {
-
-    return t->data->disabled || (s->data && s->data->disabled);
-}
 
 static void push_pre_init(s_glob_stats *stats,
                           s_suite_stats *suite,
@@ -175,7 +171,7 @@ static void push_pre_init(s_glob_stats *stats,
     ++stats->nb_tests;
     ++suite->nb_tests;
 
-    if (is_disabled(test->test, suite->suite)) {
+    if (test->test_status == CR_STATUS_SKIPPED) {
         ++stats->tests_skipped;
         ++suite->tests_skipped;
     }
@@ -223,15 +219,22 @@ static void push_post_test(s_glob_stats *stats,
             || test->timed_out
             || test->signal != test->test->data->signal
             || test->exit_code != test->test->data->exit_code) {
-        test->failed = 1;
+        test->test_status = CR_STATUS_FAILED;
     }
 
-    if (test->failed) {
-        ++stats->tests_failed;
-        ++suite->tests_failed;
-    } else {
-        ++stats->tests_passed;
-        ++suite->tests_passed;
+    switch (test->test_status) {
+        case CR_STATUS_FAILED:
+            ++stats->tests_failed;
+            ++suite->tests_failed;
+            break;
+        case CR_STATUS_PASSED:
+            ++stats->tests_passed;
+            ++suite->tests_passed;
+            break;
+        case CR_STATUS_SKIPPED:
+            ++stats->tests_skipped;
+            ++suite->tests_skipped;
+            break;
     }
 
 }
@@ -240,7 +243,7 @@ static void push_test_crash(s_glob_stats *stats,
                             s_suite_stats *suite,
                             s_test_stats *test,
                             CR_UNUSED void *ptr) {
-    test->failed = 1;
+    test->test_status = CR_STATUS_FAILED;
     test->crashed = 1;
     ++suite->tests_failed;
     ++suite->tests_crashed;

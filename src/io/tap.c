@@ -48,15 +48,12 @@ static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats) {
             stats->suite->name);
 }
 
-static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
-    return t->data->disabled || (s->data && s->data->disabled);
-}
 
 static void print_test_normal(FILE *f, struct criterion_test_stats *stats) {
     const char *format = can_measure_time() ? "%s - %s::%s %s (%3.2fs)\n"
                                             : "%s - %s::%s %s\n";
     fprintf(f, format,
-            stats->failed ? "not ok" : "ok",
+            stats->test_status == CR_STATUS_FAILED ? "not ok" : "ok",
             stats->test->category,
             stats->test->name,
             DEF(stats->test->data->description, ""),
@@ -95,16 +92,14 @@ static void print_test_timeout(FILE *f, struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
-static void print_test(FILE *f,
-                       struct criterion_test_stats *ts,
-                       struct criterion_suite_stats *ss) {
+static void print_test(FILE *f, struct criterion_test_stats *ts){
 
-    if (is_disabled(ts->test, ss->suite)) {
-        fprintf(f, "ok - %s::%s %s # SKIP %s is disabled\n",
+    if (ts->test_status == CR_STATUS_SKIPPED){
+        fprintf(f, "ok - %s::%s %s # SKIP %s\n",
                 ts->test->category,
                 ts->test->name,
                 DEF(ts->test->data->description, ""),
-                ts->test->data->disabled ? "test" : "suite");
+                ts->message ? ts->message : "test was skipped");
     } else if (ts->crashed) {
         print_test_crashed(f, ts);
     } else if (ts->timed_out) {
@@ -121,7 +116,7 @@ void tap_report(FILE *f, struct criterion_global_stats *stats) {
         print_pre_suite(f, ss);
 
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
-            print_test(f, ts, ss);
+            print_test(f, ts);
         }
     }
 }

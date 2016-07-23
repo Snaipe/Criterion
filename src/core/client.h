@@ -37,6 +37,7 @@ enum client_state {
     // added in the state count
     CS_ABORT,
     CS_TIMEOUT,
+    CS_SKIP,
 };
 
 // always make it a power of 2
