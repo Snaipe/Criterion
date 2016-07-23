@@ -96,11 +96,6 @@ matrix:
 
 before_install:
   - |
-      if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "clang" ]; then
-        brew unlink cmake
-        brew install llvm cmake
-      fi
-  - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
           brew install python3
