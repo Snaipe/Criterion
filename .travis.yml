@@ -96,11 +96,6 @@ matrix:
 
 before_install:
   - |
-      if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        brew update
-        brew install pcre
-      fi
-  - |
       if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "clang" ]; then
         brew unlink cmake
         brew install llvm cmake
