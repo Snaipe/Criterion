@@ -54,9 +54,7 @@
 #include "common.h"
 #include "client.h"
 
-#ifdef HAVE_PCRE
-#include "string/extmatch.h"
-#endif
+#include "string/extglobmatch.h"
 
 typedef const char *const msg_t;
 
@@ -226,25 +224,23 @@ void run_test_child(struct criterion_test *test,
 
 s_pipe_handle *g_worker_pipe;
 
-#ifdef HAVE_PCRE
 void disable_unmatching(struct criterion_test_set *set) {
+    if (!compile_pattern(criterion_options.pattern)) {
+        exit(3);
+    }
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         if ((s->suite.data && s->suite.data->disabled) || !s->tests)
             continue;
 
         FOREACH_SET(struct criterion_test *test, s->tests) {
-            const char *errmsg;
-            int ret = extmatch(criterion_options.pattern, test->data->identifier_, &errmsg);
-            if (ret == -10) {
-                printf("pattern error: %s\n", errmsg);
-                exit(1);
-            } else if (ret < 0) {
+            int ret = match(test->data->identifier_);
+            if (ret == 0) {
                 test->data->disabled = true;
             }
         }
     }
+    free_pattern();
 }
-#endif
 
 struct criterion_test_set *criterion_initialize(void) {
     init_i18n();
@@ -420,11 +416,7 @@ cleanup:
 
 int criterion_run_all_tests(struct criterion_test_set *set) {
     if (criterion_options.pattern) {
-#ifdef HAVE_PCRE
         disable_unmatching(set);
-#else
-        criterion_perror("Did not filter tests by pattern: Criterion was compiled without extglob support.\n");
-#endif
     }
 
     set_runner_process();

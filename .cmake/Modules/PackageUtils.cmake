@@ -79,7 +79,7 @@ macro (cr_find_package _PKG)
 
     if (${_PKG_UP}_PKG_FOUND)
       if (${_PKG_UP}_PKG_LIBRARY_DIRS)
-        link_directories(${PCRE_PKG_LIBRARY_DIRS})
+        link_directories(${${_PKG_UP}_PKG_LIBRARY_DIRS})
       endif ()
       set (${_PKG_UP}_LIBRARIES ${${_PKG_UP}_PKG_LIBRARIES})
       set (${_PKG_UP}_INCLUDE_DIRS ${${_PKG_UP}_PKG_INCLUDE_DIRS})

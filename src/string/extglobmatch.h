@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2016 Matthias "ailu" Günzel <a1lu@arcor.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef EXTMATCH_H_
-# define EXTMATCH_H_
+#ifndef EXTGLOBMATCH_H
+#define EXTGLOBMATCH_H
 
-int extmatch(const char *pattern, const char *string, const char **errmsg);
+int compile_pattern(char const* pattern);
+int match(char const* string);
+void free_pattern();
 
-#endif /* !EXTMATCH_H_ */
+#endif /* end of include guard: EXTGLOBMATCH_H */

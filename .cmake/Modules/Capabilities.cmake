@@ -18,8 +18,6 @@ if (I18N AND GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
   set (ENABLE_NLS 1)
 endif ()
 
-cr_find_package (PCRE PKGCONFIG libpcre)
-
 # Check for functions
 
 check_function_exists(strtok_s HAVE_STRTOK_S)

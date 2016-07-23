@@ -97,7 +97,6 @@ cr_link_libraries(criterion rt IF HAVE_CLOCK_GETTIME)
 cr_link_libraries(criterion anl IF HAVE_GETADDRINFO_A)
 cr_link_libraries(criterion ws2_32 mswsock IF WIN32)
 
-cr_link_package(criterion PCRE)
 cr_link_package(criterion LIBINTL)
 
 if (COVERALLS)
