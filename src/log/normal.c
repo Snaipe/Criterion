@@ -46,8 +46,7 @@ static msg_t msg_desc = N_("  %s\n");
 static msg_t msg_pre_init = N_("%1$s::%2$s\n");
 static msg_t msg_post_test_timed = N_("%1$s::%2$s: (%3$3.2fs)\n");
 static msg_t msg_post_test = N_("%1$s::%2$s\n");
-static msg_t msg_post_suite_test = N_("%1$s::%2$s: Test is disabled\n");
-static msg_t msg_post_suite_suite = N_("%1$s::%2$s: Suite is disabled\n");
+static msg_t msg_post_test_skip = N_("%1$s::%2$s: Test was skipped\n");
 static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
 static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
@@ -67,8 +66,7 @@ static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
 static msg_t msg_pre_init = "%s::%s\n";
 static msg_t msg_post_test_timed = "%s::%s: (%3.2fs)\n";
 static msg_t msg_post_test = "%s::%s\n";
-static msg_t msg_post_suite_test = "%s::%s: Test is disabled\n";
-static msg_t msg_post_suite_suite = "%s::%s: Suite is disabled\n";
+static msg_t msg_post_test_skip = "%1$s::%2$s: Test was skipped\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
 static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
@@ -104,9 +102,10 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
     const char *format = can_measure_time() ? msg_post_test_timed : msg_post_test;
 
     const enum criterion_logging_level level
-            = stats->failed ? CRITERION_IMPORTANT : CRITERION_INFO;
+            = stats->test_status == CR_STATUS_FAILED ? CRITERION_IMPORTANT : CRITERION_INFO;
     const struct criterion_prefix_data *prefix
-            = stats->failed ? CRITERION_PREFIX_FAIL : CRITERION_PREFIX_PASS;
+            = stats->test_status == CR_STATUS_FAILED ? CRITERION_PREFIX_FAIL :
+                                             CRITERION_PREFIX_PASS;
 
     criterion_plog(level, prefix, _(format),
             stats->test->category,
@@ -114,21 +113,19 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
             stats->elapsed_time);
 }
 
-static INLINE bool is_disabled(struct criterion_test *t,
-                               struct criterion_suite *s) {
-    return t->data->disabled || (s->data && s->data->disabled);
-}
-
 void normal_log_post_suite(struct criterion_suite_stats *stats) {
     for (struct criterion_test_stats *ts = stats->tests; ts; ts = ts->next) {
-        if (is_disabled(ts->test, stats->suite)) {
-            const char *format = ts->test->data->disabled
-                    ? _(msg_post_suite_test)
-                    : _(msg_post_suite_suite);
-
-            criterion_pinfo(CRITERION_PREFIX_SKIP, format,
-                    ts->test->category,
-                    ts->test->name);
+        if(ts->test_status == CR_STATUS_SKIPPED){
+            if(!ts->message) {
+                criterion_pinfo(CRITERION_PREFIX_SKIP, _(msg_post_test_skip),
+                        ts->test->category,
+                        ts->test->name);
+            } else {
+                criterion_pinfo(CRITERION_PREFIX_SKIP, "%s::%s: %s\n",
+                        ts->test->category,
+                        ts->test->name,
+                        ts->message);
+            }
 
             if (ts->test->data->description)
                 criterion_pinfo(CRITERION_PREFIX_DASHES, msg_desc,
@@ -203,7 +200,7 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
 
 void normal_log_theory_fail(struct criterion_theory_stats *stats) {
     criterion_pimportant(CRITERION_PREFIX_DASHES,
-            _(msg_theory_fail), 
+            _(msg_theory_fail),
             stats->stats->test->category,
             stats->stats->test->name,
             stats->formatted_args);

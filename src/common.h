@@ -29,14 +29,6 @@
 
 # include "criterion/internal/common.h"
 
-#ifdef __GNUC__
-# define INLINE __attribute__((always_inline)) inline
-#elif defined(_MSC_VER)
-# define INLINE __forceinline
-#else
-# define INLINE
-#endif
-
 # define DEF(X, Y) ((X) ? (X) : (Y))
 
 #endif /* !COMMON_H_ */

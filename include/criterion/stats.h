@@ -29,6 +29,13 @@
 # define CRITERION_STATS_H_
 
 # include "types.h"
+# include "internal/deprecation.h"
+
+enum criterion_test_status {
+    CR_STATUS_PASSED  = 0,
+    CR_STATUS_FAILED  = 1,
+    CR_STATUS_SKIPPED = 2,
+};
 
 struct criterion_assert_stats {
     const char *message;
@@ -42,7 +49,8 @@ struct criterion_assert_stats {
 struct criterion_test_stats {
     struct criterion_test *test;
     struct criterion_assert_stats *asserts;
-    bool failed;
+    bool CR_DEPRECATED_MEMBER(failed);
+    enum criterion_test_status test_status;
     int passed_asserts;
     int failed_asserts;
     int signal;
@@ -52,6 +60,7 @@ struct criterion_test_stats {
     bool crashed;
     unsigned progress;
     const char *file;
+    const char *message;
 
     struct criterion_test_stats *next;
 };

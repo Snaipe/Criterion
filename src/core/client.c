@@ -45,6 +45,7 @@ static enum client_state phase_to_state[] = {
     [criterion_protocol_phase_kind_END]      = CS_END,
     [criterion_protocol_phase_kind_ABORT]    = CS_ABORT,
     [criterion_protocol_phase_kind_TIMEOUT]  = CS_TIMEOUT,
+    [criterion_protocol_phase_kind_SKIP]     = CS_SKIP,
 };
 
 static const char *state_to_string[] = {
@@ -54,6 +55,7 @@ static const char *state_to_string[] = {
     [CS_END]        = "end",
     [CS_ABORT]      = "abort",
     [CS_TIMEOUT]    = "timeout",
+    [CS_SKIP]       = "skip",
 };
 
 typedef bool message_handler(struct server_ctx *, struct client_ctx *, const criterion_protocol_msg *);
@@ -308,7 +310,7 @@ bool handle_abort(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
     enum client_state curstate = ctx->state & (CS_MAX_CLIENT_STATES - 1);
 
     if (ctx->state < CS_MAX_CLIENT_STATES) {
-        ctx->tstats->failed = 1;
+        ctx->tstats->test_status = CR_STATUS_FAILED;
         log(test_abort, ctx->tstats, msg->message ? msg->message : "");
 
         if (curstate < CS_TEARDOWN) {
@@ -347,6 +349,19 @@ bool handle_timeout(struct server_ctx *sctx, struct client_ctx *ctx, const crite
     return false;
 }
 
+bool handle_skip(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_phase *msg) {
+    (void) sctx;
+    (void) msg;
+
+    if (ctx->state < CS_MAX_CLIENT_STATES) {
+        ctx->tstats->test_status = CR_STATUS_SKIPPED;
+        ctx->tstats->message = msg->message ? strdup(msg->message) : NULL;
+        double elapsed_time = 0;
+        push_event(POST_TEST, .data = &elapsed_time);
+        push_event(POST_FINI);
+    }
+    return false;
+}
 # define MAX_TEST_DEPTH 16
 
 bool handle_phase(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg) {
@@ -393,6 +408,7 @@ bool handle_phase(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
         [CS_END]        = handle_post_fini,
         [CS_ABORT]      = handle_abort,
         [CS_TIMEOUT]    = handle_timeout,
+        [CS_SKIP]       = handle_skip,
     };
 
     bool ack = handlers[new_state](sctx, ctx, phase_msg);

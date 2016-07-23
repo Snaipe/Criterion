@@ -318,3 +318,35 @@ Testing CRITERION_OUTPUTS
       }
     ]
   }
+
+  $ skip.c.bin --json
+  {
+    "id": "Criterion v2.2.1",
+    "passed": 0,
+    "failed": 0,
+    "errored": 0,
+    "skipped": 2,
+    "test_suites": [
+      {
+        "name": "misc",
+        "passed": 0,
+        "failed": 0,
+        "errored": 0,
+        "skipped": 2,
+        "tests": [
+          {
+            "name": "skipping",
+            "assertions": 0,
+            "status": "SKIPPED",
+            "messages": ["The test was skipped."]
+          },
+          {
+            "name": "message",
+            "assertions": 0,
+            "status": "SKIPPED",
+            "messages": ["Skips may take printf-like messages"]
+          }
+        ]
+      }
+    ]
+  }

@@ -35,7 +35,7 @@ Running the tests with verbose output
   $ more-suites.c.bin --verbose
   [\x1b[0;34m----\x1b[0m] Criterion v2.2.1 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m1\x1b[0m test from \x1b[0;33mdisabled\x1b[0m: (esc)
-  [\x1b[0;33mSKIP\x1b[0m] disabled::test: Suite is disabled (esc)
+  [\x1b[0;33mSKIP\x1b[0m] disabled::test: Test was skipped (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m1\x1b[0m test from \x1b[0;33msuite1\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] suite1::test (esc)
   [\x1b[0;32mPASS\x1b[0m] suite1::test (esc)

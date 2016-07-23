@@ -40,6 +40,28 @@ void criterion_abort_test(void) {
     longjmp(g_pre_test, 1);
 }
 
+void criterion_skip_test(const char *format, ...) {
+    char *msg = NULL;
+    if(*format)
+    {
+        va_list args;
+        va_start(args, format);
+        cr_vasprintf(&msg, format, args);
+        va_end(args);
+    }
+
+    criterion_protocol_msg skip_msg = criterion_message(phase,
+            .phase = criterion_protocol_phase_kind_SKIP,
+            .name = (char *) criterion_current_test->name,
+            .message = msg,
+        );
+    criterion_message_set_id(skip_msg);
+    cr_send_to_runner(&skip_msg);
+    free(msg);
+
+    exit(0);
+}
+
 void criterion_continue_test(void) {
     if (criterion_options.crash)
         debug_break();

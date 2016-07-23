@@ -65,7 +65,7 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
 int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe);
 int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe);
 
-INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
+CR_INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
     switch (fd_kind) {
         case CR_STDIN:  return stdin;
         case CR_STDOUT: return stdout;

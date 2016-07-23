@@ -275,7 +275,7 @@ static void run_tests_async(struct criterion_test_set *set,
             continue;
 
         if (!cctx->alive) {
-            if (cctx->tstats->failed && criterion_options.fail_fast) {
+            if ((cctx->tstats->test_status == CR_STATUS_FAILED) && criterion_options.fail_fast) {
                 cr_terminate(cctx->gstats);
             }
 

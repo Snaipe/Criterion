@@ -319,7 +319,7 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     return instance;
 }
 
-static INLINE bool is_disabled(struct criterion_test *t,
+static CR_INLINE bool is_disabled(struct criterion_test *t,
         struct criterion_suite *s)
 {
 
@@ -331,6 +331,7 @@ static int skip_disabled(struct run_next_context *ctx)
 {
     if (is_disabled(ctx->test, ctx->suite_stats->suite)) {
         ctx->test_stats = test_stats_init(ctx->test);
+        ctx->test_stats->test_status = CR_STATUS_SKIPPED;
         stat_push_event(ctx->stats,
                 ctx->suite_stats,
                 ctx->test_stats,

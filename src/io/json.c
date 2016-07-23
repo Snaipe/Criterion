@@ -64,9 +64,15 @@
     ",\n" \
     "          \"messages\": [\"The test timed out.\"]"
 
-#define JSON_SKIPPED_MSG_ENTRY \
+#define JSON_TEST_SKIPPED_TEMPLATE_BEGIN \
     ",\n" \
-    "          \"messages\": [\"The test was skipped.\"]"
+    "          \"messages\": [\""
+
+#define JSON_TEST_SKIPPED_TEMPLATE_END \
+    "\"]"
+
+#define JSON_SKIPPED_MSG_ENTRY \
+    "The test was skipped."
 
 #define JSON_TEST_LIST_TEMPLATE_BEGIN \
     "      \"tests\": [\n"
@@ -102,41 +108,31 @@
 #define JSON_BASE_TEMPLATE_END \
     "}\n"
 
-static INLINE bool is_disabled(struct criterion_test *t, struct criterion_suite *s) {
-    return t->data->disabled || (s->data && s->data->disabled);
+
+static CR_INLINE const char *get_status_string(struct criterion_test_stats *ts){
+    return (ts->crashed || ts->timed_out)           ? "ERRORED" :
+            ts->test_status == CR_STATUS_FAILED     ? "FAILED"  :
+            ts->test_status == CR_STATUS_SKIPPED    ? "SKIPPED" :
+                                                      "PASSED";
 }
 
-static CR_INLINE
-const char *get_status_string(struct criterion_test_stats *ts,
-                              struct criterion_suite_stats *ss) {
-
-    const char *status = "PASSED";
-    if (ts->crashed || ts->timed_out)
-        status = "ERRORED";
-    else if (ts->failed)
-        status = "FAILED";
-    else if (is_disabled(ts->test, ss->suite))
-        status = "SKIPPED";
-    return status;
-}
-
-static void print_test(FILE *f,
-                       struct criterion_test_stats *ts,
-                       struct criterion_suite_stats *ss) {
+static void print_test(FILE *f, struct criterion_test_stats *ts){
 
     fprintf(f, JSON_TEST_TEMPLATE_BEGIN,
             ts->test->name,
             (size_t) (ts->passed_asserts + ts->failed_asserts),
-            get_status_string(ts, ss)
+            get_status_string(ts)
         );
 
-    if (is_disabled(ts->test, ss->suite)) {
-        fprintf(f, JSON_SKIPPED_MSG_ENTRY);
+    if (ts->test_status == CR_STATUS_SKIPPED) {
+        fprintf(f,"%s%s%s", JSON_TEST_SKIPPED_TEMPLATE_BEGIN,
+                ts->message ? ts->message : JSON_SKIPPED_MSG_ENTRY,
+                JSON_TEST_SKIPPED_TEMPLATE_END);
     } else if (ts->crashed) {
         fprintf(f, JSON_CRASH_MSG_ENTRY);
     } else if (ts->timed_out) {
         fprintf(f, JSON_TIMEOUT_MSG_ENTRY);
-    } else if (ts->failed) {
+    } else if (ts->test_status == CR_STATUS_FAILED) {
         fprintf(f, JSON_TEST_FAILED_TEMPLATE_BEGIN);
 
         bool first = true;
@@ -192,7 +188,7 @@ void json_report(FILE *f, struct criterion_global_stats *stats) {
 
         fprintf(f, JSON_TEST_LIST_TEMPLATE_BEGIN);
         for (struct criterion_test_stats *ts = ss->tests; ts; ts = ts->next) {
-            print_test(f, ts, ss);
+            print_test(f, ts);
             fprintf(f, ts->next ? ",\n" : "\n");
         }
         fprintf(f, JSON_TEST_LIST_TEMPLATE_END);

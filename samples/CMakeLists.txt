@@ -23,6 +23,7 @@ set(SAMPLES
   redirect.c
   parameterized.c
   log.c
+  skip.c
 )
 
 if (CMAKE_CXX_COMPILER_WORKS)
@@ -38,6 +39,7 @@ if (CMAKE_CXX_COMPILER_WORKS)
     redirect.cc
     parameterized.cc
     log.cc
+    skip.cc
   )
 endif ()
 
@@ -47,7 +49,6 @@ if (THEORIES)
     set(SAMPLES ${SAMPLES} theories.cc)
   endif ()
 endif ()
-
 
 add_custom_target(criterion_samples)
 add_dependencies(criterion_tests criterion_samples)
