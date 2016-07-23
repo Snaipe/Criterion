@@ -7,12 +7,9 @@ set(CPACK_DEBIAN_BUILD_DEPENDS
   debhelper
   cmake
   gettext
-  libpcre3-dev
 )
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS
-  libpcre3
-)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS)
 
 set(CPACK_DEBIAN_CMAKE_OPTIONS)
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/description.txt")
