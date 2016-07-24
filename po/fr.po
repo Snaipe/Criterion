@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-07-23 23:58+0200\n"
+"POT-Creation-Date: 2016-07-24 17:11+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -113,11 +113,6 @@ msgid ""
 msgstr ""
 "%1$sSynthèse: Testés: %2$s%3$lu%4$s | Validés: %5$s%6$lu%7$s | Échoués: %8$s"
 "%9$lu%10$s | Plantages: %11$s%12$lu%13$s %14$s\n"
-
-#: src/log/normal.c:77
-#, fuzzy, c-format
-msgid "%s::%s: %s\n"
-msgstr "%1$s::%2$s: (%3$3.2fs)\n"
 
 #: src/string/i18n.c:13
 msgid "The conditions for this assertion were not met."
