@@ -168,7 +168,8 @@ const struct criterion_suite *criterion_current_suite;
 
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
-    reset_proc_compat();
+    if (!is_single_mode())
+        reset_proc_compat();
 
     cr_redirect_stdin();
     g_client_socket = connect_client();
