@@ -445,16 +445,11 @@ bool handle_death(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
             }
             ctx->tstats->exit_code = death->status;
             if (ctx->state == CS_MAIN) {
-                if (ctx->test->data->exit_code == 0) {
-                    push_event(TEST_CRASH);
-                    log(abnormal_exit, ctx->tstats);
-                } else {
-                    double elapsed_time = 0;
-                    push_event(POST_TEST, .data = &elapsed_time);
-                    log(post_test, ctx->tstats);
-                    push_event(POST_FINI);
-                    log(post_fini, ctx->tstats);
-                }
+                double elapsed_time = 0;
+                push_event(POST_TEST, .data = &elapsed_time);
+                log(post_test, ctx->tstats);
+                push_event(POST_FINI);
+                log(post_fini, ctx->tstats);
             }
         } break;
         default: break;
