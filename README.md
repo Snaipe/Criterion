@@ -72,6 +72,7 @@ Sample tests can be found in the [sample directory][samples].
 
 | Channel | Description |
 | --- | --- |
+[![Subscribe to the mailing list](https://img.shields.io/badge/ml-criterion@freelists.org-46BC99.svg)][mailing-list] | Criterion mailing list on freelists.org
 [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)][gitter-chan] | `Snaipe/Criterion` on gitter.im
 [![Join #criterion on freenode](https://img.shields.io/badge/irc-%23criterion-46BC99.svg)][irc-chan] | `#criterion` on irc.freenode.net
 
@@ -100,3 +101,4 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue)
 
 [irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e
 [gitter-chan]: https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[mailing-list]: http://www.freelists.org/list/criterion
