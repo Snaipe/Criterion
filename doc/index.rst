@@ -15,4 +15,5 @@ Criterion
     parameterized
     theories
     internal
+    debug
     faq
