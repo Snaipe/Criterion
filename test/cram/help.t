@@ -19,6 +19,7 @@ Display the help message
       --always-succeed: always exit with 0
       --no-early-exit: do not exit the test worker prematurely after the test
       --verbose[=level]: sets verbosity to level (1 by default)
+      --crash: crash failing assertions rather than aborting (for debugging purposes)
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
   $ simple.cc.bin --help
@@ -40,6 +41,7 @@ Display the help message
       --always-succeed: always exit with 0
       --no-early-exit: do not exit the test worker prematurely after the test
       --verbose[=level]: sets verbosity to level (1 by default)
+      --crash: crash failing assertions rather than aborting (for debugging purposes)
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
 

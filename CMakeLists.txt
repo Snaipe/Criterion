@@ -55,6 +55,7 @@ include_directories(
   dependencies/valgrind/include/
   dependencies/klib/
   dependencies/nanopb/
+  dependencies/debugbreak/
 )
 
 # Coverage

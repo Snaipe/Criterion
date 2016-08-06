@@ -68,6 +68,8 @@
             "prematurely after the test\n"                  \
     "    --verbose[=level]: sets verbosity to level "       \
             "(1 by default)\n"                              \
+    "    --crash: crash failing assertions rather than "    \
+            "aborting (for debugging purposes)\n"           \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
             "report to FILE using the specified provider\n"
 
@@ -148,6 +150,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
         {"no-early-exit",   no_argument,        0, 'z'},
         {"output",          required_argument,  0, 'O'},
         {"wait",            no_argument,        0, 'w'},
+        {"crash",           no_argument,        0, 'c'},
         {0,                 0,                  0,  0 }
     };
 
@@ -271,6 +274,7 @@ int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
             } break;
             case 'w': criterion_options.wait_for_clients = true; break;
             case '?':
+            case 'c': criterion_options.crash            = true; break;
             default : do_print_usage = handle_unknown_arg; break;
         }
     }
