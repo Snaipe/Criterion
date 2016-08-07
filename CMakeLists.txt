@@ -35,12 +35,12 @@ else ()
 endif ()
 
 cr_add_subproject (nanomsg
-  PATH dependencies/nanomsg-patched
+  PATH dependencies/nanomsg
   OPTS
     -DNN_TESTS=OFF
     -DNN_TOOLS=OFF
-    -DNN_FORK_STRATEGY=RESET
     -DNN_STATIC_LIB=ON
+    -DCMAKE_INSTALL_LIBDIR=lib
     "-DCMAKE_C_FLAGS=${NN_C_FLAGS}"
   CMAKE
 )
