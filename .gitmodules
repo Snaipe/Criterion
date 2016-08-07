@@ -19,3 +19,6 @@
 [submodule "dependencies/debugbreak"]
 	path = dependencies/debugbreak
 	url = https://github.com/scottt/debugbreak
+[submodule "dependencies/boxfort"]
+	path = dependencies/boxfort
+	url = https://github.com/Snaipe/BoxFort
