@@ -24,8 +24,8 @@
 #ifndef CONNECT_H_
 # define CONNECT_H_
 
-int connect_client(void);
-int bind_server(void);
-void close_socket(int sock);
+int cri_proto_bind(const char *url);
+int cri_proto_connect(const char *url);
+void cri_proto_close(int sock);
 
 #endif /* !CONNECT_H_ */

@@ -25,6 +25,7 @@
 # define CLIENT_H_
 
 # include <khash.h>
+# include <boxfort.h>
 
 // order matters here
 enum client_state {
@@ -49,7 +50,7 @@ enum client_kind {
 
 struct client_ctx {
     enum client_kind kind;
-    struct worker *worker;
+    bxf_instance *instance;
     struct criterion_test_extra_data extern_test_data;
     struct criterion_test extern_test;
 
@@ -80,7 +81,7 @@ struct client_ctx *process_client_message(struct server_ctx *ctx, const criterio
 
 void init_server_context(struct server_ctx *sctx, struct criterion_global_stats *gstats);
 void destroy_server_context(struct server_ctx *sctx);
-struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, struct worker *w);
+struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, bxf_instance *instance);
 void remove_client_by_pid(struct server_ctx *sctx, int pid);
 
 #endif /* !CLIENT_H_ */

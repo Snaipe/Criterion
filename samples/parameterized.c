@@ -40,7 +40,7 @@ ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
 
 // you **MUST** use cr_malloc, cr_free, cr_realloc, and cr_calloc instead of their
 // unprefixed counterparts to allocate dynamic memory in parameters, otherwise
-// this will crash on Windows builds of the test.
+// this will crash.
 
 struct parameter_tuple_dyn {
     int i;

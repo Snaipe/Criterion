@@ -14,8 +14,6 @@ set(SOURCE_FILES
   src/core/runner_coroutine.c
   src/core/runner_coroutine.h
   src/core/coroutine.h
-  src/core/worker.c
-  src/core/worker.h
   src/core/stats.c
   src/core/stats.h
   src/core/ordered-set.c
@@ -60,6 +58,8 @@ set(SOURCE_FILES
   src/entry/options.c
   src/entry/params.c
   src/entry/entry.c
+  src/err.c
+  src/err.h
   src/protocol/criterion.pb.c
   src/protocol/criterion.pb.h
   src/protocol/protocol.c

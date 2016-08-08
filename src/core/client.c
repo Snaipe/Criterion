@@ -30,11 +30,10 @@
 #include "criterion/options.h"
 #include "log/logging.h"
 #include "io/event.h"
+#include "client.h"
+#include "err.h"
 #include "report.h"
 #include "stats.h"
-#include "client.h"
-
-static void nothing(void) {};
 
 KHASH_MAP_INIT_INT(ht_client, struct client_ctx)
 KHASH_MAP_INIT_STR(ht_extern, struct client_ctx)
@@ -100,19 +99,27 @@ void init_server_context(struct server_ctx *sctx, struct criterion_global_stats 
 }
 
 void destroy_client_context(struct client_ctx *ctx) {
-    if (ctx->kind == WORKER)
-        sfree(ctx->worker);
+    if (ctx->kind == WORKER) {
+        int rc = bxf_wait(ctx->instance, BXF_FOREVER);
+        if (rc < 0)
+            cr_panic("waiting for the worker failed: %s\n", strerror(-rc));
+        rc = bxf_term(ctx->instance);
+        if (rc < 0)
+            cr_panic("finalizing the worker failed: %s\n", strerror(-rc));
+    }
 }
 
 void destroy_server_context(struct server_ctx *sctx) {
     khint_t k;
-    (void) k;
     struct client_ctx v;
-    (void) v;
 
     kh_foreach(sctx->subprocesses, k, v, {
                 destroy_client_context(&v);
             });
+
+    (void) k;
+    (void) v;
+
     kh_destroy(ht_client, sctx->subprocesses);
 
     kh_destroy(ht_extern, sctx->clients);
@@ -120,11 +127,13 @@ void destroy_server_context(struct server_ctx *sctx) {
     sfree(sctx->extern_sstats);
 }
 
-struct client_ctx *add_client_from_worker(struct server_ctx *sctx, struct client_ctx *ctx, struct worker *w) {
-    unsigned long long pid = get_process_id_of(w->proc);
+struct client_ctx *add_client_from_worker(struct server_ctx *sctx,
+        struct client_ctx *ctx, bxf_instance *instance)
+{
+    unsigned long long pid = instance->pid;
     int absent;
     khint_t k = kh_put(ht_client, sctx->subprocesses, pid, &absent);
-    ctx->worker = w;
+    ctx->instance = instance;
     ctx->kind = WORKER;
     kh_value(sctx->subprocesses, k) = *ctx;
     return &kh_value(sctx->subprocesses, k);

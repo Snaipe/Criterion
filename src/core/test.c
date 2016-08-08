@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <boxfort.h>
 #include "criterion/internal/test.h"
 #include "core/abort.h"
 #include "core/stats.h"
-#include "core/worker.h"
 #include "core/report.h"
 #include "compat/time.h"
 #include "protocol/protocol.h"
@@ -43,8 +43,6 @@ static void send_event(int phase) {
     cr_send_to_runner(&msg);
 }
 
-static INLINE void nothing(void) {}
-
 void criterion_internal_test_setup(void) {
     const struct criterion_suite *suite = criterion_current_suite;
     const struct criterion_test *test = criterion_current_test;
@@ -53,6 +51,19 @@ void criterion_internal_test_setup(void) {
     if (suite->data)
         (suite->data->init ? suite->data->init : nothing)();
     (test->data->init ? test->data->init : nothing)();
+}
+
+static void *getparam(void)
+{
+    void *param;
+
+    bxf_context ctx = bxf_context_current();
+    int rc = bxf_context_getobject(ctx, "criterion.param", (void **)&param);
+    if (rc < 0) {
+        cr_log_error("Could not retrieve test parameter -- aborting.");
+        abort();
+    }
+    return param;
 }
 
 void criterion_internal_test_main(void (*fn)(void)) {
@@ -67,7 +78,7 @@ void criterion_internal_test_main(void (*fn)(void)) {
             fn();
         } else {
             void(*param_test_func)(void *) = (void(*)(void*)) fn;
-            param_test_func(g_worker_context.param->ptr);
+            param_test_func(getparam());
         }
     }
 

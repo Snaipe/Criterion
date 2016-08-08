@@ -29,6 +29,7 @@
 # include <pb_decode.h>
 # include "criterion.pb.h"
 # include "criterion/internal/preprocess.h"
+# include "compat/process.h"
 
 enum protocol_version {
     PROTOCOL_V1 = 1,

@@ -29,9 +29,9 @@ cr_add_subproject (csptr PATH dependencies/libcsptr
 cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
 
 if (NOT WIN32)
-    set (NN_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+  set (PIC_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 else ()
-    set (NN_C_FLAGS "${CMAKE_C_FLAGS}")
+  set (PIC_C_FLAGS "${CMAKE_C_FLAGS}")
 endif ()
 
 cr_add_subproject (nanomsg
@@ -41,9 +41,19 @@ cr_add_subproject (nanomsg
     -DNN_TOOLS=OFF
     -DNN_STATIC_LIB=ON
     -DCMAKE_INSTALL_LIBDIR=lib
-    "-DCMAKE_C_FLAGS=${NN_C_FLAGS}"
+    "-DCMAKE_C_FLAGS=${PIC_C_FLAGS}"
   CMAKE
 )
+
+cr_add_subproject (boxfort PATH dependencies/boxfort
+  OPTS
+    -DBXF_TESTS=OFF
+    -DBXF_SAMPLES=OFF
+    -DBXF_STATIC_LIB=ON
+    -DBXF_FORK_RESILIENCE=OFF
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    "-DCMAKE_C_FLAGS=${PIC_C_FLAGS}"
+  CMAKE)
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
 
@@ -90,6 +100,7 @@ cr_link_subproject(criterion csptr STATIC)
 cr_link_subproject(criterion nanomsg STATIC)
 cr_link_subproject(criterion dyncall_s STATIC)
 cr_link_subproject(criterion wingetopt STATIC)
+cr_link_subproject(criterion boxfort STATIC)
 
 cr_link_libraries(criterion pthread IF NOT WIN32)
 cr_link_libraries(criterion rt IF HAVE_CLOCK_GETTIME)

@@ -27,6 +27,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 
+# include "criterion/internal/common.h"
+
 #ifdef __GNUC__
 # define INLINE __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
@@ -36,10 +38,5 @@
 #endif
 
 # define DEF(X, Y) ((X) ? (X) : (Y))
-
-# define cr_panic(...) do { \
-        fprintf(stderr, __VA_ARGS__); \
-        abort(); \
-    } while (0)
 
 #endif /* !COMMON_H_ */

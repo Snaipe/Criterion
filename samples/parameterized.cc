@@ -39,8 +39,7 @@ ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
 
 // you **MUST** use new_obj, new_arr, delete_obj, delete_arr instead of
 // the new, new[], delete and delete[] operators (respectively) to allocate and
-// deallocate dynamic memory in parameters, otherwise this will crash on
-// Windows builds of the test.
+// deallocate dynamic memory in parameters, otherwise this will crash.
 
 // the criterion::allocator<T> allocator may be used with STL containers to
 // allocate objects with the functions described above.

@@ -27,29 +27,14 @@
 #include <nanomsg/reqrep.h>
 #include <string.h>
 
+#include "err.h"
 #include "compat/process.h"
-#include "core/worker.h"
 
-#define URL "ipc://%scriterion_%llu.sock"
-
-#define errno_ignore(Stmt) do { int err = errno; Stmt; errno = err; } while (0)
-
-int bind_server(void) {
-
+int cri_proto_bind(const char *url)
+{
     int sock = nn_socket(AF_SP, NN_REP);
     if (sock < 0)
         return -1;
-
-#ifdef VANILLA_WIN32
-    char *prefix = "";
-#else
-    char *prefix = "/tmp/";
-#endif
-
-    char url[256];
-    int rc = snprintf(url, sizeof (url), URL, prefix, get_process_id());
-    if (rc == 256)
-        cr_panic("IPC url too long");
 
     if (nn_bind(sock, url) < 0)
         goto error;
@@ -61,24 +46,11 @@ error: {}
     return -1;
 }
 
-int connect_client(void) {
-    if (is_single_mode())
-        return 0;
-
+int cri_proto_connect(const char *url)
+{
     int sock = nn_socket(AF_SP, NN_REQ);
     if (sock < 0)
         return -1;
-
-#ifdef VANILLA_WIN32
-    char *prefix = "";
-#else
-    char *prefix = "/tmp/";
-#endif
-
-    char url[256];
-    int rc = snprintf(url, sizeof (url), URL, prefix, get_runner_process_id());
-    if (rc == 256)
-        cr_panic("IPC url too long");
 
     if (nn_connect (sock, url) < 0)
         goto error;
@@ -90,9 +62,7 @@ error: {}
     return -1;
 }
 
-void close_socket(int sock) {
-    if (is_single_mode())
-        return;
-
+void cri_proto_close(int sock)
+{
     nn_close(sock);
 }
