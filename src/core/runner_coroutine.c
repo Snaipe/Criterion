@@ -64,6 +64,95 @@ ccrEndDefineContextType;
 CR_API const struct criterion_test  *criterion_current_test;
 CR_API const struct criterion_suite *criterion_current_suite;
 
+static int serialize_test(bxf_context ctx, struct criterion_test *test,
+        struct criterion_suite *suite)
+{
+    int rc = 0;
+
+    if (!rc)
+        rc = bxf_context_addobject(ctx, "criterion.test.name",
+                test->name, strlen(test->name) + 1);
+    if (!rc)
+        rc = bxf_context_addobject(ctx, "criterion.test.suite",
+                test->category, strlen(test->category) + 1);
+    if (!rc)
+        rc = bxf_context_addfnaddr(ctx, "criterion.test.test",
+                test->test);
+    if (!rc)
+        rc = bxf_context_addobject(ctx, "criterion.test.extra",
+                test->data, sizeof (*test->data));
+    if (!rc)
+        rc = bxf_context_addfnaddr(ctx, "criterion.test.extra.init",
+                test->data->init);
+    if (!rc)
+        rc = bxf_context_addfnaddr(ctx, "criterion.test.extra.fini",
+                test->data->fini);
+    if (!rc)
+        rc = bxf_context_addobject(ctx, "criterion.suite.name",
+                suite->name, strlen(suite->name) + 1);
+
+    if (suite->data) {
+        if (!rc)
+            rc = bxf_context_addobject(ctx, "criterion.suite.extra",
+                    suite->data, sizeof (*suite->data));
+        if (!rc)
+            rc = bxf_context_addfnaddr(ctx, "criterion.suite.extra.init",
+                    suite->data->init);
+        if (!rc)
+            rc = bxf_context_addfnaddr(ctx, "criterion.suite.extra.fini",
+                    suite->data->fini);
+    }
+    return rc;
+}
+
+static int deserialize_test(struct criterion_test *test,
+        struct criterion_test_extra_data *test_data,
+        struct criterion_suite *suite,
+        struct criterion_test_extra_data *suite_data)
+{
+    bxf_context ctx = bxf_context_current();
+
+    int rc = 1;
+
+    if (rc > 0)
+        rc = bxf_context_getobject(ctx, "criterion.test.name",
+                (void **)&test->name);
+    if (rc > 0)
+        rc = bxf_context_getobject(ctx, "criterion.test.suite",
+                (void **)&test->category);
+    if (rc > 0)
+        rc = bxf_context_getfnaddr(ctx, "criterion.test.test",
+                &test->test);
+    if (rc > 0)
+        rc = bxf_context_getobject(ctx, "criterion.test.extra",
+                (void **)&test_data);
+    if (rc > 0)
+        rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.init",
+                &test_data->init);
+    if (rc > 0)
+        rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.fini",
+                &test_data->fini);
+    if (rc > 0)
+        rc = bxf_context_getobject(ctx, "criterion.suite.name",
+                (void **)&suite->name);;
+
+    test->data = test_data;
+
+    if (suite->data) {
+        rc = bxf_context_getobject(ctx, "criterion.suite.extra",
+                    (void **)&suite_data);
+        if (rc > 0)
+            rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.init",
+                    &suite_data->init);
+        if (rc > 0)
+            rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.fini",
+                    &suite_data->fini);;
+        suite->data = suite_data;
+    }
+
+    return rc;
+}
+
 static int run_test_child(void)
 {
 
@@ -71,24 +160,26 @@ static int run_test_child(void)
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
 
-    struct criterion_test *test;
-    struct criterion_suite *suite;
+    struct criterion_test test;
+    memset(&test, 0, sizeof (test));
+    struct criterion_test_extra_data test_data;
+    memset(&test_data, 0, sizeof (test_data));
+    struct criterion_suite suite;
+    memset(&suite, 0, sizeof (suite));
+    struct criterion_test_extra_data suite_data;
+    memset(&suite_data, 0, sizeof (suite_data));
+
     const char *url;
 
     bxf_context ctx = bxf_context_current();
 
-    int rc;
-
-    rc = bxf_context_getobject(ctx, "criterion.test", (void **)&test);
-    if (rc > 0)
-        rc = bxf_context_getobject(ctx, "criterion.suite", (void **)&suite);
+    int rc = deserialize_test(&test, &test_data, &suite, &suite_data);
     if (rc > 0)
         rc = bxf_context_getobject(ctx, "criterion.url", (void **)&url);
-
     if (rc < 0)
-        cr_panic("Could not get the test information: %s", strerror(-rc));
+        cr_panic("Could not get the test url: %s", strerror(-rc));
     else if (!rc)
-        cr_panic("Could not initialize test context: property not found");
+        cr_panic("Could not initialize test context: url not found");
 
     cr_redirect_stdin();
     g_client_socket = cri_proto_connect(url);
@@ -97,7 +188,7 @@ static int run_test_child(void)
         cr_panic("could not initialize the message client: %s", strerror(errno));
 
     // Notify the runner that the test was born
-    criterion_protocol_msg msg = criterion_message(birth, .name = (char *) test->name);
+    criterion_protocol_msg msg = criterion_message(birth, .name = (char *) test.name);
     criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
 
@@ -105,11 +196,11 @@ static int run_test_child(void)
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
 
-    criterion_current_test = test;
-    criterion_current_suite = suite;
+    criterion_current_test = &test;
+    criterion_current_suite = &suite;
 
-    if (test->test)
-        test->test();
+    if (test.test)
+        test.test();
 
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
@@ -144,13 +235,7 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     bxf_context inst_ctx;
     int rc = bxf_context_init(&inst_ctx);
 
-    if (!rc)
-        rc = bxf_context_addobject(inst_ctx, "criterion.test",
-                ctx->test, sizeof (*ctx->test));
-    if (!rc)
-        rc = bxf_context_addobject(inst_ctx, "criterion.suite",
-                &ctx->suite_set->suite, sizeof (ctx->suite_set->suite));
-
+    rc = serialize_test(inst_ctx, ctx->test, &ctx->suite_set->suite);
     if (!rc) {
         size_t len = strlen(ctx->url) + 1;
         rc = bxf_context_addobject(inst_ctx, "criterion.url", ctx->url, len);
