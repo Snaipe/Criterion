@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-07-24 17:11+0200\n"
+"POT-Creation-Date: 2016-08-08 15:38+0200\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -184,17 +184,6 @@ msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` n'a pas levé d'instance de l'exception `%2$s`."
 
 #: src/core/runner.c:62
-#, c-format
-msgid ""
-"%1$sWarning! Criterion has detected that it is running under valgrind, but "
-"the no_early_exit option is explicitely disabled. Reports will not be "
-"accurate!%2$s\n"
-msgstr ""
-"%1$sAttention! Criterion a détecté qu'il a été lancé avec valgrind, mais "
-"l'option no_early_exit est explicitement désactivée. Les rapports d'erreur "
-"ne seront pas précis!%2$s\n"
-
-#: src/core/runner.c:66
 #, c-format
 msgid ""
 "%1$sWarning! Criterion has detected that it is running under valgrind, but "
