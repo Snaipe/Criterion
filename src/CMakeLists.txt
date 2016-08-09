@@ -139,7 +139,7 @@ configure_file(
   @ONLY
 )
 
-install (FILES "${CMAKE_CURRENT_BINARY_DIR}/criterion.pc" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/pkgconfig")
+install (FILES "${CMAKE_CURRENT_BINARY_DIR}/criterion.pc" DESTINATION "share/pkgconfig")
 
 set (SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)
 set (INTERFACE_FILES ${INTERFACE_FILES} PARENT_SCOPE)
