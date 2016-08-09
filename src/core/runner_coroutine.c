@@ -75,16 +75,16 @@ static int serialize_test(bxf_context ctx, struct criterion_test *test,
     if (!rc)
         rc = bxf_context_addobject(ctx, "criterion.test.suite",
                 test->category, strlen(test->category) + 1);
-    if (!rc)
+    if (!rc && test->test)
         rc = bxf_context_addfnaddr(ctx, "criterion.test.test",
                 test->test);
     if (!rc)
         rc = bxf_context_addobject(ctx, "criterion.test.extra",
                 test->data, sizeof (*test->data));
-    if (!rc)
+    if (!rc && test->data->init)
         rc = bxf_context_addfnaddr(ctx, "criterion.test.extra.init",
                 test->data->init);
-    if (!rc)
+    if (!rc && test->data->fini)
         rc = bxf_context_addfnaddr(ctx, "criterion.test.extra.fini",
                 test->data->fini);
     if (!rc)
@@ -95,10 +95,10 @@ static int serialize_test(bxf_context ctx, struct criterion_test *test,
         if (!rc)
             rc = bxf_context_addobject(ctx, "criterion.suite.extra",
                     suite->data, sizeof (*suite->data));
-        if (!rc)
+        if (!rc && suite->data->init)
             rc = bxf_context_addfnaddr(ctx, "criterion.suite.extra.init",
                     suite->data->init);
-        if (!rc)
+        if (!rc && suite->data->fini)
             rc = bxf_context_addfnaddr(ctx, "criterion.suite.extra.fini",
                     suite->data->fini);
     }
@@ -106,50 +106,62 @@ static int serialize_test(bxf_context ctx, struct criterion_test *test,
 }
 
 static int deserialize_test(struct criterion_test *test,
-        struct criterion_test_extra_data *test_data,
-        struct criterion_suite *suite,
-        struct criterion_test_extra_data *suite_data)
+        struct criterion_suite *suite)
 {
     bxf_context ctx = bxf_context_current();
 
-    int rc = 1;
+    struct criterion_test_extra_data *test_data = NULL;
+    struct criterion_test_extra_data *suite_data = NULL;
 
-    if (rc > 0)
-        rc = bxf_context_getobject(ctx, "criterion.test.name",
-                (void **)&test->name);
-    if (rc > 0)
-        rc = bxf_context_getobject(ctx, "criterion.test.suite",
-                (void **)&test->category);
-    if (rc > 0)
-        rc = bxf_context_getfnaddr(ctx, "criterion.test.test",
-                &test->test);
-    if (rc > 0)
-        rc = bxf_context_getobject(ctx, "criterion.test.extra",
-                (void **)&test_data);
-    if (rc > 0)
-        rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.init",
-                &test_data->init);
-    if (rc > 0)
-        rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.fini",
-                &test_data->fini);
-    if (rc > 0)
-        rc = bxf_context_getobject(ctx, "criterion.suite.name",
-                (void **)&suite->name);;
+    int rc;
 
-    test->data = test_data;
+    rc = bxf_context_getobject(ctx, "criterion.test.name",
+            (void **)&test->name);
+    if (rc <= 0) goto err;
 
-    if (suite->data) {
-        rc = bxf_context_getobject(ctx, "criterion.suite.extra",
-                    (void **)&suite_data);
-        if (rc > 0)
-            rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.init",
-                    &suite_data->init);
-        if (rc > 0)
-            rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.fini",
-                    &suite_data->fini);;
-        suite->data = suite_data;
+    rc = bxf_context_getobject(ctx, "criterion.test.suite",
+            (void **)&test->category);
+    if (rc <= 0) goto err;
+
+    rc = bxf_context_getfnaddr(ctx, "criterion.test.test",
+            &test->test);
+    if (rc < 0) goto err;
+
+    rc = bxf_context_getobject(ctx, "criterion.test.extra",
+            (void **)&test_data);
+    if (rc <= 0) goto err;
+
+    rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.init",
+            &test_data->init);
+    if (rc < 0) goto err;
+
+    rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.fini",
+            &test_data->fini);
+    if (rc < 0) goto err;
+
+    rc = bxf_context_getobject(ctx, "criterion.suite.name",
+            (void **)&suite->name);;
+    if (rc <= 0) goto err;
+
+    rc = bxf_context_getobject(ctx, "criterion.suite.extra",
+                (void **)&suite_data);
+    if (rc < 0) goto err;
+
+    if (suite_data) {
+        rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.init",
+                &suite_data->init);
+        if (rc < 0) goto err;
+
+        rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.fini",
+                &suite_data->fini);;
+        if (rc < 0) goto err;
     }
 
+    test->data = test_data;
+    suite->data = suite_data;
+
+    return 1;
+err:
     return rc;
 }
 
@@ -162,24 +174,20 @@ static int run_test_child(void)
 
     struct criterion_test test;
     memset(&test, 0, sizeof (test));
-    struct criterion_test_extra_data test_data;
-    memset(&test_data, 0, sizeof (test_data));
     struct criterion_suite suite;
     memset(&suite, 0, sizeof (suite));
-    struct criterion_test_extra_data suite_data;
-    memset(&suite_data, 0, sizeof (suite_data));
 
     const char *url;
 
     bxf_context ctx = bxf_context_current();
 
-    int rc = deserialize_test(&test, &test_data, &suite, &suite_data);
+    int rc = deserialize_test(&test, &suite);
     if (rc > 0)
         rc = bxf_context_getobject(ctx, "criterion.url", (void **)&url);
     if (rc < 0)
-        cr_panic("Could not get the test url: %s", strerror(-rc));
+        cr_panic("Could not get the test context: %s", strerror(-rc));
     else if (!rc)
-        cr_panic("Could not initialize test context: url not found");
+        cr_panic("Could not initialize test context: property not found");
 
     cr_redirect_stdin();
     g_client_socket = cri_proto_connect(url);
