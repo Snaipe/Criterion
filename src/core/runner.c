@@ -329,16 +329,25 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 
     cri_proto_close(g_client_socket);
     cri_proto_close(sock);
+    int ok = stats->tests_failed == 0;
     sfree(stats);
-    return stats->tests_failed == 0;
+    return ok;
 }
 
 CR_API int criterion_run_all_tests(struct criterion_test_set *set)
 {
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_DISABLE_ERROR_REPORTING;
+#endif
+
     if (criterion_options.pattern) {
         disable_unmatching(set);
     }
 
     int res = criterion_run_all_tests_impl(set);
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_ENABLE_ERROR_REPORTING;
+#endif
     return criterion_options.always_succeed || res;
 }

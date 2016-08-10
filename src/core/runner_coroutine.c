@@ -215,6 +215,10 @@ static int run_test_child(void)
 #endif
 
     cri_proto_close(g_client_socket);
+
+#ifndef ENABLE_VALGRIND_ERRORS
+    VALGRIND_ENABLE_ERROR_REPORTING;
+#endif
     return 0;
 }
 
@@ -281,6 +285,8 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     rc = bxf_spawn_struct(&instance, &sp);
     if (rc < 0)
         cr_panic("Could not spawn test instance: %s", strerror(-rc));
+
+    bxf_context_term(inst_ctx);
 
     *client = (struct client_ctx) {
         .test = ctx->test,

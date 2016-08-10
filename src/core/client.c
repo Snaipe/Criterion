@@ -107,6 +107,8 @@ void destroy_client_context(struct client_ctx *ctx) {
         if (rc < 0)
             cr_panic("finalizing the worker failed: %s\n", strerror(-rc));
     }
+    sfree(ctx->tstats);
+    sfree(ctx->sstats);
 }
 
 void destroy_server_context(struct server_ctx *sctx) {
@@ -157,7 +159,7 @@ struct client_ctx *add_external_client(struct server_ctx *sctx, char *id) {
             .category = "external",
         },
         .gstats = sctx->gstats,
-        .sstats = sctx->extern_sstats,
+        .sstats = sref(sctx->extern_sstats),
     };
 
     struct client_ctx *ctx = &kh_value(sctx->clients, k);
