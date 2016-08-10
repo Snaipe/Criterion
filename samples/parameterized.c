@@ -3,16 +3,14 @@
 
 // Basic usage
 
-ParameterizedTestParameters(params, str) {
-    static const char *strings[] = {
-        "foo", "bar", "baz"
-    };
+ParameterizedTestParameters(params, simple) {
+    static int vals[] = { 1, 2, 3 };
 
-    return cr_make_param_array(const char *, strings, sizeof (strings) / sizeof (const char *));
+    return cr_make_param_array(int, vals, sizeof (vals) / sizeof (int));
 }
 
-ParameterizedTest(const char **str, params, str) {
-    cr_assert_fail("Parameter: %s", *str);
+ParameterizedTest(int *val, params, simple) {
+    cr_assert_fail("Parameter: %d", *val);
 }
 
 // Multiple parameters must be coalesced in a single parameter
