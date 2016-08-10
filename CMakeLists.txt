@@ -23,16 +23,24 @@ include (Capabilities)
 include (Subprojects)
 include (PackageUtils)
 
-cr_add_subproject (csptr PATH dependencies/libcsptr
-    OPTS -DLIBCSPTR_TESTS=OFF
-    CMAKE)
-cr_add_subproject (dyncall_s PATH dependencies/dyncall CMAKE IF THEORIES)
-
 if (NOT WIN32)
-  set (PIC_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+  set (PIC_C_FLAGS "-fPIC")
+  set (VISI_C_FLAGS "-fvisibility=hidden")
 else ()
-  set (PIC_C_FLAGS "${CMAKE_C_FLAGS}")
+  set (PIC_C_FLAGS "")
+  set (VISI_C_FLAGS "")
 endif ()
+
+cr_add_subproject (csptr PATH dependencies/libcsptr
+    OPTS
+      -DLIBCSPTR_TESTS=OFF
+      "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+    CMAKE)
+
+cr_add_subproject (dyncall_s PATH dependencies/dyncall
+    OPTS
+      "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+    CMAKE IF THEORIES)
 
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg
@@ -41,7 +49,7 @@ cr_add_subproject (nanomsg
     -DNN_TOOLS=OFF
     -DNN_STATIC_LIB=ON
     -DCMAKE_INSTALL_LIBDIR=lib
-    "-DCMAKE_C_FLAGS=${PIC_C_FLAGS}"
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
   CMAKE
 )
 
@@ -52,7 +60,7 @@ cr_add_subproject (boxfort PATH dependencies/boxfort
     -DBXF_STATIC_LIB=ON
     -DBXF_FORK_RESILIENCE=OFF
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    "-DCMAKE_C_FLAGS=${PIC_C_FLAGS}"
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
   CMAKE)
 
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
