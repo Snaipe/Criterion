@@ -116,6 +116,14 @@ struct criterion_options {
      *  default: false
      */
     bool wait_for_clients;
+
+    /**
+     * Raise a debug trap to crash the test if an assert fails so that a
+     * debugger can gain control.
+     *
+     * default: false
+     */
+    bool crash;
 };
 
 CR_BEGIN_C_API
