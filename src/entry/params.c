@@ -35,6 +35,7 @@
 #include "io/output.h"
 #include "config.h"
 #include "common.h"
+#include "err.h"
 
 #if ENABLE_NLS
 # include <libintl.h>
@@ -130,7 +131,31 @@ int atou(const char *str) {
     return res < 0 ? 0 : res;
 }
 
-CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
+static enum criterion_debugger get_dbg(const char *arg)
+{
+    if (!arg)
+        return CR_DBG_NATIVE;
+
+    static struct { char *name; enum criterion_debugger dbg; } values[] = {
+        { "gdb",    CR_DBG_GDB },
+        { "lldb",   CR_DBG_LLDB },
+        { "windbg", CR_DBG_WINDBG },
+    };
+
+    for (size_t i = 0; i < 3; ++i) {
+        printf("arg = { %s, %d }\n", values[i].name, values[i].dbg);
+        if (!strcmp(values[i].name, arg)) {
+            printf("OK\n");
+            return values[i].dbg;
+        }
+    }
+
+    cr_panic("Invalid argument for --debug: %s.\n", arg);
+}
+
+CR_API int criterion_handle_args(int argc, char *argv[],
+        bool handle_unknown_arg)
+{
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"quiet",           no_argument,        0, 'q'},
@@ -151,6 +176,8 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
         {"output",          required_argument,  0, 'O'},
         {"wait",            no_argument,        0, 'w'},
         {"crash",           no_argument,        0, 'c'},
+        {"debug",           optional_argument,  0, 'd'},
+        {"debug-transport", required_argument,  0, 'D'},
         {0,                 0,                  0,  0 }
     };
 
@@ -241,6 +268,9 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
             case 'S': criterion_options.short_filename    = true; break;
             case 'p': criterion_options.pattern           = optarg; break;
             case 'q': quiet = true; break;
+
+            case 'd': criterion_options.debug = get_dbg(optarg); break;
+            case 'D': criterion_options.debug_port = atou(optarg); break;
 
             {
                 const char *provider;

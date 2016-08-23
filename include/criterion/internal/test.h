@@ -142,11 +142,22 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
 #  endif
 # endif
 
+# if defined(_MSC_VER)
+#  define CR_COMPILER_ CR_COMP_MSVC
+# elif defined(__clang__)
+#  define CR_COMPILER_ CR_COMP_CLANG
+# elif defined(__GNUC__)
+#  define CR_COMPILER_ CR_COMP_GCC
+# else
+#  define CR_COMPILER_ CR_COMP_UNKNOWN
+# endif
+
 # define CR_TEST_BASE(Category, Name, ...)                                     \
     CR_TEST_PROTOTYPE_(Category, Name);                                        \
     CR_TEST_TRAMPOLINE_(Category, Name)                                        \
     struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
         CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,             \
+            .compiler_ = CR_COMPILER_,                                         \
             .lang_ = CR_LANG,                                                  \
             .kind_ = CR_TEST_NORMAL,                                           \
             .param_ = (struct criterion_test_params(*)(void)) NULL,            \

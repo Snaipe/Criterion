@@ -271,10 +271,24 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         .inherit.context = inst_ctx,
     };
 
-#if 0
-    sp.debug.debugger = BXF_DBG_NATIVE;
-    sp.debug.tcp = 1234;
-#endif
+    if (criterion_options.debug) {
+        enum bxf_debugger debugger = BXF_DBG_NONE;
+        if (criterion_options.debug == CR_DBG_NATIVE) {
+            switch (ctx->test->data->compiler_) {
+                case CR_COMP_GCC:   debugger = BXF_DBG_GDB; break;
+                case CR_COMP_CLANG: debugger = BXF_DBG_LLDB; break;
+                case CR_COMP_MSVC:  debugger = BXF_DBG_WINDBG; break;
+                default: break;
+            }
+        } else {
+            debugger = (enum bxf_debugger)(criterion_options.debug - 1);
+        }
+        if (!debugger)
+            cr_panic("Could not choose the debugger server for an "
+                     "unknown compiler");
+        sp.debug.debugger = debugger;
+        sp.debug.tcp = criterion_options.debug_port;
+    }
 
     if (ctx->suite_set->suite.data && ctx->suite_set->suite.data->timeout != 0)
         sp.quotas.runtime = ctx->suite_set->suite.data->timeout;

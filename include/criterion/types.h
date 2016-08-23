@@ -59,6 +59,13 @@ enum criterion_test_kind {
     CR_TEST_PARAMETERIZED,
 };
 
+enum criterion_compiler {
+    CR_COMP_UNKNOWN,
+    CR_COMP_GCC,
+    CR_COMP_CLANG,
+    CR_COMP_MSVC,
+};
+
 /**
  *  Represents a set of parameters for a parameterized test.
  */
@@ -78,6 +85,7 @@ struct criterion_test_extra_data {
      * You've been warned.
      */
     int sentinel_;
+    enum criterion_compiler compiler_;
     enum criterion_language lang_;
     enum criterion_test_kind kind_;
     struct criterion_test_params (*param_)(void);

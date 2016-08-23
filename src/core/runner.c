@@ -344,6 +344,11 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
         disable_unmatching(set);
     }
 
+    if (criterion_options.debug) {
+        criterion_options.jobs = 1;
+        criterion_options.crash = true;
+    }
+
     int res = criterion_run_all_tests_impl(set);
 
 #ifndef ENABLE_VALGRIND_ERRORS

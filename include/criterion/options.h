@@ -32,6 +32,34 @@
 # include "logging.h"
 # include "internal/common.h"
 
+enum criterion_debugger {
+    /**
+     *  Do not run the underlying test in a debugger
+     */
+    CR_DBG_NONE,
+
+    /**
+     *  Run the test with a debugging server compatible with the compiler
+     *  it was built with.
+     */
+    CR_DBG_NATIVE,
+
+    /**
+     *  Run the test with gdbserver
+     */
+    CR_DBG_GDB,
+
+    /**
+     *  Run the test with lldb-server
+     */
+    CR_DBG_LLDB,
+
+    /**
+     *  Run the test with windbg in server mode
+     */
+    CR_DBG_WINDBG,
+};
+
 struct criterion_options {
 
     /**
@@ -125,6 +153,24 @@ struct criterion_options {
      * default: false
      */
     bool crash;
+
+    /**
+     *  Whether criterion should run its tests in a debugging server.
+     *
+     *  The server hangs until a connection from a debugger gets accepted.
+     *
+     *  This forces jobs = 1 and crash = true.
+     *
+     *  default: CR_DBG_NONE;
+     */
+    enum criterion_debugger debug;
+
+    /**
+     *  The TCP port of the debugging server.
+     *
+     *  default: 1234
+     */
+    unsigned debug_port;
 };
 
 CR_BEGIN_C_API
