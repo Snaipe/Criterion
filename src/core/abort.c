@@ -40,6 +40,11 @@ void criterion_abort_test(void) {
     longjmp(g_pre_test, 1);
 }
 
+void criterion_continue_test(void) {
+    if (criterion_options.crash)
+        debug_break();
+}
+
 void criterion_test_die(const char *msg, ...) {
     va_list vl;
     va_start(vl, msg);

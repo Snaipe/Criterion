@@ -44,7 +44,7 @@ CR_API CR_NORETURN void criterion_abort_test(void);
  *
  *  Used as a counterpart to criterion_abort_test.
  */
-CR_INLINE static void criterion_continue_test(void) {}
+CR_API void criterion_continue_test(void);
 
 /**
  *  Kills the current test, marking it as failed.
