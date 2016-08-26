@@ -51,11 +51,11 @@
 #  include <stdint.h>
 #  include <signal.h>
 # else
-#  include <unistd.h>
-#  include <sys/wait.h>
-#  include <sys/signal.h>
-#  include <sys/fcntl.h>
+#  include <fcntl.h>
+#  include <signal.h>
 #  include <sys/param.h>
+#  include <sys/wait.h>
+#  include <unistd.h>
 #  ifdef BSD
 #   include <sys/types.h>
 typedef unsigned long u_long;
