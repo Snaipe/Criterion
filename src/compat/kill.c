@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define _POSIX_SOURCE
 #include "kill.h"
 #include "internal.h"
 #include "log/logging.h"
