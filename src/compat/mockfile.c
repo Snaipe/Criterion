@@ -27,12 +27,13 @@
 #include <stdint.h>
 #include <string.h>
 #include <errno.h>
+#include "config.h"
 #include "internal.h"
 #include "criterion/redirect.h"
 
-#ifdef __unix__
+#if defined(HAVE_FUNOPEN) || defined(HAVE_FOPENCOOKIE)
 
-# ifdef BSD
+# ifdef HAVE_FUNOPEN
 typedef int cr_count;
 typedef int cr_retcount;
 typedef fpos_t cr_off;
@@ -71,7 +72,7 @@ static inline size_t off_safe_add(size_t size, size_t cur, cr_off off) {
 
 static cr_retcount mock_file_read(void *cookie, char *buf, cr_count count) {
     struct memfile *mf = cookie;
-# ifdef BSD
+# ifdef HAVE_FUNOPEN
     if (count < 0)
         errno_return(EINVAL, (cr_retcount) -1);
 # endif
@@ -87,7 +88,7 @@ static cr_retcount mock_file_read(void *cookie, char *buf, cr_count count) {
 
 static cr_retcount mock_file_write(void *cookie, const char *buf, cr_count count) {
     struct memfile *mf = cookie;
-# ifdef BSD
+# ifdef HAVE_FUNOPEN
     if (count < 0)
         errno_return(EINVAL, (cr_retcount) -1);
 # endif
@@ -115,7 +116,7 @@ static cr_retcount mock_file_write(void *cookie, const char *buf, cr_count count
     return count;
 }
 
-# ifdef BSD
+# ifdef HAVE_FUNOPEN
 static cr_off mock_file_seek(void *cookie, cr_off off, int whence) {
     struct memfile *mf = cookie;
     switch (whence) {
@@ -146,10 +147,10 @@ static int mock_file_close(void *cookie) {
     free(cookie);
     return 0;
 }
-#endif
+#endif /* defined(HAVE_FUNOPEN) || defined(HAVE_FOPENCOOKIE) */
 
 FILE *cr_mock_file_size(size_t max_size) {
-#ifdef __unix__
+#if defined(HAVE_FUNOPEN) || defined(HAVE_FOPENCOOKIE)
     struct memfile *cookie = malloc(sizeof (struct memfile));
     *cookie = (struct memfile) {
         .max_size = max_size,
@@ -158,7 +159,7 @@ FILE *cr_mock_file_size(size_t max_size) {
     };
 
     FILE *f;
-# if defined(__unix__) && !defined(BSD)
+# if defined(HAVE_FOPENCOOKIE)
     f = fopencookie(cookie, "w+", (cookie_io_functions_t) {
         .read  = mock_file_read,
         .write = mock_file_write,
@@ -173,6 +174,16 @@ FILE *cr_mock_file_size(size_t max_size) {
             mock_file_close);
 # endif
     return f;
+#elif defined (HAVE_OPEN_MEMSTREAM)
+    (void) max_size;
+    char *mem;
+    size_t sz;
+
+    /* We're actually leaking memory here. Can't do much, really -- we don't
+     * really know when the user decides to close the file, and iterating a
+     * list of opened memory streams to free them at exit wouldn't be worth
+     * the effort. */
+    return open_memstream(&mem, &sz);
 #else
     (void) max_size;
 
