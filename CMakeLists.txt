@@ -63,6 +63,8 @@ cr_add_subproject (boxfort PATH dependencies/boxfort
     "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
   CMAKE)
 
+add_definitions(-DBXF_STATIC_LIB -DNN_STATIC_LIB)
+
 cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
 
 include (Properties)
