@@ -51,8 +51,6 @@ enum criterion_language {
     CR_LANG_SIZE_ // leave this at the end
 };
 
-extern const char *const cr_language_names[CR_LANG_SIZE_];
-
 /**
  *  Enumerates the supported kinds of tests
  */

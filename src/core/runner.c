@@ -113,7 +113,7 @@ static void dtor_test_set(void *ptr, CR_UNUSED void *meta) {
     sfree(t->suites);
 }
 
-void criterion_register_test(struct criterion_test_set *set,
+CR_API void criterion_register_test(struct criterion_test_set *set,
                                     struct criterion_test *test) {
 
     struct criterion_suite_set css = {
@@ -163,8 +163,8 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
-const struct criterion_test  *criterion_current_test;
-const struct criterion_suite *criterion_current_suite;
+CR_API const struct criterion_test  *criterion_current_test;
+CR_API const struct criterion_suite *criterion_current_suite;
 
 void run_test_child(struct criterion_test *test,
                     struct criterion_suite *suite) {
@@ -243,7 +243,7 @@ void disable_unmatching(struct criterion_test_set *set) {
     free_pattern();
 }
 
-struct criterion_test_set *criterion_initialize(void) {
+CR_API struct criterion_test_set *criterion_initialize(void) {
     init_i18n();
 
 #ifndef ENABLE_VALGRIND_ERRORS
@@ -266,7 +266,7 @@ struct criterion_test_set *criterion_initialize(void) {
     return criterion_init();
 }
 
-void criterion_finalize(struct criterion_test_set *set) {
+CR_API void criterion_finalize(struct criterion_test_set *set) {
     sfree(set);
 
 #ifndef ENABLE_VALGRIND_ERRORS
@@ -415,7 +415,7 @@ cleanup:
     return result;
 }
 
-int criterion_run_all_tests(struct criterion_test_set *set) {
+CR_API int criterion_run_all_tests(struct criterion_test_set *set) {
     if (criterion_options.pattern) {
         disable_unmatching(set);
     }

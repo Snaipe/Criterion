@@ -30,6 +30,7 @@
 
 # include <stdbool.h>
 # include "logging.h"
+# include "internal/common.h"
 
 struct criterion_options {
 
@@ -131,7 +132,7 @@ CR_BEGIN_C_API
 /**
  *  The runtime options for the test runner.
  */
-extern struct criterion_options criterion_options;
+CR_API extern struct criterion_options criterion_options;
 
 CR_END_C_API
 

@@ -130,7 +130,7 @@ int atou(const char *str) {
     return res < 0 ? 0 : res;
 }
 
-int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
+CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"quiet",           no_argument,        0, 'q'},

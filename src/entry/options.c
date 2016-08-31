@@ -23,7 +23,7 @@
  */
 # include "criterion/options.h"
 
-struct criterion_options criterion_options = {
+CR_API struct criterion_options criterion_options = {
     .logging_threshold = CRITERION_IMPORTANT,
     .logger            = &normal_logging,
     .measure_time      = true,

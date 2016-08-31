@@ -40,7 +40,7 @@ typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
  *  @returns 1 if no output provider is registered at that name, 0 otherwise,
  *    and -1 on error.
  */
-int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
+CR_API int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
 
 /**
  *  Use an output provider to write a report in a specific path.
@@ -49,6 +49,6 @@ int criterion_register_output_provider(const char *name, criterion_reporter *rep
  *  @param[in] path The path to the file to write the report to.
  *  @returns -1 on error.
  */
-int criterion_add_output(const char *provider, const char *path);
+CR_API int criterion_add_output(const char *provider, const char *path);
 
 #endif /* !CRITERION_OUTPUT_H_ */
