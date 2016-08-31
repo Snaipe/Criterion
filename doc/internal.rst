@@ -68,9 +68,9 @@ Example main
 
         int result = 0;
         if (criterion_handle_args(argc, argv, true))
-            result = !criterion_run_all_tests(set);
+            result = !criterion_run_all_tests(tests);
 
-        criterion_finalize(set);
+        criterion_finalize(tests);
         return result;
     }
 
