@@ -58,7 +58,7 @@
             "or colors in the output\n"                     \
     "    -S or --short-filename: only display the base "    \
             "name of the source file on a failure\n"        \
-    "    --pattern [PATTERN]: run tests matching the "      \
+    "    --filter [PATTERN]: run tests matching the "       \
             "given pattern\n"                               \
     "    --tap[=FILE]: writes TAP report in FILE "          \
             "(no file or \"-\" means stderr)\n"             \
@@ -171,6 +171,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         {"short-filename",  no_argument,        0, 'S'},
         {"single",          required_argument,  0, 's'},
         {"pattern",         required_argument,  0, 'p'},
+        {"filter",          required_argument,  0, 'F'},
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {"output",          required_argument,  0, 'O'},
@@ -266,7 +267,9 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
-            case 'p': criterion_options.pattern           = optarg; break;
+
+            case 'p': fprintf(stderr, "--pattern has been renamed as --filter and is now deprecated.\n");
+            case 'F': criterion_options.pattern           = optarg; break;
             case 'q': quiet = true; break;
 
             case 'd': criterion_options.debug = get_dbg(optarg); break;
