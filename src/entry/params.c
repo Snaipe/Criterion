@@ -71,6 +71,11 @@
             "(1 by default)\n"                              \
     "    --crash: crash failing assertions rather than "    \
             "aborting (for debugging purposes)\n"           \
+    "    --debug[=TYPE]: run tests with a debugging "       \
+            "server, listening on localhost:1234 by "       \
+            "default. TYPE may be gdb, lldb, or wingbd.\n"  \
+    "    --debug-transport=VAL: the transport to use by "   \
+            "the debugging server. `tcp:1234` by default\n" \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
             "report to FILE using the specified provider\n"
 
