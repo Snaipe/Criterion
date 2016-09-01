@@ -13,13 +13,15 @@ Display the help message
       -f or --fail-fast: exit after the first failure
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
-      --pattern [PATTERN]: run tests matching the given pattern
+      --filter [PATTERN]: run tests matching the given pattern
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
       --no-early-exit: do not exit the test worker prematurely after the test
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
+      --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
+      --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
   $ simple.cc.bin --help
@@ -35,13 +37,15 @@ Display the help message
       -f or --fail-fast: exit after the first failure
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
-      --pattern [PATTERN]: run tests matching the given pattern
+      --filter [PATTERN]: run tests matching the given pattern
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
       --no-early-exit: do not exit the test worker prematurely after the test
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
+      --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
+      --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
 
