@@ -48,8 +48,6 @@ enum criterion_severity {
     CR_LOG_ERROR,
 };
 
-CR_FORMAT(printf, 2, 3)
-
 /**
  * Prints a log message
  *
@@ -60,6 +58,7 @@ CR_FORMAT(printf, 2, 3)
  * @param[in] ... Additional arguments depending on msg
  *
  *****************************************************************************/
+CR_FORMAT(printf, 2, 3)
 CR_API void cr_log(enum criterion_severity severity, const char *msg, ...);
 
 /**
