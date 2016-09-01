@@ -98,14 +98,15 @@ before_install:
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-          brew install python3
+          travis_retry brew install python3
           export PATH="$(python3 -m site --user-base)/bin:$PATH"
           export PYTHON_BIN="python3"
-          pip3 install cram==0.7
+          travis_retry pip3 install cram==0.7
         else
-          curl -L https://bootstrap.pypa.io/get-pip.py | python3.5 - --user
+          travis_retry curl -LO https://bootstrap.pypa.io/get-pip.py
+          travis_retry python3.5 get-pip.py --user
           export PYTHON_BIN="python3.5"
-          pip3 install --user cram==0.7
+          travis_retry pip3 install --user cram==0.7
         fi
       fi
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
