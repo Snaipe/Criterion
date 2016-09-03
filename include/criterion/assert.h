@@ -50,6 +50,13 @@
  *
  *****************************************************************************/
 # define cr_assert_fail(FormatString, ...) <internal>
+/**
+ * Skips the test
+ *
+ * The test is marked as skipped and the execution of the function is aborted.
+ *
+ *****************************************************************************/
+# define cr_skip_test(FormatString, ...) <internal>
 
 /**
  * Fails always.

@@ -23,6 +23,7 @@ set(SAMPLES
   redirect.c
   parameterized.c
   log.c
+  skip.c
 )
 
 if (CMAKE_CXX_COMPILER_WORKS)
@@ -38,6 +39,7 @@ if (CMAKE_CXX_COMPILER_WORKS)
     redirect.cc
     parameterized.cc
     log.cc
+    skip.cc
   )
 endif ()
 
@@ -58,6 +60,7 @@ set(SCRIPTS
   fail_fast
   help
   pattern
+  skip
 )
 
 

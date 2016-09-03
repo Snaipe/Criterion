@@ -123,3 +123,19 @@ Testing CRITERION_OUTPUTS
       </testcase>
     </testsuite>
   </testsuites>
+
+
+
+  $ skip.c.bin --xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!-- Tests compiled with Criterion v2.2.1 -->
+  <testsuites name="Criterion Tests" tests="2" failures="0" errors="0" disabled="2">
+    <testsuite name="misc" tests="2" failures="0" errors="0" disabled="2" skipped="2" time="0.000">
+      <testcase name="skipping" assertions="0" status="SKIPPED" time="0.000">
+        <skipped/>
+      </testcase>
+      <testcase name="message" assertions="0" status="SKIPPED" time="0.000">
+        <skipped/>
+      </testcase>
+    </testsuite>
+  </testsuites>

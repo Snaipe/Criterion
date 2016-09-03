@@ -43,7 +43,7 @@ static void send_event(int phase) {
     cr_send_to_runner(&msg);
 }
 
-static INLINE void nothing(void) {}
+static CR_INLINE void nothing(void) {}
 
 void criterion_internal_test_setup(void) {
     const struct criterion_suite *suite = criterion_current_suite;

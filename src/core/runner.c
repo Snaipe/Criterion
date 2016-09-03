@@ -91,7 +91,7 @@ CR_IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 CR_SECTION_("cr_sts") struct criterion_suite *dummy_suite = NULL;
 CR_SECTION_("cr_tst") struct criterion_test  *dummy_test = NULL;
 
-static INLINE void nothing(void) {}
+static CR_INLINE void nothing(void) {}
 
 int cmp_suite(void *a, void *b) {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -333,7 +333,7 @@ static void run_tests_async(struct criterion_test_set *set,
             continue;
 
         if (!cctx->alive) {
-            if (cctx->tstats->failed && criterion_options.fail_fast) {
+            if ((cctx->tstats->test_status == CR_STATUS_FAILED) && criterion_options.fail_fast) {
                 cr_terminate(cctx->gstats);
             }
 
