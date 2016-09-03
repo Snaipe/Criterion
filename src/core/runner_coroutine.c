@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <csptr/smalloc.h>
-#include <valgrind/valgrind.h>
 
 #include "criterion/internal/parameterized.h"
 #include "criterion/redirect.h"
@@ -43,6 +42,13 @@
 #include "runner.h"
 #include "runner_coroutine.h"
 #include "stats.h"
+
+#ifdef __GNUC__
+# include <valgrind/valgrind.h>
+#else
+# define ENABLE_VALGRIND_ERRORS
+# define RUNNING_ON_VALGRIND 0
+#endif
 
 ccrBeginDefineContextType(run_next_context);
 

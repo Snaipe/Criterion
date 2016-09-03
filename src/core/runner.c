@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <csptr/smalloc.h>
-#include <valgrind/valgrind.h>
 #include <nanomsg/nn.h>
 #include "criterion/internal/test.h"
 #include "criterion/options.h"
@@ -55,6 +54,13 @@
 #include "runner.h"
 #include "runner_coroutine.h"
 #include "stats.h"
+
+#ifdef __GNUC__
+# include <valgrind/valgrind.h>
+#else
+# define ENABLE_VALGRIND_ERRORS
+# define RUNNING_ON_VALGRIND 0
+#endif
 
 typedef const char *const msg_t;
 
