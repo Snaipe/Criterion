@@ -110,7 +110,7 @@ script:
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         TERM=dumb cmake --build . --target criterion_tests -- -j4
-        ctest --output-on-failure -j4
+        ctest --output-on-failure -j4 --timeout=20
       else
         TERM=dumb cmake --build . -- -j4
       fi
