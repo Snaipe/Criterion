@@ -38,7 +38,6 @@ platform:
 
 configuration:
   - Debug
-  - Release
   - RelWithDebInfo
 
 install:
