@@ -48,18 +48,6 @@ if (THEORIES)
   endif ()
 endif ()
 
-set(SCRIPTS
-  tap_test
-  xml_test
-  json_test
-  early_exit
-  verbose
-  list
-  fail_fast
-  help
-  pattern
-)
-
 
 add_custom_target(criterion_samples)
 add_dependencies(criterion_tests criterion_samples)
