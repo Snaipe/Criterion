@@ -24,25 +24,36 @@
 #ifndef SECTION_H_
 # define SECTION_H_
 
-# include "criterion/internal/common.h"
+# include "config.h"
 
-# ifdef _WIN32
-void *get_win_section_start(const char *section);
-void *get_win_section_end(const char *section);
-#  define CR_STRINGIFY_(Param) #Param
-#  define CR_STRINGIFY(Param) CR_STRINGIFY_(Param)
-#  define GET_SECTION_START(Name) get_win_section_start(CR_STRINGIFY(Name))
-#  define GET_SECTION_END(Name)   get_win_section_end(CR_STRINGIFY(Name))
-# elif defined(__APPLE__)
-void *get_osx_section_start(const char *section);
-void *get_osx_section_end(const char *section);
-#  define CR_STRINGIFY_(Param) #Param
-#  define CR_STRINGIFY(Param) CR_STRINGIFY_(Param)
-#  define GET_SECTION_START(Name) get_osx_section_start(CR_STRINGIFY(Name))
-#  define GET_SECTION_END(Name)   get_osx_section_end(CR_STRINGIFY(Name))
-# else
-#  define GET_SECTION_START(Name) CR_SECTION_START(Name)
-#  define GET_SECTION_END(Name)   CR_SECTION_END(Name)
+# if defined (__ELF__)
+#  define MODULE_INVALID NULL
+#  include <link.h>
+
+typedef struct mod_handle {
+    int fd;
+    const ElfW(Ehdr) *map;
+    size_t len;
+} mod_handle;
+# elif defined (__APPLE__)
+#  define MODULE_INVALID -1
+typedef int mod_handle;
+# elif defined (_WIN32)
+#  include <windows.h>
+#  define MODULE_INVALID NULL
+typedef HMODULE mod_handle;
 # endif
+
+struct section_mapping {
+    const void *map;
+    size_t len;
+    size_t sec_len;
+};
+
+int open_module_self(mod_handle *mod);
+void close_module(mod_handle *mod);
+void *map_section_data(mod_handle *mod, const char *name,
+        struct section_mapping *map);
+void unmap_section_data(struct section_mapping *map);
 
 #endif /* !SECTION_H_ */

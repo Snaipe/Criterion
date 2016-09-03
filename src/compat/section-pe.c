@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "section.h"
+#include <windows.h>
 
-#if defined (__ELF__)
-# include "section-elf.c"
-#elif defined (__APPLE__)
-# include "section-mach-o.c"
-#elif defined (_WIN32)
-# include "section-pe.c"
-#else
-# error Unsupported executable format
-#endif
+int open_module_self(mod_handle *mod)
+{
+    *mod = GetModuleHandle(NULL);
+    return 1;
+}
+
+void close_module(mod_handle *mod)
+{
+    (void) mod;
+}
+
+void *map_section_data(mod_handle *mod, const char *name,
+        struct section_mapping *map)
+{
+    PIMAGE_DOS_HEADER dos_hdr = (PIMAGE_DOS_HEADER) *mod;
+    PIMAGE_NT_HEADERS nt_hdr = (PIMAGE_NT_HEADERS) ((uintptr_t) dos_hdr
+            + dos_hdr->e_lfanew);
+
+    PIMAGE_SECTION_HEADER sec_hdr = IMAGE_FIRST_SECTION(nt_hdr);
+    for(int i = 0; i < nt_hdr->FileHeader.NumberOfSections; i++, sec_hdr++) {
+        if (!strncmp((char *) sec_hdr->Name, name, IMAGE_SIZEOF_SHORT_NAME)) {
+            map->sec_len = sec_hdr->SizeOfRawData;
+            return (char *) dos_hdr + sec_hdr->VirtualAddress;
+        }
+    }
+    return NULL;
+}
+
+void unmap_section_data(struct section_mapping *map)
+{
+    (void) map;
+}

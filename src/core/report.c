@@ -33,41 +33,23 @@
 #include "config.h"
 #include "compat/posix.h"
 
-#define IMPL_CALL_REPORT_HOOKS(Kind)                                        \
-    CR_IMPL_SECTION_LIMITS(f_report_hook, CR_HOOK_SECTION(Kind));                 \
-    void call_report_hooks_##Kind(void *data) {                             \
-        for (f_report_hook *hook = GET_SECTION_START(CR_HOOK_SECTION(Kind));   \
-             hook < (f_report_hook*) GET_SECTION_END(CR_HOOK_SECTION(Kind));   \
-             ++hook) {                                                      \
-            (*hook ? *hook : nothing)(data);                                \
-        }                                                                   \
+#define CR_HSEC_STR(Kind) CR_HSEC_STR_(CR_HOOK_SECTION(Kind))
+#define CR_HSEC_STR_(S) CR_HSEC_STR__(S)
+#define CR_HSEC_STR__(S) #S
+
+#define IMPL_CALL_REPORT_HOOKS(Kind)                                           \
+    void call_report_hooks_##Kind(void *data) {                                \
+        mod_handle self;                                                       \
+        struct section_mapping sect;                                           \
+        if (!open_module_self(&self))                                          \
+            abort();                                                           \
+        void *start = map_section_data(&self, CR_HSEC_STR(Kind), &sect);       \
+        if (!start)                                                            \
+            return;                                                            \
+        void *end = (char *)start + sect.sec_len;                              \
+        for (f_report_hook *hook = start; hook < (f_report_hook*) end; ++hook) \
+            (*hook ? *hook : nothing)(data);                                   \
     }
-
-#ifdef _MSC_VER
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_ALL));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_SUITE));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_INIT));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_TEST));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(ASSERT));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(THEORY_FAIL));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(TEST_CRASH));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_TEST));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_FINI));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_SUITE));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_ALL));
-
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_ALL));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_SUITE));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_INIT));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_TEST));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(ASSERT));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(THEORY_FAIL));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(TEST_CRASH));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_TEST));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_FINI));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_SUITE));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_ALL));
-#endif
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL)
 IMPL_CALL_REPORT_HOOKS(PRE_SUITE)

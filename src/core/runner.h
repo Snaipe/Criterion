@@ -27,19 +27,16 @@
 # include "criterion/types.h"
 # include "compat/pipe.h"
 
-CR_DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
-CR_DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
-
 struct criterion_test_set *criterion_init(void);
 
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test **Test = GET_SECTION_START(cr_tst);      \
-            Test < (struct criterion_test**) GET_SECTION_END(cr_tst);   \
+# define FOREACH_TEST_SEC(Test, Start, End)         \
+    for (struct criterion_test **Test = Start;      \
+            Test < (struct criterion_test**) End;   \
             ++Test)
 
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite **Suite = GET_SECTION_START(cr_sts);    \
-            Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
+# define FOREACH_SUITE_SEC(Suite, Start, End)       \
+    for (struct criterion_suite **Suite = Start;    \
+            Suite < (struct criterion_suite**) End; \
             ++Suite)
 
 #endif /* !CRITERION_RUNNER_H_ */

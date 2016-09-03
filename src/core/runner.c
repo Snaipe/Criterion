@@ -74,17 +74,6 @@ static msg_t msg_valgrind_jobs = "%sWarning! Criterion has detected "
         "explicitely set. Reports might appear confusing!%s\n";
 #endif
 
-
-#ifdef _MSC_VER
-struct criterion_test  *CR_SECTION_START_(cr_tst);
-struct criterion_suite *CR_SECTION_START_(cr_sts);
-struct criterion_test  *CR_SECTION_END_(cr_tst);
-struct criterion_suite *CR_SECTION_END_(cr_sts);
-#endif
-
-CR_IMPL_SECTION_LIMITS(struct criterion_test*, cr_tst);
-CR_IMPL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
-
 // This is here to make the test suite & test sections non-empty
 CR_SECTION_("cr_sts") struct criterion_suite *dummy_suite = NULL;
 CR_SECTION_("cr_tst") struct criterion_test  *dummy_test = NULL;
@@ -131,7 +120,16 @@ CR_API void criterion_register_test(struct criterion_test_set *set,
 struct criterion_test_set *criterion_init(void) {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
-    FOREACH_SUITE_SEC(s) {
+    mod_handle self;
+
+    if (!open_module_self(&self))
+        cr_panic("Could not open self executable file");
+
+    struct section_mapping suite_sect = { .sec_len = 0 };
+    void *suite_start = map_section_data(&self, "cr_sts", &suite_sect);
+    void *suite_end = (char *) suite_start + suite_sect.sec_len;
+
+    FOREACH_SUITE_SEC(s, suite_start, suite_end) {
         if (!*s || !*(*s)->name)
             continue;
 
@@ -151,7 +149,11 @@ struct criterion_test_set *criterion_init(void) {
         0,
     };
 
-    FOREACH_TEST_SEC(test) {
+    struct section_mapping test_sect = { .sec_len = 0 };
+    void *test_start = map_section_data(&self, "cr_tst", &test_sect);
+    void *test_end = (char *) test_start + test_sect.sec_len;
+
+    FOREACH_TEST_SEC(test, test_start, test_end) {
         if (!*test)
             continue;
 

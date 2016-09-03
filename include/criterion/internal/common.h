@@ -56,15 +56,11 @@
 # endif
 
 # ifdef __APPLE__
-#  define CR_SECTION_START_PREFIX       __first
-#  define CR_SECTION_END_PREFIX         __last
 #  define CR_SECTION_START_SUFFIX(Name) __asm("section$start$__DATA$" Name)
 #  define CR_SECTION_END_SUFFIX(Name)   __asm("section$end$__DATA$" Name)
 #  define CR_SECTION_(Name)             CR_ATTRIBUTE(section("__DATA," Name))
 #  define CR_SECTION_SUFFIX_
 # elif CR_IS_MSVC
-#  define CR_SECTION_START_PREFIX       __start
-#  define CR_SECTION_END_PREFIX         __stop
 #  define CR_SECTION_START_SUFFIX(Name)
 #  define CR_SECTION_END_SUFFIX(Name)
 #  define CR_SECTION_(Name)                 \
@@ -74,8 +70,6 @@
 #  define CR_SECTION_SUFFIX_                \
     __pragma(data_seg(pop))
 # else
-#  define CR_SECTION_START_PREFIX       __start
-#  define CR_SECTION_END_PREFIX         __stop
 #  define CR_SECTION_START_SUFFIX(Name)
 #  define CR_SECTION_END_SUFFIX(Name)
 #  define CR_SECTION_(Name)             CR_ATTRIBUTE(section(Name))
@@ -84,21 +78,6 @@
 
 # define CR_MAKE_IDENTIFIER_(Prefix, Id) CR_MAKE_IDENTIFIER__(Prefix, Id)
 # define CR_MAKE_IDENTIFIER__(Prefix, Id) Prefix ## _ ## Id
-
-# define CR_SECTION_START_(Name) CR_MAKE_IDENTIFIER_(CR_SECTION_START_PREFIX, Name)
-# define CR_SECTION_END_(Name)   CR_MAKE_IDENTIFIER_(CR_SECTION_END_PREFIX, Name)
-
-# define CR_SECTION_START(Name)  g_ ## Name ## _section_start
-# define CR_SECTION_END(Name)    g_ ## Name ## _section_end
-
-# define CR_DECL_SECTION_LIMITS(Type, Name) CR_DECL_SECTION_LIMITS_(Type, Name)
-# define CR_DECL_SECTION_LIMITS_(Type, Name)                            \
-    extern Type CR_SECTION_START_(Name) CR_SECTION_START_SUFFIX(#Name); \
-    extern Type CR_SECTION_END_(Name)   CR_SECTION_END_SUFFIX(#Name)
-
-# define CR_IMPL_SECTION_LIMITS(Type, Name)                         \
-    Type *const CR_SECTION_START(Name) = &CR_SECTION_START_(Name);  \
-    Type *const CR_SECTION_END(Name)   = &CR_SECTION_END_(Name)
 
 # ifdef __GNUC__
 #  define CR_UNUSED CR_ATTRIBUTE(unused)

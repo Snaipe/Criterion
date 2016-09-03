@@ -31,7 +31,6 @@
 # define report_(Kind, Data) call_report_hooks_##Kind(Data)
 
 # define DECL_CALL_REPORT_HOOKS(Kind)                         \
-    CR_DECL_SECTION_LIMITS(f_report_hook, CR_HOOK_SECTION(Kind));   \
     void call_report_hooks_##Kind(void *data)
 
 DECL_CALL_REPORT_HOOKS(PRE_ALL);
