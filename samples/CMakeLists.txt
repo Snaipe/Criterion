@@ -72,7 +72,6 @@ macro(add_samples DIR_ SAMPLES_)
         add_test(${sample} ${sample}.bin)
         set_property(TEST ${sample} PROPERTY
             ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-            ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
         )
     endforeach()
 endmacro()

@@ -18,9 +18,7 @@ Command line arguments
   a number of jobs ideal for your hardware configuration.
 * ``--pattern [PATTERN]``: Run tests whose string identifier matches
   the given shell wildcard pattern (see dedicated section below). (\*nix only)
-* ``--no-early-exit``: The test workers shall not prematurely exit when done and
-  will properly return from the main, cleaning up their process space.
-  This is useful when tracking memory leaks with ``valgrind --tool=memcheck``.
+* ``--no-early-exit``: This flag is deprecated and no longer does anything.
 * ``-S or --short-filename``: The filenames are displayed in their short form.
 * ``--always-succeed``: The process shall exit with a status of ``0``.
 * ``--tap[=FILE]``: Writes a TAP (Test Anything Protocol) report to FILE.
@@ -81,7 +79,6 @@ Environment Variables
 Environment variables are alternatives to command line switches when set to 1.
 
 * ``CRITERION_ALWAYS_SUCCEED``:  Same as ``--always-succeed``.
-* ``CRITERION_NO_EARLY_EXIT``:   Same as ``--no-early-exit``.
 * ``CRITERION_FAIL_FAST``:       Same as ``--fail-fast``.
 * ``CRITERION_USE_ASCII``:       Same as ``--ascii``.
 * ``CRITERION_JOBS``:            Same as ``--jobs``. Sets the number of jobs to

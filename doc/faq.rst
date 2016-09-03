@@ -16,8 +16,3 @@ There are plenty of ways to fix that behaviour:
 A. Open a new issue on the `github issue tracker <https://github.com/Snaipe/Criterion/issues>`_,
 and describe the problem you are experiencing, along with the platform you are
 running criterion on.
-
-**Q. Why does Gcov show 0% coverage after I run my tests?**
-
-You need to either pass ``--no-early-exit`` or define
-``CRITERION_NO_EARLY_EXIT=1`` in your environment to get proper coverage.

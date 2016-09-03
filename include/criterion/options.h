@@ -77,13 +77,7 @@ struct criterion_options {
     struct criterion_logger *logger;
 
     /**
-     *  Don't exit the child immediately after finishing to run the test
-     *  function, and perform a full cleanup.
-     *
-     *  Useful when tracking memory leaks, and is immediately implied when
-     *  running the process under valgrind.
-     *
-     *  default: false
+     * This option doesn't do anything and is deprecated.
      */
     bool no_early_exit;
 

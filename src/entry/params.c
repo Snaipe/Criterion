@@ -65,8 +65,6 @@
     "    --xml[=FILE]: writes XML report in FILE "          \
             "(no file or \"-\" means stderr)\n"             \
     "    --always-succeed: always exit with 0\n"            \
-    "    --no-early-exit: do not exit the test worker "     \
-            "prematurely after the test\n"                  \
     "    --verbose[=level]: sets verbosity to level "       \
             "(1 by default)\n"                              \
     "    --crash: crash failing assertions rather than "    \
@@ -196,7 +194,6 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         opterr = 0;
 
     char *env_always_succeed    = getenv("CRITERION_ALWAYS_SUCCEED");
-    char *env_no_early_exit     = getenv("CRITERION_NO_EARLY_EXIT");
     char *env_fail_fast         = getenv("CRITERION_FAIL_FAST");
     char *env_use_ascii         = getenv("CRITERION_USE_ASCII");
     char *env_jobs              = getenv("CRITERION_JOBS");
@@ -208,8 +205,6 @@ CR_API int criterion_handle_args(int argc, char *argv[],
     struct criterion_options *opt = &criterion_options;
     if (env_always_succeed)
         opt->always_succeed    = !strcmp("1", env_always_succeed);
-    if (env_no_early_exit)
-        opt->no_early_exit     = !strcmp("1", env_no_early_exit);
     if (env_fail_fast)
         opt->fail_fast         = !strcmp("1", env_fail_fast);
     if (env_use_ascii)
@@ -267,7 +262,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
-            case 'z': criterion_options.no_early_exit     = true; break;
+            case 'z': fprintf(stderr, "--no-early-exit is now deprecated as it no longer does anything.\n");
             case 'k': criterion_options.use_ascii         = true; break;
             case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;

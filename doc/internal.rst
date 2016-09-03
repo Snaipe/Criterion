@@ -30,8 +30,6 @@ logging_threshold   enum criterion_logging_level       The logging level
 ------------------- ---------------------------------- --------------------------------------------------------------
 logger              struct criterion_logger *          The logger (see below)
 ------------------- ---------------------------------- --------------------------------------------------------------
-no_early_exit       bool                               True iff the test worker should exit early
-------------------- ---------------------------------- --------------------------------------------------------------
 always_succeed      bool                               True iff criterion_run_all_tests should always returns 1
 ------------------- ---------------------------------- --------------------------------------------------------------
 use_ascii           bool                               True iff the outputs should use the ASCII charset
