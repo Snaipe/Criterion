@@ -97,10 +97,10 @@ CR_END_C_API
         if (cr_fmt_msg__ && cr_fmt_msg__[1]) {                                 \
             MsgVar = cr_fmt_msg__ + 1;                                         \
             Shifted = 1;                                                       \
-            CR_STDN free(cr_def_msg__);                                        \
+            cr_asprintf_free(cr_def_msg__);                           	        \
         } else {                                                               \
             MsgVar = cr_def_msg__;                                             \
-            CR_STDN free(cr_fmt_msg__);                                        \
+            cr_asprintf_free(cr_fmt_msg__);                                    \
         }                                                                      \
     } while (0))
 
@@ -122,7 +122,7 @@ CR_END_C_API
         cr_stat__.message = cr_msg__;                                       \
         criterion_send_assert(&cr_stat__);                                  \
                                                                             \
-        CR_STDN free(cr_msg__ - cr_shifted__);                              \
+        cr_asprintf_free(cr_msg__ - cr_shifted__);                          \
                                                                             \
         if (!cr_passed__)                                                   \
             Fail();                                                         \

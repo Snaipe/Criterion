@@ -61,3 +61,8 @@ cleanup:
     va_end(vl);
     return res;
 }
+
+void cr_asprintf_free(char *buf)
+{
+    free(buf);
+}
