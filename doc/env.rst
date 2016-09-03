@@ -16,8 +16,13 @@ Command line arguments
 * ``--ascii``: Don't use fancy unicode symbols or colors in the output.
 * ``-jN or --jobs N``: Use ``N`` parallel jobs to run the tests. ``0`` picks
   a number of jobs ideal for your hardware configuration.
-* ``--pattern [PATTERN]``: Run tests whose string identifier matches
+* ``--filter [PATTERN]``: Run tests whose string identifier matches
   the given shell wildcard pattern (see dedicated section below). (\*nix only)
+* ``--debug[=debugger]``: Run tests with a debugging server attached.
+  ``debugger`` can be 'gdb', 'lldb', or 'windbg' (windows only).
+* ``--debug-transport [TRANSPORT]``: Make the debugging server use the
+  specified remote transport. Only transports of the form ``tcp:port`` are
+  currently supported. ``tcp:1234`` is the default.
 * ``--no-early-exit``: This flag is deprecated and no longer does anything.
 * ``-S or --short-filename``: The filenames are displayed in their short form.
 * ``--always-succeed``: The process shall exit with a status of ``0``.
