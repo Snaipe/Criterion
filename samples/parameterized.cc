@@ -2,16 +2,14 @@
 
 // Basic usage
 
-ParameterizedTestParameters(params, str) {
-    static const char *strings[] = {
-        "foo", "bar", "baz"
-    };
+ParameterizedTestParameters(params, simple) {
+    static int vals[] = { 1, 2, 3 };
 
-    return cr_make_param_array(const char *, strings, sizeof (strings) / sizeof (const char *));
+    return cr_make_param_array(int, vals, sizeof (vals) / sizeof (int));
 }
 
-ParameterizedTest(const char **str, params, str) {
-    cr_assert_fail("Parameter: %s", *str);
+ParameterizedTest(int *val, params, simple) {
+    cr_assert_fail("Parameter: %d", *val);
 }
 
 // Multiple parameters must be coalesced in a single parameter
@@ -39,8 +37,7 @@ ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
 
 // you **MUST** use new_obj, new_arr, delete_obj, delete_arr instead of
 // the new, new[], delete and delete[] operators (respectively) to allocate and
-// deallocate dynamic memory in parameters, otherwise this will crash on
-// Windows builds of the test.
+// deallocate dynamic memory in parameters, otherwise this will crash.
 
 // the criterion::allocator<T> allocator may be used with STL containers to
 // allocate objects with the functions described above.

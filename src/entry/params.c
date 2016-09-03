@@ -35,6 +35,7 @@
 #include "io/output.h"
 #include "config.h"
 #include "common.h"
+#include "err.h"
 
 #if ENABLE_NLS
 # include <libintl.h>
@@ -57,19 +58,22 @@
             "or colors in the output\n"                     \
     "    -S or --short-filename: only display the base "    \
             "name of the source file on a failure\n"        \
-    "    --pattern [PATTERN]: run tests matching the "      \
+    "    --filter [PATTERN]: run tests matching the "       \
             "given pattern\n"                               \
     "    --tap[=FILE]: writes TAP report in FILE "          \
             "(no file or \"-\" means stderr)\n"             \
     "    --xml[=FILE]: writes XML report in FILE "          \
             "(no file or \"-\" means stderr)\n"             \
     "    --always-succeed: always exit with 0\n"            \
-    "    --no-early-exit: do not exit the test worker "     \
-            "prematurely after the test\n"                  \
     "    --verbose[=level]: sets verbosity to level "       \
             "(1 by default)\n"                              \
     "    --crash: crash failing assertions rather than "    \
             "aborting (for debugging purposes)\n"           \
+    "    --debug[=TYPE]: run tests with a debugging "       \
+            "server, listening on localhost:1234 by "       \
+            "default. TYPE may be gdb, lldb, or wingbd.\n"  \
+    "    --debug-transport=VAL: the transport to use by "   \
+            "the debugging server. `tcp:1234` by default\n" \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
             "report to FILE using the specified provider\n"
 
@@ -130,7 +134,31 @@ int atou(const char *str) {
     return res < 0 ? 0 : res;
 }
 
-CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg) {
+static enum criterion_debugger get_dbg(const char *arg)
+{
+    if (!arg)
+        return CR_DBG_NATIVE;
+
+    static struct { char *name; enum criterion_debugger dbg; } values[] = {
+        { "gdb",    CR_DBG_GDB },
+        { "lldb",   CR_DBG_LLDB },
+        { "windbg", CR_DBG_WINDBG },
+    };
+
+    for (size_t i = 0; i < 3; ++i) {
+        printf("arg = { %s, %d }\n", values[i].name, values[i].dbg);
+        if (!strcmp(values[i].name, arg)) {
+            printf("OK\n");
+            return values[i].dbg;
+        }
+    }
+
+    cr_panic("Invalid argument for --debug: %s.\n", arg);
+}
+
+CR_API int criterion_handle_args(int argc, char *argv[],
+        bool handle_unknown_arg)
+{
     static struct option opts[] = {
         {"verbose",         optional_argument,  0, 'b'},
         {"quiet",           no_argument,        0, 'q'},
@@ -146,11 +174,14 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
         {"short-filename",  no_argument,        0, 'S'},
         {"single",          required_argument,  0, 's'},
         {"pattern",         required_argument,  0, 'p'},
+        {"filter",          required_argument,  0, 'F'},
         {"always-succeed",  no_argument,        0, 'y'},
         {"no-early-exit",   no_argument,        0, 'z'},
         {"output",          required_argument,  0, 'O'},
         {"wait",            no_argument,        0, 'w'},
         {"crash",           no_argument,        0, 'c'},
+        {"debug",           optional_argument,  0, 'd'},
+        {"debug-transport", required_argument,  0, 'D'},
         {0,                 0,                  0,  0 }
     };
 
@@ -163,7 +194,6 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
         opterr = 0;
 
     char *env_always_succeed    = getenv("CRITERION_ALWAYS_SUCCEED");
-    char *env_no_early_exit     = getenv("CRITERION_NO_EARLY_EXIT");
     char *env_fail_fast         = getenv("CRITERION_FAIL_FAST");
     char *env_use_ascii         = getenv("CRITERION_USE_ASCII");
     char *env_jobs              = getenv("CRITERION_JOBS");
@@ -175,8 +205,6 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
     struct criterion_options *opt = &criterion_options;
     if (env_always_succeed)
         opt->always_succeed    = !strcmp("1", env_always_succeed);
-    if (env_no_early_exit)
-        opt->no_early_exit     = !strcmp("1", env_no_early_exit);
     if (env_fail_fast)
         opt->fail_fast         = !strcmp("1", env_fail_fast);
     if (env_use_ascii)
@@ -234,14 +262,18 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
-            case 'z': criterion_options.no_early_exit     = true; break;
+            case 'z': fprintf(stderr, "--no-early-exit is now deprecated as it no longer does anything.\n");
             case 'k': criterion_options.use_ascii         = true; break;
             case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
-            case 's': run_single_test_by_name(optarg); return 0;
-            case 'p': criterion_options.pattern           = optarg; break;
+
+            case 'p': fprintf(stderr, "--pattern has been renamed as --filter and is now deprecated.\n");
+            case 'F': criterion_options.pattern           = optarg; break;
             case 'q': quiet = true; break;
+
+            case 'd': criterion_options.debug = get_dbg(optarg); break;
+            case 'D': criterion_options.debug_port = atou(optarg); break;
 
             {
                 const char *provider;
@@ -273,6 +305,9 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
                 criterion_add_output(arg, path);
             } break;
             case 'w': criterion_options.wait_for_clients = true; break;
+            case 's':
+                fprintf(stderr, "--single has been removed. Use --debug instead.");
+                return 3;
             case '?':
             case 'c': criterion_options.crash            = true; break;
             default : do_print_usage = handle_unknown_arg; break;

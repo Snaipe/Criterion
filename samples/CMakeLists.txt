@@ -48,18 +48,6 @@ if (THEORIES)
   endif ()
 endif ()
 
-set(SCRIPTS
-  tap_test
-  xml_test
-  json_test
-  early_exit
-  verbose
-  list
-  fail_fast
-  help
-  pattern
-)
-
 
 add_custom_target(criterion_samples)
 add_dependencies(criterion_tests criterion_samples)
@@ -72,7 +60,6 @@ macro(add_samples DIR_ SAMPLES_)
         add_test(${sample} ${sample}.bin)
         set_property(TEST ${sample} PROPERTY
             ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-            ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
         )
     endforeach()
 endmacro()

@@ -80,9 +80,6 @@ const char *message_names[] = {
 };
 
 void cr_send_to_runner(const criterion_protocol_msg *message) {
-    if (is_single_mode())
-        return;
-
     if (write_message(g_client_socket, message) != 1) {
         criterion_perror("Could not write the \"%s\" message down the event pipe: %s.\n",
                 message_names[message->data.which_value],

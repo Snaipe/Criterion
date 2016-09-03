@@ -27,4 +27,5 @@ CR_API struct criterion_options criterion_options = {
     .logging_threshold = CRITERION_IMPORTANT,
     .logger            = &normal_logging,
     .measure_time      = true,
+    .debug_port        = 1234,
 };

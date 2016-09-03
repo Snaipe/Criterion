@@ -25,7 +25,6 @@
 # define EVENT_H_
 
 # include "criterion/event.h"
-# include "core/worker.h"
 # include <stdio.h>
 # include <pb.h>
 
@@ -35,9 +34,6 @@ struct event {
     unsigned long long pid;
     int kind;
     void *data;
-
-    struct worker *worker;
-    size_t worker_index;
 };
 
 void criterion_send_assert(struct criterion_assert_stats *stats);

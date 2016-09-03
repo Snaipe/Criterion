@@ -31,7 +31,6 @@ CR_DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
 CR_DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
 
 struct criterion_test_set *criterion_init(void);
-void run_test_child(struct criterion_test *test, struct criterion_suite *suite);
 
 # define FOREACH_TEST_SEC(Test)                                         \
     for (struct criterion_test **Test = GET_SECTION_START(cr_tst);      \
@@ -42,7 +41,5 @@ void run_test_child(struct criterion_test *test, struct criterion_suite *suite);
     for (struct criterion_suite **Suite = GET_SECTION_START(cr_sts);    \
             Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
             ++Suite)
-
-void run_single_test_by_name(const char *testname);
 
 #endif /* !CRITERION_RUNNER_H_ */

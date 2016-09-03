@@ -82,6 +82,7 @@ struct criterion_test_params {
     CR_TEST_TRAMPOLINE_(Category, Name)                                        \
     struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
         CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,             \
+            .compiler_ = CR_COMPILER_,                                         \
             .lang_ = CR_LANG,                                                  \
             .kind_ = CR_TEST_PARAMETERIZED,                                    \
             .param_ = CR_IDENTIFIER_(Category, Name, param),                   \

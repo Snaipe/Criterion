@@ -34,9 +34,6 @@ target_link_libraries(criterion_unit_tests criterion)
 add_dependencies(criterion_tests criterion_unit_tests)
 
 add_test(criterion_unit_tests criterion_unit_tests)
-set_property(TEST criterion_unit_tests PROPERTY
-    ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
-)
 
 if (NOT MSVC) # we disable the scripted tests when building with MSVC
   add_custom_target(cram_tests)

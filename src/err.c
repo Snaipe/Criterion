@@ -21,13 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "process.h"
-#include "internal.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-unsigned long long get_process_id(void) {
-#ifdef VANILLA_WIN32
-    return (unsigned long long) GetCurrentProcessId();
-#else
-    return (unsigned long long) getpid();
-#endif
+#include "err.h"
+
+CR_NORETURN void cr_panic(const char *str, ...)
+{
+    va_list vl;
+    va_start(vl, str);
+    fprintf(stderr, "criterion: ");
+    vfprintf(stderr, str, vl);
+    fprintf(stderr, "\n");
+    va_end(vl);
+    abort();
 }

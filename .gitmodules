@@ -16,9 +16,9 @@
 [submodule "dependencies/nanomsg"]
 	path = dependencies/nanomsg
 	url = https://github.com/nanomsg/nanomsg.git
-[submodule "dependencies/nanomsg-patched"]
-	path = dependencies/nanomsg-patched
-	url = https://github.com/Snaipe/nanomsg.git
 [submodule "dependencies/debugbreak"]
 	path = dependencies/debugbreak
 	url = https://github.com/scottt/debugbreak
+[submodule "dependencies/boxfort"]
+	path = dependencies/boxfort
+	url = https://github.com/Snaipe/BoxFort

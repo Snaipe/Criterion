@@ -3,16 +3,14 @@
 
 // Basic usage
 
-ParameterizedTestParameters(params, str) {
-    static const char *strings[] = {
-        "foo", "bar", "baz"
-    };
+ParameterizedTestParameters(params, simple) {
+    static int vals[] = { 1, 2, 3 };
 
-    return cr_make_param_array(const char *, strings, sizeof (strings) / sizeof (const char *));
+    return cr_make_param_array(int, vals, sizeof (vals) / sizeof (int));
 }
 
-ParameterizedTest(const char **str, params, str) {
-    cr_assert_fail("Parameter: %s", *str);
+ParameterizedTest(int *val, params, simple) {
+    cr_assert_fail("Parameter: %d", *val);
 }
 
 // Multiple parameters must be coalesced in a single parameter
@@ -40,7 +38,7 @@ ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
 
 // you **MUST** use cr_malloc, cr_free, cr_realloc, and cr_calloc instead of their
 // unprefixed counterparts to allocate dynamic memory in parameters, otherwise
-// this will crash on Windows builds of the test.
+// this will crash.
 
 struct parameter_tuple_dyn {
     int i;
