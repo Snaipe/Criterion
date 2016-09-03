@@ -31,11 +31,6 @@ matrix:
         CONFIGURATION: Debug
         GCOV: gcov-4.9
         COVERAGE: "ON"
-    # Linux Release, GCC 4.9
-    - compiler: gcc-4.9
-      addons: *gcc49-packages
-      env:
-        CONFIGURATION: Release
     # Linux RelWithDebInfo, GCC 4.9
     - compiler: gcc-4.9
       addons: *gcc49-packages
@@ -45,9 +40,6 @@ matrix:
     # Linux Debug, GCC 4.6
     - compiler: gcc
       env: CONFIGURATION=Debug TESTS=OFF
-    # Linux Release, GCC 4.6
-    - compiler: gcc
-      env: CONFIGURATION=Release TESTS=OFF
     # Linux RelWithDebInfo, GCC 4.6
     - compiler: gcc
       env:
@@ -66,10 +58,6 @@ matrix:
         CONFIGURATION: Debug
         GCOV: gcov-4.9
         COVERAGE: "ON"
-    # OSX Release, GCC 4.9
-    - os: osx
-      compiler: gcc-4.9
-      env: CONFIGURATION=Release
     # OSX RelWithDebInfo, GCC 4.9
     - os: osx
       compiler: gcc-4.9
@@ -79,11 +67,6 @@ matrix:
       compiler: clang
       env:
         CONFIGURATION: Debug
-    # OSX Release, Clang
-    - os: osx
-      compiler: clang
-      env:
-        CONFIGURATION: Release
     # OSX RelWithDebInfo, Clang
     - os: osx
       compiler: clang
