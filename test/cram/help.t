@@ -17,7 +17,6 @@ Display the help message
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
-      --no-early-exit: do not exit the test worker prematurely after the test
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
@@ -41,7 +40,6 @@ Display the help message
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
-      --no-early-exit: do not exit the test worker prematurely after the test
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
