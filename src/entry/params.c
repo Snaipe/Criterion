@@ -151,7 +151,7 @@ static int parse_dbg_transport(const char *arg)
     return 1;
 }
 
-static enum criterion_debugger get_dbg(const char *arg)
+static int parse_dbg(const char *arg)
 {
     if (!arg)
         return CR_DBG_NATIVE;
@@ -163,14 +163,14 @@ static enum criterion_debugger get_dbg(const char *arg)
     };
 
     for (size_t i = 0; i < 3; ++i) {
-        printf("arg = { %s, %d }\n", values[i].name, values[i].dbg);
         if (!strcmp(values[i].name, arg)) {
-            printf("OK\n");
-            return values[i].dbg;
+            criterion_options.debug = values[i].dbg;
+            return 1;
         }
     }
 
-    cr_panic("Invalid argument for --debug: %s.\n", arg);
+    fprintf(stderr, "Invalid argument for --debug: %s.\n", arg);
+    return 0;
 }
 
 CR_API int criterion_handle_args(int argc, char *argv[],
@@ -289,7 +289,10 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'F': criterion_options.pattern           = optarg; break;
             case 'q': quiet = true; break;
 
-            case 'd': criterion_options.debug = get_dbg(optarg); break;
+            case 'd':
+                if (!parse_dbg(optarg))
+                    exit(3);
+                break;
             case 'D':
                 if (!parse_dbg_transport(optarg))
                     exit(3);
@@ -327,7 +330,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'w': criterion_options.wait_for_clients = true; break;
             case 's':
                 fprintf(stderr, "--single has been removed. Use --debug instead.");
-                return 3;
+                exit(3);
             case '?':
             case 'c': criterion_options.crash            = true; break;
             default : do_print_usage = handle_unknown_arg; break;
