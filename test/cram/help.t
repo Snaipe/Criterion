@@ -14,6 +14,7 @@ Display the help message
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
       --filter [PATTERN]: run tests matching the given pattern
+      --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
@@ -37,6 +38,7 @@ Display the help message
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
       --filter [PATTERN]: run tests matching the given pattern
+      --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
