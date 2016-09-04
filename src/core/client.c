@@ -261,7 +261,7 @@ bool handle_pre_init(struct server_ctx *sctx, struct client_ctx *ctx, const crit
     if (ctx->state == 0) { // only pre_init if there are no nested states
         push_event_noreport(PRE_INIT);
         report(PRE_INIT, ctx->test);
-        log(pre_init, ctx->test);
+        log(pre_init, ctx->suite, ctx->test);
     }
     return false;
 }
@@ -273,7 +273,7 @@ bool handle_pre_test(struct server_ctx *sctx, struct client_ctx *ctx, const crit
     if (ctx->state < CS_MAX_CLIENT_STATES) {
         push_event_noreport(PRE_TEST);
         report(PRE_TEST, ctx->test);
-        log(pre_test, ctx->test);
+        log(pre_test, ctx->suite, ctx->test);
     }
     return false;
 }
@@ -359,6 +359,7 @@ bool handle_skip(struct server_ctx *sctx, struct client_ctx *ctx, const criterio
         double elapsed_time = 0;
         push_event(POST_TEST, .data = &elapsed_time);
         push_event(POST_FINI);
+        log(post_test, ctx->tstats);
     }
     return false;
 }

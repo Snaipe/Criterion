@@ -348,6 +348,7 @@ static int skip_disabled(struct run_next_context *ctx)
                 ctx->suite_stats,
                 ctx->test_stats,
                 &(struct event) { .kind = PRE_INIT });
+        log(pre_init, ctx->suite_stats->suite, ctx->test);
         sfree(ctx->test_stats);
         return 1;
     }
@@ -407,7 +408,6 @@ bxf_instance *cri_run_next_test(struct criterion_test_set *p_set,
         }
 
         report(POST_SUITE, ctx->suite_stats);
-        log(post_suite, ctx->suite_stats);
 
         sfree(ctx->suite_stats);
     }
