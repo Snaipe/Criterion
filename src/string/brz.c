@@ -148,7 +148,7 @@ glob *glob_empty() {
  */
 glob *glob_blank() {
     glob *tmp = new_glob();
-    tmp->type = BLANK;;
+    tmp->type = BLANK;
     tmp->nullable = is_true;
     tmp->derive = derive_blank;
 #ifdef _DEBUG_BRZ_

@@ -146,7 +146,7 @@ static int deserialize_test(struct criterion_test *test,
     if (rc < 0) goto err;
 
     rc = bxf_context_getobject(ctx, "criterion.suite.name",
-            (void **)&suite->name);;
+            (void **)&suite->name);
     if (rc <= 0) goto err;
 
     rc = bxf_context_getobject(ctx, "criterion.suite.extra",
@@ -159,7 +159,7 @@ static int deserialize_test(struct criterion_test *test,
         if (rc < 0) goto err;
 
         rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.fini",
-                &suite_data->fini);;
+                &suite_data->fini);
         if (rc < 0) goto err;
     }
 
