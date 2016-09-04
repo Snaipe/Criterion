@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Criterion \n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-09-04 10:11+0200\n"
+"POT-Creation-Date: 2016-09-05 09:59+0200\n"
 "PO-Revision-Date: 2016-02-12 11:12+0100\n"
 "Last-Translator:  <a1lu@arcor.de>\n"
 "Language-Team: German\n"
@@ -45,38 +45,43 @@ msgstr "%1$s::%2$s: Test wurde übersprungen\n"
 
 #: src/log/normal.c:49
 #, c-format
+msgid "%1$s::%2$s: Test is disabled\n"
+msgstr "%1$s::%2$s: Test ist deaktiviert\n"
+
+#: src/log/normal.c:50
+#, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n"
 msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Fehlerhafte Behauptung: %7$s\n"
 
-#: src/log/normal.c:50
+#: src/log/normal.c:51
 #, c-format
 msgid "  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n"
 msgstr ""
 "  Hypothese %1$s::%2$s schlug fehl mit den folgenden Parametern: (%3$s)\n"
 
-#: src/log/normal.c:51
+#: src/log/normal.c:52
 #, c-format
 msgid "%1$s::%2$s: Timed out. (%3$3.2fs)\n"
 msgstr "%1$s::%2$s: Außerhalb der Vorgabezeit. (%3$3.2fs)\n"
 
-#: src/log/normal.c:52
+#: src/log/normal.c:53
 #, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n"
 msgstr ""
 "%1$s%2$s%3$s:%4$s%5$u%6$s: Unerwartetes Signal gefangen unterhalb dieser "
 "Zeile!\n"
 
-#: src/log/normal.c:53
+#: src/log/normal.c:54
 #, c-format
 msgid "%1$s::%2$s: CRASH!\n"
 msgstr "%1$s::%2$s: ABSTURZ!\n"
 
-#: src/log/normal.c:54
+#: src/log/normal.c:55
 #, c-format
 msgid "%1$s::%2$s: %3$s\n"
 msgstr "%1$s::%2$s: %3$s\n"
 
-#: src/log/normal.c:55
+#: src/log/normal.c:56
 #, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown."
@@ -85,7 +90,7 @@ msgstr ""
 "%1$sWarnung! Der Test `%2$s::%3$s` ist abgestürzt während der "
 "Initialisierung oder Beendung %4$s\n"
 
-#: src/log/normal.c:56
+#: src/log/normal.c:57
 #, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n"
@@ -93,14 +98,14 @@ msgstr ""
 "%1$sWarnung! Der Test `%2$s::%3$s` hat sich beendet während der "
 "Initialisierung oder Beendung.%4$s\n"
 
-#: src/log/normal.c:57
+#: src/log/normal.c:58
 #, c-format
 msgid "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n"
 msgid_plural "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n"
 msgstr[0] "Führe %1$s%2$lu%3$s Test durch von %4$s%5$s%6$s:\n"
 msgstr[1] "Führe %1$s%2$lu%3$s Tests durch von %4$s%5$s%6$s:\n"
 
-#: src/log/normal.c:59
+#: src/log/normal.c:60
 #, c-format
 msgid ""
 "%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"
@@ -197,6 +202,3 @@ msgstr ""
 #, c-format
 msgid "Writing %1$s report in `%2$s`.\n"
 msgstr "Schreibe Bericht von %1$s nach `%2$s`.\n"
-
-#~ msgid "%1$s::%2$s: Test is disabled\n"
-#~ msgstr "%1$s::%2$s: Test ist deaktiviert\n"
