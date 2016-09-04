@@ -339,9 +339,7 @@ bool handle_timeout(struct server_ctx *sctx, struct client_ctx *ctx, const crite
 
     if (ctx->state < CS_MAX_CLIENT_STATES) {
         ctx->tstats->timed_out = true;
-        double elapsed_time = ctx->test->data->timeout;
-        if (elapsed_time == 0 && ctx->suite->data)
-            elapsed_time = ctx->suite->data->timeout;
+        double elapsed_time = ctx->instance->time.elapsed / 1000000000.;
         push_event(POST_TEST, .data = &elapsed_time);
         push_event(POST_FINI);
         log(test_timeout, ctx->tstats);

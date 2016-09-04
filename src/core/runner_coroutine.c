@@ -308,10 +308,15 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         sp.debug.tcp = criterion_options.debug_port;
     }
 
-    if (ctx->suite_set->suite.data && ctx->suite_set->suite.data->timeout != 0)
-        sp.quotas.runtime = ctx->suite_set->suite.data->timeout;
-    if (ctx->test->data->timeout != 0)
-        sp.iquotas.runtime = ctx->test->data->timeout;
+    double timeout = 0;
+    if (ctx->suite_set->suite.data && ctx->suite_set->suite.data->timeout > 0)
+        timeout = ctx->suite_set->suite.data->timeout;
+    if (ctx->test->data->timeout > 0)
+        timeout = ctx->test->data->timeout;
+    if (timeout > criterion_options.timeout)
+        timeout = criterion_options.timeout;
+
+    sp.iquotas.runtime = timeout;
 
     bxf_instance *instance;
     rc = bxf_spawn_struct(&instance, &sp);

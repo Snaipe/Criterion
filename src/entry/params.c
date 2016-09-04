@@ -60,6 +60,8 @@
             "name of the source file on a failure\n"        \
     "    --filter [PATTERN]: run tests matching the "       \
             "given pattern\n"                               \
+    "    --timeout [TIMEOUT]: set a timeout (in seconds) "  \
+            "for all tests\n"                               \
     "    --tap[=FILE]: writes TAP report in FILE "          \
             "(no file or \"-\" means stderr)\n"             \
     "    --xml[=FILE]: writes XML report in FILE "          \
@@ -183,13 +185,14 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         {"verbose",         optional_argument,  0, 'b'},
         {"quiet",           no_argument,        0, 'q'},
         {"version",         no_argument,        0, 'v'},
-        {"tap",             optional_argument,  0, 't'},
+        {"tap",             optional_argument,  0, 'T'},
         {"xml",             optional_argument,  0, 'x'},
         {"json",            optional_argument,  0, 'n'},
         {"help",            no_argument,        0, 'h'},
         {"list",            no_argument,        0, 'l'},
         {"ascii",           no_argument,        0, 'k'},
         {"jobs",            required_argument,  0, 'j'},
+        {"timeout",         required_argument,  0, 't'},
         {"fail-fast",       no_argument,        0, 'f'},
         {"short-filename",  no_argument,        0, 'S'},
         {"single",          required_argument,  0, 's'},
@@ -278,7 +281,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         free(out);
     }
 
-    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:w", opts, NULL)) != -1;) {
+    for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:wt:", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
@@ -292,6 +295,8 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'F': criterion_options.pattern           = optarg; break;
             case 'q': quiet = true; break;
 
+            case 't': criterion_options.timeout = atof(optarg); break;
+
             case 'd':
                 if (!parse_dbg(optarg))
                     exit(3);
@@ -303,7 +308,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
             {
                 const char *provider;
-            case 't': provider = "tap";  goto provider_def;
+            case 'T': provider = "tap";  goto provider_def;
             case 'x': provider = "xml";  goto provider_def;
             case 'n': provider = "json"; goto provider_def;
 

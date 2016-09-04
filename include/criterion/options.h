@@ -165,6 +165,15 @@ struct criterion_options {
      *  default: 1234
      */
     unsigned debug_port;
+
+    /**
+     *  The default timeout for each test when none is specified, in seconds.
+     *
+     *  If the value is non-positive, no timeout is applied.
+     *
+     *  default: 0
+     */
+    double timeout;
 };
 
 CR_BEGIN_C_API
