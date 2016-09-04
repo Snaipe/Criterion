@@ -132,6 +132,10 @@ if (COVERALLS)
   )
 endif()
 
+add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
+)
+
 if (CTESTS)
   enable_testing()
   add_custom_target(criterion_tests)
