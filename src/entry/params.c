@@ -151,7 +151,7 @@ static int parse_dbg_transport(const char *arg)
     }
 
     free(dup);
-    return 1;
+    return ok;
 }
 
 static int parse_dbg(const char *arg)
