@@ -134,6 +134,23 @@ int atou(const char *str) {
     return res < 0 ? 0 : res;
 }
 
+static int parse_dbg_transport(const char *arg)
+{
+    char *dup = strdup(arg);
+
+    char *sptr;
+    char *transport = strtok_r(dup, ":", &sptr);
+    char *val = dup + strlen(transport) + 1;
+
+    if (!strcmp(transport, "tcp")) {
+        criterion_options.debug_port = atou(val);
+    } else {
+        fprintf(stderr, "Unknown transport '%s'\n", transport);
+        return 0;
+    }
+    return 1;
+}
+
 static enum criterion_debugger get_dbg(const char *arg)
 {
     if (!arg)
@@ -273,7 +290,10 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'q': quiet = true; break;
 
             case 'd': criterion_options.debug = get_dbg(optarg); break;
-            case 'D': criterion_options.debug_port = atou(optarg); break;
+            case 'D':
+                if (!parse_dbg_transport(optarg))
+                    exit(3);
+                break;
 
             {
                 const char *provider;
