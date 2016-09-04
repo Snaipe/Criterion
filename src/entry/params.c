@@ -142,12 +142,15 @@ static int parse_dbg_transport(const char *arg)
     char *transport = strtok_r(dup, ":", &sptr);
     char *val = dup + strlen(transport) + 1;
 
+    int ok = 1;
     if (!strcmp(transport, "tcp")) {
         criterion_options.debug_port = atou(val);
     } else {
         fprintf(stderr, "Unknown transport '%s'\n", transport);
-        return 0;
+        ok = 0;
     }
+
+    free(dup);
     return 1;
 }
 
