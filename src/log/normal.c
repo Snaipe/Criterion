@@ -45,7 +45,6 @@ static msg_t msg_desc = N_("  %s\n");
 #ifdef ENABLE_NLS
 static msg_t msg_pre_init = N_("%1$s::%2$s\n");
 static msg_t msg_post_test_timed = N_("%1$s::%2$s: (%3$3.2fs)\n");
-static msg_t msg_post_test = N_("%1$s::%2$s\n");
 static msg_t msg_post_test_skip = N_("%1$s::%2$s: Test was skipped\n");
 static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
 static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
@@ -65,7 +64,6 @@ static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
 #else
 static msg_t msg_pre_init = "%s::%s\n";
 static msg_t msg_post_test_timed = "%s::%s: (%3.2fs)\n";
-static msg_t msg_post_test = "%s::%s\n";
 static msg_t msg_post_test_skip = "%1$s::%2$s: Test was skipped\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
 static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
@@ -99,7 +97,7 @@ void normal_log_pre_init(struct criterion_test *test) {
 }
 
 void normal_log_post_test(struct criterion_test_stats *stats) {
-    const char *format = can_measure_time() ? msg_post_test_timed : msg_post_test;
+    const char *format = msg_post_test_timed;
 
     const enum criterion_logging_level level
             = stats->test_status == CR_STATUS_FAILED ? CRITERION_IMPORTANT : CRITERION_INFO;

@@ -113,7 +113,7 @@ cr_link_subproject(criterion wingetopt STATIC)
 cr_link_subproject(criterion boxfort STATIC)
 
 cr_link_libraries(criterion pthread IF NOT WIN32)
-cr_link_libraries(criterion rt IF HAVE_CLOCK_GETTIME)
+cr_link_libraries(criterion rt IF HAVE_LIBRT)
 
 # Required by nanomsg
 cr_link_libraries(criterion anl IF HAVE_GETADDRINFO_A)

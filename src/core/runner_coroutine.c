@@ -237,6 +237,18 @@ static void death_callback(bxf_instance *instance)
         ? instance->status.signal
         : instance->status.exit;
 
+    if (instance->status.timed_out) {
+        criterion_protocol_msg msg = criterion_message(phase,
+                .phase = criterion_protocol_phase_kind_TIMEOUT,
+            );
+
+        msg.id.pid = instance->pid;
+        cr_send_to_runner(&msg);
+
+        result = criterion_protocol_death_result_type_NORMAL;
+        code = 0;
+    }
+
     criterion_protocol_msg msg = criterion_message(death,
             .result = result,
             .has_status = true,

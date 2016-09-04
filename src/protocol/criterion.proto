@@ -41,6 +41,7 @@ message assert {
     required bool passed = 2;
     optional string file = 3;
     optional int64 line = 4;
+    optional int64 timestamp = 5;
 }
 
 message log {
@@ -52,6 +53,7 @@ message log {
 
     required level severity = 1;
     required string message = 2;
+    optional int64 timestamp = 3;
 }
 
 message ack {

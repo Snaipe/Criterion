@@ -30,6 +30,7 @@
 # include "criterion.pb.h"
 # include "criterion/internal/preprocess.h"
 # include "compat/process.h"
+# include "compat/time.h"
 
 enum protocol_version {
     PROTOCOL_V1 = 1,
@@ -55,7 +56,11 @@ extern volatile bool is_extern_worker;
         .data = {                                                           \
             .which_value = criterion_protocol_submessage_ ## Kind ## _tag,  \
             .value = {                                                      \
-                .Kind = { __VA_ARGS__ },                                    \
+                .Kind = {                                                   \
+                    .timestamp = cri_timestamp_monotonic(),                 \
+                    .has_timestamp = true,                                  \
+                    __VA_ARGS__                                             \
+                },                                                          \
             }                                                               \
         }                                                                   \
     }

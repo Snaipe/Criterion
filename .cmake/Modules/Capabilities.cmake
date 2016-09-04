@@ -23,12 +23,24 @@ endif ()
 check_function_exists(strtok_s HAVE_STRTOK_S)
 check_function_exists(strtok_r HAVE_STRTOK_R)
 
-check_library_exists (rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 check_library_exists (anl getaddrinfo_a "" HAVE_GETADDRINFO_A)
 
 check_function_exists(funopen HAVE_FUNOPEN)
 check_function_exists(fopencookie HAVE_FOPENCOOKIE)
 check_function_exists(open_memstream HAVE_OPEN_MEMSTREAM)
+
+check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME_RT)
+if (HAVE_CLOCK_GETTIME_RT AND NOT HAVE_LIBRT)
+  set (HAVE_LIBRT 1)
+endif ()
+
+if (NOT HAVE_CLOCK_GETTIME_RT)
+  check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
+else ()
+  set (HAVE_CLOCK_GETTIME "${HAVE_CLOCK_GETTIME_RT}" CACHE INTERNAL "Have symbol clock_gettime")
+endif ()
+
+check_symbol_exists(CLOCK_MONOTONIC_RAW "time.h" HAVE_CLOCK_MONOTONIC_RAW)
 
 # Check for C++11
 

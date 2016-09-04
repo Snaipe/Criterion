@@ -71,9 +71,7 @@ void criterion_internal_test_main(void (*fn)(void)) {
 
     send_event(criterion_protocol_phase_kind_MAIN);
 
-    struct timespec_compat ts;
     if (!setjmp(g_pre_test)) {
-        timer_start(&ts);
         if (!test->data->param_) {
             fn();
         } else {
@@ -81,10 +79,6 @@ void criterion_internal_test_main(void (*fn)(void)) {
             param_test_func(getparam());
         }
     }
-
-    double elapsed_time;
-    if (!timer_end(&elapsed_time, &ts))
-        elapsed_time = -1;
 
     send_event(criterion_protocol_phase_kind_TEARDOWN);
 }
