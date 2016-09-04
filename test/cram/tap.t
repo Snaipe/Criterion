@@ -6,8 +6,8 @@ Testing multiple samples with --tap
   # Criterion v2.2.1
   
   # Running 2 tests from misc
-  ok - misc::passing 
-  not ok - misc::failing 
+  ok - misc::passing  \(\d\.\d\ds\) (re)
+  not ok - misc::failing  \(\d\.\d\ds\) (re)
     simple.c:4: Assertion failed: The expression 0 is false.
 
   $ signal.c.bin --tap
@@ -16,9 +16,9 @@ Testing multiple samples with --tap
   # Criterion v2.2.1
   
   # Running 3 tests from simple
-  not ok - simple::wrong_signal 
+  not ok - simple::wrong_signal  \(\d\.\d\ds\) (re)
   not ok - simple::uncaught unexpected signal after signal.c:14
-  ok - simple::caught 
+  ok - simple::caught  \(\d\.\d\ds\) (re)
 
   $ asserts.c.bin --tap
   TAP version 13
@@ -26,16 +26,16 @@ Testing multiple samples with --tap
   # Criterion v2.2.1
   
   # Running 6 tests from asserts
-  ok - asserts::string 
-  not ok - asserts::old_school 
+  ok - asserts::string  \(\d\.\d\ds\) (re)
+  not ok - asserts::old_school  \(\d\.\d\ds\) (re)
     asserts.c:18: Assertion failed: The conditions for this assertion were not met.
     asserts.c:17: Assertion failed: You can fail an assertion with a message from anywhere
-  ok - asserts::native 
-  ok - asserts::float 
-  not ok - asserts::base 
+  ok - asserts::native  \(\d\.\d\ds\) (re)
+  ok - asserts::float  \(\d\.\d\ds\) (re)
+  not ok - asserts::base  \(\d\.\d\ds\) (re)
     asserts.c:12: Assertion failed: This assert runs
     asserts.c:11: Assertion failed: assert is fatal, expect isn't
-  ok - asserts::array 
+  ok - asserts::array  \(\d\.\d\ds\) (re)
 
   $ more-suites.c.bin --tap
   TAP version 13
@@ -43,10 +43,10 @@ Testing multiple samples with --tap
   # Criterion v2.2.1
   
   # Running 1 tests from suite2
-  ok - suite2::test 
+  ok - suite2::test  \(\d\.\d\ds\) (re)
   
   # Running 1 tests from suite1
-  ok - suite1::test 
+  ok - suite1::test  \(\d\.\d\ds\) (re)
   
   # Running 1 tests from disabled
   ok - disabled::test  # SKIP test was skipped
@@ -57,7 +57,7 @@ Testing multiple samples with --tap
   # Criterion v2.2.1
   
   # Running 1 tests from sample
-  not ok - sample::long_msg 
+  not ok - sample::long_msg  \(\d\.\d\ds\) (re)
     long-messages.c:4: Assertion failed: This is
       A long message
       Spawning multiple lines.
@@ -70,7 +70,7 @@ Testing multiple samples with --tap
   
   # Running 2 tests from misc
   ok - misc::skipped This one is skipped # SKIP test was skipped
-  not ok - misc::failing Just a failing test
+  not ok - misc::failing Just a failing test \(\d\.\d\ds\) (re)
     description.c:4: Assertion failed: The expression 0 is false.
 
 Testing --output=tap
@@ -81,8 +81,8 @@ Testing --output=tap
   # Criterion v2.2.1
   
   # Running 2 tests from misc
-  ok - misc::passing 
-  not ok - misc::failing 
+  ok - misc::passing  \(\d\.\d\ds\) (re)
+  not ok - misc::failing  \(\d\.\d\ds\) (re)
     simple.c:4: Assertion failed: The expression 0 is false.
 
 Testing CRITERION_OUTPUTS
@@ -93,8 +93,8 @@ Testing CRITERION_OUTPUTS
   # Criterion v2.2.1
   
   # Running 2 tests from misc
-  ok - misc::passing 
-  not ok - misc::failing 
+  ok - misc::passing  \(\d\.\d\ds\) (re)
+  not ok - misc::failing  \(\d\.\d\ds\) (re)
     simple.c:4: Assertion failed: The expression 0 is false.
 
 
