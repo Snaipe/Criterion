@@ -50,6 +50,7 @@
 # define RUNNING_ON_VALGRIND 0
 #endif
 
+/* *INDENT-OFF* - This is a structure definition in disguise */
 ccrBeginDefineContextType(run_next_context);
 
     struct criterion_suite_set *suite_set;
@@ -66,6 +67,7 @@ ccrBeginDefineContextType(run_next_context);
     const char *url;
 
 ccrEndDefineContextType;
+/* *INDENT-ON* */
 
 CR_API const struct criterion_test  *criterion_current_test;
 CR_API const struct criterion_suite *criterion_current_suite;

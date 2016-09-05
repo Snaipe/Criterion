@@ -128,6 +128,8 @@
 
 #include <stdlib.h>
 
+/* *INDENT-OFF* Don't try to format this, seriously */
+
 /*
  * `scr' macros for static coroutines.
  */
@@ -184,5 +186,7 @@
 
 #define ccrContext       void *
 #define ccrAbort(ctx)    do { free (ctx); ctx = 0; } while (0)
+
+/* *INDENT-ON* */
 
 #endif /* COROUTINE_H */
