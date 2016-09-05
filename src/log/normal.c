@@ -45,7 +45,8 @@ static msg_t msg_desc = N_("  %s\n");
 #ifdef ENABLE_NLS
 static msg_t msg_pre_init = N_("%1$s::%2$s\n");
 static msg_t msg_post_test_timed = N_("%1$s::%2$s: (%3$3.2fs)\n");
-static msg_t msg_post_test_skip = N_("%1$s::%2$s: Test was skipped\n");
+static msg_t msg_post_test_skip = 
+N_("%1$s::%2$s: Test was skipped\n");
 static msg_t msg_test_disabled = N_("%1$s::%2$s: Test is disabled\n");
 static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
 static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
