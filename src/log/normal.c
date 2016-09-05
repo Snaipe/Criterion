@@ -51,7 +51,7 @@ static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
-static msg_t msg_test_abort = N_("%1$s::%2$s: %3$s\n");
+static msg_t msg_test_generic = N_("%1$s::%2$s: %3$s\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
 static msg_t msg_test_abnormal_exit = N_("%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n");
 static msg_t msg_pre_suite[] = N_s("Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n",
@@ -70,7 +70,7 @@ static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parame
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
-static msg_t msg_test_abort = "%s::%s: %s\n";
+static msg_t msg_test_generic = "%s::%s: %s\n";
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
 static msg_t msg_test_abnormal_exit = "%sWarning! The test `%s::%s` exited during its setup or teardown.%s\n";
 static msg_t msg_pre_suite[] = { "Running %s%lu%s test from %s%s%s:\n",
@@ -86,10 +86,16 @@ void normal_log_pre_all(CR_UNUSED struct criterion_test_set *set) {
     criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_pre_all), VERSION);
 }
 
-void normal_log_pre_init(struct criterion_test *test) {
-    criterion_pinfo(CRITERION_PREFIX_RUN, _(msg_pre_init),
+void normal_log_pre_init(struct criterion_suite *suite,struct criterion_test *test) {
+    if(test->data->disabled || (suite->data && suite->data->disabled)) {
+        criterion_pinfo(CRITERION_PREFIX_SKIP, _(msg_post_test_skip),
+                test->category,
+                test->name);
+    } else {
+        criterion_pinfo(CRITERION_PREFIX_RUN, _(msg_pre_init),
             test->category,
             test->name);
+    }
 
     if (test->data->description)
         criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_desc),
@@ -105,30 +111,22 @@ void normal_log_post_test(struct criterion_test_stats *stats) {
             = stats->test_status == CR_STATUS_FAILED ? CRITERION_PREFIX_FAIL :
                                              CRITERION_PREFIX_PASS;
 
-    criterion_plog(level, prefix, _(format),
-            stats->test->category,
-            stats->test->name,
-            stats->elapsed_time);
-}
-
-void normal_log_post_suite(struct criterion_suite_stats *stats) {
-    for (struct criterion_test_stats *ts = stats->tests; ts; ts = ts->next) {
-        if(ts->test_status == CR_STATUS_SKIPPED){
-            if(!ts->message) {
-                criterion_pinfo(CRITERION_PREFIX_SKIP, _(msg_post_test_skip),
-                        ts->test->category,
-                        ts->test->name);
-            } else {
-                criterion_pinfo(CRITERION_PREFIX_SKIP, "%s::%s: %s\n",
-                        ts->test->category,
-                        ts->test->name,
-                        ts->message);
-            }
-
-            if (ts->test->data->description)
-                criterion_pinfo(CRITERION_PREFIX_DASHES, msg_desc,
-                        ts->test->data->description);
+    if(stats->test_status == CR_STATUS_SKIPPED) {
+        if(!stats->message) {
+            criterion_pinfo(CRITERION_PREFIX_SKIP, _(msg_post_test_skip),
+                    stats->test->category,
+                    stats->test->name);
+        } else {
+            criterion_pinfo(CRITERION_PREFIX_SKIP, _(msg_test_generic),
+                    stats->test->category,
+                    stats->test->name,
+                    stats->message);
         }
+    } else {
+        criterion_plog(level, prefix, _(format),
+                stats->test->category,
+                stats->test->name,
+                stats->elapsed_time);
     }
 }
 
@@ -194,6 +192,10 @@ void normal_log_pre_suite(struct criterion_suite_set *set) {
             _s(msg_pre_suite[0], msg_pre_suite[1], set->tests->size),
                     CR_FG_BLUE, (unsigned long) set->tests->size, CR_RESET,
                     CR_FG_GOLD, set->suite.name, CR_RESET);
+
+    if (set->suite.data && set->suite.data->description)
+        criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_desc),
+                set->suite.data->description);
 }
 
 void normal_log_theory_fail(struct criterion_theory_stats *stats) {
@@ -219,7 +221,7 @@ void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const c
     char *line      = strtok_r(dup, "\n", &saveptr);
 
     criterion_pimportant(CRITERION_PREFIX_DASHES,
-            _(msg_test_abort),
+            _(msg_test_generic),
             stats->test->category,
             stats->test->name,
             line);
@@ -254,7 +256,6 @@ struct criterion_logger normal_logging = {
     .log_other_crash    = normal_log_other_crash,
     .log_abnormal_exit  = normal_log_abnormal_exit,
     .log_post_test      = normal_log_post_test,
-    .log_post_suite     = normal_log_post_suite,
     .log_post_all       = normal_log_post_all,
     .log_message        = normal_log_message,
 };
