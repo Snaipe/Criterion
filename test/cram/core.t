@@ -73,7 +73,7 @@ Testing descriptions
   [\x1b[0;34m----\x1b[0m]   Just a failing test (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mdescription.c\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion failed: The expression 0 is false. (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] misc::failing: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;33mSKIP\x1b[0m] misc::skipped: Test was skipped (esc)
+  [\x1b[0;33mSKIP\x1b[0m] misc::skipped: Test is disabled (esc)
   [\x1b[0;34m----\x1b[0m]   This one is skipped (esc)
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
@@ -84,7 +84,7 @@ Testing descriptions
   [\x1b[0;34m----\x1b[0m]   Just a failing test (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mdescription.cc\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion failed: The expression 0 is false. (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] misc::failing: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;33mSKIP\x1b[0m] misc::skipped: Test was skipped (esc)
+  [\x1b[0;33mSKIP\x1b[0m] misc::skipped: Test is disabled (esc)
   [\x1b[0;34m----\x1b[0m]   This one is skipped (esc)
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
