@@ -24,6 +24,40 @@ _anchors:
 
 matrix:
   include:
+    # Style check
+    - compiler: uncrustify
+      language: cpp
+      before_install:
+        - |
+            git clone https://github.com/uncrustify/uncrustify /tmp/uncrustify &&
+            pushd /tmp/uncrustify &&
+            git checkout -q 7ae7af9d3483f5f92766ec41bb3ba3efe4747494 &&
+            mkdir build && cd build &&
+            CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=$HOME .. &&
+            make -j4 && make install &&
+            export PATH="$PATH:$HOME/bin" &&
+            popd
+      script:
+        - >
+            export SOURCES=$(find src include test samples \( \
+              -type f \( \
+                -iname "*.c" -or \
+                -iname "*.h" -or \
+                -iname "*.cc" -or \
+                -iname "*.hxx" \
+              \) -and -not \
+              -iname "*.pb.*" \))
+        - export STYLE_OK=true
+        - >
+            for f in $SOURCES; do
+              if ! uncrustify --check -c .uncrustify.cfg $f; then
+                uncrustify -c .uncrustify.cfg -f $f | git --no-pager diff --no-index --color=always $f -
+                export STYLE_OK=false
+              fi
+            done
+        - $STYLE_OK
+      after_success: []
+
     # Linux Debug, GCC 4.9
     - compiler: gcc-4.9
       addons: *gcc49-packages
