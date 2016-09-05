@@ -22,13 +22,13 @@
  * THE SOFTWARE.
  */
 #ifndef COMMON_H_
-# define COMMON_H_
+#define COMMON_H_
 
-# include <stdio.h>
-# include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-# include "criterion/internal/common.h"
+#include "criterion/internal/common.h"
 
-# define DEF(X, Y) ((X) ? (X) : (Y))
+#define DEF(X, Y)    ((X) ? (X) : (Y))
 
 #endif /* !COMMON_H_ */

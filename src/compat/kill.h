@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef COMPAT_KILL_H_
-# define COMPAT_KILL_H_
+#define COMPAT_KILL_H_
 
-# include "posix.h"
-# include "criterion/stats.h"
+#include "posix.h"
+#include "criterion/stats.h"
 
 void setup_parent_job(void);
 void cr_killall(void);

@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef PIPE_INTERNAL_H_
-# define PIPE_INTERNAL_H_
+#define PIPE_INTERNAL_H_
 
-# include "internal.h"
-# include "pipe.h"
+#include "internal.h"
+#include "pipe.h"
 
 struct pipe_handle {
 #ifdef VANILLA_WIN32

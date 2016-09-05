@@ -33,6 +33,7 @@
 int cri_proto_bind(const char *url)
 {
     int sock = nn_socket(AF_SP, NN_REP);
+
     if (sock < 0)
         return -1;
 
@@ -49,10 +50,11 @@ error: {}
 int cri_proto_connect(const char *url)
 {
     int sock = nn_socket(AF_SP, NN_REQ);
+
     if (sock < 0)
         return -1;
 
-    if (nn_connect (sock, url) < 0)
+    if (nn_connect(sock, url) < 0)
         goto error;
 
     return sock;

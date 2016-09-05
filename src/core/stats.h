@@ -22,17 +22,17 @@
  * THE SOFTWARE.
  */
 #ifndef STATS_H_
-# define STATS_H_
+#define STATS_H_
 
-# include "criterion/stats.h"
-# include "io/event.h"
+#include "criterion/stats.h"
+#include "io/event.h"
 
 struct criterion_global_stats *stats_init(void);
 struct criterion_test_stats *test_stats_init(struct criterion_test *t);
 struct criterion_suite_stats *suite_stats_init(struct criterion_suite *s);
 void stat_push_event(struct criterion_global_stats *stats,
-                     struct criterion_suite_stats *suite,
-                     struct criterion_test_stats *test,
-                     struct event *data);
+        struct criterion_suite_stats *suite,
+        struct criterion_test_stats *test,
+        struct event *data);
 
 #endif /* !STATS_H_ */

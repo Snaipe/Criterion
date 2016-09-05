@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef MESSAGES_H_
-# define MESSAGES_H_
+#define MESSAGES_H_
 
-# include "criterion.pb.h"
+#include "criterion.pb.h"
 
 int write_message(int sock, const criterion_protocol_msg *message);
 int read_message(int sock, criterion_protocol_msg *message);

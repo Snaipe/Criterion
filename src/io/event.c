@@ -30,15 +30,16 @@
 
 int g_client_socket = -1;
 
-void criterion_send_assert(struct criterion_assert_stats *stats) {
+void criterion_send_assert(struct criterion_assert_stats *stats)
+{
     assert(stats->message);
     criterion_protocol_msg msg = criterion_message(assert,
-            .message = (char *) stats->message,
-            .passed = stats->passed,
-            .file = (char *) stats->file,
-            .has_line = true,
-            .line = stats->line,
-        );
+                    .message = (char *) stats->message,
+                    .passed = stats->passed,
+                    .file = (char *) stats->file,
+                    .has_line = true,
+                    .line = stats->line,
+                    );
     criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
 }

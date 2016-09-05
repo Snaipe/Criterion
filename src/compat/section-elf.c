@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-# include "section.h"
+#include "section.h"
 
-# include <string.h>
-# include <sys/mman.h>
-# include <fcntl.h>
-# include <unistd.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-static int open_self(void) {
+static int open_self(void)
+{
 #if defined __linux__
     return open("/proc/self/exe", O_RDONLY);
 #elif defined __NetBSD__
@@ -54,20 +55,20 @@ static int open_self(void) {
 static int open_module_map(mod_handle *mod)
 {
     /* Load the ELF header and the section header table */
-    const ElfW(Ehdr) *elf = mmap(NULL, sizeof (ElfW(Ehdr)),
-            PROT_READ, MAP_PRIVATE, mod->fd, 0);
+    const ElfW(Ehdr) * elf = mmap(NULL, sizeof (ElfW(Ehdr)),
+                    PROT_READ, MAP_PRIVATE, mod->fd, 0);
     const void *oldm = elf;
 
     if (elf == MAP_FAILED)
         goto fail;
 
-    if (memcmp(elf->e_ident, (char [4]) { 0x7f, 'E', 'L', 'F' }, 4))
+    if (memcmp(elf->e_ident, (char[4]) { 0x7f, 'E', 'L', 'F' }, 4))
         goto fail;
 
     size_t new_map_len = elf->e_shoff + elf->e_shnum * elf->e_shentsize;
 
 #ifdef HAVE_MREMAP
-    elf = mremap((void*) elf, sizeof (ElfW(Ehdr)), new_map_len, MREMAP_MAYMOVE);
+    elf = mremap((void *) elf, sizeof (ElfW(Ehdr)), new_map_len, MREMAP_MAYMOVE);
 #else
     elf = mmap(NULL, new_map_len, PROT_READ, MAP_PRIVATE, mod->fd, 0);
 #endif
@@ -98,6 +99,7 @@ static void close_module_map(mod_handle *mod)
 int open_module_self(mod_handle *mod)
 {
     int fd = open_self();
+
     if (fd == -1)
         return 0;
 
@@ -111,13 +113,13 @@ void close_module(mod_handle *mod)
     close(mod->fd);
 }
 
-static const void *map_shdr(int fd, const ElfW(Shdr) *shdr, struct section_mapping *out)
+static const void *map_shdr(int fd, const ElfW (Shdr) *shdr, struct section_mapping *out)
 {
     size_t shdr_map_off = shdr->sh_offset & ~0xfffllu;
     size_t shdr_map_len = shdr->sh_size + (shdr->sh_offset - shdr_map_off);
 
     const uint8_t *shdr_map = mmap(NULL, shdr_map_len,
-            PROT_READ, MAP_PRIVATE, fd, shdr_map_off);
+                    PROT_READ, MAP_PRIVATE, fd, shdr_map_off);
 
     if (shdr_map == MAP_FAILED)
         return NULL;
@@ -132,14 +134,14 @@ static const void *map_shdr(int fd, const ElfW(Shdr) *shdr, struct section_mappi
 
 static void unmap_shdr(struct section_mapping *map)
 {
-    munmap((void*) map->map, map->len);
+    munmap((void *) map->map, map->len);
 }
 
 void *map_section_data(mod_handle *mod, const char *name,
         struct section_mapping *map)
 {
-    const ElfW(Shdr) *shdr = (void *) ((char *) mod->map + mod->map->e_shoff);
-    const ElfW(Shdr) *shstr_shdr = shdr + mod->map->e_shstrndx;
+    const ElfW(Shdr) * shdr = (void *) ((char *) mod->map + mod->map->e_shoff);
+    const ElfW(Shdr) * shstr_shdr = shdr + mod->map->e_shstrndx;
 
     struct section_mapping shstr_map;
     const char *shstr = map_shdr(mod->fd, shstr_shdr, &shstr_map);
@@ -148,7 +150,7 @@ void *map_section_data(mod_handle *mod, const char *name,
     for (size_t i = 0; i < mod->map->e_shnum; i++) {
         const char *section_name = shstr + shdr[i].sh_name;
         if (!strcmp(section_name, name)) {
-            const ElfW(Shdr) *hdr = shdr + i;
+            const ElfW(Shdr) * hdr = shdr + i;
             ptr = map_shdr(mod->fd, hdr, map);
             map->sec_len = hdr->sh_size;
             break;
@@ -156,12 +158,10 @@ void *map_section_data(mod_handle *mod, const char *name,
     }
 
     unmap_shdr(&shstr_map);
-    return (void *)ptr;
+    return (void *) ptr;
 }
 
 void unmap_section_data(struct section_mapping *map)
 {
     unmap_shdr(map);
 }
-
-

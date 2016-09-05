@@ -11,6 +11,7 @@ struct Obj {
 
 Test(alloc, object) {
     Obj *o = criterion::new_obj<Obj>(42, 314);
+
     cr_assert_not_null(o);
 
     cr_assert_eq(o->foo, 42);
@@ -21,11 +22,12 @@ Test(alloc, object) {
 
 Test(alloc, array) {
     Obj *o = criterion::new_arr<Obj>(3);
+
     cr_assert_not_null(o);
 
-    new (&o[0]) Obj(1, 2);
-    new (&o[1]) Obj(2, 4);
-    new (&o[2]) Obj(3, 6);
+    new (&o[0])Obj(1, 2);
+    new (&o[1])Obj(2, 4);
+    new (&o[2])Obj(3, 6);
 
     for (int i = 0; i < 3; ++i) {
         cr_assert_eq(o[i].foo, i + 1);

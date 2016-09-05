@@ -23,10 +23,12 @@
  */
 #include "criterion/criterion.h"
 
-CR_API int main(int argc, char *argv[]) {
+CR_API int main(int argc, char *argv[])
+{
     struct criterion_test_set *tests = criterion_initialize();
 
     int result = 0;
+
     if (criterion_handle_args(argc, argv, true))
         result = !criterion_run_all_tests(tests);
 

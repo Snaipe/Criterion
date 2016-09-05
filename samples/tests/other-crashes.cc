@@ -1,7 +1,9 @@
 #include <criterion/criterion.h>
 
-void crash(void) {
+void crash(void)
+{
     int *i = NULL;
+
     *i = 42;
 }
 

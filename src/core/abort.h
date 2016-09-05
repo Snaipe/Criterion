@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef ABORT_H_
-# define ABORT_H_
+#define ABORT_H_
 
-# include <criterion/abort.h>
-# include <setjmp.h>
+#include <criterion/abort.h>
+#include <setjmp.h>
 
 extern jmp_buf g_pre_test;
 

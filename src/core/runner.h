@@ -22,21 +22,21 @@
  * THE SOFTWARE.
  */
 #ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#define CRITERION_RUNNER_H_
 
-# include "criterion/types.h"
-# include "compat/pipe.h"
+#include "criterion/types.h"
+#include "compat/pipe.h"
 
 struct criterion_test_set *criterion_init(void);
 
-# define FOREACH_TEST_SEC(Test, Start, End)         \
-    for (struct criterion_test **Test = Start;      \
-            Test < (struct criterion_test**) End;   \
+#define FOREACH_TEST_SEC(Test, Start, End)         \
+    for (struct criterion_test **Test = Start;     \
+            Test < (struct criterion_test **) End; \
             ++Test)
 
-# define FOREACH_SUITE_SEC(Suite, Start, End)       \
-    for (struct criterion_suite **Suite = Start;    \
-            Suite < (struct criterion_suite**) End; \
+#define FOREACH_SUITE_SEC(Suite, Start, End)         \
+    for (struct criterion_suite **Suite = Start;     \
+            Suite < (struct criterion_suite **) End; \
             ++Suite)
 
 #endif /* !CRITERION_RUNNER_H_ */

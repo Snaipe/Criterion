@@ -26,11 +26,11 @@
  * @brief Include this to use criterion
  *****************************************************************************/
 #ifndef CRITERION_H_
-# define CRITERION_H_
+#define CRITERION_H_
 
-# include "types.h"
-# include "assert.h"
-# include "alloc.h"
+#include "types.h"
+#include "assert.h"
+#include "alloc.h"
 
 /**
  *  Defines a new test.
@@ -42,7 +42,7 @@
  *    (see criterion/types.h).\n
  *    Example: .exit_code = 1
  */
-# define Test(Suite, Name, ...) <internal>
+#define Test(Suite, Name, ...)    < internal >
 
 /**
  *  Explicitely defines a test suite and its options.
@@ -53,7 +53,7 @@
  *    (see criterion/types.h).
  *    These options will provide the defaults for each test.
  */
-# define TestSuite(Name, ...) <internal>
+#define TestSuite(Name, ...)      < internal >
 
 CR_BEGIN_C_API
 
@@ -109,13 +109,13 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
  *  @param[in] test  The newly created test.
  */
 CR_API void criterion_register_test(struct criterion_test_set *tests,
-                                    struct criterion_test *test);
+        struct criterion_test *test);
 
-CR_API extern const struct criterion_test  *const criterion_current_test;
+CR_API extern const struct criterion_test *const criterion_current_test;
 CR_API extern const struct criterion_suite *const criterion_current_suite;
 
 CR_END_C_API
 
-# include "internal/test.h"
+#include "internal/test.h"
 
 #endif /* !CRITERION_H_ */

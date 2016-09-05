@@ -24,7 +24,8 @@
 #include "process.h"
 #include "internal.h"
 
-unsigned long long get_process_id(void) {
+unsigned long long get_process_id(void)
+{
 #ifdef VANILLA_WIN32
     return (unsigned long long) GetCurrentProcessId();
 #else

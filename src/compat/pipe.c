@@ -27,7 +27,8 @@
 #include "criterion/assert.h"
 #include "pipe-internal.h"
 
-FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts) {
+FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
+{
 #ifdef VANILLA_WIN32
     if (opts & PIPE_CLOSE)
         CloseHandle(p->fhs[1]);
@@ -52,7 +53,8 @@ FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts) {
     return in;
 }
 
-FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts) {
+FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts)
+{
 #ifdef VANILLA_WIN32
     if (opts & PIPE_CLOSE)
         CloseHandle(p->fhs[0]);
@@ -77,69 +79,73 @@ FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts) {
     return out;
 }
 
-int stdpipe_stack(s_pipe_handle *out) {
+int stdpipe_stack(s_pipe_handle *out)
+{
 #ifdef VANILLA_WIN32
     HANDLE fhs[2];
     SECURITY_ATTRIBUTES attr = {
-        .nLength = sizeof (SECURITY_ATTRIBUTES),
+        .nLength        = sizeof (SECURITY_ATTRIBUTES),
         .bInheritHandle = TRUE
     };
     if (!CreatePipe(fhs, fhs + 1, &attr, 0))
         return -1;
-    *out = (s_pipe_handle) {{ fhs[0], fhs[1] }};
+    *out = (s_pipe_handle) { { fhs[0], fhs[1] } };
 #else
     int fds[2] = { -1, -1 };
     if (pipe(fds) == -1)
         return -1;
-    *out = (s_pipe_handle) {{ fds[0], fds[1] }};
+    *out = (s_pipe_handle) { { fds[0], fds[1] } };
 #endif
     return 0;
 }
 
-s_pipe_handle *stdpipe() {
+s_pipe_handle *stdpipe()
+{
     s_pipe_handle *handle = smalloc(sizeof (s_pipe_handle));
+
     if (stdpipe_stack(handle) < 0)
         return NULL;
     return handle;
 }
 
-int stdpipe_options(s_pipe_handle *handle, int id, int noblock) {
+int stdpipe_options(s_pipe_handle *handle, int id, int noblock)
+{
 #ifdef VANILLA_WIN32
     HANDLE fhs[2];
     SECURITY_ATTRIBUTES attr = {
-        .nLength = sizeof (SECURITY_ATTRIBUTES),
+        .nLength        = sizeof (SECURITY_ATTRIBUTES),
         .bInheritHandle = TRUE
     };
-    char pipe_name[256] = {0};
+    char pipe_name[256] = { 0 };
     snprintf(pipe_name, sizeof (pipe_name),
-        "\\\\.\\pipe\\criterion_%lu_%d", GetCurrentProcessId(), id);
+            "\\\\.\\pipe\\criterion_%lu_%d", GetCurrentProcessId(), id);
     fhs[0] = CreateNamedPipe(pipe_name,
-            PIPE_ACCESS_INBOUND,
-            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE
-                           | (noblock ? PIPE_NOWAIT : PIPE_WAIT),
-            1,
-            4096 * 4,
-            4096 * 4,
-            0,
-            &attr);
+                    PIPE_ACCESS_INBOUND,
+                    PIPE_TYPE_BYTE | PIPE_READMODE_BYTE
+                    | (noblock ? PIPE_NOWAIT : PIPE_WAIT),
+                    1,
+                    4096 * 4,
+                    4096 * 4,
+                    0,
+                    &attr);
 
     if (fhs[0] == INVALID_HANDLE_VALUE)
         return 0;
 
     fhs[1] = CreateFile(pipe_name,
-            GENERIC_WRITE,
-            0,
-            &attr,
-            OPEN_EXISTING,
-            0,
-            NULL);
+                    GENERIC_WRITE,
+                    0,
+                    &attr,
+                    OPEN_EXISTING,
+                    0,
+                    NULL);
 
     if (fhs[1] == INVALID_HANDLE_VALUE) {
         CloseHandle(fhs[0]);
         return 0;
     }
 
-    *handle = (s_pipe_handle) {{ fhs[0], fhs[1] }};
+    *handle = (s_pipe_handle) { { fhs[0], fhs[1] } };
 #else
     (void) id;
 
@@ -151,13 +157,15 @@ int stdpipe_options(s_pipe_handle *handle, int id, int noblock) {
         for (int i = 0; i < 2; ++i)
             fcntl(fds[i], F_SETFL, fcntl(fds[i], F_GETFL) | O_NONBLOCK);
 
-    *handle = (s_pipe_handle) {{ fds[0], fds[1] }};
+    *handle = (s_pipe_handle) { { fds[0], fds[1] } };
 #endif
     return 1;
 }
 
-void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd) {
+void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd)
+{
     enum pipe_end end = fd == CR_STDIN ? PIPE_READ : PIPE_WRITE;
+
 #ifdef VANILLA_WIN32
     int stdfd = _open_osfhandle((intptr_t) pipe->fhs[end], end == PIPE_READ ? _O_RDONLY : _O_WRONLY);
     if (stdfd == -1)
@@ -182,8 +190,10 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd) {
 #endif
 }
 
-void close_pipe_file_handle(void *ptr, CR_UNUSED void *meta) {
+void close_pipe_file_handle(void *ptr, CR_UNUSED void *meta)
+{
     s_pipe_file_handle *h = ptr;
+
 #ifdef VANILLA_WIN32
     CloseHandle(h->fh);
 #else
@@ -192,20 +202,23 @@ void close_pipe_file_handle(void *ptr, CR_UNUSED void *meta) {
 }
 
 #ifdef VANILLA_WIN32
-static HANDLE win_dup(HANDLE h) {
+static HANDLE win_dup(HANDLE h)
+{
     HANDLE dup;
+
     DuplicateHandle(GetCurrentProcess(),
-        h,
-        GetCurrentProcess(),
-        &dup,
-        0,
-        TRUE,
-        DUPLICATE_SAME_ACCESS);
+            h,
+            GetCurrentProcess(),
+            &dup,
+            0,
+            TRUE,
+            DUPLICATE_SAME_ACCESS);
     return dup;
 }
 #endif
 
-s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts) {
+s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts)
+{
 #ifdef VANILLA_WIN32
     if (opts & PIPE_CLOSE)
         CloseHandle(p->fhs[0]);
@@ -214,8 +227,8 @@ s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts) {
         fh = win_dup(fh);
 
     s_pipe_file_handle *h = smalloc(
-            .size = sizeof (s_pipe_file_handle),
-            .dtor = close_pipe_file_handle);
+        .size = sizeof (s_pipe_file_handle),
+        .dtor = close_pipe_file_handle);
 
     h->fh = fh;
     return h;
@@ -227,15 +240,16 @@ s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts) {
         fd = dup(fd);
 
     s_pipe_file_handle *h = smalloc(
-            .size = sizeof (s_pipe_file_handle),
-            .dtor = close_pipe_file_handle);
+        .size = sizeof (s_pipe_file_handle),
+        .dtor = close_pipe_file_handle);
 
     h->fd = fd;
     return h;
 #endif
 }
 
-s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts) {
+s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts)
+{
 #ifdef VANILLA_WIN32
     if (opts & PIPE_CLOSE)
         CloseHandle(p->fhs[1]);
@@ -244,8 +258,8 @@ s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts) {
         fh = win_dup(fh);
 
     s_pipe_file_handle *h = smalloc(
-            .size = sizeof (s_pipe_file_handle),
-            .dtor = close_pipe_file_handle);
+        .size = sizeof (s_pipe_file_handle),
+        .dtor = close_pipe_file_handle);
 
     h->fh = fh;
     return h;
@@ -257,15 +271,16 @@ s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts) {
         fd = dup(fd);
 
     s_pipe_file_handle *h = smalloc(
-            .size = sizeof (s_pipe_file_handle),
-            .dtor = close_pipe_file_handle);
+        .size = sizeof (s_pipe_file_handle),
+        .dtor = close_pipe_file_handle);
 
     h->fd = fd;
     return h;
 #endif
 }
 
-int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe) {
+int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe)
+{
 #ifdef VANILLA_WIN32
     DWORD written = 0;
     size_t off = 0;
@@ -288,7 +303,8 @@ int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe) {
 #endif
 }
 
-int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe) {
+int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe)
+{
 #ifdef VANILLA_WIN32
     DWORD read = 0;
     size_t off = 0;
@@ -319,20 +335,22 @@ s_pipe_handle *stdout_redir = &stdout_redir_;
 s_pipe_handle *stderr_redir = &stderr_redir_;
 s_pipe_handle *stdin_redir  = &stdin_redir_;
 
-s_pipe_file_handle *pipe_file_open(const char *path) {
+s_pipe_file_handle *pipe_file_open(const char *path)
+{
     s_pipe_file_handle *h = smalloc(
-            .size = sizeof (s_pipe_file_handle),
-            .dtor = close_pipe_file_handle);
+        .size = sizeof (s_pipe_file_handle),
+        .dtor = close_pipe_file_handle);
+
 #ifdef VANILLA_WIN32
     if (!path)
         path = "nul";
     h->fh = CreateFile(path,
-                GENERIC_READ | GENERIC_WRITE,
-                0,
-                NULL,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_NORMAL,
-                NULL);
+                    GENERIC_READ | GENERIC_WRITE,
+                    0,
+                    NULL,
+                    OPEN_EXISTING,
+                    FILE_ATTRIBUTE_NORMAL,
+                    NULL);
 #else
     if (!path)
         path = "/dev/null";

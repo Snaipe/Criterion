@@ -28,7 +28,8 @@
 #include "io/event.h"
 #include "io/asprintf.h"
 
-int read_message(int sock, criterion_protocol_msg *message) {
+int read_message(int sock, criterion_protocol_msg *message)
+{
     int res;
     unsigned char *buf = NULL;
     int read = res = nn_recv(sock, &buf, NN_MSG, 0);
@@ -49,10 +50,12 @@ cleanup:
     return res;
 }
 
-int write_message(int sock, const criterion_protocol_msg *message) {
+int write_message(int sock, const criterion_protocol_msg *message)
+{
     int res = -1;
     size_t size;
     unsigned char *buf = NULL;
+
     if (!pb_get_encoded_size(&size, criterion_protocol_msg_fields, message))
         goto cleanup;
 
@@ -79,7 +82,8 @@ const char *message_names[] = {
     [criterion_protocol_submessage_assert_tag]  = "assert",
 };
 
-void cr_send_to_runner(const criterion_protocol_msg *message) {
+void cr_send_to_runner(const criterion_protocol_msg *message)
+{
     if (write_message(g_client_socket, message) != 1) {
         criterion_perror("Could not write the \"%s\" message down the event pipe: %s.\n",
                 message_names[message->data.which_value],
@@ -112,8 +116,10 @@ void cr_send_to_runner(const criterion_protocol_msg *message) {
         nn_freemsg(buf);
 }
 
-void send_ack(int sock, bool ok, const char *msg, ...) {
+void send_ack(int sock, bool ok, const char *msg, ...)
+{
     criterion_protocol_ack ack;
+
     ack.status_code = ok ? criterion_protocol_ack_status_OK : criterion_protocol_ack_status_ERROR;
     ack.message = NULL;
 
@@ -148,6 +154,7 @@ void send_ack(int sock, bool ok, const char *msg, ...) {
     free(buf);
 }
 
-void free_message(criterion_protocol_msg *msg) {
+void free_message(criterion_protocol_msg *msg)
+{
     pb_release(criterion_protocol_msg_fields, msg);
 }

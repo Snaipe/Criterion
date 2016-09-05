@@ -24,8 +24,8 @@
 #ifndef EXTGLOBMATCH_H
 #define EXTGLOBMATCH_H
 
-int compile_pattern(char const* pattern);
-int match(char const* string);
+int compile_pattern(char const *pattern);
+int match(char const *string);
 void free_pattern();
 
 #endif /* end of include guard: EXTGLOBMATCH_H */

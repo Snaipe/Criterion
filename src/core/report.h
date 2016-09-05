@@ -22,16 +22,16 @@
  * THE SOFTWARE.
  */
 #ifndef REPORT_H_
-# define REPORT_H_
+#define REPORT_H_
 
-# include "criterion/hooks.h"
-# include "criterion/options.h"
+#include "criterion/hooks.h"
+#include "criterion/options.h"
 
-# define report(Kind, Data) report_(Kind, Data)
-# define report_(Kind, Data) call_report_hooks_##Kind(Data)
+#define report(Kind, Data)     report_(Kind, Data)
+#define report_(Kind, Data)    call_report_hooks_ ## Kind(Data)
 
-# define DECL_CALL_REPORT_HOOKS(Kind)                         \
-    void call_report_hooks_##Kind(void *data)
+#define DECL_CALL_REPORT_HOOKS(Kind) \
+    void call_report_hooks_ ## Kind(void *data)
 
 DECL_CALL_REPORT_HOOKS(PRE_ALL);
 DECL_CALL_REPORT_HOOKS(PRE_SUITE);

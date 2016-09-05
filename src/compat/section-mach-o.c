@@ -36,12 +36,13 @@ typedef struct mach_header mach_hdr;
 typedef struct section section;
 #endif
 
-static inline void *get_real_address(int lib, void *addr) {
+static inline void *get_real_address(int lib, void *addr)
+{
     if (!addr)
         return NULL;
 
-    // We need to slide the section address to get a valid pointer
-    // because ASLR will shift the image by a random offset
+    /* We need to slide the section address to get a valid pointer
+       because ASLR will shift the image by a random offset */
     return addr + _dyld_get_image_vmaddr_slide(lib);
 }
 
@@ -79,7 +80,7 @@ void *map_section_data(mod_handle *mod, const char *name,
                     continue;
 
                 map->sec_len = s->size;
-                return get_real_address(*mod, (void *)(uintptr_t) s->addr);
+                return get_real_address(*mod, (void *) (uintptr_t) s->addr);
             }
         } else if (lc->cmd == LC_SEGMENT_64) {
             const struct segment_command_64 *sc = (void *) lc;
@@ -91,7 +92,7 @@ void *map_section_data(mod_handle *mod, const char *name,
                     continue;
 
                 map->sec_len = s->size;
-                return get_real_address(*mod, (void *)(uintptr_t) s->addr);
+                return get_real_address(*mod, (void *) (uintptr_t) s->addr);
             }
         }
     }

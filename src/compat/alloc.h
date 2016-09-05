@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef COMPAT_ALLOC_H_
-# define COMPAT_ALLOC_H_
+#define COMPAT_ALLOC_H_
 
-# include <boxfort.h>
-# include "criterion/alloc.h"
+#include <boxfort.h>
+#include "criterion/alloc.h"
 
 void cri_alloc_init(void);
 void cri_alloc_term(void);

@@ -47,7 +47,7 @@
 # include <valgrind/valgrind.h>
 #else
 # define ENABLE_VALGRIND_ERRORS
-# define RUNNING_ON_VALGRIND 0
+# define RUNNING_ON_VALGRIND    0
 #endif
 
 /* *INDENT-OFF* - This is a structure definition in disguise */
@@ -69,7 +69,7 @@ ccrBeginDefineContextType(run_next_context);
 ccrEndDefineContextType;
 /* *INDENT-ON* */
 
-CR_API const struct criterion_test  *criterion_current_test;
+CR_API const struct criterion_test *criterion_current_test;
 CR_API const struct criterion_suite *criterion_current_suite;
 
 static int serialize_test(bxf_context ctx, struct criterion_test *test,
@@ -79,36 +79,36 @@ static int serialize_test(bxf_context ctx, struct criterion_test *test,
 
     if (!rc)
         rc = bxf_context_addobject(ctx, "criterion.test.name",
-                test->name, strlen(test->name) + 1);
+                        test->name, strlen(test->name) + 1);
     if (!rc)
         rc = bxf_context_addobject(ctx, "criterion.test.suite",
-                test->category, strlen(test->category) + 1);
+                        test->category, strlen(test->category) + 1);
     if (!rc && test->test)
         rc = bxf_context_addfnaddr(ctx, "criterion.test.test",
-                test->test);
+                        test->test);
     if (!rc)
         rc = bxf_context_addobject(ctx, "criterion.test.extra",
-                test->data, sizeof (*test->data));
+                        test->data, sizeof (*test->data));
     if (!rc && test->data->init)
         rc = bxf_context_addfnaddr(ctx, "criterion.test.extra.init",
-                test->data->init);
+                        test->data->init);
     if (!rc && test->data->fini)
         rc = bxf_context_addfnaddr(ctx, "criterion.test.extra.fini",
-                test->data->fini);
+                        test->data->fini);
     if (!rc)
         rc = bxf_context_addobject(ctx, "criterion.suite.name",
-                suite->name, strlen(suite->name) + 1);
+                        suite->name, strlen(suite->name) + 1);
 
     if (suite->data) {
         if (!rc)
             rc = bxf_context_addobject(ctx, "criterion.suite.extra",
-                    suite->data, sizeof (*suite->data));
+                            suite->data, sizeof (*suite->data));
         if (!rc && suite->data->init)
             rc = bxf_context_addfnaddr(ctx, "criterion.suite.extra.init",
-                    suite->data->init);
+                            suite->data->init);
         if (!rc && suite->data->fini)
             rc = bxf_context_addfnaddr(ctx, "criterion.suite.extra.fini",
-                    suite->data->fini);
+                            suite->data->fini);
     }
     return rc;
 }
@@ -124,44 +124,44 @@ static int deserialize_test(struct criterion_test *test,
     int rc;
 
     rc = bxf_context_getobject(ctx, "criterion.test.name",
-            (void **)&test->name);
+                    (void **) &test->name);
     if (rc <= 0) goto err;
 
     rc = bxf_context_getobject(ctx, "criterion.test.suite",
-            (void **)&test->category);
+                    (void **) &test->category);
     if (rc <= 0) goto err;
 
     rc = bxf_context_getfnaddr(ctx, "criterion.test.test",
-            &test->test);
+                    &test->test);
     if (rc < 0) goto err;
 
     rc = bxf_context_getobject(ctx, "criterion.test.extra",
-            (void **)&test_data);
+                    (void **) &test_data);
     if (rc <= 0) goto err;
 
     rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.init",
-            &test_data->init);
+                    &test_data->init);
     if (rc < 0) goto err;
 
     rc = bxf_context_getfnaddr(ctx, "criterion.test.extra.fini",
-            &test_data->fini);
+                    &test_data->fini);
     if (rc < 0) goto err;
 
     rc = bxf_context_getobject(ctx, "criterion.suite.name",
-            (void **)&suite->name);
+                    (void **) &suite->name);
     if (rc <= 0) goto err;
 
     rc = bxf_context_getobject(ctx, "criterion.suite.extra",
-                (void **)&suite_data);
+                    (void **) &suite_data);
     if (rc < 0) goto err;
 
     if (suite_data) {
         rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.init",
-                &suite_data->init);
+                        &suite_data->init);
         if (rc < 0) goto err;
 
         rc = bxf_context_getfnaddr(ctx, "criterion.suite.extra.fini",
-                &suite_data->fini);
+                        &suite_data->fini);
         if (rc < 0) goto err;
     }
 
@@ -175,7 +175,6 @@ err:
 
 static int run_test_child(void)
 {
-
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
@@ -191,7 +190,7 @@ static int run_test_child(void)
 
     int rc = deserialize_test(&test, &suite);
     if (rc > 0)
-        rc = bxf_context_getobject(ctx, "criterion.url", (void **)&url);
+        rc = bxf_context_getobject(ctx, "criterion.url", (void **) &url);
     if (rc < 0)
         cr_panic("Could not get the test context: %s", strerror(-rc));
     else if (!rc)
@@ -203,7 +202,7 @@ static int run_test_child(void)
     if (g_client_socket < 0)
         cr_panic("could not initialize the message client: %s", strerror(errno));
 
-    // Notify the runner that the test was born
+    /* Notify the runner that the test was born */
     criterion_protocol_msg msg = criterion_message(birth, .name = (char *) test.name);
     criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
@@ -233,16 +232,16 @@ static int run_test_child(void)
 static void death_callback(bxf_instance *instance)
 {
     int result = instance->status.signal
-        ? criterion_protocol_death_result_type_CRASH
-        : criterion_protocol_death_result_type_NORMAL;
+            ? criterion_protocol_death_result_type_CRASH
+            : criterion_protocol_death_result_type_NORMAL;
     int code = instance->status.signal
-        ? instance->status.signal
-        : instance->status.exit;
+            ? instance->status.signal
+            : instance->status.exit;
 
     if (instance->status.timed_out) {
         criterion_protocol_msg msg = criterion_message(phase,
-                .phase = criterion_protocol_phase_kind_TIMEOUT,
-            );
+                        .phase = criterion_protocol_phase_kind_TIMEOUT,
+                        );
 
         msg.id.pid = instance->pid;
         cr_send_to_runner(&msg);
@@ -252,10 +251,10 @@ static void death_callback(bxf_instance *instance)
     }
 
     criterion_protocol_msg msg = criterion_message(death,
-            .result = result,
-            .has_status = true,
-            .status = code,
-        );
+                    .result = result,
+                    .has_status = true,
+                    .status = code,
+                    );
 
     msg.id.pid = instance->pid;
     cr_send_to_runner(&msg);
@@ -276,7 +275,7 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     if (!rc && ctx->params.params) {
         void *param = (char *) ctx->params.params + ctx->i * ctx->params.size;
         rc = bxf_context_addobject(inst_ctx, "criterion.param",
-                param, ctx->params.size);
+                        param, ctx->params.size);
     }
 
     if (!rc)
@@ -286,8 +285,8 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         cr_panic("Could not initialize test context: %s", strerror(-rc));
 
     struct bxf_spawn_params sp = {
-        .fn = run_test_child,
-        .callback = death_callback,
+        .fn              = run_test_child,
+        .callback        = death_callback,
         .inherit.context = inst_ctx,
     };
 
@@ -301,11 +300,11 @@ static bxf_instance *run_test(struct run_next_context *ctx,
                 default: break;
             }
         } else {
-            debugger = (enum bxf_debugger)(criterion_options.debug - 1);
+            debugger = (enum bxf_debugger) (criterion_options.debug - 1);
         }
         if (!debugger)
             cr_panic("Could not choose the debugger server for an "
-                     "unknown compiler");
+                    "unknown compiler");
         sp.debug.debugger = debugger;
         sp.debug.tcp = criterion_options.debug_port;
     }
@@ -341,10 +340,8 @@ static bxf_instance *run_test(struct run_next_context *ctx,
 static CR_INLINE bool is_disabled(struct criterion_test *t,
         struct criterion_suite *s)
 {
-
     return t->data->disabled || (s->data && s->data->disabled);
 }
-
 
 static int skip_disabled(struct run_next_context *ctx)
 {
@@ -381,7 +378,7 @@ bxf_instance *cri_run_next_test(struct criterion_test_set *p_set,
     } while (ctx->set == NULL && ctx->stats == NULL);
 
     for (ctx->ns = ctx->set->suites->first; ctx->ns; ctx->ns = ctx->ns->next) {
-        ctx->suite_set = (void*) (ctx->ns + 1);
+        ctx->suite_set = (void *) (ctx->ns + 1);
 
         if (!ctx->suite_set->tests)
             continue;
@@ -394,14 +391,13 @@ bxf_instance *cri_run_next_test(struct criterion_test_set *p_set,
         stat_push_event(ctx->stats, ctx->suite_stats, NULL, &(struct event) { .kind = PRE_SUITE });
 
         for (ctx->nt = ctx->suite_set->tests->first; ctx->nt; ctx->nt = ctx->nt->next) {
-            ctx->test = (void*) (ctx->nt + 1);
+            ctx->test = (void *) (ctx->nt + 1);
 
             if (skip_disabled(ctx))
                 continue;
 
             if (ctx->test->data->kind_ == CR_TEST_PARAMETERIZED
                     && ctx->test->data->param_) {
-
                 ctx->params = ctx->test->data->param_();
                 for (ctx->i = 0; ctx->i < ctx->params.length; ++ctx->i)
                     ccrReturn(run_test(ctx, client));

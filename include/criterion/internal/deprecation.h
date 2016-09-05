@@ -22,20 +22,20 @@
  * THE SOFTWARE.
  */
 #ifndef CRITERION_INTERNAL_DEPRECATION_H_
-# define CRITERION_INTERNAL_DEPRECATION_H_
+#define CRITERION_INTERNAL_DEPRECATION_H_
 
-# define CR_DEPRECATED(Msg) CR_DEPRECATED_(message (Msg))
+#define CR_DEPRECATED(Msg)               CR_DEPRECATED_(message(Msg))
 
-# ifdef _MSC_VER
-#  define CR_DEPRECATED_(Msg) __pragma(Msg)
-# else
-#  define CR_DEPRECATED_(Msg) _Pragma(#Msg)
-# endif
+#ifdef _MSC_VER
+# define CR_DEPRECATED_(Msg)             __pragma(Msg)
+#else
+# define CR_DEPRECATED_(Msg)             _Pragma(#Msg)
+#endif
 
-# ifdef __GNUC__
-#   define CR_DEPRECATED_MEMBER(Member) Member __attribute__((deprecated))
-# else
-#   define CR_DEPRECATED_MEMBER(Member) Member
-# endif
+#ifdef __GNUC__
+# define CR_DEPRECATED_MEMBER(Member)    Member __attribute__((deprecated))
+#else
+# define CR_DEPRECATED_MEMBER(Member)    Member
+#endif
 
 #endif /* !CRITERION_INTERNAL_DEPRECATION_H_ */

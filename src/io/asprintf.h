@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #ifndef ASPRINTF_H_
-# define ASPRINTF_H_
+#define ASPRINTF_H_
 
 int cr_vasprintf(char **strp, const char *fmt, va_list ap);
 int cr_asprintf(char **strp, const char *fmt, ...);

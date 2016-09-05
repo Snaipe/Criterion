@@ -22,27 +22,27 @@
  * THE SOFTWARE.
  */
 #ifndef CLIENT_H_
-# define CLIENT_H_
+#define CLIENT_H_
 
-# include <khash.h>
-# include <boxfort.h>
+#include <khash.h>
+#include <boxfort.h>
 
-// order matters here
+/* order matters here */
 enum client_state {
     CS_SETUP,
     CS_MAIN,
     CS_TEARDOWN,
     CS_END,
 
-    // The states belows are non-states that should not be
-    // added in the state count
+    /* The states belows are non-states that should not be
+       added in the state count */
     CS_ABORT,
     CS_TIMEOUT,
     CS_SKIP,
 };
 
-// always make it a power of 2
-# define CS_MAX_CLIENT_STATES 4
+/* always make it a power of 2 */
+#define CS_MAX_CLIENT_STATES    4
 
 enum client_kind {
     WORKER,

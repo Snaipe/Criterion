@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-# include "criterion/options.h"
+#include "criterion/options.h"
 
 CR_API struct criterion_options criterion_options = {
     .logging_threshold = CRITERION_IMPORTANT,

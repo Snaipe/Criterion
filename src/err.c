@@ -30,6 +30,7 @@
 CR_NORETURN void cr_panic(const char *str, ...)
 {
     va_list vl;
+
     va_start(vl, str);
     fprintf(stderr, "criterion: ");
     vfprintf(stderr, str, vl);

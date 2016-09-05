@@ -26,43 +26,43 @@
 #include "config.h"
 #include "time.h"
 
-#define KILO 1000ull
-#define MEGA (KILO * 1000ull)
-#define GIGA (MEGA * 1000ull)
+#define KILO    1000ull
+#define MEGA    (KILO * 1000ull)
+#define GIGA    (MEGA * 1000ull)
 
-#if defined(HAVE_GETTIMEOFDAY)
+#if defined (HAVE_GETTIMEOFDAY)
 # include <sys/time.h>
 #endif
 
-#if defined(HAVE_CLOCK_GETTIME)
+#if defined (HAVE_CLOCK_GETTIME)
 # include <time.h>
 #endif
 
-#if defined(__APPLE__)
+#if defined (__APPLE__)
 # include <mach/clock.h>
 # include <mach/mach.h>
 # include <pthread.h>
 #endif
 
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined (_WIN32) || defined (__CYGWIN__)
 # include <windows.h>
 #endif
 
-#if defined(HAVE_CLOCK_GETTIME)
-# if defined(HAVE_CLOCK_MONOTONIC_RAW)
-#  define CLOCK CLOCK_MONOTONIC_RAW
+#if defined (HAVE_CLOCK_GETTIME)
+# if defined (HAVE_CLOCK_MONOTONIC_RAW)
+#  define CLOCK    CLOCK_MONOTONIC_RAW
 # else
-#  define CLOCK CLOCK_MONOTONIC
+#  define CLOCK    CLOCK_MONOTONIC
 # endif
 #endif
 
 uint64_t cri_timestamp_monotonic(void)
 {
-#if defined(HAVE_CLOCK_GETTIME)
+#if defined (HAVE_CLOCK_GETTIME)
     struct timespec now;
     clock_gettime(CLOCK, &now);
     return now.tv_sec * GIGA + now.tv_nsec;
-#elif defined(__APPLE__)
+#elif defined (__APPLE__)
     clock_serv_t cclock;
     mach_timespec_t mts;
 
@@ -71,10 +71,10 @@ uint64_t cri_timestamp_monotonic(void)
     mach_port_deallocate(mach_task_self(), cclock);
 
     return mts.tv_sec * GIGA + mts.tv_nsec;
-#elif defined(_WIN32) || defined(__CYGWIN__)
+#elif defined (_WIN32) || defined (__CYGWIN__)
     LARGE_INTEGER freq, count;
     if (!QueryPerformanceFrequency(&freq)
-        || !QueryPerformanceCounter(&count))
+            || !QueryPerformanceCounter(&count))
         return -1;
 
     uint64_t sec  = count.QuadPart / freq.QuadPart;

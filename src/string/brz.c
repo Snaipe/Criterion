@@ -27,18 +27,18 @@
 #include <string.h>
 #include <stdio.h>
 
-#define copy_glob(g) (g)->copy(g)
-#define derive_glob(g, chr) (g)->derive(g,chr)
+#define copy_glob(g)           (g)->copy(g)
+#define derive_glob(g, chr)    (g)->derive(g, chr)
 
 static int matches(glob const *self, char const *string);
 
 static int is_true(glob const *self);
 static int is_false(glob const *self);
-static int nullable_char(glob const* self);
-static int nullable_or(glob const* self);
-static int nullable_seq(glob const* self);
-static int nullable_first(glob const* self);
-static int nullable_not(glob const* self);
+static int nullable_char(glob const *self);
+static int nullable_or(glob const *self);
+static int nullable_seq(glob const *self);
+static int nullable_first(glob const *self);
+static int nullable_not(glob const *self);
 
 static glob *derive_empty(glob const *self, char const chr);
 static glob *derive_blank(glob const *self, char const chr);
@@ -56,8 +56,8 @@ static glob *copy_one(glob const *cpy);
 static glob *copy_two(glob const *cpy);
 
 #ifdef _DEBUG_BRZ_
-#define print_glob_v(g) do{printf(#g" "); (g)->print(g),puts("");}while(0)
-#define print_glob(g) do{(g)->print(g);}while(0)
+# define print_glob_v(g)    do { printf(#g " "); (g)->print(g), puts(""); } while (0)
+# define print_glob(g)      do { (g)->print(g); } while (0)
 static void print_empty(glob const *self);
 static void print_blank(glob const *self);
 static void print_char(glob const *self);
@@ -72,23 +72,24 @@ static void print_seq(glob const *self);
 static void print_not(glob const *self);
 #endif
 
-void free_glob(glob *tmp) {
-    glob* first = (glob*)tmp->first;
-    glob* second = (glob*)tmp->second;
-    if (tmp->type != CHAR && tmp->type != CHARSET && first) {
+void free_glob(glob *tmp)
+{
+    glob *first = (glob *) tmp->first;
+    glob *second = (glob *) tmp->second;
+
+    if (tmp->type != CHAR && tmp->type != CHARSET && first)
         free_glob(first);
-    } else if (tmp->type == CHARSET) {
+    else if (tmp->type == CHARSET)
         free(tmp->cset);
-    }
-    if (second) {
+    if (second)
         free_glob(second);
-    }
     free(tmp);
 }
 
+static glob *new_glob()
+{
+    glob *tmp = malloc(sizeof (glob));
 
-static glob *new_glob() {
-    glob* tmp = malloc(sizeof(glob));
     if (tmp) {
         tmp->derive = NULL;
         tmp->nullable = NULL;
@@ -96,15 +97,15 @@ static glob *new_glob() {
         tmp->second = NULL;
         tmp->matches = matches;
         tmp->type = 0;
-    }
-    else {
+    } else {
         fprintf(stderr, "Could not allocate glob object.\n");
         exit(1);
     }
     return tmp;
 }
 
-static int matches(glob const *self, char const *string) {
+static int matches(glob const *self, char const *string)
+{
     if (strlen(string) == 0) {
         return self->nullable(self);
     } else {
@@ -117,7 +118,7 @@ static int matches(glob const *self, char const *string) {
 #ifdef _DEBUG_BRZ_
         print_glob_v(tmp);
 #endif
-        ret = tmp->matches(tmp,++string);
+        ret = tmp->matches(tmp, ++string);
         free_glob(tmp);
         return ret;
     }
@@ -128,8 +129,10 @@ static int matches(glob const *self, char const *string) {
  * not nullable
  * no derivative
  */
-glob *glob_empty() {
+glob *glob_empty()
+{
     glob *tmp = new_glob();
+
     tmp->type = EMPTY;
     tmp->nullable = is_false;
     tmp->derive = derive_empty;
@@ -146,8 +149,10 @@ glob *glob_empty() {
  * is nullable
  * derivative is Empty set
  */
-glob *glob_blank() {
+glob *glob_blank()
+{
     glob *tmp = new_glob();
+
     tmp->type = BLANK;
     tmp->nullable = is_true;
     tmp->derive = derive_blank;
@@ -159,15 +164,16 @@ glob *glob_blank() {
     return tmp;
 }
 
-
 /*
  * single chacacter
  * nullable for ? and *
  * derivative: Empty string if chr == c
  *             Empty set otherwise
  */
-glob *glob_char(char const c) {
+glob *glob_char(char const c)
+{
     glob *tmp = new_glob();
+
     tmp->type = CHAR;
     tmp->nullable = nullable_char;
     tmp->derive = derive_char;
@@ -186,8 +192,10 @@ glob *glob_char(char const c) {
  * derivative: Empty string if chr in [..] or not in [!..]
  *             Empty set otherwise
  */
-glob *glob_cset(char *cset) {
+glob *glob_cset(char *cset)
+{
     glob *tmp = new_glob();
+
     tmp->type = CHARSET;
     tmp->nullable = is_false;
     tmp->derive = derive_cset;
@@ -208,8 +216,9 @@ glob *glob_cset(char *cset) {
  * Optimization:
  * (1) E | Empty -> E
  */
-glob *glob_or(glob const *first, glob const *second) {
-    if (first->type == EMPTY){
+glob *glob_or(glob const *first, glob const *second)
+{
+    if (first->type == EMPTY) {
         return copy_glob(second);
     } else if (second->type == EMPTY) {
         return copy_glob(first);
@@ -238,7 +247,8 @@ glob *glob_or(glob const *first, glob const *second) {
  * Optimization:
  * (1) E & Empty -> Empty
  */
-glob *glob_and(glob const *first, glob const *second) {
+glob *glob_and(glob const *first, glob const *second)
+{
     if (first->type == EMPTY || second->type == EMPTY) {
         return glob_empty();
     } else {
@@ -258,8 +268,10 @@ glob *glob_and(glob const *first, glob const *second) {
     }
 }
 
-glob *glob_star(glob const *pattern) {
+glob *glob_star(glob const *pattern)
+{
     glob *tmp = new_glob();
+
     tmp->type = STAR;
     tmp->nullable = is_true;
     tmp->derive = derive_plus;
@@ -273,7 +285,6 @@ glob *glob_star(glob const *pattern) {
     return tmp;
 }
 
-
 /*
  * Repetition one or more
  * +(pat)
@@ -281,8 +292,10 @@ glob *glob_star(glob const *pattern) {
  * derivative: der(pat) Star(pat)
  *
  */
-glob *glob_plus(glob const *pattern) {
+glob *glob_plus(glob const *pattern)
+{
     glob *tmp = glob_star(pattern);
+
     tmp->type = PLUS;
     tmp->nullable = nullable_first;
 #ifdef _DEBUG_BRZ_
@@ -298,7 +311,8 @@ glob *glob_plus(glob const *pattern) {
  * derivative: der(pat)
  *
  */
-glob *glob_at(glob const *pattern) {
+glob *glob_at(glob const *pattern)
+{
     if (pattern->type == EMPTY) {
         return glob_empty();
     } else if (pattern->type == BLANK) {
@@ -315,7 +329,6 @@ glob *glob_at(glob const *pattern) {
     }
 }
 
-
 /*
  * Repetition one or zero
  * ?(pat)
@@ -323,8 +336,10 @@ glob *glob_at(glob const *pattern) {
  * derivative: der(pat)
  *
  */
-glob *glob_opt(glob const *pattern) {
+glob *glob_opt(glob const *pattern)
+{
     glob *tmp = new_glob();
+
     tmp->type = OPT;
     tmp->nullable = is_true;
     tmp->derive = derive_at;
@@ -345,8 +360,10 @@ glob *glob_opt(glob const *pattern) {
  * derivative: not der(pat)
  *
  */
-glob *glob_not(glob const *pattern) {
+glob *glob_not(glob const *pattern)
+{
     glob *tmp = new_glob();
+
     tmp->type = NOT;
     tmp->nullable = nullable_not;
     tmp->derive = derive_not;
@@ -370,10 +387,11 @@ glob *glob_not(glob const *pattern) {
  * (2) E Empty -> Empty
  * (3) Blank E -> E
  */
-glob *glob_seq(glob const *first, glob const *second) {
+glob *glob_seq(glob const *first, glob const *second)
+{
     if (first->type == EMPTY || second->type == EMPTY) {
         return glob_empty();
-    }else if(first->type == BLANK) {
+    } else if (first->type == BLANK) {
         return copy_glob(second);
     } else {
         glob *tmp = new_glob();
@@ -391,58 +409,68 @@ glob *glob_seq(glob const *first, glob const *second) {
     }
 }
 
-
-static int is_false(glob const *self) {
-    (void)(self);
+static int is_false(glob const *self)
+{
+    (void) (self);
     return 0;
 }
 
-static int is_true(glob const *self) {
-    (void)(self);
+static int is_true(glob const *self)
+{
+    (void) (self);
     return 1;
 }
 
-static int nullable_char(glob const* self) {
-    if (self->c == '?' || self->c == '*') {
+static int nullable_char(glob const *self)
+{
+    if (self->c == '?' || self->c == '*')
         return 1;
-    } else {
+    else
         return 0;
-    }
 }
 
-static int nullable_or(glob const* self) {
+static int nullable_or(glob const *self)
+{
     glob const *first, *second;
+
     first = self->first;
     second = self->second;
     return first->nullable(first) || second->nullable(second);
 }
 
-static int nullable_seq(glob const* self) {
+static int nullable_seq(glob const *self)
+{
     glob const *first, *second;
+
     first = self->first;
     second = self->second;
     return first->nullable(first) && second->nullable(second);
 }
 
-static int nullable_first(glob const* self) {
+static int nullable_first(glob const *self)
+{
     glob const *first;
+
     first = self->first;
     return first->nullable(first);
 }
 
-static int nullable_not(glob const* self) {
+static int nullable_not(glob const *self)
+{
     return !nullable_first(self);
 }
 
-static glob *derive_empty(glob const *self, char const chr) {
-    (void)(chr);
-    (void)(self);
+static glob *derive_empty(glob const *self, char const chr)
+{
+    (void) (chr);
+    (void) (self);
     return glob_empty();
 }
 
-static glob *derive_blank(glob const *self, char const chr) {
-    (void)(self);
-    (void)(chr);
+static glob *derive_blank(glob const *self, char const chr)
+{
+    (void) (self);
+    (void) (chr);
     return glob_empty();
 }
 
@@ -457,13 +485,14 @@ static glob *derive_char(glob const *self, char const chr)
     return glob_empty();
 }
 
-
-static glob *derive_cset(glob const *self, char const chr) {
+static glob *derive_cset(glob const *self, char const chr)
+{
     /* Character class */
     char *pat = self->cset;
     int match = 0, inverted = (*pat == '!');
     char const *class = pat + inverted;
     unsigned char a = *class++;
+
     /*
      * Iterate over each span in the character class.
      * A span is either a single character a, or a
@@ -472,7 +501,7 @@ static glob *derive_cset(glob const *self, char const chr) {
     do {
         unsigned char b = a;
 
-        if (a == '\0')  /* Malformed */
+        if (a == '\0') /* Malformed */
             return glob_empty();
 
         if (class[0] == '-' && class[1] != ']') {
@@ -497,34 +526,40 @@ static glob *derive_cset(glob const *self, char const chr) {
         return glob_blank();
 }
 
-static glob *derive_and(glob const *self, char const chr) {
+static glob *derive_and(glob const *self, char const chr)
+{
     glob const *first, *second;
+
     first = self->first;
     second = self->second;
     glob *d1 = derive_glob(first, chr);
     glob *d2 = derive_glob(second, chr);
-    glob* ret;
+    glob *ret;
     ret = glob_and(d1, d2);
     free_glob(d1);
     free_glob(d2);
     return ret;
 }
 
-static glob *derive_or(glob const *self, char const chr) {
+static glob *derive_or(glob const *self, char const chr)
+{
     glob const *first, *second;
+
     first = self->first;
     second = self->second;
     glob *d1 = derive_glob(first, chr);
     glob *d2 = derive_glob(second, chr);
-    glob* ret = glob_or(d1, d2);
+    glob *ret = glob_or(d1, d2);
     free_glob(d1);
     free_glob(d2);
     return ret;
 }
 
-static glob *derive_plus(glob const *self, char const chr) {
+static glob *derive_plus(glob const *self, char const chr)
+{
     glob *ret;
     glob const *pat;
+
     pat = self->pattern;
     glob *d = derive_glob(pat, chr);
     glob *s = glob_star(pat);
@@ -535,12 +570,14 @@ static glob *derive_plus(glob const *self, char const chr) {
     return ret;
 }
 
-static glob *derive_seq(glob const *self, char const chr) {
+static glob *derive_seq(glob const *self, char const chr)
+{
     glob *ret;
     glob const *first, *second;
+
     first = self->first;
     second = self->second;
-    if (first->nullable(first)) { // A nullable -> Or( Seq(d1, sec), d2)
+    if (first->nullable(first)) { /* A nullable -> Or( Seq(d1, sec), d2) */
         glob *d1 = derive_glob(first, chr);
         glob *d2 = derive_glob(second, chr);
         glob *s = glob_seq(d1, second);
@@ -548,7 +585,7 @@ static glob *derive_seq(glob const *self, char const chr) {
         free_glob(s);
         free_glob(d1);
         free_glob(d2);
-    } else { // A not nullable
+    } else { /* A not nullable */
         glob *derive = derive_glob(first, chr);
         ret = glob_seq(derive, second);
         free_glob(derive);
@@ -557,10 +594,10 @@ static glob *derive_seq(glob const *self, char const chr) {
     return ret;
 }
 
-
-
-static glob *derive_at(glob const *self, char const chr) {
+static glob *derive_at(glob const *self, char const chr)
+{
     glob const *pat;
+
     pat = self->pattern;
     glob *d = derive_glob(pat, chr);
     glob *ret;
@@ -569,8 +606,10 @@ static glob *derive_at(glob const *self, char const chr) {
     return ret;
 }
 
-static glob *derive_not(glob const *self, char const chr) {
+static glob *derive_not(glob const *self, char const chr)
+{
     glob const *pat;
+
     pat = self->pattern;
     glob *d = derive_glob(pat, chr);
     glob *ret = glob_not(d);
@@ -578,21 +617,24 @@ static glob *derive_not(glob const *self, char const chr) {
     return ret;
 }
 
-static glob *copy_zero(glob const *cpy) {
+static glob *copy_zero(glob const *cpy)
+{
     glob *tmp = new_glob();
+
     *tmp = *cpy;
     return tmp;
 }
 
-static glob *copy_one(glob const *cpy) {
+static glob *copy_one(glob const *cpy)
+{
     glob const *first = cpy->first;
     glob *tmp = new_glob();
+
     *tmp = *cpy;
-    if (cpy->type != CHARSET) {
+    if (cpy->type != CHARSET)
         tmp->first = copy_glob(first);
-    } else {
+    else
         tmp->cset = strdup(cpy->cset);
-    }
     return tmp;
 }
 
@@ -601,40 +643,41 @@ static glob *copy_two(glob const *cpy)
     glob const *first = cpy->first;
     glob const *sec = cpy->second;
     glob *tmp = new_glob();
+
     *tmp = *cpy;
     tmp->first = copy_glob(first);
     tmp->second = copy_glob(sec);
     return tmp;
 }
 
-
 #ifdef _DEBUG_BRZ_
 
 static void print_empty(glob const *self)
 {
-    (void)(self);
+    (void) (self);
     printf("Empty");
 }
 
 static void print_blank(glob const *self)
 {
-    (void)(self);
+    (void) (self);
     printf("Blank");
 }
 static void print_char(glob const *self)
 {
-    printf("%c",self->c);
+    printf("%c", self->c);
 }
 
 static void print_cset(glob const *self)
 {
-    printf("[%s]",self->cset);
+    printf("[%s]", self->cset);
 }
 
 static void print_or(glob const *self)
 {
     glob const *first = self->first;
     glob const *sec = self->second;
+
     printf("(");
     print_glob(first);
     printf(" | ");
@@ -645,6 +688,7 @@ static void print_and(glob const *self)
 {
     glob const *first = self->first;
     glob const *sec = self->second;
+
     printf("(");
     print_glob(first);
     printf(" & ");
@@ -656,6 +700,7 @@ static void print_seq(glob const *self)
 {
     glob const *first = self->first;
     glob const *sec = self->second;
+
     print_glob(first);
     printf(" . ");
     print_glob(sec);
@@ -664,6 +709,7 @@ static void print_seq(glob const *self)
 static void print_star(glob const *self)
 {
     glob const *first = self->first;
+
     printf("*(");
     print_glob(first);
     printf(")");
@@ -671,6 +717,7 @@ static void print_star(glob const *self)
 static void print_plus(glob const *self)
 {
     glob const *first = self->first;
+
     printf("+(");
     print_glob(first);
     printf(")");
@@ -678,6 +725,7 @@ static void print_plus(glob const *self)
 static void print_at(glob const *self)
 {
     glob const *first = self->first;
+
     printf("@(");
     print_glob(first);
     printf(")");
@@ -685,6 +733,7 @@ static void print_at(glob const *self)
 static void print_opt(glob const *self)
 {
     glob const *first = self->first;
+
     printf("?(");
     print_glob(first);
     printf(")");
@@ -692,6 +741,7 @@ static void print_opt(glob const *self)
 static void print_not(glob const *self)
 {
     glob const *first = self->first;
+
     printf("!(");
     print_glob(first);
     printf(")");

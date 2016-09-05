@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 #ifndef EVENT_H_
-# define EVENT_H_
+#define EVENT_H_
 
-# include "criterion/event.h"
-# include <stdio.h>
-# include <pb.h>
+#include "criterion/event.h"
+#include <stdio.h>
+#include <pb.h>
 
 extern int g_client_socket;
 

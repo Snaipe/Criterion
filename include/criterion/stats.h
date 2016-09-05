@@ -26,14 +26,14 @@
  * @brief Test stats
  *****************************************************************************/
 #ifndef CRITERION_STATS_H_
-# define CRITERION_STATS_H_
+#define CRITERION_STATS_H_
 
-# include "types.h"
-# include "internal/deprecation.h"
+#include "types.h"
+#include "internal/deprecation.h"
 
 enum criterion_test_status {
-    CR_STATUS_PASSED  = 0,
-    CR_STATUS_FAILED  = 1,
+    CR_STATUS_PASSED = 0,
+    CR_STATUS_FAILED = 1,
     CR_STATUS_SKIPPED = 2,
 };
 

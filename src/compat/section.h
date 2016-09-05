@@ -22,27 +22,27 @@
  * THE SOFTWARE.
  */
 #ifndef SECTION_H_
-# define SECTION_H_
+#define SECTION_H_
 
-# include "config.h"
+#include "config.h"
 
-# if defined (__ELF__)
-#  define MODULE_INVALID NULL
-#  include <link.h>
+#if defined (__ELF__)
+# define MODULE_INVALID    NULL
+# include <link.h>
 
 typedef struct mod_handle {
     int fd;
-    const ElfW(Ehdr) *map;
+    const ElfW(Ehdr) * map;
     size_t len;
 } mod_handle;
-# elif defined (__APPLE__)
-#  define MODULE_INVALID -1
+#elif defined (__APPLE__)
+# define MODULE_INVALID    -1
 typedef int mod_handle;
-# elif defined (_WIN32)
-#  include <windows.h>
-#  define MODULE_INVALID NULL
+#elif defined (_WIN32)
+# include <windows.h>
+# define MODULE_INVALID    NULL
 typedef HMODULE mod_handle;
-# endif
+#endif
 
 struct section_mapping {
     const void *map;

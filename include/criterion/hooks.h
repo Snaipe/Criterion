@@ -26,9 +26,9 @@
  * @brief Report hooks
  *****************************************************************************/
 #ifndef CRITERION_HOOKS_H_
-# define CRITERION_HOOKS_H_
+#define CRITERION_HOOKS_H_
 
-# include "internal/hooks.h"
+#include "internal/hooks.h"
 
 /**
  *  This enum lists all the phases of the runner lifecycle.
@@ -67,6 +67,6 @@ typedef void (*f_report_hook)();
  *
  *  @param Kind The report phase to hook the function onto.
  */
-# define ReportHook(Kind) CR_REPORT_HOOK_IMPL(Kind)
+#define ReportHook(Kind)    CR_REPORT_HOOK_IMPL(Kind)
 
 #endif /* !CRITERION_HOOKS_H_ */

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #ifndef CONNECT_H_
-# define CONNECT_H_
+#define CONNECT_H_
 
 int cri_proto_bind(const char *url);
 int cri_proto_connect(const char *url);

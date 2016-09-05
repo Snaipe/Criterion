@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef COMPAT_PROCESSOR_H_
-# define COMPAT_PROCESSOR_H_
+#define COMPAT_PROCESSOR_H_
 
-# include <stddef.h>
+#include <stddef.h>
 
 size_t get_processor_count(void);
 

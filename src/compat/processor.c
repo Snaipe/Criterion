@@ -24,7 +24,8 @@
 
 #include "internal.h"
 
-size_t get_processor_count(void) {
+size_t get_processor_count(void)
+{
 #ifdef _WIN32
     /* This code shall return 1 until
        https://github.com/Snaipe/Criterion/issues/118 gets fixed. */
@@ -36,7 +37,7 @@ size_t get_processor_count(void) {
 # else
     return 1;
 # endif
-#elif defined(BSD)
+#elif defined (BSD)
     int mib[2] = { CTL_HW, HW_NCPU };
 # ifdef __APPLE__
     size_t miblen = 2;
@@ -51,7 +52,7 @@ size_t get_processor_count(void) {
     if (count < 1 || res == -1)
         count = 1;
     return (size_t) count;
-#elif defined(__linux__)
+#elif defined (__linux__)
     return sysconf(_SC_NPROCESSORS_ONLN);
 #else
 # error System not supported

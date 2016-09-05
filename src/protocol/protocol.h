@@ -22,15 +22,15 @@
  * THE SOFTWARE.
  */
 #ifndef PROTOCOL_H_
-# define PROTOCOL_H_
+#define PROTOCOL_H_
 
-# include <pb.h>
-# include <pb_encode.h>
-# include <pb_decode.h>
-# include "criterion.pb.h"
-# include "criterion/internal/preprocess.h"
-# include "compat/process.h"
-# include "compat/time.h"
+#include <pb.h>
+#include <pb_encode.h>
+#include <pb_decode.h>
+#include "criterion.pb.h"
+#include "criterion/internal/preprocess.h"
+#include "compat/process.h"
+#include "compat/time.h"
 
 enum protocol_version {
     PROTOCOL_V1 = 1,
@@ -38,13 +38,13 @@ enum protocol_version {
 
 extern volatile bool is_extern_worker;
 
-# define criterion_message_set_id(Msg)                                      \
-    do {                                                                    \
-        if (is_extern_worker) {                                             \
-            (Msg).id.uid = (char *) criterion_current_test->name;           \
-        } else {                                                            \
-            (Msg).id.pid = get_process_id();                                \
-        }                                                                   \
+#define criterion_message_set_id(Msg)                             \
+    do {                                                          \
+        if (is_extern_worker) {                                   \
+            (Msg).id.uid = (char *) criterion_current_test->name; \
+        } else {                                                  \
+            (Msg).id.pid = get_process_id();                      \
+        }                                                         \
     } while (0)
 
 /* *INDENT-OFF* - remove when https://github.com/uncrustify/uncrustify/issues/667

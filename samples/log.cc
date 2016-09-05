@@ -7,12 +7,12 @@ using criterion::logging::error;
 
 Test(logging, stream) {
     info << "This is an informational message. They are not displayed "
-            "by default."
+        "by default."
          << std::endl;
     warn << "This is a warning. They indicate some possible malfunction "
-            "or misconfiguration in the test."
+        "or misconfiguration in the test."
          << std::endl;
     error << "This is an error. They indicate serious problems and "
-            "are usually shown before the test is aborted."
+        "are usually shown before the test is aborted."
           << std::endl;
 }

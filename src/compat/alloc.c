@@ -32,7 +32,7 @@ static bxf_arena inheritable_arena;
 void cri_alloc_init(void)
 {
     int rc = bxf_arena_init(0, BXF_ARENA_RESIZE | BXF_ARENA_IDENTITY
-            | BXF_ARENA_KEEPMAPPED, &inheritable_arena);
+                    | BXF_ARENA_KEEPMAPPED, &inheritable_arena);
 
     if (rc < 0)
         cr_panic("Could not initialize inheritable arena: %s", strerror(-rc));
@@ -51,6 +51,7 @@ bxf_arena cri_alloc_getarena(void)
 void *cr_malloc(size_t size)
 {
     bxf_ptr ptr = bxf_arena_alloc(&inheritable_arena, size);
+
     if (ptr < 0) {
         errno = -ptr;
         return NULL;
@@ -61,6 +62,7 @@ void *cr_malloc(size_t size)
 void *cr_calloc(size_t nmemb, size_t size)
 {
     void *ptr = cr_malloc(size * nmemb);
+
     if (ptr)
         memset(ptr, 0, size * nmemb);
     return ptr;
@@ -68,8 +70,9 @@ void *cr_calloc(size_t nmemb, size_t size)
 
 void *cr_realloc(void *ptr, size_t size)
 {
-    bxf_ptr p = (intptr_t)ptr - (intptr_t)inheritable_arena;
+    bxf_ptr p = (intptr_t) ptr - (intptr_t) inheritable_arena;
     bxf_ptr newptr = bxf_arena_realloc(&inheritable_arena, p, size);
+
     if (newptr < 0) {
         errno = -newptr;
         return NULL;
@@ -79,6 +82,7 @@ void *cr_realloc(void *ptr, size_t size)
 
 void cr_free(void *ptr)
 {
-    bxf_ptr p = (intptr_t)ptr - (intptr_t)inheritable_arena;
+    bxf_ptr p = (intptr_t) ptr - (intptr_t) inheritable_arena;
+
     (void) bxf_arena_free(&inheritable_arena, p);
 }

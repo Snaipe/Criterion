@@ -23,8 +23,10 @@
  */
 #include "basename.h"
 
-const char *basename_compat(const char *str) {
+const char *basename_compat(const char *str)
+{
     const char *start = str;
+
     for (const char *c = str; *c; ++c)
         if ((*c == '/' || *c == '\\') && c[1])
             start = c + 1;

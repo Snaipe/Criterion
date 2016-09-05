@@ -26,11 +26,11 @@
  * @brief Report functions
  *****************************************************************************/
 #ifndef CRITERION_OUTPUT_H_
-# define CRITERION_OUTPUT_H_
+#define CRITERION_OUTPUT_H_
 
-# include "stats.h"
+#include "stats.h"
 
-typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
+typedef void criterion_reporter (FILE *stream, struct criterion_global_stats *);
 
 /**
  *  Register an output provider.

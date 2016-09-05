@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef OUTPUT_H_
-# define OUTPUT_H_
+#define OUTPUT_H_
 
-# include "criterion/output.h"
+#include "criterion/output.h"
 
 void process_all_output(struct criterion_global_stats *stats);
 void criterion_free_output(void);

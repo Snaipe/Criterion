@@ -26,11 +26,11 @@
  * @brief criterion options
  *****************************************************************************/
 #ifndef CRITERION_OPTIONS_H_
-# define CRITERION_OPTIONS_H_
+#define CRITERION_OPTIONS_H_
 
-# include <stdbool.h>
-# include "logging.h"
-# include "internal/common.h"
+#include <stdbool.h>
+#include "logging.h"
+#include "internal/common.h"
 
 enum criterion_debugger {
     /**
@@ -61,7 +61,6 @@ enum criterion_debugger {
 };
 
 struct criterion_options {
-
     /**
      *  The current logging threshold.
      *

@@ -17,15 +17,16 @@ static msg_t msg_err = "Could not open the file @ `%s` for %s reporting: %s.\n";
 static msg_t msg_ok  = "Writing %s report in `%s`.\n";
 #endif
 
-typedef kvec_t(const char *) str_vec;
+typedef kvec_t (const char *) str_vec;
 
-KHASH_MAP_INIT_STR(ht_str, criterion_reporter*)
-KHASH_MAP_INIT_STR(ht_path, str_vec*)
+KHASH_MAP_INIT_STR(ht_str, criterion_reporter *)
+KHASH_MAP_INIT_STR(ht_path, str_vec *)
 
-static khash_t(ht_str) *reporters;
-static khash_t(ht_path) *outputs;
+static khash_t(ht_str) * reporters;
+static khash_t(ht_path) * outputs;
 
-int criterion_register_output_provider(const char *name, criterion_reporter *reporter) {
+int criterion_register_output_provider(const char *name, criterion_reporter *reporter)
+{
     if (!reporters)
         reporters = kh_init(ht_str);
 
@@ -35,7 +36,8 @@ int criterion_register_output_provider(const char *name, criterion_reporter *rep
     return absent;
 }
 
-int criterion_add_output(const char *provider, const char *path) {
+int criterion_add_output(const char *provider, const char *path)
+{
     if (!outputs)
         outputs = kh_init(ht_path);
 
@@ -57,7 +59,8 @@ int criterion_add_output(const char *provider, const char *path) {
     return 1;
 }
 
-void criterion_free_output(void) {
+void criterion_free_output(void)
+{
     if (reporters)
         kh_destroy(ht_str, reporters);
 
@@ -73,7 +76,8 @@ void criterion_free_output(void) {
     }
 }
 
-void process_all_output(struct criterion_global_stats *stats) {
+void process_all_output(struct criterion_global_stats *stats)
+{
     if (!outputs || !reporters)
         return;
 

@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef CR_OFF_T_DEFINED
-# define CR_OFF_T_DEFINED
+#define CR_OFF_T_DEFINED
 
-# include <stdint.h>
+#include <stdint.h>
 
 typedef int32_t cr_off32;
 typedef int64_t cr_off64;

@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef TIMER_H_
-# define TIMER_H_
+#define TIMER_H_
 
-# include <stdint.h>
+#include <stdint.h>
 
 uint64_t cri_timestamp_monotonic(void);
 

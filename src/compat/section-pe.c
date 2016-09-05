@@ -43,7 +43,8 @@ void *map_section_data(mod_handle *mod, const char *name,
             + dos_hdr->e_lfanew);
 
     PIMAGE_SECTION_HEADER sec_hdr = IMAGE_FIRST_SECTION(nt_hdr);
-    for(int i = 0; i < nt_hdr->FileHeader.NumberOfSections; i++, sec_hdr++) {
+
+    for (int i = 0; i < nt_hdr->FileHeader.NumberOfSections; i++, sec_hdr++) {
         if (!strncmp((char *) sec_hdr->Name, name, IMAGE_SIZEOF_SHORT_NAME)) {
             map->sec_len = sec_hdr->SizeOfRawData;
             return (char *) dos_hdr + sec_hdr->VirtualAddress;

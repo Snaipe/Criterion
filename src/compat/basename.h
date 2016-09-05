@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #ifndef BASENAME_H_
-# define BASENAME_H_
+#define BASENAME_H_
 
 const char *basename_compat(const char *str);
 

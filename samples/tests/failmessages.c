@@ -1,8 +1,8 @@
 #include <criterion/criterion.h>
 
-// Define NULL consistenly for the regression tests
-# undef NULL
-# define NULL ((void *)0)
+/* Define NULL consistenly for the regression tests */
+#undef NULL
+#define NULL    ((void *) 0)
 
 Test(messages, default) {
     cr_expect(0);

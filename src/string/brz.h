@@ -30,7 +30,7 @@ typedef struct stc_glob *(*copy_func)(struct stc_glob const *cpy);
 typedef void (*printFunc)(struct stc_glob const *self);
 
 typedef enum
-    {EMPTY = 0, BLANK, CHAR, CHARSET, OR, AND, STAR, PLUS, AT, OPT, SEQ, NOT}glob_type;
+{ EMPTY = 0, BLANK, CHAR, CHARSET, OR, AND, STAR, PLUS, AT, OPT, SEQ, NOT } glob_type;
 
 typedef struct stc_glob {
     glob_type type;
@@ -50,14 +50,14 @@ typedef struct stc_glob {
     union {
         struct stc_glob const *second;
     };
-}glob;
+} glob;
 
 void free_glob(glob *tmp);
 
 glob *glob_empty();
 glob *glob_blank();
 glob *glob_char(char c);
-glob *glob_cset(char* c);
+glob *glob_cset(char *c);
 glob *glob_or(glob const *first, glob const *second);
 glob *glob_and(glob const *first, glob const *second);
 glob *glob_star(glob const *pattern);

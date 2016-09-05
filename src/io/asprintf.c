@@ -27,24 +27,27 @@
 #include <stdio.h>
 #include "criterion/internal/asprintf-compat.h"
 
-int cr_asprintf(char **strp, const char *fmt, ...) {
+int cr_asprintf(char **strp, const char *fmt, ...)
+{
     va_list ap;
+
     va_start(ap, fmt);
     int res = cr_vasprintf(strp, fmt, ap);
     va_end(ap);
     return res;
 }
 
-int cr_vasprintf(char **strp, const char *fmt, va_list ap) {
+int cr_vasprintf(char **strp, const char *fmt, va_list ap)
+{
     va_list vl;
+
     va_copy(vl, ap);
 
     int size = vsnprintf(0, 0, fmt, vl);
     int res = -1;
 
-    if (size < 0 || size >= INT_MAX) {
+    if (size < 0 || size >= INT_MAX)
         goto cleanup;
-    }
 
     char *str = malloc(size + 1);
     if (str) {

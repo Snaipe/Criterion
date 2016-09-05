@@ -26,29 +26,29 @@
  * @brief Types for tests
  *****************************************************************************/
 #ifndef CRITERION_TYPES_H_
-# define CRITERION_TYPES_H_
+#define CRITERION_TYPES_H_
 
-# include "alloc.h"
-# ifdef __cplusplus
-#  include <cstddef>
-#  include <vector>
+#include "alloc.h"
+#ifdef __cplusplus
+# include <cstddef>
+# include <vector>
 using std::size_t;
-# else
-#  include <stdbool.h>
-#  include <stddef.h>
-# endif
-# include "internal/common.h"
+#else
+# include <stdbool.h>
+# include <stddef.h>
+#endif
+#include "internal/common.h"
 
 /**
  *  Enumerates the supported languages for tests
  */
 enum criterion_language {
-    CR_LANG_C,              //!< C
-    CR_LANG_CXX,            //!< C++
-    CR_LANG_OBJC,           //!< Objective-C
-    CR_LANG_OBJCXX,         //!< Objective-C++
+    CR_LANG_C,      /* !< C */
+    CR_LANG_CXX,    /* !< C++ */
+    CR_LANG_OBJC,   /* !< Objective-C */
+    CR_LANG_OBJCXX, /* !< Objective-C++ */
 
-    CR_LANG_SIZE_ // leave this at the end
+    CR_LANG_SIZE_   /* leave this at the end */
 };
 
 /**
@@ -76,8 +76,8 @@ struct criterion_test_params;
  *  the Test and TestSuite macros, or other means.
  */
 struct criterion_test_extra_data {
-    /// @cond CRITERION_TEST_EXTRA_DATA_PRIVATE_API
-    // Start of private API
+    /* / @cond CRITERION_TEST_EXTRA_DATA_PRIVATE_API
+       Start of private API */
     /*
      * Warning: the fields below are not meant to be set manually.
      *  Setting them improperly *will* wreck havock in your tests.
@@ -92,8 +92,8 @@ struct criterion_test_extra_data {
     const char *identifier_;
     const char *file_;
     unsigned line_;
-    // Enf of private API
-    /// @endcond
+    /* Enf of private API
+       / @endcond */
 
     /**
      * The setup test fixture.

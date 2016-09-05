@@ -22,41 +22,41 @@
  * THE SOFTWARE.
  */
 #ifndef ERR_H_
-# define ERR_H_
+#define ERR_H_
 
-# include <errno.h>
+#include <errno.h>
 
-# include "common.h"
+#include "common.h"
 
 CR_FORMAT(printf, 1, 2)
 CR_NORETURN void cr_panic(const char *str, ...);
 
-# define errno_ignore(Stmt)                                                    \
-    do {                                                                       \
-        int err = errno;                                                       \
-        Stmt;                                                                  \
-        errno = err;                                                           \
+#define errno_ignore(Stmt) \
+    do {                   \
+        int err = errno;   \
+        Stmt;              \
+        errno = err;       \
     } while (0)
 
-# define errno_return(Err, Val)                                                \
-    do {                                                                       \
-        errno = (Err);                                                         \
-        return (Val);                                                          \
+#define errno_return(Err, Val) \
+    do {                       \
+        errno = (Err);         \
+        return (Val);          \
     } while (0)
 
-# undef assert
-# define assert(Cnd)                                                           \
-    do {                                                                       \
-        if (!(Cnd)) {                                                          \
-            cr_panic("Assertion failed: %s\n\t@ %s:%d (%s)", #Cnd, __FILE__,   \
-                     __LINE__, __func__);                                      \
-        }                                                                      \
+#undef assert
+#define assert(Cnd)                                                          \
+    do {                                                                     \
+        if (!(Cnd)) {                                                        \
+            cr_panic("Assertion failed: %s\n\t@ %s:%d (%s)", #Cnd, __FILE__, \
+                    __LINE__, __func__);                                     \
+        }                                                                    \
     } while (0)
 
-# ifdef NDEBUG
-#  define debug_assert(Cnd)
-# else
-#  define debug_assert(Cnd) assert(Cnd)
-# endif
+#ifdef NDEBUG
+# define debug_assert(Cnd)
+#else
+# define debug_assert(Cnd)    assert(Cnd)
+#endif
 
 #endif /* !ERR_H_ */

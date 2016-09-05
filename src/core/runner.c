@@ -59,65 +59,70 @@
 # include <valgrind/valgrind.h>
 #else
 # define ENABLE_VALGRIND_ERRORS
-# define RUNNING_ON_VALGRIND 0
+# define RUNNING_ON_VALGRIND    0
 #endif
 
 typedef const char *const msg_t;
 
 #ifdef ENABLE_NLS
 static msg_t msg_valgrind_jobs = N_("%1$sWarning! Criterion has detected "
-        "that it is running under valgrind, but the number of jobs have been "
-        "explicitely set. Reports might appear confusing!%2$s\n");
+                "that it is running under valgrind, but the number of jobs have been "
+                "explicitely set. Reports might appear confusing!%2$s\n");
 #else
 static msg_t msg_valgrind_jobs = "%sWarning! Criterion has detected "
         "that it is running under valgrind, but the number of jobs have been "
         "explicitely set. Reports might appear confusing!%s\n";
 #endif
 
-// This is here to make the test suite & test sections non-empty
+/* This is here to make the test suite & test sections non-empty */
 CR_SECTION_("cr_sts") struct criterion_suite *dummy_suite = NULL;
-CR_SECTION_("cr_tst") struct criterion_test  *dummy_test = NULL;
+CR_SECTION_("cr_tst") struct criterion_test *dummy_test = NULL;
 
 static int cmp_suite(void *a, void *b)
 {
     struct criterion_suite *s1 = a, *s2 = b;
+
     return strcmp(s1->name, s2->name);
 }
 
 static int cmp_test(void *a, void *b)
 {
     struct criterion_test *s1 = a, *s2 = b;
+
     return strcmp(s1->name, s2->name);
 }
 
 static void dtor_suite_set(void *ptr, CR_UNUSED void *meta)
 {
     struct criterion_suite_set *s = ptr;
+
     sfree(s->tests);
 }
 
 static void dtor_test_set(void *ptr, CR_UNUSED void *meta)
 {
     struct criterion_test_set *t = ptr;
+
     sfree(t->suites);
 }
 
 CR_API void criterion_register_test(struct criterion_test_set *set,
         struct criterion_test *test)
 {
-
     struct criterion_suite_set css = {
         .suite = { .name = test->category },
     };
     struct criterion_suite_set *s = insert_ordered_set(set->suites, &css, sizeof (css));
+
     if (!s->tests)
         s->tests = new_ordered_set(cmp_test, NULL);
 
-    insert_ordered_set(s->tests, test, sizeof(*test));
+    insert_ordered_set(s->tests, test, sizeof (*test));
     ++set->tests;
 }
 
-struct criterion_test_set *criterion_init(void) {
+struct criterion_test_set *criterion_init(void)
+{
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
     mod_handle self;
@@ -140,8 +145,8 @@ struct criterion_test_set *criterion_init(void) {
     }
 
     struct criterion_test_set *set = smalloc(
-            .size = sizeof (struct criterion_test_set),
-            .dtor = dtor_test_set
+        .size = sizeof (struct criterion_test_set),
+        .dtor = dtor_test_set
         );
 
     *set = (struct criterion_test_set) {
@@ -166,37 +171,38 @@ struct criterion_test_set *criterion_init(void) {
     return set;
 }
 
-#define push_event(...)                                             \
-    do {                                                            \
-        stat_push_event(ctx->stats,                                 \
-                ctx->suite_stats,                                   \
-                ctx->test_stats,                                    \
-                &(struct event) {                                   \
-                    .kind = CR_VA_HEAD(__VA_ARGS__),                \
-                    CR_VA_TAIL(__VA_ARGS__)                         \
-                });                                                 \
-        report(CR_VA_HEAD(__VA_ARGS__), ctx->test_stats);           \
+#define push_event(...)                                   \
+    do {                                                  \
+        stat_push_event(ctx->stats,                       \
+                ctx->suite_stats,                         \
+                ctx->test_stats,                          \
+                &(struct event) {                         \
+            .kind = CR_VA_HEAD(__VA_ARGS__),              \
+            CR_VA_TAIL(__VA_ARGS__)                       \
+        });                                               \
+        report(CR_VA_HEAD(__VA_ARGS__), ctx->test_stats); \
     } while (0)
 
-void disable_unmatching(struct criterion_test_set *set) {
-    if (!compile_pattern(criterion_options.pattern)) {
+void disable_unmatching(struct criterion_test_set *set)
+{
+    if (!compile_pattern(criterion_options.pattern))
         exit(3);
-    }
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         if ((s->suite.data && s->suite.data->disabled) || !s->tests)
             continue;
 
         FOREACH_SET(struct criterion_test *test, s->tests) {
             int ret = match(test->data->identifier_);
-            if (ret == 0) {
+
+            if (ret == 0)
                 test->data->disabled = true;
-            }
         }
     }
     free_pattern();
 }
 
-CR_API struct criterion_test_set *criterion_initialize(void) {
+CR_API struct criterion_test_set *criterion_initialize(void)
+{
     init_i18n();
 
 #ifndef ENABLE_VALGRIND_ERRORS
@@ -216,7 +222,8 @@ CR_API struct criterion_test_set *criterion_initialize(void) {
     return criterion_init();
 }
 
-CR_API void criterion_finalize(struct criterion_test_set *set) {
+CR_API void criterion_finalize(struct criterion_test_set *set)
+{
     sfree(set);
 
 #ifndef ENABLE_VALGRIND_ERRORS
@@ -226,10 +233,12 @@ CR_API void criterion_finalize(struct criterion_test_set *set) {
     criterion_free_output();
 }
 
-static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext *ctx) {
+static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext *ctx)
+{
     struct client_ctx new_ctx;
 
     bxf_instance *instance = cri_run_next_test(NULL, NULL, NULL, &new_ctx, ctx);
+
     if (!instance)
         return NULL;
 
@@ -237,9 +246,9 @@ static struct client_ctx *spawn_next_client(struct server_ctx *sctx, ccrContext 
 }
 
 static void run_tests_async(struct criterion_test_set *set,
-                            struct criterion_global_stats *stats,
-                            const char *url,
-                            int socket)
+        struct criterion_global_stats *stats,
+        const char *url,
+        int socket)
 {
     ccrContext ctx = 0;
 
@@ -248,11 +257,12 @@ static void run_tests_async(struct criterion_test_set *set,
     int has_msg = 0;
 
     struct server_ctx sctx;
+
     init_server_context(&sctx, stats);
 
     sctx.socket = socket;
 
-    // initialization of coroutine
+    /* initialization of coroutine */
     cri_run_next_test(set, stats, url, NULL, &ctx);
 
     for (size_t i = 0; i < nb_workers; ++i) {
@@ -270,14 +280,13 @@ static void run_tests_async(struct criterion_test_set *set,
     while ((has_msg = read_message(socket, &msg)) == 1) {
         struct client_ctx *cctx = process_client_message(&sctx, &msg);
 
-        // drop invalid messages
+        /* drop invalid messages */
         if (!cctx)
             continue;
 
         if (!cctx->alive) {
-            if ((cctx->tstats->test_status == CR_STATUS_FAILED) && criterion_options.fail_fast) {
+            if ((cctx->tstats->test_status == CR_STATUS_FAILED) && criterion_options.fail_fast)
                 cr_terminate(cctx->gstats);
-            }
 
             if (cctx->kind == WORKER) {
                 remove_client_by_pid(&sctx, cctx->instance->pid);
@@ -348,9 +357,8 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
 
-    if (criterion_options.pattern) {
+    if (criterion_options.pattern)
         disable_unmatching(set);
-    }
 
     if (criterion_options.debug) {
         criterion_options.jobs = 1;

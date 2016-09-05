@@ -31,19 +31,22 @@
 #include "protocol/messages.h"
 #include "io/event.h"
 
-extern const struct criterion_test  *criterion_current_test;
+extern const struct criterion_test *criterion_current_test;
 extern const struct criterion_suite *criterion_current_suite;
 
-static void send_event(int phase) {
+static void send_event(int phase)
+{
     criterion_protocol_msg msg = criterion_message(phase,
-            .phase = phase,
-            .name = (char *) criterion_current_test->name,
-        );
+                    .phase = phase,
+                    .name = (char *) criterion_current_test->name,
+                    );
+
     criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
 }
 
-void criterion_internal_test_setup(void) {
+void criterion_internal_test_setup(void)
+{
     const struct criterion_suite *suite = criterion_current_suite;
     const struct criterion_test *test = criterion_current_test;
 
@@ -58,7 +61,8 @@ static void *getparam(void)
     void *param;
 
     bxf_context ctx = bxf_context_current();
-    int rc = bxf_context_getobject(ctx, "criterion.param", (void **)&param);
+    int rc = bxf_context_getobject(ctx, "criterion.param", (void **) &param);
+
     if (rc < 0) {
         cr_log_error("Could not retrieve test parameter -- aborting.");
         abort();
@@ -66,7 +70,8 @@ static void *getparam(void)
     return param;
 }
 
-void criterion_internal_test_main(void (*fn)(void)) {
+void criterion_internal_test_main(void (*fn)(void))
+{
     const struct criterion_test *test = criterion_current_test;
 
     send_event(criterion_protocol_phase_kind_MAIN);
@@ -75,7 +80,7 @@ void criterion_internal_test_main(void (*fn)(void)) {
         if (!test->data->param_) {
             fn();
         } else {
-            void(*param_test_func)(void *) = (void(*)(void*)) fn;
+            void (*param_test_func)(void *) = (void (*)(void *))fn;
             param_test_func(getparam());
         }
     }
@@ -83,7 +88,8 @@ void criterion_internal_test_main(void (*fn)(void)) {
     send_event(criterion_protocol_phase_kind_TEARDOWN);
 }
 
-void criterion_internal_test_teardown(void) {
+void criterion_internal_test_teardown(void)
+{
     const struct criterion_suite *suite = criterion_current_suite;
     const struct criterion_test *test = criterion_current_test;
 
@@ -93,4 +99,3 @@ void criterion_internal_test_teardown(void) {
 
     send_event(criterion_protocol_phase_kind_END);
 }
-

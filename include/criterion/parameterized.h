@@ -26,10 +26,10 @@
  * @brief Parameterized tests
  *****************************************************************************/
 #ifndef CRITERION_PARAMETERIZED_H_
-# define CRITERION_PARAMETERIZED_H_
+#define CRITERION_PARAMETERIZED_H_
 
-# include "alloc.h"
-# include "assert.h"
+#include "alloc.h"
+#include "assert.h"
 
 /**
  * @defgroup ParameterizedBase Parameterized test & generator macros
@@ -52,7 +52,7 @@
  *    (see criterion/types.h).
  *    Example: `.exit_code = 1`
  */
-# define ParameterizedTest(Type, Suite, Name, ...) <internal>
+#define ParameterizedTest(Type, Suite, Name, ...)         < internal >
 
 /**
  *  Defines the parameter generator prototype for the associated parameterized
@@ -63,7 +63,7 @@
  *  @returns A constructed instance of criterion::parameters, or the result of
  *    the cr_make_param_array macro.
  */
-# define ParameterizedTestParameters(Suite, Name) <internal>
+#define ParameterizedTestParameters(Suite, Name)          < internal >
 
 /**
  *  Constructs a parameter list used as a return value for a parameter generator.
@@ -77,27 +77,27 @@
  *  @param Cleanup  The optional cleanup function for the array.
  *  @returns The parameter list.
  */
-# define cr_make_param_array(Type, Array, Len, Cleanup) <internal>
+#define cr_make_param_array(Type, Array, Len, Cleanup)    < internal >
 
 /** @} */
 
-# ifdef __cplusplus
-#  include <vector>
+#ifdef __cplusplus
+# include <vector>
 
-namespace criterion {
-
-    /**
-     *  Represents a C++ dynamic parameter list for a parameter generator.
-     *
-     *  @ingroup ParameterizedBase
-     *
-     *  @param T The type of the parameter.
-     */
-    template <typename T>
-    using parameters = std::vector<T, criterion::allocator<T>>;
+namespace criterion
+{
+/**
+ *  Represents a C++ dynamic parameter list for a parameter generator.
+ *
+ *  @ingroup ParameterizedBase
+ *
+ *  @param T The type of the parameter.
+ */
+template <typename T>
+using parameters = std::vector<T, criterion::allocator<T> >;
 }
-# endif
+#endif
 
-# include "internal/parameterized.h"
+#include "internal/parameterized.h"
 
 #endif /* !CRITERION_PARAMETERIZED_H_ */

@@ -41,67 +41,71 @@
 # include <libintl.h>
 #endif
 
-# define VERSION_MSG "Tests compiled with Criterion v" VERSION "\n"
+#define VERSION_MSG    "Tests compiled with Criterion v" VERSION "\n"
 
-# define USAGE                                              \
+#define USAGE                                               \
     VERSION_MSG "\n"                                        \
     "usage: %s OPTIONS\n"                                   \
     "options: \n"                                           \
     "    -h or --help: prints this message\n"               \
     "    -q or --quiet: disables all logging\n"             \
     "    -v or --version: prints the version of criterion " \
-            "these tests have been linked against\n"        \
+    "these tests have been linked against\n"                \
     "    -l or --list: prints all the tests in a list\n"    \
     "    -jN or --jobs N: use N concurrent jobs\n"          \
     "    -f or --fail-fast: exit after the first failure\n" \
     "    --ascii: don't use fancy unicode symbols "         \
-            "or colors in the output\n"                     \
+    "or colors in the output\n"                             \
     "    -S or --short-filename: only display the base "    \
-            "name of the source file on a failure\n"        \
+    "name of the source file on a failure\n"                \
     "    --filter [PATTERN]: run tests matching the "       \
-            "given pattern\n"                               \
+    "given pattern\n"                                       \
     "    --timeout [TIMEOUT]: set a timeout (in seconds) "  \
-            "for all tests\n"                               \
+    "for all tests\n"                                       \
     "    --tap[=FILE]: writes TAP report in FILE "          \
-            "(no file or \"-\" means stderr)\n"             \
+    "(no file or \"-\" means stderr)\n"                     \
     "    --xml[=FILE]: writes XML report in FILE "          \
-            "(no file or \"-\" means stderr)\n"             \
+    "(no file or \"-\" means stderr)\n"                     \
     "    --always-succeed: always exit with 0\n"            \
     "    --verbose[=level]: sets verbosity to level "       \
-            "(1 by default)\n"                              \
+    "(1 by default)\n"                                      \
     "    --crash: crash failing assertions rather than "    \
-            "aborting (for debugging purposes)\n"           \
+    "aborting (for debugging purposes)\n"                   \
     "    --debug[=TYPE]: run tests with a debugging "       \
-            "server, listening on localhost:1234 by "       \
-            "default. TYPE may be gdb, lldb, or wingbd.\n"  \
+    "server, listening on localhost:1234 by "               \
+    "default. TYPE may be gdb, lldb, or wingbd.\n"          \
     "    --debug-transport=VAL: the transport to use by "   \
-            "the debugging server. `tcp:1234` by default\n" \
+    "the debugging server. `tcp:1234` by default\n"         \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
-            "report to FILE using the specified provider\n"
+    "report to FILE using the specified provider\n"
 
-int print_usage(char *progname) {
+int print_usage(char *progname)
+{
     fprintf(stderr, USAGE, progname);
     return 0;
 }
 
-int print_version(void) {
+int print_version(void)
+{
     fputs(VERSION_MSG, stderr);
     return 0;
 }
 
-# define UTF8_TREE_NODE "├"
-# define UTF8_TREE_END  "└"
-# define UTF8_TREE_JOIN "──"
+#define UTF8_TREE_NODE     "├"
+#define UTF8_TREE_END      "└"
+#define UTF8_TREE_JOIN     "──"
 
-# define ASCII_TREE_NODE "|"
-# define ASCII_TREE_END  "`"
-# define ASCII_TREE_JOIN "--"
+#define ASCII_TREE_NODE    "|"
+#define ASCII_TREE_END     "`"
+#define ASCII_TREE_JOIN    "--"
 
-bool is_disabled(struct criterion_suite *s, struct criterion_test *t) {
+bool is_disabled(struct criterion_suite *s, struct criterion_test *t)
+{
     return (s->data && s->data->disabled) || t->data->disabled;
 }
 
-int list_tests(bool unicode) {
+int list_tests(bool unicode)
+{
     struct criterion_test_set *set = criterion_init();
 
     const char *node = unicode ? UTF8_TREE_NODE : ASCII_TREE_NODE;
@@ -110,6 +114,7 @@ int list_tests(bool unicode) {
 
     FOREACH_SET(struct criterion_suite_set *s, set->suites) {
         size_t tests = s->tests ? s->tests->size : 0;
+
         if (!tests)
             continue;
 
@@ -131,8 +136,10 @@ int list_tests(bool unicode) {
     return 0;
 }
 
-int atou(const char *str) {
+int atou(const char *str)
+{
     int res = atoi(str);
+
     return res < 0 ? 0 : res;
 }
 
@@ -145,6 +152,7 @@ static int parse_dbg_transport(const char *arg)
     char *val = dup + strlen(transport) + 1;
 
     int ok = 1;
+
     if (!strcmp(transport, "tcp")) {
         criterion_options.debug_port = atou(val);
     } else {
@@ -162,8 +170,8 @@ static int parse_dbg(const char *arg)
         return CR_DBG_NATIVE;
 
     static struct { char *name; enum criterion_debugger dbg; } values[] = {
-        { "gdb",    CR_DBG_GDB },
-        { "lldb",   CR_DBG_LLDB },
+        { "gdb",    CR_DBG_GDB    },
+        { "lldb",   CR_DBG_LLDB   },
         { "windbg", CR_DBG_WINDBG },
     };
 
@@ -182,35 +190,35 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         bool handle_unknown_arg)
 {
     static struct option opts[] = {
-        {"verbose",         optional_argument,  0, 'b'},
-        {"quiet",           no_argument,        0, 'q'},
-        {"version",         no_argument,        0, 'v'},
-        {"tap",             optional_argument,  0, 'T'},
-        {"xml",             optional_argument,  0, 'x'},
-        {"json",            optional_argument,  0, 'n'},
-        {"help",            no_argument,        0, 'h'},
-        {"list",            no_argument,        0, 'l'},
-        {"ascii",           no_argument,        0, 'k'},
-        {"jobs",            required_argument,  0, 'j'},
-        {"timeout",         required_argument,  0, 't'},
-        {"fail-fast",       no_argument,        0, 'f'},
-        {"short-filename",  no_argument,        0, 'S'},
-        {"single",          required_argument,  0, 's'},
-        {"pattern",         required_argument,  0, 'p'},
-        {"filter",          required_argument,  0, 'F'},
-        {"always-succeed",  no_argument,        0, 'y'},
-        {"no-early-exit",   no_argument,        0, 'z'},
-        {"output",          required_argument,  0, 'O'},
-        {"wait",            no_argument,        0, 'w'},
-        {"crash",           no_argument,        0, 'c'},
-        {"debug",           optional_argument,  0, 'd'},
-        {"debug-transport", required_argument,  0, 'D'},
-        {0,                 0,                  0,  0 }
+        { "verbose",         optional_argument, 0, 'b' },
+        { "quiet",           no_argument,       0, 'q' },
+        { "version",         no_argument,       0, 'v' },
+        { "tap",             optional_argument, 0, 'T' },
+        { "xml",             optional_argument, 0, 'x' },
+        { "json",            optional_argument, 0, 'n' },
+        { "help",            no_argument,       0, 'h' },
+        { "list",            no_argument,       0, 'l' },
+        { "ascii",           no_argument,       0, 'k' },
+        { "jobs",            required_argument, 0, 'j' },
+        { "timeout",         required_argument, 0, 't' },
+        { "fail-fast",       no_argument,       0, 'f' },
+        { "short-filename",  no_argument,       0, 'S' },
+        { "single",          required_argument, 0, 's' },
+        { "pattern",         required_argument, 0, 'p' },
+        { "filter",          required_argument, 0, 'F' },
+        { "always-succeed",  no_argument,       0, 'y' },
+        { "no-early-exit",   no_argument,       0, 'z' },
+        { "output",          required_argument, 0, 'O' },
+        { "wait",            no_argument,       0, 'w' },
+        { "crash",           no_argument,       0, 'c' },
+        { "debug",           optional_argument, 0, 'd' },
+        { "debug-transport", required_argument, 0, 'D' },
+        { 0,                 0,                 0, 0   }
     };
 
     setlocale(LC_ALL, "");
 #if ENABLE_NLS
-    textdomain (PACKAGE "-test");
+    textdomain(PACKAGE "-test");
 #endif
 
     if (!handle_unknown_arg)
@@ -247,8 +255,8 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
     bool quiet = false;
 
-    // CRITERION_ENABLE_TAP backward compatibility.
-    // The environment variable is otherwise deprecated.
+    /* CRITERION_ENABLE_TAP backward compatibility.
+       The environment variable is otherwise deprecated. */
     if (!strcmp("1", DEF(getenv("CRITERION_ENABLE_TAP"), "0"))) {
         quiet = true;
         criterion_add_output("tap", DEF(optarg, "-"));
@@ -306,7 +314,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                     exit(3);
                 break;
 
-            /* *INDENT-OFF* - Duff devices are often mishandled by formatters */
+                /* *INDENT-OFF* - Duff devices are often mishandled by formatters */
             {
                 const char *provider;
             case 'T': provider = "tap";  goto provider_def;
@@ -318,7 +326,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 quiet = !strcmp(path, "-");
                 criterion_add_output(provider, path);
             } break;
-            /* *INDENT-ON* */
+                /* *INDENT-ON* */
 
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
@@ -326,7 +334,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'O': {
                 char *arg = strdup(optarg);
                 char *buf = NULL;
-                strtok_r(arg,  ":", &buf);
+                strtok_r(arg, ":", &buf);
 
                 char *path = strtok_r(NULL, ":", &buf);
                 if (arg == NULL || path == NULL) {
@@ -343,7 +351,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 exit(3);
             case '?':
             case 'c': criterion_options.crash            = true; break;
-            default : do_print_usage = handle_unknown_arg; break;
+            default: do_print_usage = handle_unknown_arg; break;
         }
     }
 

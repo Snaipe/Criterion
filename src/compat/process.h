@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #ifndef COMPAT_PROCESS_H_
-# define COMPAT_PROCESS_H_
+#define COMPAT_PROCESS_H_
 
 unsigned long long get_process_id(void);
 
