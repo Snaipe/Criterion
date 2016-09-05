@@ -5,6 +5,7 @@
 include(CheckPrototypeDefinition)
 include(CheckLibraryExists)
 include(CheckFunctionExists)
+include(CheckSymbolExists)
 include(PackageUtils)
 
 # Check for packages
