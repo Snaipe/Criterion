@@ -50,8 +50,8 @@ matrix:
         - export STYLE_OK=true
         - >
             for f in $SOURCES; do
-              if ! uncrustify --check -c .uncrustify.cfg $f; then
-                uncrustify -c .uncrustify.cfg -f $f | git --no-pager diff --no-index --color=always $f -
+              if ! uncrustify -q --check -c .uncrustify.cfg $f; then
+                uncrustify -q -c .uncrustify.cfg -f $f | git --no-pager diff --no-index --color=always $f -
                 export STYLE_OK=false
               fi
             done
