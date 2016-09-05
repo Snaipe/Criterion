@@ -66,7 +66,7 @@ CR_END_C_API
  *    (see criterion/types.h).
  *    Example: .exit_code = 1
  */
-#define Theory(Params, Suite, Name, ...)    < internal >
+#define Theory(Params, Suite, Name, ...)    internal
 
 /**
  *  Defines an array of data points.

@@ -49,14 +49,15 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_fail(FormatString, ...)                                          < internal
-> /**
-   * Skips the test
-   *
-   * The test is marked as skipped and the execution of the function is aborted.
-   *
-   *****************************************************************************/
-#define cr_skip_test(FormatString, ...)                                            < internal >
+#define cr_assert_fail(FormatString, ...)                                          internal
+
+/**
+ * Skips the test
+ *
+ * The test is marked as skipped and the execution of the function is aborted.
+ *
+ *****************************************************************************/
+#define cr_skip_test(FormatString, ...)                                            internal
 
 /**
  * Fails always.
@@ -69,7 +70,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_fail(FormatString, ...)                                          < internal >
+#define cr_expect_fail(FormatString, ...)                                          internal
 
 /**
  * Passes if Condition is true
@@ -85,7 +86,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert(Condition, FormatString, ...)                                    < internal >
+#define cr_assert(Condition, FormatString, ...)                                    internal
 
 /**
  * Passes if Condition is true
@@ -100,7 +101,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect(Condition, FormatString, ...)                                    < internal >
+#define cr_expect(Condition, FormatString, ...)                                    internal
 
 /**
  * Passes if Condition is false
@@ -116,7 +117,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_not(Condition, FormatString, ...)                                < internal >
+#define cr_assert_not(Condition, FormatString, ...)                                internal
 
 /**
  * Passes if Condition is false
@@ -131,7 +132,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_not(Condition, FormatString, ...)                                < internal >
+#define cr_expect_not(Condition, FormatString, ...)                                internal
 
 /**@}*/
 
@@ -157,7 +158,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_eq(Actual, Expected, FormatString, ...)                          < internal >
+#define cr_assert_eq(Actual, Expected, FormatString, ...)                          internal
 
 /**
  * Passes if Actual is equal to Expected
@@ -175,7 +176,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_eq(Actual, Expected, FormatString, ...)                          < internal >
+#define cr_expect_eq(Actual, Expected, FormatString, ...)                          internal
 
 /**
  * Passes if Actual is not equal to Unexpected
@@ -194,7 +195,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_neq(Actual, Unexpected, FormatString, ...)                       < internal >
+#define cr_assert_neq(Actual, Unexpected, FormatString, ...)                       internal
 
 /**
  * Passes if Actual is not equal to Unexpected
@@ -212,7 +213,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_neq(Actual, Unexpected, FormatString, ...)                       < internal >
+#define cr_expect_neq(Actual, Unexpected, FormatString, ...)                       internal
 
 /**
  * Passes if Actual is less than Reference
@@ -231,7 +232,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_lt(Actual, Reference, FormatString, ...)                         < internal >
+#define cr_assert_lt(Actual, Reference, FormatString, ...)                         internal
 
 /**
  * Passes if Actual is less than Reference
@@ -249,7 +250,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_lt(Actual, Reference, FormatString, ...)                         < internal >
+#define cr_expect_lt(Actual, Reference, FormatString, ...)                         internal
 
 /**
  * Passes if Actual is less or equal to Reference
@@ -268,7 +269,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_leq(Actual, Reference, FormatString, ...)                        < internal >
+#define cr_assert_leq(Actual, Reference, FormatString, ...)                        internal
 
 /**
  * Passes if Actual is less or equal to Reference
@@ -286,7 +287,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_leq(Actual, Reference, FormatString, ...)                        < internal >
+#define cr_expect_leq(Actual, Reference, FormatString, ...)                        internal
 
 /**
  * Passes if Actual is greater than Reference
@@ -305,7 +306,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_gt(Actual, Reference, FormatString, ...)                         < internal >
+#define cr_assert_gt(Actual, Reference, FormatString, ...)                         internal
 
 /**
  * Passes if Actual is greater than Reference
@@ -323,7 +324,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_gt(Actual, Reference, FormatString, ...)                         < internal >
+#define cr_expect_gt(Actual, Reference, FormatString, ...)                         internal
 
 /**
  * Passes if Actual is greater or equal to Reference
@@ -342,7 +343,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_geq(Actual, Reference, FormatString, ...)                        < internal >
+#define cr_assert_geq(Actual, Reference, FormatString, ...)                        internal
 
 /**
  * Passes if Actual is greater or equal to Reference
@@ -360,7 +361,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_geq(Actual, Reference, FormatString, ...)                        < internal >
+#define cr_expect_geq(Actual, Reference, FormatString, ...)                        internal
 
 /**@}*/
 
@@ -383,7 +384,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_null(Value, FormatString, ...)                                   < internal >
+#define cr_assert_null(Value, FormatString, ...)                                   internal
 
 /**
  * Passes if Value is NULL
@@ -398,7 +399,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_null(Value, FormatString, ...)                                   < internal >
+#define cr_expect_null(Value, FormatString, ...)                                   internal
 
 /**
  * Passes if Value is not NULL
@@ -414,7 +415,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_not_null(Value, FormatString, ...)                               < internal >
+#define cr_assert_not_null(Value, FormatString, ...)                               internal
 
 /**
  * Passes if Value is not NULL
@@ -429,7 +430,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_not_null(Value, FormatString, ...)                               < internal >
+#define cr_expect_not_null(Value, FormatString, ...)                               internal
 
 /**@}*/
 
@@ -456,7 +457,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_float_eq(Actual, Expected, Epsilon, FormatString, ...)           < internal >
+#define cr_assert_float_eq(Actual, Expected, Epsilon, FormatString, ...)           internal
 
 /**
  * Passes if Actual is equal to Expected with a tolerance of Epsilon
@@ -475,7 +476,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_float_eq(Actual, Expected, Epsilon, FormatString, ...)           < internal >
+#define cr_expect_float_eq(Actual, Expected, Epsilon, FormatString, ...)           internal
 
 /**
  * Passes if Actual is not equal to Unexpected with a tolerance of Epsilon
@@ -495,7 +496,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_float_neq(Actual, Unexpected, Epsilon, FormatString, ...)        < internal >
+#define cr_assert_float_neq(Actual, Unexpected, Epsilon, FormatString, ...)        internal
 
 /**
  * Passes if Actual is not equal to Unexpected with a tolerance of Epsilon
@@ -514,7 +515,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_float_neq(Actual, Unexpected, Epsilon, FormatString, ...)        < internal >
+#define cr_expect_float_neq(Actual, Unexpected, Epsilon, FormatString, ...)        internal
 
 /**@}*/
 
@@ -545,7 +546,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_empty(Value, FormatString, ...)                              < internal >
+#define cr_assert_str_empty(Value, FormatString, ...)                              internal
 
 /**
  * Passes if Value is an empty string
@@ -562,7 +563,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_empty(Value, FormatString, ...)                              < internal >
+#define cr_expect_str_empty(Value, FormatString, ...)                              internal
 
 /**
  * Passes if Value is not an empty string
@@ -580,7 +581,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_not_empty(Value, FormatString, ...)                          < internal >
+#define cr_assert_str_not_empty(Value, FormatString, ...)                          internal
 
 /**
  * Passes if Value is not an empty string
@@ -597,7 +598,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_not_empty(Value, FormatString, ...)                          < internal >
+#define cr_expect_str_not_empty(Value, FormatString, ...)                          internal
 
 /**
  * Passes if Actual is lexicographically equal to Expected
@@ -614,7 +615,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_eq(Actual, Expected, FormatString, ...)                      < internal >
+#define cr_assert_str_eq(Actual, Expected, FormatString, ...)                      internal
 
 /**
  * Passes if Actual is lexicographically equal to Expected
@@ -630,7 +631,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_eq(Actual, Expected, FormatString, ...)                      < internal >
+#define cr_expect_str_eq(Actual, Expected, FormatString, ...)                      internal
 
 /**
  * Passes if Actual is not lexicographically equal to Unexpected
@@ -647,7 +648,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_neq(Actual, Unexpected, FormatString, ...)                   < internal >
+#define cr_assert_str_neq(Actual, Unexpected, FormatString, ...)                   internal
 
 /**
  * Passes if Actual is not lexicographically equal to Unexpected
@@ -663,7 +664,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_neq(Actual, Unexpected, FormatString, ...)                   < internal >
+#define cr_expect_str_neq(Actual, Unexpected, FormatString, ...)                   internal
 
 /**
  * Passes if Actual is lexicographically less than Reference
@@ -680,7 +681,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_lt(Actual, Reference, FormatString, ...)                     < internal >
+#define cr_assert_str_lt(Actual, Reference, FormatString, ...)                     internal
 
 /**
  * Passes if Actual is lexicographically less than Reference
@@ -696,7 +697,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_lt(Actual, Reference, FormatString, ...)                     < internal >
+#define cr_expect_str_lt(Actual, Reference, FormatString, ...)                     internal
 
 /**
  * Passes if Actual is lexicographically less or equal to Reference
@@ -713,7 +714,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_leq(Actual, Reference, FormatString, ...)                    < internal >
+#define cr_assert_str_leq(Actual, Reference, FormatString, ...)                    internal
 
 /**
  * Passes if Actual is lexicographically less or equal to Reference
@@ -729,7 +730,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_leq(Actual, Reference, FormatString, ...)                    < internal >
+#define cr_expect_str_leq(Actual, Reference, FormatString, ...)                    internal
 
 /**
  * Passes if Actual is lexicographically greater than Reference
@@ -746,7 +747,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_gt(Actual, Reference, FormatString, ...)                     < internal >
+#define cr_assert_str_gt(Actual, Reference, FormatString, ...)                     internal
 
 /**
  * Passes if Actual is lexicographically greater than Reference
@@ -762,7 +763,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_gt(Actual, Reference, FormatString, ...)                     < internal >
+#define cr_expect_str_gt(Actual, Reference, FormatString, ...)                     internal
 
 /**
  * Passes if Actual is lexicographically greater or equal to Reference
@@ -779,7 +780,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_str_geq(Actual, Reference, FormatString, ...)                    < internal >
+#define cr_assert_str_geq(Actual, Reference, FormatString, ...)                    internal
 
 /**
  * Passes if Actual is lexicographically greater or equal to Reference
@@ -795,7 +796,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_str_geq(Actual, Reference, FormatString, ...)                    < internal >
+#define cr_expect_str_geq(Actual, Reference, FormatString, ...)                    internal
 
 /**@}*/
 
@@ -822,7 +823,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_eq(Actual, Expected, FormatString, ...)                      < internal >
+#define cr_assert_arr_eq(Actual, Expected, FormatString, ...)                      internal
 
 /**
  * Passes if Actual is byte-to-byte equal to Expected
@@ -841,7 +842,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_eq(Actual, Expected, FormatString, ...)                      < internal >
+#define cr_expect_arr_eq(Actual, Expected, FormatString, ...)                      internal
 
 /**
  * Passes if Actual is not byte-to-byte equal to Expected
@@ -862,7 +863,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_neq(Actual, Unexpected, Size, FormatString, ...)             < internal >
+#define cr_assert_arr_neq(Actual, Unexpected, Size, FormatString, ...)             internal
 
 /**
  * Passes if Actual is not byte-to-byte equal to Unexpected
@@ -882,7 +883,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_neq(Actual, Unexpected, Size, FormatString, ...)             < internal >
+#define cr_expect_arr_neq(Actual, Unexpected, Size, FormatString, ...)             internal
 
 /**@}*/
 
@@ -917,7 +918,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_eq_cmp(Actual, Expected, Size, Cmp, FormatString, ...)       < internal >
+#define cr_assert_arr_eq_cmp(Actual, Expected, Size, Cmp, FormatString, ...)       internal
 
 /**
  * Passes if Actual is comparatively equal to Expected (C++ / GNU C99 only)
@@ -941,7 +942,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_eq_cmp(Actual, Expected, Size, Cmp, FormatString, ...)       < internal >
+#define cr_expect_arr_eq_cmp(Actual, Expected, Size, Cmp, FormatString, ...)       internal
 
 /**
  * Passes if Actual is not comparatively equal to Unexpected (C++ / GNU C99
@@ -967,7 +968,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_neq_cmp(Actual, Unexpected, Size, Cmp, FormatString, ...)    < internal >
+#define cr_assert_arr_neq_cmp(Actual, Unexpected, Size, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is not comparatively equal to Unexpected (C++ / GNU C99
@@ -992,7 +993,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_neq_cmp(Actual, Unexpected, Size, Cmp, FormatString, ...)    < internal >
+#define cr_expect_arr_neq_cmp(Actual, Unexpected, Size, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively less than Reference (C++ / GNU C99 only)
@@ -1017,7 +1018,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_lt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      < internal >
+#define cr_assert_arr_lt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      internal
 
 /**
  * Passes if Actual is comparatively less than Reference (C++ / GNU C99 only)
@@ -1041,7 +1042,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_lt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      < internal >
+#define cr_expect_arr_lt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      internal
 
 /**
  * Passes if Actual is comparatively less or equal to Reference (C++ / GNU C99
@@ -1067,7 +1068,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_leq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     < internal >
+#define cr_assert_arr_leq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     internal
 
 /**
  * Passes if Actual is comparatively less or equal to Reference (C++ / GNU C99
@@ -1092,7 +1093,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_leq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     < internal >
+#define cr_expect_arr_leq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     internal
 
 /**
  * Passes if Actual is comparatively greater than Reference (C++ / GNU C99 only)
@@ -1117,7 +1118,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_gt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      < internal >
+#define cr_assert_arr_gt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      internal
 
 /**
  * Passes if Actual is comparatively greater than Reference (C++ / GNU C99 only)
@@ -1141,7 +1142,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_gt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      < internal >
+#define cr_expect_arr_gt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)      internal
 
 /**
  * Passes if Actual is comparatively greater or equal to Reference (C++ / GNU
@@ -1167,7 +1168,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_geq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     < internal >
+#define cr_assert_arr_geq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     internal
 
 /**
  * Passes if Actual is comparatively greater or equal to Reference (C++ / GNU
@@ -1192,7 +1193,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_geq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     < internal >
+#define cr_expect_arr_geq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)     internal
 
 /**@}*/
 
@@ -1223,7 +1224,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_throw(Statement, Exception, FormatString, ...)       < internal >
+# define cr_assert_throw(Statement, Exception, FormatString, ...)       internal
 
 /**
  * Passes if Statement throws an instance of Exception (C++ only)
@@ -1241,7 +1242,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_expect_throw(Statement, Exception, FormatString, ...)       < internal >
+# define cr_expect_throw(Statement, Exception, FormatString, ...)       internal
 
 /**
  * Passes if Statement does not throws an instance of Exception (C++ only)
@@ -1260,7 +1261,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_no_throw(Statement, Exception, FormatString, ...)    < internal >
+# define cr_assert_no_throw(Statement, Exception, FormatString, ...)    internal
 
 /**
  * Passes if Statement does not throws an instance of Exception (C++ only)
@@ -1278,7 +1279,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_expect_no_throw(Statement, Exception, FormatString, ...)    < internal >
+# define cr_expect_no_throw(Statement, Exception, FormatString, ...)    internal
 
 /**
  * Passes if Statement throws any kind of exception (C++ only)
@@ -1296,7 +1297,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_any_throw(Statement, FormatString, ...)              < internal >
+# define cr_assert_any_throw(Statement, FormatString, ...)              internal
 
 /**
  * Passes if Statement throws any kind of exception (C++ only)
@@ -1313,7 +1314,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_expect_any_throw(Statement, FormatString, ...)              < internal >
+# define cr_expect_any_throw(Statement, FormatString, ...)              internal
 
 /**
  * Passes if Statement does not throws any kind of exception (C++ only)
@@ -1331,7 +1332,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_assert_none_throw(Statement, FormatString, ...)             < internal >
+# define cr_assert_none_throw(Statement, FormatString, ...)             internal
 
 /**
  * Passes if Statement does not throws any kind of exception (C++ only)
@@ -1348,7 +1349,7 @@
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-# define cr_expect_none_throw(Statement, FormatString, ...)             < internal >
+# define cr_expect_none_throw(Statement, FormatString, ...)             internal
 
 #endif
 /**@}*/
