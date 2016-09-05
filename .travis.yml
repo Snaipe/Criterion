@@ -28,6 +28,10 @@ matrix:
     - compiler: uncrustify
       language: cpp
       before_install:
+        - >
+            if [[ "$TRAVIS_PULL_REQUEST" == false ]]; then
+              exit 0
+            fi
         - |
             git clone https://github.com/uncrustify/uncrustify /tmp/uncrustify &&
             pushd /tmp/uncrustify &&
@@ -37,7 +41,6 @@ matrix:
             make -j4 && make install &&
             export PATH="$PATH:$HOME/bin" &&
             popd
-      script:
         - >
             export SOURCES=$(find src include test samples \( \
               -type f \( \
@@ -48,6 +51,7 @@ matrix:
               \) -and -not \
               -iname "*.pb.*" \))
         - export STYLE_OK=true
+      script:
         - >
             for f in $SOURCES; do
               if ! uncrustify -q --check -c .uncrustify.cfg $f; then
