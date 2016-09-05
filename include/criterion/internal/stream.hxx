@@ -30,7 +30,9 @@
 
 # include "stdio_filebuf.hxx"
 
+/* *INDENT-OFF* */
 namespace criterion { namespace internal {
+/* *INDENT-ON* */
 
     template <typename CharT, typename Super>
     class stream_mixin : public Super {
@@ -128,6 +130,8 @@ public:
         }
     };
 
+/* *INDENT-OFF* */
 }}
+/* *INDENT-ON* */
 
 #endif /* !CRITERION_INTERNAL_STREAM_HXX_ */

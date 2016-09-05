@@ -26,7 +26,9 @@
 
 # include <fstream>
 
+/* *INDENT-OFF* */
 namespace criterion { namespace internal {
+/* *INDENT-ON* */
 
     template <typename CharT, typename Traits = std::char_traits<CharT>>
     class stdio_sync_filebuf : public std::basic_streambuf<CharT, Traits> {
@@ -156,6 +158,8 @@ namespace criterion { namespace internal {
         return std::fwrite(s, 1, n, file);
     }
 
+/* *INDENT-OFF* */
 }}
+/* *INDENT-ON* */
 
 #endif /* !CRITERION_INTERNAL_STDIO_FILEBUF_HXX_ */

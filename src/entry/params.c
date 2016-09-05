@@ -306,6 +306,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                     exit(3);
                 break;
 
+            /* *INDENT-OFF* - Duff devices are often mishandled by formatters */
             {
                 const char *provider;
             case 'T': provider = "tap";  goto provider_def;
@@ -317,6 +318,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 quiet = !strcmp(path, "-");
                 criterion_add_output(provider, path);
             } break;
+            /* *INDENT-ON* */
 
             case 'l': do_list_tests = true; break;
             case 'v': do_print_version = true; break;
