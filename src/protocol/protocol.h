@@ -47,6 +47,8 @@ extern volatile bool is_extern_worker;
         }                                                                   \
     } while (0)
 
+/* *INDENT-OFF* - remove when https://github.com/uncrustify/uncrustify/issues/667
+   gets fixed */
 # define criterion_message(Kind, ...)                                       \
     (criterion_protocol_msg) {                                              \
         .version = PROTOCOL_V1,                                             \
@@ -64,5 +66,6 @@ extern volatile bool is_extern_worker;
             }                                                               \
         }                                                                   \
     }
+/* *INDENT-ON* */
 
 #endif /* !PROTOCOL_H_ */
