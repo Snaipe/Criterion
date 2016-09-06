@@ -18,6 +18,11 @@ be merged.
   additional commits must be squashed.
 * You may have more than one commit in a pull request if the commits are
   separate changes, otherwise squash them.
+* Keep your commit messages simple and concise. Good commit messages start
+  with a verb ('Add', 'Fix', ...).
+* Commit messages should follow the format `topic: message`, e.g. `cli: Added --foo flag`.
+  In cases where multiple topics are relevant, use a comma-separated list of topics, e.g.
+  `api,float: Fixed printf format specifiers for long double`
 
 ## Passing the style check
 
