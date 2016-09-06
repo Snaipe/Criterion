@@ -2,7 +2,7 @@
 # Redistribution and use of this file is allowed according to the terms of the MIT license.
 # For details see the LICENSE file distributed with Criterion.
 
-set (PROJECT_VERSION "2.2.1")
+set (PROJECT_VERSION "2.2.2")
 set (PROJECT_SOVERSION 3)
 set (PROJECT_SONAME 3.0.0)
 
