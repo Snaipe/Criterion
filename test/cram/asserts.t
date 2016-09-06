@@ -12,12 +12,12 @@ Test C assertions:
 Test C++ assertions:
 
   $ asserts.cc.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m105\x1b[0m: Assertion failed: The expression (&s1)[0 .. 2] == (&s2)[0 .. 2] is false. (esc)
+  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m108\x1b[0m: Assertion failed: The expression (&s1)[0..Size] == (&s2)[0..Size] is false. (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::array: \(\d\.\d\ds\) \(esc\) (re)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion failed: assert is fatal, expect isn't (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion failed: This assert runs (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::base: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m110\x1b[0m: Assertion failed: The statement `throw std::exception()` did not throw an instance of the `std::bad_alloc` exception. (esc)
+  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion failed: The statement `throw std::exception()` did not throw an instance of the `std::bad_alloc` exception. (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::exception: \(\d\.\d\ds\) \(esc\) (re)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m20\x1b[0m: Assertion failed: You can fail an assertion with a message from anywhere (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m21\x1b[0m: Assertion failed: The conditions for this assertion were not met. (esc)
@@ -43,7 +43,7 @@ Testing all assert messages
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion failed: The expression (1) > (2) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion failed: The expression (1) >= (2) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion failed: "" is not null. (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m16\x1b[0m: Assertion failed: ((void *)0) is null. (esc)
+  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m16\x1b[0m: Assertion failed: ((void *) 0) is null. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m18\x1b[0m: Assertion failed: The expression (2) - (1) <= (0.1) && (1) - (2) <= (0.1) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m19\x1b[0m: Assertion failed: The expression (2) - (2) > (0.1) || (2) - (2) > (0.1) is false. (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m21\x1b[0m: Assertion failed: "foo" (`foo`) is not empty. (esc)
