@@ -12,8 +12,6 @@ Test C assertions:
 Test C++ assertions:
 
   $ asserts.cc.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m108\x1b[0m: Assertion failed: The expression (&s1)[0..Size] == (&s2)[0..Size] is false. (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::array: \(\d\.\d\ds\) \(esc\) (re)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion failed: assert is fatal, expect isn't (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion failed: This assert runs (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::base: \(\d\.\d\ds\) \(esc\) (re)
@@ -22,7 +20,7 @@ Test C++ assertions:
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m20\x1b[0m: Assertion failed: You can fail an assertion with a message from anywhere (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m21\x1b[0m: Assertion failed: The conditions for this assertion were not met. (esc)
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::old_school: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m7\x1b[0;1m | Passing: \x1b[0;32m3\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m7\x1b[0;1m | Passing: \x1b[0;32m4\x1b[0;1m | Failing: \x1b[0;31m3\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
 Using redirections
 

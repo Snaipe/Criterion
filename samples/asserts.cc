@@ -70,9 +70,9 @@ struct dummy_struct {
     }
 };
 
-int eq_dummy(struct dummy_struct *a, struct dummy_struct *b)
+int eq_dummy(struct dummy_struct &a, struct dummy_struct &b)
 {
-    return *a == *b ? 0 : (*a < *b ? -1 : 1);
+    return a == b ? 0 : (a < b ? -1 : 1);
 }
 
 Test(asserts, array) {
@@ -105,7 +105,7 @@ Test(asserts, array) {
 
     /* cr_assert_arr_eq(&s1, &s2, 2 * sizeof (struct dummy_struct));
        isn't guaranteed to work on structs. */
-    cr_assert_arr_eq_cmp(&s1, &s2, 2, eq_dummy);
+    cr_assert_arr_eq_cmp(s1, s2, 2, eq_dummy);
 }
 
 Test(asserts, exception) {
