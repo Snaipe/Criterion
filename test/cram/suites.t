@@ -23,7 +23,7 @@ Listing tests in multiple suites
 Running the tests with verbose output
 
   $ suites.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.2.2 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-dev (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m1\x1b[0m test from \x1b[0;33mfirst_suite\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] first_suite::test (esc)
   \[\\x1b\[0;32mPASS\\x1b\[0m\] first_suite::test: \(\d\.\d\ds\) \(esc\) (re)
@@ -33,7 +33,7 @@ Running the tests with verbose output
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ more-suites.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.2.2 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-dev (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m1\x1b[0m test from \x1b[0;33mdisabled\x1b[0m: (esc)
   [\x1b[0;33mSKIP\x1b[0m] disabled::test: Test is disabled (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m1\x1b[0m test from \x1b[0;33msuite1\x1b[0m: (esc)

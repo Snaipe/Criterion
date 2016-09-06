@@ -2,7 +2,7 @@ Testing multiple samples with --xml
 
   $ simple.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="2" failures="1" errors="0" disabled="0">
     <testsuite name="misc" tests="2" failures="1" errors="0" disabled="0" skipped="0" time="0.000">
       <testcase name="passing" assertions="1" status="PASSED" time="0.000">
@@ -15,7 +15,7 @@ Testing multiple samples with --xml
 
   $ signal.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="3" failures="2" errors="1" disabled="0">
     <testsuite name="simple" tests="3" failures="2" errors="1" disabled="0" skipped="0" time="0.000">
       <testcase name="wrong_signal" assertions="0" status="FAILED" time="0.000">
@@ -30,7 +30,7 @@ Testing multiple samples with --xml
 
   $ asserts.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="6" failures="2" errors="0" disabled="0">
     <testsuite name="asserts" tests="6" failures="2" errors="0" disabled="0" skipped="0" time="0.000">
       <testcase name="string" assertions="10" status="PASSED" time="0.000">
@@ -52,7 +52,7 @@ Testing multiple samples with --xml
 
   $ more-suites.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="3" failures="0" errors="0" disabled="1">
     <testsuite name="suite2" tests="1" failures="0" errors="0" disabled="0" skipped="0" time="0.000">
       <testcase name="test" assertions="1" status="PASSED" time="0.000">
@@ -71,7 +71,7 @@ Testing multiple samples with --xml
 
   $ long-messages.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="1" failures="1" errors="0" disabled="0">
     <testsuite name="sample" tests="1" failures="1" errors="0" disabled="0" skipped="0" time="0.000">
       <testcase name="long_msg" assertions="1" status="FAILED" time="0.000">
@@ -82,7 +82,7 @@ Testing multiple samples with --xml
 
   $ description.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="2" failures="1" errors="0" disabled="1">
     <testsuite name="misc" tests="2" failures="1" errors="0" disabled="1" skipped="1" time="0.000">
       <testcase name="skipped" assertions="0" status="SKIPPED" time="0.000">
@@ -98,7 +98,7 @@ Testing --output=xml
 
   $ simple.c.bin --output=xml:-
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="2" failures="1" errors="0" disabled="0">
     <testsuite name="misc" tests="2" failures="1" errors="0" disabled="0" skipped="0" time="0.000">
       <testcase name="passing" assertions="1" status="PASSED" time="0.000">
@@ -113,7 +113,7 @@ Testing CRITERION_OUTPUTS
 
   $ CRITERION_OUTPUTS=xml:- simple.c.bin
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="2" failures="1" errors="0" disabled="0">
     <testsuite name="misc" tests="2" failures="1" errors="0" disabled="0" skipped="0" time="0.000">
       <testcase name="passing" assertions="1" status="PASSED" time="0.000">
@@ -128,7 +128,7 @@ Testing CRITERION_OUTPUTS
 
   $ skip.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Tests compiled with Criterion v2.2.2 -->
+  <!-- Tests compiled with Criterion v2.3.0-dev -->
   <testsuites name="Criterion Tests" tests="2" failures="0" errors="0" disabled="2">
     <testsuite name="misc" tests="2" failures="0" errors="0" disabled="2" skipped="2" time="0.000">
       <testcase name="skipping" assertions="0" status="SKIPPED" time="0.000">
