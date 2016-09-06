@@ -28,10 +28,7 @@ matrix:
     - compiler: uncrustify
       language: cpp
       before_install:
-        - >
-            if [[ "$TRAVIS_PULL_REQUEST" == false ]]; then
-              exit 0
-            fi
+        - if [[ "$TRAVIS_PULL_REQUEST" == false ]]; then exit 0; fi
         - |
             git clone https://github.com/uncrustify/uncrustify /tmp/uncrustify &&
             pushd /tmp/uncrustify &&
