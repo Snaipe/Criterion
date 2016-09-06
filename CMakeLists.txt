@@ -104,6 +104,7 @@ cr_add_library(criterion SHARED
     PROPERTIES
        VERSION ${PROJECT_SONAME}
        SOVERSION ${PROJECT_SOVERSION}
+    RUNNABLE
 )
 
 cr_link_subproject(criterion csptr STATIC)
