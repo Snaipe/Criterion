@@ -23,33 +23,52 @@
  */
 #include "section.h"
 
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
 #include <string.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <unistd.h>
 
 static int open_self(void)
 {
-#if defined __linux__
-    return open("/proc/self/exe", O_RDONLY);
+#if defined (__linux__)
+    const char *self = "/proc/self/exe";
 #elif defined __NetBSD__
-    return open("/proc/curproc/exe", O_RDONLY)
+    const char *self = "/proc/curproc/exe";
 #elif defined __FreeBSD__
-    int fd = open("/proc/curproc/file", O_RDONLY);
-    /* Fallback */
-    if (fd == -1 && errno == ENOENT) {
-        int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
-        char path[PATH_MAX];
-        size_t cb = sizeof (path);
-        sysctl(mib, sizeof (mib) / sizeof (int), path, &cb, NULL, 0);
-        fd = open(path, O_RDONLY);
-    }
-    return fd;
+    char self[PATH_MAX];
+
+    int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+    size_t cb = sizeof (self);
+    sysctl(mib, sizeof (mib) / sizeof (int), self, &cb, NULL, 0);
 #elif defined __OpenBSD__ || defined __DragonFly__
-    return open("/proc/curproc/file", O_RDONLY)
+    const char *self = "/proc/curproc/file";
 #else
+    errno = ENOTSUP;
     return -1;
 #endif
+
+    /* We can't just use /proc/self/exe or equivalent to re-exec the
+       executable, because tools like valgrind use this path to open
+       and map the ELF file -- which would point to the valgrind binary. */
+    char fullpath[PATH_MAX];
+    ssize_t rc = readlink(self, fullpath, PATH_MAX);
+    if (rc == -1) {
+        if (errno == EINVAL) {
+            strncpy(fullpath, self, PATH_MAX);
+            goto do_open;
+        }
+        return -1;
+    }
+    if ((size_t) rc == PATH_MAX) {
+        errno = ENAMETOOLONG;
+        return -1;
+    }
+    memset(fullpath + rc, 0, PATH_MAX - rc);
+
+do_open:
+    return open(fullpath, O_RDONLY);
 }
 
 static int open_module_map(mod_handle *mod)
