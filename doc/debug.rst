@@ -50,7 +50,7 @@ And a new process is created for the next test:
 Connect your remote debugger to this test with ``remote target localhost:1234``
 and run the test with ``continue``
 
-To use a different port use ``--debug --debug-transport=<port>``
+To use a different port use ``--debug --debug-transport=<protocol>:<port>``
 
 .. _coverage-ref:
 
