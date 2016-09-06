@@ -167,7 +167,7 @@ static int parse_dbg_transport(const char *arg)
 static int parse_dbg(const char *arg)
 {
     if (!arg)
-        return CR_DBG_NATIVE;
+        return criterion_options.debug = CR_DBG_NATIVE;
 
     static struct { char *name; enum criterion_debugger dbg; } values[] = {
         { "gdb",    CR_DBG_GDB    },
