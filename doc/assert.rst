@@ -29,6 +29,11 @@ String Assertions
 
 .. doxygengroup:: StringAsserts
 
+Wide String Assertions
+----------------------
+
+.. doxygengroup:: WideStringAsserts
+
 Array Assertions
 -----------------
 

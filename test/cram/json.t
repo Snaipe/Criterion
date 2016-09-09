@@ -75,18 +75,23 @@ Testing multiple samples with --json
   $ asserts.c.bin --json
   {
     "id": "Criterion v2.3.0-dev",
-    "passed": 4,
+    "passed": 5,
     "failed": 2,
     "errored": 0,
     "skipped": 0,
     "test_suites": [
       {
         "name": "asserts",
-        "passed": 4,
+        "passed": 5,
         "failed": 2,
         "errored": 0,
         "skipped": 0,
         "tests": [
+          {
+            "name": "wstring",
+            "assertions": 10,
+            "status": "PASSED"
+          },
           {
             "name": "string",
             "assertions": 10,

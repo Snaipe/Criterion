@@ -31,8 +31,10 @@ Testing multiple samples with --xml
   $ asserts.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
   <!-- Tests compiled with Criterion v2.3.0-dev -->
-  <testsuites name="Criterion Tests" tests="6" failures="2" errors="0" disabled="0">
-    <testsuite name="asserts" tests="6" failures="2" errors="0" disabled="0" skipped="0" time="0.000">
+  <testsuites name="Criterion Tests" tests="7" failures="2" errors="0" disabled="0">
+    <testsuite name="asserts" tests="7" failures="2" errors="0" disabled="0" skipped="0" time="0.000">
+      <testcase name="wstring" assertions="10" status="PASSED" time="0.000">
+      </testcase>
       <testcase name="string" assertions="10" status="PASSED" time="0.000">
       </testcase>
       <testcase name="old_school" assertions="2" status="FAILED" time="0.000">

@@ -801,6 +801,288 @@
 /**@}*/
 
 /**
+ * @defgroup WideStringAsserts Wide String Assertions
+ *
+ * @note
+ * These macros are meant to deal with *native* wide character strings, i.e.
+ * wchar_t arrays.  Most of them won't work on ``std::wstring`` in C++, with
+ * some exceptions -- for ``std::wstring``, you should use regular comparison
+ * assertions.
+ *
+ * @{
+ */
+
+/**
+ * Passes if Value is an empty wide string
+ *
+ * Passes if Value is an empty wide string.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @note Also works on std::wstring.
+ *
+ * @param[in] Value Wide string to test
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_empty(Value, FormatString, ...)                              internal
+
+/**
+ * Passes if Value is an empty wide string
+ *
+ * Passes if Value is an empty wide string.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @note Also works on std::wstring.
+ *
+ * @param[in] Value Wide string to test
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_empty(Value, FormatString, ...)                              internal
+
+/**
+ * Passes if Value is not an empty wide string
+ *
+ * Passes if Value is not an empty wide string.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @note Also works on std::string.
+ *
+ * @param[in] Value Wide string to test
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_not_empty(Value, FormatString, ...)                          internal
+
+/**
+ * Passes if Value is not an empty wide string
+ *
+ * Passes if Value is not an empty wide string.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @note Also works on std::string.
+ *
+ * @param[in] Value Wide string to test
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_not_empty(Value, FormatString, ...)                          internal
+
+/**
+ * Passes if Actual is lexicographically equal to Expected
+ *
+ * Passes if Actual is lexicographically equal to Expected.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Expected Expected wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_eq(Actual, Expected, FormatString, ...)                      internal
+
+/**
+ * Passes if Actual is lexicographically equal to Expected
+ *
+ * Passes if Actual is lexicographically equal to Expected.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Expected Expected wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_eq(Actual, Expected, FormatString, ...)                      internal
+
+/**
+ * Passes if Actual is not lexicographically equal to Unexpected
+ *
+ * Passes if Actual is not lexicographically equal to Unexpected.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Unexpected Unexpected wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_neq(Actual, Unexpected, FormatString, ...)                   internal
+
+/**
+ * Passes if Actual is not lexicographically equal to Unexpected
+ *
+ * Passes if Actual is not lexicographically equal to Unexpected.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Unexpected Unexpected wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_neq(Actual, Unexpected, FormatString, ...)                   internal
+
+/**
+ * Passes if Actual is lexicographically less than Reference
+ *
+ * Passes if Actual is lexicographically less than Reference.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_lt(Actual, Reference, FormatString, ...)                     internal
+
+/**
+ * Passes if Actual is lexicographically less than Reference
+ *
+ * Passes if Actual is lexicographically less than Reference.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_lt(Actual, Reference, FormatString, ...)                     internal
+
+/**
+ * Passes if Actual is lexicographically less or equal to Reference
+ *
+ * Passes if Actual is lexicographically less or equal to Reference.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_leq(Actual, Reference, FormatString, ...)                    internal
+
+/**
+ * Passes if Actual is lexicographically less or equal to Reference
+ *
+ * Passes if Actual is lexicographically less or equal to Reference.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_leq(Actual, Reference, FormatString, ...)                    internal
+
+/**
+ * Passes if Actual is lexicographically greater than Reference
+ *
+ * Passes if Actual is lexicographically greater than Reference.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_gt(Actual, Reference, FormatString, ...)                     internal
+
+/**
+ * Passes if Actual is lexicographically greater than Reference
+ *
+ * Passes if Actual is lexicographically greater than Reference.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_gt(Actual, Reference, FormatString, ...)                     internal
+
+/**
+ * Passes if Actual is lexicographically greater or equal to Reference
+ *
+ * Passes if Actual is lexicographically greater or equal to Reference.
+ * Otherwise the test is marked as failure and the execution of the function
+ * is aborted.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_assert_wcs_geq(Actual, Reference, FormatString, ...)                    internal
+
+/**
+ * Passes if Actual is lexicographically greater or equal to Reference
+ *
+ * Passes if Actual is lexicographically greater or equal to Reference.
+ * Otherwise the test is marked as failure but the execution will continue.
+ *
+ * The optional (non-wide) string is printed on failure.
+ *
+ * @param[in] Actual Wide string to test
+ * @param[in] Reference Reference wide string
+ * @param[in] FormatString (optional) printf-like format string
+ * @param[in] ... (optional) format string parameters
+ *
+ *****************************************************************************/
+#define cr_expect_wcs_geq(Actual, Reference, FormatString, ...)                    internal
+
+/**@}*/
+
+/**
  * @defgroup ArrayAsserts Array assertions
  * @{
  */
