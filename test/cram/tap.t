@@ -22,10 +22,11 @@ Testing multiple samples with --tap
 
   $ asserts.c.bin --tap
   TAP version 13
-  1..6
+  1..7
   # Criterion v2.3.0-dev
   
-  # Running 6 tests from asserts
+  # Running 7 tests from asserts
+  ok - asserts::wstring  \(\d\.\d\ds\) (re)
   ok - asserts::string  \(\d\.\d\ds\) (re)
   not ok - asserts::old_school  \(\d\.\d\ds\) (re)
     asserts.c:18: Assertion failed: The conditions for this assertion were not met.

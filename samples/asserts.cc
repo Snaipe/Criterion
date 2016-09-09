@@ -37,6 +37,22 @@ Test(asserts, string) {
     cr_assert_str_leq("hello", "hello");
 }
 
+Test(asserts, wstring) {
+    cr_assert_wcs_empty(L"");
+    cr_assert_wcs_not_empty(L"foo");
+
+    cr_assert_wcs_eq(L"hello", L"hello");
+    cr_assert_wcs_neq(L"hello", L"olleh");
+
+    cr_assert_wcs_gt(L"hello", L"hell");
+    cr_assert_wcs_geq(L"hello", L"hell");
+    cr_assert_wcs_geq(L"hello", L"hello");
+
+    cr_assert_wcs_lt(L"hell", L"hello");
+    cr_assert_wcs_leq(L"hell", L"hello");
+    cr_assert_wcs_leq(L"hello", L"hello");
+}
+
 Test(asserts, native) {
     cr_assert_eq(1, 1);
     cr_assert_neq(1, 2);

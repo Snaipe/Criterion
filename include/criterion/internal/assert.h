@@ -32,10 +32,12 @@
 #ifdef __cplusplus
 # include <cstring>
 # include <cstdlib>
+# include <cwchar>
 #else
 # include <string.h>
 # include <stdlib.h>
 # include <stdbool.h>
+# include <wchar.h>
 #endif
 #include "../types.h"
 #include "../stats.h"
@@ -300,6 +302,54 @@ CR_END_C_API
                 CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))  \
                 ))
 
+/* Wide String */
+
+#define cr_assert_wcs_op_empty_(Fail, Op, Msg, Value, ...)                           \
+    do {                                                                             \
+        const wchar_t *cr_wcs_value__ = (Value);                                     \
+        CR_EXPAND(cr_assert_impl(                                                    \
+                    Fail,                                                            \
+                    ((cr_wcs_value__) != NULL) && (cr_wcs_value__)[0] Op L'\0',      \
+                    dummy,                                                           \
+                    ((cr_wcs_value__) != NULL) ? Msg : CRITERION_ASSERT_MSG_IS_NULL, \
+                    (CR_STR(Value), cr_wcs_value__),                                 \
+                    __VA_ARGS__                                                      \
+                    ));                                                              \
+    } while (0)
+
+#define cr_assert_wcs_op_empty_va_(Fail, Op, Msg, ...) \
+    CR_EXPAND(cr_assert_wcs_op_empty_(                 \
+                Fail,                                  \
+                Op,                                    \
+                Msg,                                   \
+                CR_VA_HEAD(__VA_ARGS__),               \
+                CR_VA_TAIL(__VA_ARGS__)                \
+                ))
+
+#define cr_assert_wcs_op_(Fail, Op, Actual, Expected, ...)                          \
+    do {                                                                            \
+        const wchar_t *cr_wcs_actual__ = (Actual);                                  \
+        const wchar_t *cr_wcs_expected__ = (Expected);                              \
+        CR_EXPAND(cr_assert_impl(                                                   \
+                    Fail,                                                           \
+                    ((cr_wcs_actual__) != NULL) && ((cr_wcs_expected__) != NULL)    \
+                    && CR_STDN wcscmp((cr_wcs_actual__), (cr_wcs_expected__)) Op 0, \
+                    dummy,                                                          \
+                    CRITERION_ASSERT_MSG_EXPR_FALSE,                                \
+                    (CR_STR((Actual) Op (Expected))),                               \
+                    __VA_ARGS__                                                     \
+                    ));                                                             \
+    } while (0)
+
+#define cr_assert_wcs_op_va_(Fail, Op, ...)          \
+    CR_EXPAND(cr_assert_wcs_op_(                     \
+                Fail,                                \
+                Op,                                  \
+                CR_VA_HEAD(__VA_ARGS__),             \
+                CR_VA_HEAD(CR_VA_TAIL(__VA_ARGS__)), \
+                CR_VA_TAIL(CR_VA_TAIL(__VA_ARGS__))  \
+                ))
+
 /* Array */
 
 #define cr_assert_mem_op_(Fail, Op, Actual, Expected, Size, ...)    \
@@ -550,6 +600,38 @@ CR_END_C_API
 #define cr_assert_str_geq(...)          CR_EXPAND(cr_assert_str_op_va_(CR_FAIL_ABORT_, >=, __VA_ARGS__))
 #undef cr_expect_str_geq
 #define cr_expect_str_geq(...)          CR_EXPAND(cr_assert_str_op_va_(CR_FAIL_CONTINUES_, >=, __VA_ARGS__))
+#undef cr_assert_wcs_empty
+#define cr_assert_wcs_empty(...)        CR_EXPAND(cr_assert_wcs_op_empty_va_(CR_FAIL_ABORT_, ==, CRITERION_ASSERT_MSG_IS_NOT_EMPTY, __VA_ARGS__))
+#undef cr_expect_wcs_empty
+#define cr_expect_wcs_empty(...)        CR_EXPAND(cr_assert_wcs_op_empty_va_(CR_FAIL_CONTINUES_, ==, CRITERION_ASSERT_MSG_IS_NOT_EMPTY, __VA_ARGS__))
+#undef cr_assert_wcs_not_empty
+#define cr_assert_wcs_not_empty(...)    CR_EXPAND(cr_assert_wcs_op_empty_va_(CR_FAIL_ABORT_, !=, CRITERION_ASSERT_MSG_IS_EMPTY, __VA_ARGS__))
+#undef cr_expect_wcs_not_empty
+#define cr_expect_wcs_not_empty(...)    CR_EXPAND(cr_assert_wcs_op_empty_va_(CR_FAIL_CONTINUES_, !=, CRITERION_ASSERT_MSG_IS_EMPTY, __VA_ARGS__))
+#undef cr_assert_wcs_eq
+#define cr_assert_wcs_eq(...)           CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
+#undef cr_expect_wcs_eq
+#define cr_expect_wcs_eq(...)           CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_CONTINUES_, ==, __VA_ARGS__))
+#undef cr_assert_wcs_neq
+#define cr_assert_wcs_neq(...)          CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_ABORT_, !=, __VA_ARGS__))
+#undef cr_expect_wcs_neq
+#define cr_expect_wcs_neq(...)          CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_CONTINUES_, !=, __VA_ARGS__))
+#undef cr_assert_wcs_lt
+#define cr_assert_wcs_lt(...)           CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_ABORT_, <, __VA_ARGS__))
+#undef cr_expect_wcs_lt
+#define cr_expect_wcs_lt(...)           CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_CONTINUES_, <, __VA_ARGS__))
+#undef cr_assert_wcs_leq
+#define cr_assert_wcs_leq(...)          CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_ABORT_, <=, __VA_ARGS__))
+#undef cr_expect_wcs_leq
+#define cr_expect_wcs_leq(...)          CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_CONTINUES_, <=, __VA_ARGS__))
+#undef cr_assert_wcs_gt
+#define cr_assert_wcs_gt(...)           CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_ABORT_, >, __VA_ARGS__))
+#undef cr_expect_wcs_gt
+#define cr_expect_wcs_gt(...)           CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_CONTINUES_, >, __VA_ARGS__))
+#undef cr_assert_wcs_geq
+#define cr_assert_wcs_geq(...)          CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_ABORT_, >=, __VA_ARGS__))
+#undef cr_expect_wcs_geq
+#define cr_expect_wcs_geq(...)          CR_EXPAND(cr_assert_wcs_op_va_(CR_FAIL_CONTINUES_, >=, __VA_ARGS__))
 #undef cr_assert_arr_eq
 #define cr_assert_arr_eq(...)           CR_EXPAND(cr_assert_mem_op_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
 #undef cr_expect_arr_eq
