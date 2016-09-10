@@ -65,8 +65,8 @@ static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
 #else
 static msg_t msg_pre_init = "%s::%s\n";
 static msg_t msg_post_test_timed = "%s::%s: (%3.2fs)\n";
-static msg_t msg_post_test_skip = "%1$s::%2$s: Test was skipped\n";
-static msg_t msg_test_disabled = "%1$s::%2$s: Test is disabled\n";
+static msg_t msg_post_test_skip = "%s::%s: Test was skipped\n";
+static msg_t msg_test_disabled = "%s::%s: Test is disabled\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
 static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
