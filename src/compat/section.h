@@ -30,6 +30,13 @@
 # define MODULE_INVALID    NULL
 # include <link.h>
 
+# ifdef __FreeBSD__
+#  include <sys/elf_generic.h>
+#  define ElfW(type)      ElfW_(Elf, type)
+#  define ElfW_(e, t)     ElfW__(e, _ ## t)
+#  define ElfW__(e, t)    e ## t
+# endif
+
 typedef struct mod_handle {
     int fd;
     const ElfW(Ehdr) * map;
