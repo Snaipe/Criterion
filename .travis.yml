@@ -57,7 +57,8 @@ matrix:
               fi
             done
         - $STYLE_OK
-      after_success: []
+      after_success:
+        - echo "Style check passed."
 
     # Linux Debug, GCC 4.9
     - compiler: gcc-4.9
