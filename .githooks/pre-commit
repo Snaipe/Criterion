@@ -88,6 +88,7 @@ fi
 prefix="pre-commit-uncrustify"
 suffix="$(date +%C%y-%m-%d_%Hh%Mm%Ss)"
 patch="/tmp/$prefix-$suffix.patch"
+diff="/tmp/$prefix-$suffix.diff"
 
 # clean up any older uncrustify patches
 $DELETE_OLD_PATCHES && rm -f /tmp/$prefix*.patch
@@ -142,7 +143,11 @@ do
     # Else it can not be applied with 'git apply'.
     "$UNCRUSTIFY" -q -c "$CONFIG" -f "$file" $language_option | \
         git --no-pager diff --color=always --no-index -- "$file" - | \
-        sed -e "1s|--- $file_escaped_source|--- \"a/$file_escaped_target\"|" -e "2s|+++ -|+++ \"b/$file_escaped_target\"|" >> "$patch"
+        tail -n +3 | \
+        sed -e "1s|--- a/$file_escaped_source|--- \"a/$file_escaped_target\"|" \
+            -e "2s|+++ b/-|+++ \"b/$file_escaped_target\"|" | \
+        tee "$diff" | \
+        sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" >> "$patch"
 done
 
 # if no patch has been generated all is ok, clean up the file stub and exit
@@ -155,7 +160,8 @@ fi
 # a patch has been created, notify the user and exit
 printf "\nThe following differences were found between the code to commit "
 printf "and the uncrustify rules:\n\n"
-cat "$patch"
+cat "$diff"
+rm -f "$diff"
 
 printf "\nYou can apply these changes with:\n git apply $patch\n"
 printf "(may need to be called from the root directory of your repository)\n"
