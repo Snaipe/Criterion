@@ -123,7 +123,12 @@ int open_module_self(mod_handle *mod)
         return 0;
 
     mod->fd = fd;
-    return open_module_map(mod);
+    if (!open_module_map(mod)) {
+        close(mod->fd);
+        return 0;
+    }
+
+    return 1;
 }
 
 void close_module(mod_handle *mod)
