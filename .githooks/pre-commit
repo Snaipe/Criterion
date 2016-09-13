@@ -146,7 +146,7 @@ do
         tail -n +3 | \
         sed -e "1s|--- a/$file_escaped_source|--- \"a/$file_escaped_target\"|" \
             -e "2s|+++ b/-|+++ \"b/$file_escaped_target\"|" | \
-        tee "$diff" | \
+        tee -a "$diff" | \
         sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" >> "$patch"
 done
 
