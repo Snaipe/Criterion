@@ -142,7 +142,7 @@ static int open_module(const char *name, struct mod_handle *mod)
 {
     int fd;
 
-    if (!name[0])
+    if (!name)
         fd = open_self();
     else
         fd = open(name, O_RDONLY);
@@ -219,6 +219,7 @@ struct callback {
     struct cri_section *sect;
     size_t size;
     size_t i;
+    size_t libnum;
 };
 
 static int section_getaddr(struct dl_phdr_info *info,
@@ -227,7 +228,10 @@ static int section_getaddr(struct dl_phdr_info *info,
     struct callback *ctx = data;
     struct mod_handle mod;
 
-    if (!open_module(info->dlpi_name, &mod))
+    size_t libnum = ctx->libnum++;
+
+    /* a libnum of 0 means the current executable */
+    if (!open_module(libnum ? info->dlpi_name : NULL, &mod))
         return 0;
 
     struct cri_section sect;
