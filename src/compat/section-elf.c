@@ -21,14 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#define _GNU_SOURCE
 #include "section.h"
+#include "err.h"
 
+#include <link.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+
+#ifdef __FreeBSD__
+# include <sys/elf_generic.h>
+# define ElfW(type)      ElfW_(Elf, type)
+# define ElfW_(e, t)     ElfW__(e, _ ## t)
+# define ElfW__(e, t)    e ## t
+#endif
+
+struct mod_handle {
+    int fd;
+    const ElfW(Ehdr) * map;
+    size_t len;
+};
+
+struct section_mapping {
+    const void *map;
+    size_t len;
+    size_t sec_len;
+};
 
 static int open_self(void)
 {
@@ -71,7 +94,7 @@ do_open:
     return open(fullpath, O_RDONLY);
 }
 
-static int open_module_map(mod_handle *mod)
+static int open_module_map(struct mod_handle *mod)
 {
     /* Load the ELF header and the section header table */
     const ElfW(Ehdr) * elf = mmap(NULL, sizeof (ElfW(Ehdr)),
@@ -110,14 +133,19 @@ fail:
     return 0;
 }
 
-static void close_module_map(mod_handle *mod)
+static void close_module_map(struct mod_handle *mod)
 {
     munmap((void *) mod->map, mod->len);
 }
 
-int open_module_self(mod_handle *mod)
+static int open_module(const char *name, struct mod_handle *mod)
 {
-    int fd = open_self();
+    int fd;
+
+    if (!name[0])
+        fd = open_self();
+    else
+        fd = open(name, O_RDONLY);
 
     if (fd == -1)
         return 0;
@@ -131,13 +159,14 @@ int open_module_self(mod_handle *mod)
     return 1;
 }
 
-void close_module(mod_handle *mod)
+static void close_module(struct mod_handle *mod)
 {
     close_module_map(mod);
     close(mod->fd);
 }
 
-static const void *map_shdr(int fd, const ElfW (Shdr) *shdr, struct section_mapping *out)
+static const void *map_shdr(int fd, const ElfW (Shdr) *shdr,
+        struct section_mapping *out)
 {
     size_t shdr_map_off = shdr->sh_offset & ~0xfffllu;
     size_t shdr_map_len = shdr->sh_size + (shdr->sh_offset - shdr_map_off);
@@ -161,8 +190,8 @@ static void unmap_shdr(struct section_mapping *map)
     munmap((void *) map->map, map->len);
 }
 
-void *map_section_data(mod_handle *mod, const char *name,
-        struct section_mapping *map)
+static int get_section_data(struct mod_handle *mod, const char *name,
+        void *base, struct cri_section *sect)
 {
     const ElfW(Shdr) * shdr = (void *) ((char *) mod->map + mod->map->e_shoff);
     const ElfW(Shdr) * shstr_shdr = shdr + mod->map->e_shstrndx;
@@ -170,22 +199,70 @@ void *map_section_data(mod_handle *mod, const char *name,
     struct section_mapping shstr_map;
     const char *shstr = map_shdr(mod->fd, shstr_shdr, &shstr_map);
 
-    const void *ptr = NULL;
     for (size_t i = 0; i < mod->map->e_shnum; i++) {
         const char *section_name = shstr + shdr[i].sh_name;
         if (!strcmp(section_name, name)) {
             const ElfW(Shdr) * hdr = shdr + i;
-            ptr = map_shdr(mod->fd, hdr, map);
-            map->sec_len = hdr->sh_size;
-            break;
+            sect->addr = (char *) base + hdr->sh_addr;
+            sect->length = hdr->sh_size;
+            unmap_shdr(&shstr_map);
+            return 1;
         }
     }
 
     unmap_shdr(&shstr_map);
-    return (void *) ptr;
+    return 0;
 }
 
-void unmap_section_data(struct section_mapping *map)
+struct callback {
+    const char *sectname;
+    struct cri_section *sect;
+    size_t size;
+    size_t i;
+};
+
+static int section_getaddr(struct dl_phdr_info *info,
+        CR_UNUSED size_t size, void *data)
 {
-    unmap_shdr(map);
+    struct callback *ctx = data;
+    struct mod_handle mod;
+
+    if (!open_module(info->dlpi_name, &mod))
+        return 0;
+
+    struct cri_section sect;
+
+    if (get_section_data(&mod, ctx->sectname, (void *) info->dlpi_addr, &sect)) {
+        if (ctx->i >= ctx->size) {
+            ctx->size *= 1.5f;
+            ctx->sect = realloc(ctx->sect, sizeof (struct cri_section) * (ctx->size + 1));
+            if (!ctx->sect)
+                cr_panic("Could not allocate cri_section");
+        }
+
+        ctx->sect[ctx->i] = sect;
+        ctx->sect[ctx->i + 1].addr = NULL;
+        ++ctx->i;
+    }
+
+    close_module(&mod);
+    return 0;
+}
+
+int cri_sections_getaddr(const char *sectname, struct cri_section **out)
+{
+    struct callback ctx = {
+        .sectname = sectname,
+        .sect     = malloc(sizeof (struct cri_section) * 3),
+        .size     = 2,
+    };
+
+    if (!ctx.sect)
+        cr_panic("Could not allocate cri_section");
+
+    ctx.sect[0].addr = NULL;
+
+    dl_iterate_phdr(section_getaddr, &ctx);
+    *out = ctx.sect;
+    return 0;
 }

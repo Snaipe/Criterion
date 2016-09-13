@@ -51,24 +51,12 @@ static inline void *ptr_add(const void *ptr, size_t off)
     return (char *) ptr + off;
 }
 
-int open_module_self(mod_handle *mod)
+static int sections_getaddr(int lib, const char *sectname,
+        struct cri_section *sect)
 {
-    *mod = 0;
-    return 1;
-}
-
-void close_module(mod_handle *mod)
-{
-    (void) mod;
-}
-
-void *map_section_data(mod_handle *mod, const char *name,
-        struct section_mapping *map)
-{
-    (void) map;
-
-    const struct mach_header *hdr = _dyld_get_image_header(*mod);
+    const struct mach_header *hdr = _dyld_get_image_header(lib);
     const struct load_command *lc = ptr_add(hdr, sizeof (mach_hdr));
+
     for (size_t i = 0; i < hdr->ncmds; ++i, lc = ptr_add(lc, lc->cmdsize)) {
         if (lc->cmd == LC_SEGMENT) {
             const struct segment_command *sc = (void *) lc;
@@ -79,8 +67,9 @@ void *map_section_data(mod_handle *mod, const char *name,
                 if (strncmp(name, s->sectname, 16))
                     continue;
 
-                map->sec_len = s->size;
-                return get_real_address(*mod, (void *) (uintptr_t) s->addr);
+                sect->length = s->size;
+                sect->addr = get_real_address(lib, (void *) (uintptr_t) s->addr);
+                return 1;
             }
         } else if (lc->cmd == LC_SEGMENT_64) {
             const struct segment_command_64 *sc = (void *) lc;
@@ -91,15 +80,46 @@ void *map_section_data(mod_handle *mod, const char *name,
                 if (strncmp(name, s->sectname, 16))
                     continue;
 
-                map->sec_len = s->size;
-                return get_real_address(*mod, (void *) (uintptr_t) s->addr);
+                sect->length = s->size;
+                sect->addr = get_real_address(lib, (void *) (uintptr_t) s->addr);
+                return 1;
             }
         }
     }
-    return NULL;
+    return 0;
 }
 
-void unmap_section_data(struct section_mapping *map)
+int cri_sections_getaddr(const char *sectname, struct cri_section **out)
 {
-    (void) map;
+    struct cri_section *sect = malloc(sizeof (struct cri_section) * 3);
+
+    if (!sect)
+        cr_panic("Could not allocate cri_section");
+
+    sect[0].addr = NULL;
+
+    size_t i = 0;
+    size_t size = 2;
+
+    size_t nb_images = _dyld_image_count();
+    for (size_t lib = 0; lib < nb_images; ++lib) {
+        struct cri_section s;
+
+        if (!section_getaddr(lib, sectname, &s))
+            continue;
+
+        if (i >= size) {
+            size *= 1.5f;
+            sect = realloc(sect, sizeof (struct cri_section) * (size + 1));
+            if (!sect)
+                cr_panic("Could not allocate cri_section");
+        }
+
+        sect[i] = s;
+        sect[i + 1].addr = NULL;
+        ++i;
+    }
+
+    *out = sect;
+    return 0;
 }

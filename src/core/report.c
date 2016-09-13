@@ -37,21 +37,19 @@
 #define CR_HSEC_STR_(S)      CR_HSEC_STR__(S)
 #define CR_HSEC_STR__(S)     #S
 
-#define IMPL_CALL_REPORT_HOOKS(Kind)                                            \
-    void call_report_hooks_ ## Kind(void *data) {                               \
-        mod_handle self;                                                        \
-        struct section_mapping sect;                                            \
-        if (!open_module_self(&self))                                           \
-            abort();                                                            \
-        void *start = map_section_data(&self, CR_HSEC_STR(Kind), &sect);        \
-        if (!start) {                                                           \
-            close_module(&self);                                                \
-            return;                                                             \
-        }                                                                       \
-        void *end = (char *) start + sect.sec_len;                              \
-        for (f_report_hook *hook = start; hook < (f_report_hook *) end; ++hook) \
-            (*hook ? *hook : nothing)(data);                                    \
-        close_module(&self);                                                    \
+#define IMPL_CALL_REPORT_HOOKS(Kind)                              \
+    void call_report_hooks_ ## Kind(void *data) {                 \
+        struct cri_section *sections;                             \
+        if (cri_sections_getaddr(CR_HSEC_STR(Kind), &sections))   \
+            return;                                               \
+        for (struct cri_section *s = sections; s->addr; ++s) {    \
+            void *start = s->addr;                                \
+            f_report_hook *end = (void *)                         \
+                    ((char *) s->addr + s->length);               \
+            for (f_report_hook *hook = start; hook < end; ++hook) \
+                (*hook ? *hook : nothing)(data);                  \
+        }                                                         \
+        free(sections);                                           \
     }
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL)

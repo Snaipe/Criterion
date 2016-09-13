@@ -26,41 +26,13 @@
 
 #include "config.h"
 
-#if defined (__ELF__)
-# define MODULE_INVALID    NULL
-# include <link.h>
+#include <stddef.h>
 
-# ifdef __FreeBSD__
-#  include <sys/elf_generic.h>
-#  define ElfW(type)      ElfW_(Elf, type)
-#  define ElfW_(e, t)     ElfW__(e, _ ## t)
-#  define ElfW__(e, t)    e ## t
-# endif
-
-typedef struct mod_handle {
-    int fd;
-    const ElfW(Ehdr) * map;
-    size_t len;
-} mod_handle;
-#elif defined (__APPLE__)
-# define MODULE_INVALID    -1
-typedef int mod_handle;
-#elif defined (_WIN32)
-# include <windows.h>
-# define MODULE_INVALID    NULL
-typedef HMODULE mod_handle;
-#endif
-
-struct section_mapping {
-    const void *map;
-    size_t len;
-    size_t sec_len;
+struct cri_section {
+    void *addr;
+    size_t length;
 };
 
-int open_module_self(mod_handle *mod);
-void close_module(mod_handle *mod);
-void *map_section_data(mod_handle *mod, const char *name,
-        struct section_mapping *map);
-void unmap_section_data(struct section_mapping *map);
+int cri_sections_getaddr(const char *sectname, struct cri_section **sect);
 
 #endif /* !SECTION_H_ */

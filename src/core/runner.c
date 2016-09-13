@@ -74,10 +74,6 @@ static msg_t msg_valgrind_jobs = "%sWarning! Criterion has detected "
         "explicitely set. Reports might appear confusing!%s\n";
 #endif
 
-/* This is here to make the test suite & test sections non-empty */
-CR_SECTION_("cr_sts") struct criterion_suite *dummy_suite = NULL;
-CR_SECTION_("cr_tst") struct criterion_test *dummy_test = NULL;
-
 static int cmp_suite(void *a, void *b)
 {
     struct criterion_suite *s1 = a, *s2 = b;
@@ -125,50 +121,53 @@ struct criterion_test_set *criterion_init(void)
 {
     struct criterion_ordered_set *suites = new_ordered_set(cmp_suite, dtor_suite_set);
 
-    mod_handle self;
+    struct cri_section *sections = NULL;
 
-    if (!open_module_self(&self))
-        cr_panic("Could not open self executable file");
+    if (!cri_sections_getaddr("cr_sts", &sections)) {
+        for (struct cri_section *s = sections; s->addr; ++s) {
+            void *start = s->addr;
+            void *end = (char *) start + s->length;
 
-    struct section_mapping suite_sect = { .sec_len = 0 };
-    void *suite_start = map_section_data(&self, "cr_sts", &suite_sect);
-    void *suite_end = (char *) suite_start + suite_sect.sec_len;
+            FOREACH_SUITE_SEC(s, start, end) {
+                if (!*s || !*(*s)->name)
+                    continue;
 
-    FOREACH_SUITE_SEC(s, suite_start, suite_end) {
-        if (!*s || !*(*s)->name)
-            continue;
-
-        struct criterion_suite_set css = {
-            .suite = **s,
-        };
-        insert_ordered_set(suites, &css, sizeof (css));
+                struct criterion_suite_set css = {
+                    .suite = **s,
+                };
+                insert_ordered_set(suites, &css, sizeof (css));
+            }
+        }
     }
+    free(sections);
 
     struct criterion_test_set *set = smalloc(
         .size = sizeof (struct criterion_test_set),
-        .dtor = dtor_test_set
-        );
+        .dtor = dtor_test_set);
 
     *set = (struct criterion_test_set) {
         suites,
         0,
     };
 
-    struct section_mapping test_sect = { .sec_len = 0 };
-    void *test_start = map_section_data(&self, "cr_tst", &test_sect);
-    void *test_end = (char *) test_start + test_sect.sec_len;
+    sections = NULL;
+    if (!cri_sections_getaddr("cr_tst", &sections)) {
+        for (struct cri_section *s = sections; s->addr; ++s) {
+            void *start = s->addr;
+            void *end = (char *) start + s->length;
 
-    FOREACH_TEST_SEC(test, test_start, test_end) {
-        if (!*test)
-            continue;
+            FOREACH_TEST_SEC(test, start, end) {
+                if (!*test)
+                    continue;
 
-        if (!*(*test)->category || !*(*test)->name)
-            continue;
+                if (!*(*test)->category || !*(*test)->name)
+                    continue;
 
-        criterion_register_test(set, *test);
+                criterion_register_test(set, *test);
+            }
+        }
     }
-
-    close_module(&self);
+    free(sections);
 
     return set;
 }

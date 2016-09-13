@@ -21,39 +21,74 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "section.h"
 #include <windows.h>
+#include <tlhelp32.h>
 
-int open_module_self(mod_handle *mod)
-{
-    *mod = GetModuleHandle(NULL);
-    return 1;
-}
+#include "err.h"
+#include "section.h"
 
-void close_module(mod_handle *mod)
+int section_getaddr(HMODULE mod, const char *sectname,
+        struct cri_section *sect)
 {
-    (void) mod;
-}
-
-void *map_section_data(mod_handle *mod, const char *name,
-        struct section_mapping *map)
-{
-    PIMAGE_DOS_HEADER dos_hdr = (PIMAGE_DOS_HEADER) *mod;
+    PIMAGE_DOS_HEADER dos_hdr = (PIMAGE_DOS_HEADER) mod;
     PIMAGE_NT_HEADERS nt_hdr = (PIMAGE_NT_HEADERS) ((uintptr_t) dos_hdr
             + dos_hdr->e_lfanew);
 
     PIMAGE_SECTION_HEADER sec_hdr = IMAGE_FIRST_SECTION(nt_hdr);
 
     for (int i = 0; i < nt_hdr->FileHeader.NumberOfSections; i++, sec_hdr++) {
-        if (!strncmp((char *) sec_hdr->Name, name, IMAGE_SIZEOF_SHORT_NAME)) {
-            map->sec_len = sec_hdr->SizeOfRawData;
-            return (char *) dos_hdr + sec_hdr->VirtualAddress;
+        if (*(char *) sec_hdr == '/')
+            continue;
+
+        if (!strncmp((char *) sec_hdr->Name, sectname, IMAGE_SIZEOF_SHORT_NAME)) {
+            sect->length = sec_hdr->SizeOfRawData;
+            sect->addr = (char *) dos_hdr + sec_hdr->VirtualAddress;
+            return 1;
         }
     }
-    return NULL;
+    return 0;
 }
 
-void unmap_section_data(struct section_mapping *map)
+int cri_sections_getaddr(const char *sectname, struct cri_section **out)
 {
-    (void) map;
+    struct cri_section *sect = malloc(sizeof (struct cri_section) * 3);
+
+    if (!sect)
+        cr_panic("Could not allocate cri_section");
+
+    sect[0].addr = NULL;
+
+    size_t i = 0;
+    size_t size = 2;
+
+    HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE,
+                    GetCurrentProcessId());
+    if (snap == INVALID_HANDLE_VALUE)
+        cr_panic("CreateToolhelp32Snapshot returned INVALID_HANDLE_VALUE");
+
+    MODULEENTRY32 mod = { .dwSize = sizeof (MODULEENTRY32) };
+    for (BOOL more = Module32First(snap, &mod); more;
+            more = Module32Next(snap, &mod)) {
+        struct cri_section s;
+
+        if (!section_getaddr(mod.hModule, sectname, &s))
+            continue;
+
+        if (i >= size) {
+            size *= 1.5f;
+            sect = realloc(sect, sizeof (struct cri_section) * (size + 1));
+            if (!sect)
+                cr_panic("Could not allocate cri_section");
+        }
+
+        sect[i] = s;
+        sect[i + 1].addr = NULL;
+        ++i;
+    }
+    unsigned long err = (unsigned long) GetLastError();
+    if (err != ERROR_NO_MORE_FILES)
+        cr_panic("Error %lu while iterating modules", err);
+
+    *out = sect;
+    return 0;
 }
