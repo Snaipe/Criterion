@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdlib.h>
 #include <string.h>
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
@@ -51,7 +52,7 @@ static inline void *ptr_add(const void *ptr, size_t off)
     return (char *) ptr + off;
 }
 
-static int sections_getaddr(int lib, const char *sectname,
+static int section_getaddr(int lib, const char *sectname,
         struct cri_section *sect)
 {
     const struct mach_header *hdr = _dyld_get_image_header(lib);
@@ -64,7 +65,7 @@ static int sections_getaddr(int lib, const char *sectname,
                 continue;
             const struct section *s = ptr_add(sc, sizeof (*sc));
             for (size_t j = 0; j < sc->nsects; ++j, ++s) {
-                if (strncmp(name, s->sectname, 16))
+                if (strncmp(sectname, s->sectname, 16))
                     continue;
 
                 sect->length = s->size;
@@ -77,7 +78,7 @@ static int sections_getaddr(int lib, const char *sectname,
                 continue;
             const struct section_64 *s = ptr_add(sc, sizeof (*sc));
             for (size_t j = 0; j < sc->nsects; ++j, ++s) {
-                if (strncmp(name, s->sectname, 16))
+                if (strncmp(sectname, s->sectname, 16))
                     continue;
 
                 sect->length = s->size;
