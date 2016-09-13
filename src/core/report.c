@@ -44,11 +44,14 @@
         if (!open_module_self(&self))                                           \
             abort();                                                            \
         void *start = map_section_data(&self, CR_HSEC_STR(Kind), &sect);        \
-        if (!start)                                                             \
+        if (!start) {                                                           \
+            close_module(&self);                                                \
             return;                                                             \
+        }                                                                       \
         void *end = (char *) start + sect.sec_len;                              \
         for (f_report_hook *hook = start; hook < (f_report_hook *) end; ++hook) \
             (*hook ? *hook : nothing)(data);                                    \
+        close_module(&self);                                                    \
     }
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL)

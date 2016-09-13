@@ -168,6 +168,8 @@ struct criterion_test_set *criterion_init(void)
         criterion_register_test(set, *test);
     }
 
+    close_module(&self);
+
     return set;
 }
 
