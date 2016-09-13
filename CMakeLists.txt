@@ -39,6 +39,7 @@ cr_add_subproject (csptr PATH dependencies/libcsptr
 
 cr_add_subproject (dyncall_s PATH dependencies/dyncall
     OPTS
+      -DLANG_CXX=${LANG_CXX}
       "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
     CMAKE IF THEORIES)
 
