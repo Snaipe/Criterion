@@ -311,7 +311,12 @@ static bxf_instance *run_test(struct run_next_context *ctx,
                 default: break;
             }
         } else {
-            debugger = (enum bxf_debugger) (criterion_options.debug - 1);
+            switch (criterion_options.debug) {
+                case CR_DBG_GDB:    debugger = BXF_DBG_GDB; break;
+                case CR_DBG_LLDB:   debugger = BXF_DBG_LLDB; break;
+                case CR_DBG_WINDBG: debugger = BXF_DBG_WINDBG; break;
+                default: break;
+            }
         }
         if (!debugger)
             cr_panic("Could not choose the debugger server for an "
