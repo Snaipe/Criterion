@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Criterion \n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2016-09-05 22:45+0200\n"
+"POT-Creation-Date: 2016-09-16 11:24+0200\n"
 "PO-Revision-Date: 2016-02-12 11:12+0100\n"
 "Last-Translator:  <a1lu@arcor.de>\n"
 "Language-Team: German\n"
@@ -192,13 +192,13 @@ msgstr ""
 "die Anzahl an Aufträgen wurde explizit festgelegt. Die Berichte können "
 "verwirrend sein!%2$s\n"
 
-#: src/io/output.c:13
+#: src/io/output.c:36
 #, c-format
 msgid "Could not open the file @ `%1$s` for %2$s reporting: %3$s.\n"
 msgstr ""
 "Konnte die Datei `%1$s` nicht für die Berichte von %2$s öffnen: %3$s.\n"
 
-#: src/io/output.c:14
+#: src/io/output.c:37
 #, c-format
 msgid "Writing %1$s report in `%2$s`.\n"
 msgstr "Schreibe Bericht von %1$s nach `%2$s`.\n"

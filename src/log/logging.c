@@ -51,6 +51,7 @@ const struct criterion_prefix_data g_criterion_logging_prefixes[] = {
     [CRITERION_LOGGING_PREFIX_FAIL]     = { "FAIL", CRIT_FG_RED   },
     [CRITERION_LOGGING_PREFIX_ERR]      = { "ERR ", CRIT_FG_RED   },
     [CRITERION_LOGGING_PREFIX_WARN]     = { "WARN", CRIT_FG_GOLD  },
+    [CRITERION_LOGGING_PREFIX_DEBUG]    = { "----", CRIT_FG_GRAY  },
                                           { NULL,   NULL          }
 };
 

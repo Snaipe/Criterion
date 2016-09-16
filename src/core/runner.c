@@ -364,6 +364,7 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
     if (criterion_options.debug) {
         criterion_options.jobs = 1;
         criterion_options.crash = true;
+        criterion_options.logging_threshold = 1;
     }
 
     int res = criterion_run_all_tests_impl(set);

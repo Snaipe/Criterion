@@ -39,6 +39,13 @@ enum criterion_debugger {
     CR_DBG_NONE,
 
     /**
+     *  Run the test suspended, without a debugger, and print its PID.
+     *
+     *  Allows external debuggers to attach.
+     */
+    CR_DBG_IDLE,
+
+    /**
      *  Run the test with a debugging server compatible with the compiler
      *  it was built with.
      */

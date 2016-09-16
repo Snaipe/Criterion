@@ -173,9 +173,11 @@ static int parse_dbg(const char *arg)
         { "gdb",    CR_DBG_GDB    },
         { "lldb",   CR_DBG_LLDB   },
         { "windbg", CR_DBG_WINDBG },
+        { "idle",   CR_DBG_IDLE   },
+        { NULL,     0             },
     };
 
-    for (size_t i = 0; i < 3; ++i) {
+    for (size_t i = 0; values[i].name; ++i) {
         if (!strcmp(values[i].name, arg)) {
             criterion_options.debug = values[i].dbg;
             return 1;

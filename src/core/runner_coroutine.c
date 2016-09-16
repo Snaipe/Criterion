@@ -36,6 +36,7 @@
 #include "protocol/protocol.h"
 #include "protocol/connect.h"
 #include "protocol/messages.h"
+#include "string/i18n.h"
 #include "client.h"
 #include "err.h"
 #include "report.h"
@@ -48,6 +49,14 @@
 #else
 # define ENABLE_VALGRIND_ERRORS
 # define RUNNING_ON_VALGRIND    0
+#endif
+
+typedef const char *const msg_t;
+
+#ifdef ENABLE_NLS
+static msg_t msg_print_pid = N_("%1$s::%2$s: Started test has PID %3$lu.\n");
+#else
+static msg_t msg_print_pid = "%s::%s: Started test has PID %lu.\n";
 #endif
 
 /* *INDENT-OFF* - This is a structure definition in disguise */
@@ -290,7 +299,9 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         .inherit.context = inst_ctx,
     };
 
-    if (criterion_options.debug) {
+    if (criterion_options.debug == CR_DBG_IDLE) {
+        sp.suspended = 1;
+    } else if (criterion_options.debug) {
         enum bxf_debugger debugger = BXF_DBG_NONE;
         if (criterion_options.debug == CR_DBG_NATIVE) {
             switch (ctx->test->data->compiler_) {
@@ -325,6 +336,14 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         cr_panic("Could not spawn test instance: %s", strerror(-rc));
 
     bxf_context_term(inst_ctx);
+
+    /* TODO: integrate this to the logger after refactor */
+    if (criterion_options.debug == CR_DBG_IDLE) {
+        criterion_pinfo(CRITERION_PREFIX_DEBUG, _(msg_print_pid),
+                ctx->test->category,
+                ctx->test->name,
+                (unsigned long) instance->pid);
+    }
 
     *client = (struct client_ctx) {
         .test = ctx->test,
