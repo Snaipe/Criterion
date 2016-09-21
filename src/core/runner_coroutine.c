@@ -288,6 +288,10 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     }
 
     if (!rc)
+        rc = bxf_context_addstatic(inst_ctx, &criterion_options,
+                        sizeof (criterion_options));
+
+    if (!rc)
         rc = bxf_context_addarena(inst_ctx, cri_alloc_getarena());
 
     if (rc < 0)
