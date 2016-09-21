@@ -13,6 +13,7 @@
     * Addition: user logging API with cr_log, cr_log_info, cr_log_warning, and cr_log_error.
     * Breaking: dropped support for MinGW, use MinGW-w64.
     * Breaking: dropped support for Windows XP, use Windows 7 and later.
+    * Breaking: log_pre_init and log_pre_test in the internal logger API now takes an additional parameter.
     * Breaking: the SOVERSION now follows the SONAME major independently of the project version.
     * Change: --pattern has been renamed to --filter.
     * Change: removed dependency on PCRE for filtering (Matthias "ailu" Günzel).
