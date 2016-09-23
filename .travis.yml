@@ -2,21 +2,12 @@ language: c
 
 sudo: false
 
-addons:
-  apt:
-    sources:
-    - deadsnakes
-    packages:
-    - python3.5
-
 _anchors:
   - &gcc49-packages
     apt:
       sources:
       - ubuntu-toolchain-r-test
-      - deadsnakes
       packages:
-      - python3.5
       - gcc-4.9
       - g++-4.9
       - gobjc-4.9
@@ -117,16 +108,9 @@ before_install:
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-          travis_retry brew install python3
-          export PATH="$(python3 -m site --user-base)/bin:$PATH"
-          export PYTHON_BIN="python3"
-          travis_retry pip3 install cram==0.7
-        else
-          travis_retry curl -LO https://bootstrap.pypa.io/get-pip.py
-          travis_retry python3.5 get-pip.py --user
-          export PYTHON_BIN="python3.5"
-          travis_retry pip3 install --user cram==0.7
+          export PATH="$(python -m site --user-base)/bin:$PATH"
         fi
+        travis_retry pip install --user cram==0.7
       fi
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - $CC --version
