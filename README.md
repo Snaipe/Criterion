@@ -78,6 +78,7 @@ Sample tests can be found in the [sample directory][samples].
 
 ### Misc
 
+* [autotools skeleton for projects with criterion tests][autotools]
 * [CMake find module for Criterion][find-module]
 
 ## Credits
@@ -97,6 +98,7 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue)
 [sample-signal]: ./samples/signal.c
 [sample-report]: ./samples/report.c
 
+[autotools]: ./dev/autotools
 [find-module]: ./dev/FindCriterion.cmake
 
 [irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e
