@@ -295,13 +295,15 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
-            case 'z': fprintf(stderr, "--no-early-exit is now deprecated as it no longer does anything.\n");
+            case 'z': fprintf(stderr, "--no-early-exit is now deprecated as it no longer does anything.\n"); break;
             case 'k': criterion_options.use_ascii         = true; break;
             case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
 
-            case 'p': fprintf(stderr, "--pattern has been renamed as --filter and is now deprecated.\n");
+            case 'p':
+                fprintf(stderr, "--pattern has been renamed as --filter and is now deprecated.\n");
+            /* fallthrough */
             case 'F': criterion_options.pattern           = optarg; break;
             case 'q': quiet = true; break;
 
