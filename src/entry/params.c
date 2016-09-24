@@ -351,8 +351,8 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 's':
                 fprintf(stderr, "--single has been removed. Use --debug instead.");
                 exit(3);
+            case 'c': criterion_options.crash = true; break;
             case '?':
-            case 'c': criterion_options.crash            = true; break;
             default: do_print_usage = handle_unknown_arg; break;
         }
     }
