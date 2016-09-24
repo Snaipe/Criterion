@@ -396,7 +396,7 @@ bool handle_phase(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
             handler_error(sctx, "%s: ", id, "Cannot spawn a subtest outside of the '%s' test phase.", state_to_string[CS_MAIN]);
             return true;
         }
-        if (ctx->state & (0x3 << (MAX_TEST_DEPTH - 1) * 2)) {
+        if (ctx->state & (0x3u << (MAX_TEST_DEPTH - 1) * 2)) {
             char id[32];
             get_message_id(id, sizeof (id), msg);
 
