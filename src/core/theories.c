@@ -85,6 +85,7 @@ struct criterion_theory_context *cr_theory_init(void)
 void cr_theory_free(struct criterion_theory_context *ctx)
 {
     dcFree(ctx->vm);
+    free(ctx);
 }
 
 static jmp_buf theory_jmp;
