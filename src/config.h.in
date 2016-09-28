@@ -17,4 +17,6 @@
 # define PACKAGE "${PROJECT_NAME}"
 # define VERSION "${PROJECT_VERSION}"
 
+#define NN_SOCKET_PATH "/var/lib/"
+
 #endif /* !CONFIG_H_IN_ */

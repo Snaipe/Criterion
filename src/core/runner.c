@@ -323,8 +323,8 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
                     _(msg_valgrind_jobs), CR_FG_BOLD, CR_RESET);
     }
 
-    char url[sizeof ("ipc://criterion_.sock") + 21];
-    snprintf(url, sizeof (url), "ipc://criterion_%llu.sock", get_process_id());
+    char url[sizeof ("ipc://" NN_SOCKET_PATH "criterion_.sock") + 21];
+    snprintf(url, sizeof (url), "ipc://" NN_SOCKET_PATH "criterion_%llu.sock", get_process_id());
 
     int sock = cri_proto_bind(url);
     if (sock < 0)
