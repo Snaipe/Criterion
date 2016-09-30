@@ -23,6 +23,7 @@
  */
 #include <string.h>
 #include "abort.h"
+#include "compat/unwind.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
 #include "criterion/internal/asprintf-compat.h"
@@ -31,14 +32,14 @@
 #include "io/event.h"
 #include "debugbreak.h"
 
-jmp_buf g_pre_test;
+struct cri_unwind_jmp_buf g_pre_test;
 
 void criterion_abort_test(void)
 {
     if (criterion_options.crash)
         debug_break();
 
-    longjmp(g_pre_test, 1);
+    cri_unwind_longjmp(&g_pre_test, 1);
 }
 
 void criterion_skip_test(const char *format, ...)

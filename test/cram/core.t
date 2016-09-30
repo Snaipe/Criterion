@@ -107,3 +107,11 @@ Testing report hooks
   \[\\x1b\[0;31mFAIL\\x1b\[0m\] sample::test: \(\d\.\d\ds\) \(esc\) (re)
   criterion_fini
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+
+Testing whether the stack gets properly unwound
+
+  $ unwind.cc.bin
+  [\x1b[0;34m----\x1b[0m] \x1b[0;1munwind.cc\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion failed: The expression 0 is false. (esc)
+  [\x1b[0;33mWARN\x1b[0m] Unwind was OK (esc)
+  [\x1b[0;31mFAIL\x1b[0m] misc::failing: (0.00s) (esc)
+  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)

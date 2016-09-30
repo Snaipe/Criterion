@@ -202,7 +202,7 @@ static void concat_arg(char (*msg)[BUFSIZE], struct criterion_datapoints *dps, s
 
 int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void))
 {
-    if (!setjmp(g_pre_test)) {
+    if (!cri_unwind_setjmp(&g_pre_test)) {
         cr_theory_call(ctx, fnptr);
         return 1;
     }

@@ -6,6 +6,7 @@ include(CheckPrototypeDefinition)
 include(CheckLibraryExists)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
+include(CheckCSourceCompiles)
 include(PackageUtils)
 
 # Check for packages
@@ -42,6 +43,21 @@ else ()
 endif ()
 
 check_symbol_exists(CLOCK_MONOTONIC_RAW "time.h" HAVE_CLOCK_MONOTONIC_RAW)
+
+check_symbol_exists(_Unwind_ForcedUnwind "unwind.h" HAVE_UNWIND_FORCEDUNWIND)
+check_symbol_exists(_Unwind_GetCFA "unwind.h" HAVE_UNWIND_GETCFA)
+
+check_c_source_compiles("
+  int main(void) {
+    __builtin_dwarf_cfa();
+  }
+" HAVE_BUILTIN_DWARF_CFA)
+
+check_symbol_exists(_AddressOfReturnAddress "intrin.h" HAVE_ADDRESS_OF_RETURN_ADDRESS)
+
+if (HAVE_UNWIND_FORCEDUNWIND AND HAVE_UNWIND_GETCFA)
+  set (HAVE_GNU_UNWINDER 1 CACHE INTERNAL "The unwind ABI is IA64 w/ GNU extensions")
+endif ()
 
 # Check for C++11
 

@@ -14,6 +14,7 @@ if (CMAKE_CXX_COMPILER_WORKS)
     other-crashes.cc
 
     exception.cc
+    unwind.cc
   )
 endif ()
 

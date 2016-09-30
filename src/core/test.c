@@ -76,7 +76,7 @@ void criterion_internal_test_main(void (*fn)(void))
 
     send_event(criterion_protocol_phase_kind_MAIN);
 
-    if (!setjmp(g_pre_test)) {
+    if (!cri_unwind_setjmp(&g_pre_test)) {
         if (!test->data->param_) {
             fn();
         } else {
