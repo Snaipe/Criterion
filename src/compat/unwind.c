@@ -48,7 +48,7 @@ static _Unwind_Reason_Code unwind_stack(int ver, _Unwind_Action action,
 
     if (action & _UA_END_OF_STACK)
         return _URC_END_OF_STACK;
-    if (frame == uctx->jmp->frame) {
+    if (frame >= uctx->jmp->frame) {
         struct unwind_ctx nctx = *uctx;
         free(exc);
         free(uctx);
@@ -71,11 +71,17 @@ CR_NORETURN void cri_unwind_longjmp(struct cri_unwind_jmp_buf *jmp, int val)
 
     exc->exception_class = *(uint64_t *) "cr\0\0asrt";
 
-    struct unwind_ctx *ctx = malloc(sizeof (struct unwind_ctx));
+    volatile struct unwind_ctx *ctx = malloc(sizeof (struct unwind_ctx));
     *ctx = (struct unwind_ctx) { jmp, val };
 
-    _Unwind_ForcedUnwind((struct _Unwind_Exception *) exc, unwind_stack, ctx);
-    cr_panic("unwinding routine returned!");
+    _Unwind_ForcedUnwind((struct _Unwind_Exception *) exc, unwind_stack, (void *) ctx);
+
+    /* In cases where the unwinding cannot go further (e.g. with dyncall'ed
+       functions) we need to longjmp anyway */
+    struct unwind_ctx nctx = *ctx;
+    free(exc);
+    free((void *) ctx);
+    longjmp(nctx.jmp->buf, nctx.val);
 }
 
 #else
