@@ -27,6 +27,7 @@
 #include "log/logging.h"
 #include "io/event.h"
 #include "io/asprintf.h"
+#include "mutex.h"
 
 int read_message(int sock, criterion_protocol_msg *message)
 {
@@ -84,6 +85,23 @@ const char *message_names[] = {
 
 void cr_send_to_runner(const criterion_protocol_msg *message)
 {
+#ifdef FIX_NANOMSG_RACE
+    static struct cri_mutex sync;
+    int err = cri_mutex_init_once(&sync);
+    if (err < 0) {
+        criterion_perror("Could not initialize the global message mutex: %s.\n",
+                strerror(-err));
+        abort();
+    }
+
+    err = cri_mutex_lock(&sync);
+    if (err < 0) {
+        criterion_perror("Could not lock the global message mutex: %s.\n",
+                strerror(-err));
+        abort();
+    }
+#endif
+
     if (write_message(g_client_socket, message) != 1) {
         criterion_perror("Could not write the \"%s\" message down the event pipe: %s.\n",
                 message_names[message->data.which_value],
@@ -93,6 +111,15 @@ void cr_send_to_runner(const criterion_protocol_msg *message)
 
     unsigned char *buf = NULL;
     int read = nn_recv(g_client_socket, &buf, NN_MSG, 0);
+
+#ifdef FIX_NANOMSG_RACE
+    err = cri_mutex_unlock(&sync);
+    if (err < 0) {
+        criterion_perror("Could not unlock the global message mutex: %s.\n",
+                strerror(-err));
+        abort();
+    }
+#endif
 
     if (read <= 0) {
         criterion_perror("Could not read ack: %s.\n", nn_strerror(errno));

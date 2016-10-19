@@ -6,7 +6,17 @@ include(CheckPrototypeDefinition)
 include(CheckLibraryExists)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
+include(CheckIncludeFile)
 include(PackageUtils)
+
+# Set definitions
+
+if (WIN32)
+  add_definitions (-D_CRT_SECURE_NO_WARNINGS=1)
+  add_definitions (-DVC_EXTRALEAN)
+  add_definitions (-DWIN32_LEAN_AND_MEAN)
+  add_definitions (-D_WIN32_WINNT=0x600)
+endif ()
 
 # Check for packages
 
@@ -42,6 +52,19 @@ else ()
 endif ()
 
 check_symbol_exists(CLOCK_MONOTONIC_RAW "time.h" HAVE_CLOCK_MONOTONIC_RAW)
+
+# Check thread API
+
+find_package(Threads)
+
+if (CMAKE_USE_WIN32_THREADS_INIT)
+  check_include_file("synchapi.h" HAVE_WIN32_SYNCHAPI)
+  set (HAVE_WIN32_THREADS 1 CACHE INTERNAL "Have win32 threads")
+elseif (CMAKE_USE_PTHREADS_INIT)
+  set (HAVE_PTHREADS 1 CACHE INTERNAL "Have posix threads")
+else ()
+  message (FATAL_ERROR "Could not find a suitable thread library")
+endif ()
 
 # Check for C++11
 

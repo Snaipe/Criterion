@@ -11,3 +11,7 @@ option(DEV_BUILD "Compile in developer mode" OFF)
 option(CTESTS "Turn on the samples and test" ${DEV_BUILD})
 option(I18N "Turn on internationalization" ON)
 option(UPLOAD_DEB "Upload package to launchpad" OFF)
+
+# Bug workarounds
+
+option(FIX_NANOMSG_RACE "Lock around nanomsg logic to fix the data race in REQ/REP" ON)

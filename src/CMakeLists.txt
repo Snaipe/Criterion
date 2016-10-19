@@ -60,6 +60,8 @@ set(SOURCE_FILES
   src/entry/entry.c
   src/err.c
   src/err.h
+  src/mutex.c
+  src/mutex.h
   src/protocol/criterion.pb.c
   src/protocol/criterion.pb.h
   src/protocol/protocol.c
