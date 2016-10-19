@@ -17,4 +17,10 @@
 # define PACKAGE "${PROJECT_NAME}"
 # define VERSION "${PROJECT_VERSION}"
 
+#ifdef _WIN32
+# define NN_SOCKET_PATH ""
+#else
+# define NN_SOCKET_PATH "/tmp/"
+#endif
+
 #endif /* !CONFIG_H_IN_ */
