@@ -27,16 +27,10 @@
 size_t get_processor_count(void)
 {
 #ifdef _WIN32
-    /* This code shall return 1 until
-       https://github.com/Snaipe/Criterion/issues/118 gets fixed. */
-# if 0
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
 
     return (size_t) sysinfo.dwNumberOfProcessors;
-# else
-    return 1;
-# endif
 #elif defined (BSD)
     int mib[2] = { CTL_HW, HW_NCPU };
 # ifdef __APPLE__
