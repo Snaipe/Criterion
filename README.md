@@ -2,11 +2,11 @@
 <img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
-[![Unix Build Status](https://api.travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/Snaipe/Criterion?svg=true&branch=bleeding)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
+[![Unix Build Status](https://img.shields.io/travis/Snaipe/Criterion/master.svg?label=linux))](https://travis-ci.org/Snaipe/Criterion) 
+[![Windows Build Status](https://img.shields.io/appveyor/ci/Snaipe/Criterion/bleeding.svg?label=windows)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding) 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
-[![Version](https://img.shields.io/badge/version-v2.3.0--rc1-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/releases) 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
+[![Version](https://img.shields.io/badge/version-v2.3.0--rc1-blue.svg)](https://github.com/Snaipe/Criterion/releases) 
 
 A dead-simple, yet extensible, C and C++ unit testing framework.
 
