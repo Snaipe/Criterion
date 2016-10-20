@@ -20,7 +20,6 @@
     * Change: sections of all loaded shared modules are now inspected for tests and hooks.
     * Change: setting .exit_code = 0 now enforces the exit code of the test to be 0.
     * Change: string assertions now print the contents of string parameters ("kaidowei").
-    * Change: tests are no longer executed in parallel on windows by default to mitigate a nanomsg bug (see https://github.com/Snaipe/Criterion/issues/118).
     * Change: xml reports now includes elapsed times ("kaidowei").
     * Deprecation: --no-early-exit is now a no-op and should no longer be used.
     * Deprecation: internal logging API is no longer public, fallbacks to the new logging API.
