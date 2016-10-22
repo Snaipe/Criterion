@@ -31,24 +31,27 @@
 
 int read_message(int sock, criterion_protocol_msg *message)
 {
-    int res;
+    int read;
     unsigned char *buf = NULL;
-    int read = res = nn_recv(sock, &buf, NN_MSG, 0);
+
+    do {
+        read = nn_recv(sock, &buf, NN_MSG, 0);
+    } while (read < 0 && errno == EINTR);
 
     if (read <= 0)
         goto cleanup;
 
     pb_istream_t stream = pb_istream_from_buffer(buf, read);
     if (!pb_decode(&stream, criterion_protocol_msg_fields, message)) {
-        res = -2;
+        read = -2;
         goto cleanup;
     }
 
-    res = 1;
+    read = 1;
 cleanup:
     if (buf)
         nn_freemsg(buf);
-    return res;
+    return read;
 }
 
 int write_message(int sock, const criterion_protocol_msg *message)
@@ -65,7 +68,12 @@ int write_message(int sock, const criterion_protocol_msg *message)
     if (!pb_encode(&stream, criterion_protocol_msg_fields, message))
         goto cleanup;
 
-    int written = nn_send(sock, buf, size, 0);
+    int written;
+
+    do {
+        written = nn_send(sock, buf, size, 0);
+    } while (written < 0 && errno == EINTR);
+
     if (written <= 0 || written != (int) size)
         goto cleanup;
 
@@ -109,7 +117,11 @@ void cr_send_to_runner(const criterion_protocol_msg *message)
     }
 
     unsigned char *buf = NULL;
-    int read = nn_recv(g_client_socket, &buf, NN_MSG, 0);
+    int read;
+
+    do {
+        read = nn_recv(g_client_socket, &buf, NN_MSG, 0);
+    } while (read < 0 && errno == EINTR);
 
     err = cri_mutex_unlock(&sync);
     if (err < 0) {
@@ -169,7 +181,12 @@ void send_ack(int sock, bool ok, const char *msg, ...)
         abort();
     }
 
-    int written = nn_send(sock, buf, size, 0);
+    int written;
+
+    do {
+        written = nn_send(sock, buf, size, 0);
+    } while (written < 0 && errno == EINTR);
+
     if (written <= 0 || written != (int) size) {
         criterion_perror("Could not send ack: %s.\n", nn_strerror(errno));
         abort();
