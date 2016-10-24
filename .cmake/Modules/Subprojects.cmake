@@ -37,7 +37,7 @@ function (cr_add_subproject _NAME)
       set (epa_opts ${epa_opts} GIT_TAG "${object}")
     endif ()
   elseif (ARGS_PATH)
-      set (epa_opts SOURCE_DIR "${CMAKE_SOURCE_DIR}/${ARGS_PATH}")
+      set (epa_opts SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${ARGS_PATH}")
   endif ()
 
   if (ARGS_CMAKE)
