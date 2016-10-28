@@ -1,7 +1,7 @@
 Display the help message
 
   $ simple.c.bin --help
-  Tests compiled with Criterion v2.3.0-rc1
+  Tests compiled with Criterion v2.3.0-rc2
   
   usage: .*simple\.c\.bin(\.exe)? OPTIONS (re)
   options: 
@@ -25,7 +25,7 @@ Display the help message
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
   $ simple.cc.bin --help
-  Tests compiled with Criterion v2.3.0-rc1
+  Tests compiled with Criterion v2.3.0-rc2
   
   usage: .*simple\.cc\.bin(\.exe)? OPTIONS (re)
   options: 
@@ -53,7 +53,7 @@ Display usage on invalid CLI flags
 
   $ simple.c.bin --an-invalid-option
   .*simple\.c\.bin(\.exe)?: unrecognized option [`'"]-- ?an-invalid-option['"] (re)
-  Tests compiled with Criterion v2.3.0-rc1
+  Tests compiled with Criterion v2.3.0-rc2
   
   usage: .*simple\.c\.bin(\.exe)? OPTIONS (re)
   options: 

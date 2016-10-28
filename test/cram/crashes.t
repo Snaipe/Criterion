@@ -15,7 +15,7 @@ Simple crashes & signal testing
 Simple crashes & signal testing (verbose)
 
   $ signal.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc1 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m3\x1b[0m tests from \x1b[0;33msimple\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] simple::caught (esc)
   \[\\x1b\[0;32mPASS\\x1b\[0m\] simple::caught: \(\d\.\d\ds\) \(esc\) (re)
@@ -27,7 +27,7 @@ Simple crashes & signal testing (verbose)
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m3\x1b[0;1m | Passing: \x1b[0;32m1\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0;31m1\x1b[0;1m \x1b[0m (esc)
 
   $ signal.cc.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc1 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m3\x1b[0m tests from \x1b[0;33msimple\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] simple::caught (esc)
   \[\\x1b\[0;32mPASS\\x1b\[0m\] simple::caught: \(\d\.\d\ds\) \(esc\) (re)
@@ -53,7 +53,7 @@ Crashes outside of the test
 Crashes outside of the test (verbose)
 
   $ other-crashes.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc1 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m2\x1b[0m tests from \x1b[0;33mmisc\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] misc::setup_crash (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mWarning! The test `misc::setup_crash` crashed during its setup or teardown.\x1b[0m (esc)
@@ -63,7 +63,7 @@ Crashes outside of the test (verbose)
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m1\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0;31m1\x1b[0;1m \x1b[0m (esc)
 
   $ other-crashes.cc.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc1 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m2\x1b[0m tests from \x1b[0;33mmisc\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] misc::setup_crash (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mWarning! The test `misc::setup_crash` crashed during its setup or teardown.\x1b[0m (esc)
@@ -90,7 +90,7 @@ C++ Exceptions should be handled
 C++ Exceptions should be handled (verbose)
 
   $ exception.cc.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc1 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m6\x1b[0m tests from \x1b[0;33mexception\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] exception::raise_any (esc)
   [\x1b[0;34m----\x1b[0m] exception::raise_any: Caught some unexpected exception during the test execution. (esc)
