@@ -144,7 +144,7 @@ after_success:
 
 before_deploy:
   - make install
-  - tar -cvjf criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2 criterion-${TRAVIS_TAG}
+  - tar -cvjf ../criterion-${TRAVIS_TAG}-${TRAVIS_OS_NAME}-x86_64.tar.bz2 criterion-${TRAVIS_TAG}
   - cd ..
   - ./.cmake/git-archive-all.sh --prefix criterion-${TRAVIS_TAG} criterion-${TRAVIS_TAG}.tar && bzip2 $_
 
