@@ -6,7 +6,7 @@
 [![Windows Build Status](https://img.shields.io/appveyor/ci/Snaipe/Criterion/bleeding.svg?label=windows)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
-[![Version](https://img.shields.io/badge/version-v2.3.0--rc2-blue.svg)](https://github.com/Snaipe/Criterion/releases) 
+[![Version](https://img.shields.io/github/release/Snaipe/Criterion.svg?label=version)](https://github.com/Snaipe/Criterion/releases/latest) 
 
 A dead-simple, yet extensible, C and C++ unit testing framework.
 
