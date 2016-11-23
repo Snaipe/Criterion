@@ -96,5 +96,7 @@ Test(asserts, array) {
 
     /* cr_assert_arr_eq(s1, s2, 2); not guaranteed to work on structs. */
     cr_assert_arr_eq_cmp(s1, s2, 2, eq_dummy);
+#else
+    cr_assert(1); /* This is here for the test suite */
 #endif
 }
