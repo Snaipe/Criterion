@@ -36,22 +36,26 @@ find_package(Dyncall)
 find_package(Nanomsg)
 find_package(BoxFort)
 
-cr_add_subproject (csptr PATH dependencies/libcsptr
-    OPTS
-      -DLIBCSPTR_TESTS=OFF
-      "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
-    CMAKE
-    IF NOT CSPTR_FOUND)
+cr_add_subproject (csptr
+  GIT "git://github.com/Snaipe/libcsptr#0d52904"
+  OPTS
+    -DLIBCSPTR_TESTS=OFF
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF NOT CSPTR_FOUND
+)
 
-cr_add_subproject (dyncall_s PATH dependencies/dyncall
-    OPTS
-      -DLANG_CXX=${LANG_CXX}
-      "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
-    CMAKE
-    IF THEORIES AND NOT DYNCALL_FOUND)
+cr_add_subproject (dyncall_s
+  GIT "git://github.com/Snaipe/dyncall#51e79a8"
+  OPTS
+    -DLANG_CXX=${LANG_CXX}
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF THEORIES AND NOT DYNCALL_FOUND
+)
 
 cr_add_subproject (nanomsg
-  PATH dependencies/nanomsg
+  GIT "git://github.com/nanomsg/nanomsg.git#7e12a20"
   OPTS
     -DNN_TESTS=OFF
     -DNN_TOOLS=OFF
@@ -63,6 +67,7 @@ cr_add_subproject (nanomsg
 )
 
 cr_add_subproject (boxfort PATH dependencies/boxfort
+  GIT "git://github.com/diacritic/BoxFort.git#8b641ca"
   OPTS
     -DBXF_TESTS=OFF
     -DBXF_SAMPLES=OFF
@@ -75,11 +80,18 @@ cr_add_subproject (boxfort PATH dependencies/boxfort
 
 add_definitions(-DBXF_STATIC_LIB -DNN_STATIC_LIB)
 
-cr_add_subproject (wingetopt PATH dependencies/wingetopt CMAKE IF MSVC)
+cr_add_subproject (wingetopt
+  GIT "git://github.com/diacritic/BoxFort.git#76a5d1a"
+  CMAKE
+  IF MSVC
+)
 
 include (Properties)
 
-add_definitions (-DNN_STATIC_LIB)
+if (NOT NANOMSG_FOUND OR NANOMSG_LIBRARIES MATCHES ".*\\.a")
+  set (STATIC_NANOMSG 1)
+  add_definitions (-DNN_STATIC_LIB)
+endif ()
 
 include_directories(
   dependencies/valgrind/include/
@@ -143,8 +155,10 @@ cr_link_libraries(criterion pthread IF NOT WIN32)
 cr_link_libraries(criterion rt IF HAVE_LIBRT)
 
 # Required by nanomsg
-cr_link_libraries(criterion anl IF HAVE_GETADDRINFO_A)
-cr_link_libraries(criterion ws2_32 mswsock IF WIN32)
+if (STATIC_NANOMSG)
+  cr_link_libraries(criterion anl IF HAVE_GETADDRINFO_A)
+  cr_link_libraries(criterion ws2_32 mswsock IF WIN32)
+endif ()
 
 cr_link_package(criterion LIBINTL)
 
