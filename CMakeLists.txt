@@ -81,7 +81,7 @@ cr_add_subproject (boxfort PATH dependencies/boxfort
 add_definitions(-DBXF_STATIC_LIB -DNN_STATIC_LIB)
 
 cr_add_subproject (wingetopt
-  GIT "git://github.com/diacritic/BoxFort.git#76a5d1a"
+  GIT "git://github.com/alex85k/wingetopt.git#76a5d1a"
   CMAKE
   IF MSVC
 )
