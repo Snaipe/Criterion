@@ -24,10 +24,10 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <setjmp.h>
 #include <dyncall.h>
 #include <assert.h>
 #include <limits.h>
+#include "compat/setjmp.h"
 #include "criterion/theories.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
@@ -92,7 +92,7 @@ static jmp_buf theory_jmp;
 
 void cr_theory_abort(void)
 {
-    longjmp(theory_jmp, 1);
+    cri_longjmp(theory_jmp, 1);
 }
 
 void cr_theory_reset(struct criterion_theory_context *ctx)
@@ -202,7 +202,7 @@ static void concat_arg(char (*msg)[BUFSIZE], struct criterion_datapoints *dps, s
 
 int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void))
 {
-    if (!setjmp(g_pre_test)) {
+    if (!cri_setjmp(g_pre_test)) {
         cr_theory_call(ctx, fnptr);
         return 1;
     }
@@ -238,7 +238,7 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
         cr_send_to_runner(&main_msg);
 
         int theory_aborted = 0;
-        if (!setjmp(theory_jmp)) {
+        if (!cri_setjmp(theory_jmp)) {
             cr_theory_reset(ctx);
             for (size_t i = 0; i < datapoints; ++i) {
                 bool is_float = contains_word(dps[i].name, "float", sizeof ("float"))

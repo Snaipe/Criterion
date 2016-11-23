@@ -38,7 +38,7 @@ void criterion_abort_test(void)
     if (criterion_options.crash)
         debug_break();
 
-    longjmp(g_pre_test, 1);
+    cri_longjmp(g_pre_test, 1);
 }
 
 void criterion_skip_test(const char *format, ...)

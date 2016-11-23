@@ -21,12 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef ABORT_H_
-#define ABORT_H_
+#ifndef SETJMP_H_
+#define SETJMP_H_
 
-#include <criterion/abort.h>
-#include "compat/setjmp.h"
+#include <setjmp.h>
+#include "common.h"
 
-extern jmp_buf g_pre_test;
+/* We need to replace the garbage implementation of setjmp in the Windows CRT
+   that unwinds even though longjmp is not supposed to. */
+#if defined (_WIN32)
+# if defined (__GNUC__)
+#  define cri_setjmp     __builtin_setjmp
+#  define cri_longjmp    __builtin_longjmp
+# else
+int bxfi_setjmp(jmp_buf);
+CR_NORETURN void bxfi_longjmp(jmp_buf, int);
+/* Fallback on boxfort internal implementations on windows */
+#  define cri_setjmp     bxfi_setjmp
+#  define cri_longjmp    bxfi_longjmp
+# endif
+#else
+# define cri_setjmp      setjmp
+# define cri_longjmp     longjmp
+#endif
 
-#endif /* !ABORT_H_ */
+#endif /* !SETJMP_H_ */
