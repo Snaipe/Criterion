@@ -31,17 +31,24 @@ else ()
   set (VISI_C_FLAGS "")
 endif ()
 
+find_package(Libcsptr)
+find_package(Dyncall)
+find_package(Nanomsg)
+find_package(BoxFort)
+
 cr_add_subproject (csptr PATH dependencies/libcsptr
     OPTS
       -DLIBCSPTR_TESTS=OFF
       "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
-    CMAKE)
+    CMAKE
+    IF NOT CSPTR_FOUND)
 
 cr_add_subproject (dyncall_s PATH dependencies/dyncall
     OPTS
       -DLANG_CXX=${LANG_CXX}
       "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
-    CMAKE IF THEORIES)
+    CMAKE
+    IF THEORIES AND NOT DYNCALL_FOUND)
 
 cr_add_subproject (nanomsg
   PATH dependencies/nanomsg
@@ -52,6 +59,7 @@ cr_add_subproject (nanomsg
     -DCMAKE_INSTALL_LIBDIR=lib
     "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
   CMAKE
+  IF NOT NANOMSG_FOUND
 )
 
 cr_add_subproject (boxfort PATH dependencies/boxfort
@@ -62,7 +70,8 @@ cr_add_subproject (boxfort PATH dependencies/boxfort
     -DBXF_FORK_RESILIENCE=OFF
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
-  CMAKE)
+  CMAKE
+  IF NOT BOXFORT_FOUND)
 
 add_definitions(-DBXF_STATIC_LIB -DNN_STATIC_LIB)
 
@@ -107,11 +116,28 @@ cr_add_library(criterion SHARED
        SOVERSION ${PROJECT_SOVERSION}
 )
 
-cr_link_subproject(criterion csptr STATIC)
-cr_link_subproject(criterion nanomsg STATIC)
-cr_link_subproject(criterion dyncall_s STATIC)
+cr_link_subproject(criterion csptr STATIC IF NOT CSPTR_FOUND)
+cr_link_subproject(criterion nanomsg STATIC IF NOT NANOMSG_FOUND)
+cr_link_subproject(criterion dyncall_s STATIC IF NOT DYNCALL_FOUND)
+cr_link_subproject(criterion boxfort STATIC IF NOT BOXFORT_FOUND)
 cr_link_subproject(criterion wingetopt STATIC)
-cr_link_subproject(criterion boxfort STATIC)
+
+if (CSPTR_FOUND)
+  include_directories("${CSPTR_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${CSPTR_LIBRARIES}")
+endif ()
+if (NANOMSG_FOUND)
+  include_directories("${NANOMSG_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${NANOMSG_LIBRARIES}" IF NANOMSG_FOUND)
+endif ()
+if (DYNCALL_FOUND)
+  include_directories("${DYNCALL_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${DYNCALL_LIBRARIES}" IF DYNCALL_FOUND)
+endif ()
+if (BOXFORT_FOUND)
+  include_directories("${BOXFORT_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${BOXFORT_LIBRARIES}" IF BOXFORT_FOUND)
+endif ()
 
 cr_link_libraries(criterion pthread IF NOT WIN32)
 cr_link_libraries(criterion rt IF HAVE_LIBRT)
