@@ -52,7 +52,7 @@ Display the help message
 Display usage on invalid CLI flags
 
   $ simple.c.bin --an-invalid-option
-  .*simple\.c\.bin(\.exe)?: unrecognized option [`'"]-- ?an-invalid-option['"] (re)
+  .*simple\.c\.bin(\.exe)?: (unknown|unrecognized) option [`'"]?-- ?an-invalid-option['"]? (re)
   Tests compiled with Criterion v2.3.0-rc2
   
   usage: .*simple\.c\.bin(\.exe)? OPTIONS (re)
