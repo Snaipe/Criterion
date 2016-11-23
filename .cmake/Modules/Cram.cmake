@@ -3,8 +3,11 @@
 # For details see the LICENSE file distributed with Criterion.
 
 set(PATH_VAR
+  "${PROJECT_BINARY_DIR}/Debug"
   "${PROJECT_BINARY_DIR}/samples"
+  "${PROJECT_BINARY_DIR}/samples/Debug"
   "${PROJECT_BINARY_DIR}/samples/tests"
+  "${PROJECT_BINARY_DIR}/samples/tests/Debug"
   "${PROJECT_BINARY_DIR}/external/lib"
   "${PROJECT_BINARY_DIR}/external/bin"
 )
