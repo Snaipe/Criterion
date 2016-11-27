@@ -4,50 +4,86 @@
 #undef NULL
 #define NULL    ((void *) 0)
 
-Test(messages, default) {
-    cr_expect(0);
-    cr_expect_eq(0, 1);
-    cr_expect_neq(1, 1);
-    cr_expect_lt(2, 1);
-    cr_expect_leq(2, 1);
-    cr_expect_gt(1, 2);
-    cr_expect_geq(1, 2);
-    cr_expect_null("");
-    cr_expect_not_null(NULL);
+struct dummy_struct {
+    char a;
+    size_t b;
+};
 
-    cr_expect_float_eq(1, 2, 0.1);
-    cr_expect_float_neq(2, 2, 0.1);
-
-    cr_expect_str_empty("foo");
-    cr_expect_str_not_empty("");
-    cr_expect_str_eq("abc", "abd");
-    cr_expect_str_neq("abc", "abc");
-    cr_expect_str_lt("abc", "aba");
-    cr_expect_str_leq("abc", "aba");
-    cr_expect_str_gt("abc", "abd");
-    cr_expect_str_geq("abc", "abd");
+/* We need to provide basic functions for our dummy struct */
+int cr_user_eq_dummy_struct(struct dummy_struct *a, struct dummy_struct *b)
+{
+    return a->a == b->a && a->b == b->b;
 }
 
-Test(messages, user) {
+char *cr_user_tostr_dummy_struct(struct dummy_struct *d)
+{
+    char *out;
+
+    cr_asprintf(&out, "(struct dummy_struct) {\n\t.a = %u,\n\t.b = %llu\n}",
+            d->a, (unsigned long long) d->b);
+    return out;
+}
+
+Test(messages, eq) {
+    cr_expect(eq(i8, 0, 1));
+    cr_expect(eq(i16, 0, 1));
+    cr_expect(eq(i32, 0, 1));
+    cr_expect(eq(i64, 0, 1));
+    cr_expect(eq(u8, 0, 1));
+    cr_expect(eq(u16, 0, 1));
+    cr_expect(eq(u32, 0, 1));
+    cr_expect(eq(u64, 0, 1));
+    cr_expect(eq(flt, 0, 1 / 3.f));
+    cr_expect(eq(dbl, 0, 1 / 3.));
+#if defined (CRI_CAPS_LDBL)
+    cr_expect(eq(ldbl, 0, 1 / 3.l));
+#endif
+
+#if defined (CRI_CAPS_COMPLEX)
+    cr_expect(eq(cx_flt, 0, 1));
+    cr_expect(eq(cx_dbl, 0, 1));
+# if defined (CRI_CAPS_LDBL)
+    cr_expect(eq(cx_ldbl, 0, 1));
+# endif
+#endif
+
+    cr_expect(eq(str, "", "foo"));
+    cr_expect(eq(str,
+            "reallyreallylongstringindeedmygoodsirormadam",
+            "yetanotherreallyreallylongstring"));
+    cr_expect(eq(str, "foo\nbar", "foo\nbaz"));
+
+    int a = 0;
+    int b = 1;
+
+    struct cr_mem ma = { &a, sizeof (a) };
+    struct cr_mem mb = { &b, sizeof (b) };
+
+    cr_expect(eq(mem, ma, mb));
+    cr_expect(eq(int[1], &a, &b));
+
+    int arra[16];
+    int arrb[16];
+
+    for (size_t i = 0; i < 16; ++i) {
+        arra[i] = i;
+        arrb[15 - i] = i;
+    }
+
+    struct cr_mem marra = { &arra, sizeof (arra) };
+    struct cr_mem marrb = { &arrb, sizeof (arrb) };
+
+    cr_expect(eq(mem, marra, marrb));
+    cr_expect(eq(int[sizeof (arra) / sizeof (int)], arra, arrb));
+
+    struct dummy_struct dummy1 = { .a = 42, .b = 24 };
+    struct dummy_struct dummy2 = { .a = 42, .b = 42 };
+
+    cr_expect(eq(type(struct dummy_struct), dummy1, dummy2));
+    cr_expect(eq(type(struct dummy_struct)[1], &dummy1, &dummy2));
+}
+
+Test(messages, default) {
+    cr_expect(0);
     cr_expect(0, "foo %s", "bar");
-    cr_expect_eq(0, 1, "foo %s", "bar");
-    cr_expect_neq(1, 1, "foo %s", "bar");
-    cr_expect_lt(2, 1, "foo %s", "bar");
-    cr_expect_leq(2, 1, "foo %s", "bar");
-    cr_expect_gt(1, 2, "foo %s", "bar");
-    cr_expect_geq(1, 2, "foo %s", "bar");
-    cr_expect_null("", "foo %s", "bar");
-    cr_expect_not_null(NULL, "foo %s", "bar");
-
-    cr_expect_float_eq(1, 2, 0.1, "foo %s", "bar");
-    cr_expect_float_neq(2, 2, 0.1, "foo %s", "bar");
-
-    cr_expect_str_empty("foo", "foo %s", "bar");
-    cr_expect_str_not_empty("", "foo %s", "bar");
-    cr_expect_str_eq("abc", "abd", "foo %s", "bar");
-    cr_expect_str_neq("abc", "abc", "foo %s", "bar");
-    cr_expect_str_lt("abc", "aba", "foo %s", "bar");
-    cr_expect_str_leq("abc", "aba", "foo %s", "bar");
-    cr_expect_str_gt("abc", "abd", "foo %s", "bar");
-    cr_expect_str_geq("abc", "abd", "foo %s", "bar");
 }

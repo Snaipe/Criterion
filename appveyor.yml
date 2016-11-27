@@ -15,6 +15,7 @@ environment:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
     BUILD_FLAGS: -j2
+    CPPFLAGS: -D__USE_MINGW_ANSI_STDIO
   - COMPILER: msvc
     GENERATOR: "Visual Studio 14 2015 Win64"
     CFLAGS: /MP

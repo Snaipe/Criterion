@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2017 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef COMMON_H_
-#define COMMON_H_
+#ifndef FMT_H_
+#define FMT_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stddef.h>
+#include "criterion/internal/asprintf-compat.h"
 
-#include "criterion/internal/common.h"
+int cri_fmt_bprintf(char **buf, size_t *offset, size_t *sz,
+        const char *fmt, ...);
+int cri_fmt_vbprintf(char **buf, size_t *offset, size_t *sz,
+        const char *fmt, va_list ap);
 
-#define DEF(X, Y)          ((X) ? (X) : (Y))
-
-#define align2_up(v, d)    ((((v) - 1) & ~((d) - 1)) + (d))
-
-#endif /* !COMMON_H_ */
+#endif /* !FMT_H_ */

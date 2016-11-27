@@ -35,6 +35,28 @@ message death {
     optional int64 timestamp = 3;
 }
 
+message param_entry {
+    optional string name = 1;
+
+    oneof data {
+        bytes raw   = 2;
+        string str  = 3;
+    }
+}
+
+message param_list {
+    repeated param_entry list = 1;
+}
+
+message result {
+    required string repr = 1;
+    optional string message = 2;
+
+    oneof value {
+        param_list params = 3;
+        string formatted = 4;
+    }
+}
 
 message assert {
     required string message = 1;
@@ -42,6 +64,7 @@ message assert {
     optional string file = 3;
     optional int64 line = 4;
     optional int64 timestamp = 5;
+    repeated result results = 6;
 }
 
 message log {

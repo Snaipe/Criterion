@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef ASPRINTF_H_
-#define ASPRINTF_H_
+#ifndef XXD_H_
+#define XXD_H_
 
-int cr_vasprintf(char **strp, const char *fmt, va_list ap);
-int cr_asprintf(char **strp, const char *fmt, ...);
+#include <stddef.h>
 
-#endif /* !ASPRINTF_H_ */
+char *cri_string_xxd(const void *data, size_t size);
+
+#endif /* !XXD_H_ */

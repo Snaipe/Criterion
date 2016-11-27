@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2016 Franklin "Snaipe" Mathieu.
+# Copyright (C) 2015-2017 Franklin "Snaipe" Mathieu.
 # Redistribution and use of this file is allowed according to the terms of the MIT license.
 # For details see the LICENSE file distributed with Criterion.
 
@@ -7,6 +7,7 @@
 set(SOURCE_FILES
   src/core/abort.c
   src/core/abort.h
+  src/core/assert.c
   src/core/report.c
   src/core/report.h
   src/core/runner.c
@@ -43,7 +44,6 @@ set(SOURCE_FILES
   src/io/redirect.c
   src/io/event.c
   src/io/event.h
-  src/io/asprintf.c
   src/io/file.c
   src/io/output.c
   src/io/output.h
@@ -53,6 +53,9 @@ set(SOURCE_FILES
   src/log/logging.c
   src/log/logging.h
   src/log/normal.c
+  src/string/diff.c
+  src/string/fmt.c
+  src/string/fmt.h
   src/string/i18n.c
   src/string/i18n.h
   src/entry/options.c
@@ -75,6 +78,7 @@ set(SOURCE_FILES
   src/string/extglobmatch.h
   src/string/brz.c
   src/string/brz.h
+  src/string/xxd.c
 
   dependencies/nanopb/pb_common.c
   dependencies/nanopb/pb_common.h

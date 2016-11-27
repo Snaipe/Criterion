@@ -8,7 +8,7 @@ if (NOT MSVC)
   endif ()
 endif ()
 
-include_directories(../include)
+include_directories(SYSTEM ../include)
 
 set(SAMPLES
   signal.c
@@ -58,6 +58,10 @@ macro(add_samples DIR_ SAMPLES_)
         add_executable(${sample}.bin EXCLUDE_FROM_ALL ${sample})
         add_dependencies(criterion_samples ${sample}.bin)
         target_link_libraries(${sample}.bin criterion)
+        # TODO: remove
+        if (NOT WIN32)
+          target_link_libraries(${sample}.bin m)
+        endif ()
         add_test(${sample} ${sample}.bin)
         set_property(TEST ${sample} PROPERTY
             ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"

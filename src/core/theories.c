@@ -31,8 +31,8 @@
 #include "criterion/theories.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
-#include "io/asprintf.h"
 #include "io/event.h"
+#include "string/fmt.h"
 #include "abort.h"
 
 struct criterion_theory_context {

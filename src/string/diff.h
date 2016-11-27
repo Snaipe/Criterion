@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2017 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,51 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#ifndef CRI_DIFF_H_
+#define CRI_DIFF_H_
 
-#include <limits.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "criterion/internal/asprintf-compat.h"
+#include <stddef.h>
 
-int cr_asprintf(char **strp, const char *fmt, ...)
-{
-    va_list ap;
+#include "common.h"
 
-    va_start(ap, fmt);
-    int res = cr_vasprintf(strp, fmt, ap);
-    va_end(ap);
-    return res;
-}
+struct cri_diff_buffer {
+    char *ptr;
+    size_t size;
+};
 
-int cr_vasprintf(char **strp, const char *fmt, va_list ap)
-{
-    va_list vl;
+CR_API int cri_diff_buffer_to_buffer(const struct cri_diff_buffer *b1,
+        const struct cri_diff_buffer *b2, struct cri_diff_buffer *out);
 
-    va_copy(vl, ap);
-
-    int size = vsnprintf(0, 0, fmt, vl);
-    int res = -1;
-
-    if (size < 0 || size >= INT_MAX)
-        goto cleanup;
-
-    char *str = malloc(size + 1);
-    if (str) {
-        int res2 = vsnprintf(str, size + 1, fmt, ap);
-        if (res2 < 0 || res2 > size) {
-            free(str);
-            goto cleanup;
-        }
-        *strp = str;
-        res = res2;
-    }
-
-cleanup:
-    va_end(vl);
-    return res;
-}
-
-void cr_asprintf_free(char *buf)
-{
-    free(buf);
-}
+#endif /* !CRI_DIFF_H_ */
