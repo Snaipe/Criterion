@@ -35,6 +35,34 @@ message death {
     optional int64 timestamp = 3;
 }
 
+message result_object {
+    enum result_type {
+        DATA = 1;
+        PATH = 2;
+    }
+
+    required result_type type = 1;
+
+    oneof data {
+        bytes raw = 2;
+        string str = 3;
+    }
+}
+
+message result {
+
+    message pair {
+        optional result_object expected = 1;
+        optional result_object actual = 2;
+    }
+
+    required string repr = 1;
+
+    oneof value {
+        pair obj = 2;
+        string diff = 3;
+    }
+}
 
 message assert {
     required string message = 1;
@@ -42,6 +70,7 @@ message assert {
     optional string file = 3;
     optional int64 line = 4;
     optional int64 timestamp = 5;
+    repeated result results = 6;
 }
 
 message log {

@@ -29,6 +29,7 @@
 #include "criterion/stats.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
+#include "protocol/protocol.h"
 #include "log/logging.h"
 #include "compat/posix.h"
 #include "compat/strtok.h"
@@ -36,6 +37,8 @@
 #include "string/i18n.h"
 #include "config.h"
 #include "common.h"
+
+#define LOG_DIFF_THRESHOLD    25
 
 typedef const char *const msg_t;
 
@@ -47,7 +50,8 @@ static msg_t msg_pre_init = N_("%1$s::%2$s\n");
 static msg_t msg_post_test_timed = N_("%1$s::%2$s: (%3$3.2fs)\n");
 static msg_t msg_post_test_skip = N_("%1$s::%2$s: Test was skipped\n");
 static msg_t msg_test_disabled = N_("%1$s::%2$s: Test is disabled\n");
-static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n");
+static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n");
+static msg_t msg_assert_cmp = N_("  %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n");
 static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
@@ -67,7 +71,8 @@ static msg_t msg_pre_init = "%s::%s\n";
 static msg_t msg_post_test_timed = "%s::%s: (%3.2fs)\n";
 static msg_t msg_post_test_skip = "%s::%s: Test was skipped\n";
 static msg_t msg_test_disabled = "%s::%s: Test is disabled\n";
-static msg_t msg_assert_fail = "%s%s%s:%s%d%s: Assertion failed: %s\n";
+static msg_t msg_assert_fail = "%s%s%s:%s%d%s: %s\n";
+static msg_t msg_assert_cmp = "  %s: Expected: %s%s%s, Actual: %s%s%s\n";
 static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
@@ -171,6 +176,23 @@ void normal_log_assert(struct criterion_assert_stats *stats)
     }
 }
 
+void normal_log_assert_cmp(struct criterion_assert_stats *stats,
+        const char *repr,
+        int ekind, void *edata, size_t esize,
+        int akind, void *adata, size_t asize)
+{
+    if (!stats->passed) {
+        if (esize + asize <= LOG_DIFF_THRESHOLD
+                && ekind == criterion_protocol_result_object_result_type_DATA
+                && akind == criterion_protocol_result_object_result_type_DATA) {
+            criterion_pimportant(CRITERION_PREFIX_DASHES,
+                    _(msg_assert_cmp), repr,
+                    CR_FG_RED, (char *) adata, CR_RESET,
+                    CR_FG_GREEN, (char *) edata, CR_RESET);
+        }
+    }
+}
+
 void normal_log_test_crash(struct criterion_test_stats *stats)
 {
     bool sf = criterion_options.short_filename;
@@ -264,6 +286,7 @@ struct criterion_logger normal_logging = {
     .log_pre_init       = normal_log_pre_init,
     .log_pre_suite      = normal_log_pre_suite,
     .log_assert         = normal_log_assert,
+    .log_assert_cmp     = normal_log_assert_cmp,
     .log_theory_fail    = normal_log_theory_fail,
     .log_test_timeout   = normal_log_test_timeout,
     .log_test_crash     = normal_log_test_crash,

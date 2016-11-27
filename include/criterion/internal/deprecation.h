@@ -24,13 +24,29 @@
 #ifndef CRITERION_INTERNAL_DEPRECATION_H_
 #define CRITERION_INTERNAL_DEPRECATION_H_
 
-#define CR_DEPRECATED(Msg)    CR_DEPRECATED_(message(Msg))
+#include "preprocess.h"
 
 #ifdef _MSC_VER
-# define CR_DEPRECATED_(Msg)    __pragma(Msg)
+# define CR_PRAGMA(Msg)    __pragma(Msg)
 #else
-# define CR_DEPRECATED_(Msg)    _Pragma(#Msg)
+# define CR_PRAGMA(Msg)    _Pragma(#Msg)
 #endif
+
+#define CR_COMPILE_ERROR(Msg)    CR_COMPILE_ERROR_(Msg)
+
+#if defined (_MSC_VER)
+# define CR_COMPILE_ERROR_(Msg)    CR_PRAGMA(message(CR_STR(error: Msg)))
+#elif defined (__GNUC__)
+# define CR_COMPILE_ERROR_(Msg)    CR_PRAGMA(GCC error #Msg)
+#elif __STDC_VERSION__ >= 201112L
+# define CR_COMPILE_ERROR_(Msg)    _Static_assert(0, #Msg);
+#elif __cplusplus >= 201103L
+# define CR_COMPILE_ERROR_(Msg)    static_assert(0, #Msg);
+#else
+# define CR_COMPILE_ERROR_(Msg)    ((void) sizeof (char[-1]))
+#endif
+
+#define CR_DEPRECATED(Msg)    CR_PRAGMA(message(Msg))
 
 #ifdef __GNUC__
 # define CR_DEPRECATED_MEMBER(Member)    Member __attribute__((deprecated))

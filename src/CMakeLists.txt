@@ -7,6 +7,7 @@
 set(SOURCE_FILES
   src/core/abort.c
   src/core/abort.h
+  src/core/assert.c
   src/core/report.c
   src/core/report.h
   src/core/runner.c
@@ -75,6 +76,7 @@ set(SOURCE_FILES
   src/string/extglobmatch.h
   src/string/brz.c
   src/string/brz.h
+  src/string/xxd.c
 
   dependencies/nanopb/pb_common.c
   dependencies/nanopb/pb_common.h

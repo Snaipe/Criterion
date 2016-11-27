@@ -519,6 +519,47 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
     push_event_noreport(ASSERT, .data = &asrt_stats);
     report(ASSERT, &asrt_stats);
     log(assert, &asrt_stats);
+    if (asrt->results_count > 0) {
+        for (size_t i = 0; i < asrt->results_count; ++i) {
+            criterion_protocol_result *res = &asrt->results[i];
+            if (res->which_value == criterion_protocol_result_obj_tag) {
+                int ekind = 0;
+                size_t esize = 0;
+                void *edata = NULL;
+                if (res->value.obj.has_expected) {
+                    criterion_protocol_result_object *e = &res->value.obj.expected;
+                    ekind = e->type;
+                    if (e->which_data == criterion_protocol_result_object_str_tag) {
+                        esize = e->data.str ? strlen(e->data.str) : 0;
+                        edata = e->data.str;
+                    } else if (e->which_data == criterion_protocol_result_object_raw_tag) {
+                        if (e->data.raw) {
+                            esize = e->data.raw->size;
+                            edata = e->data.raw->bytes;
+                        }
+                    }
+                }
+
+                int akind = 0;
+                size_t asize = 0;
+                void *adata = NULL;
+                if (res->value.obj.has_actual) {
+                    criterion_protocol_result_object *a = &res->value.obj.actual;
+                    akind = a->type;
+                    if (a->which_data == criterion_protocol_result_object_str_tag) {
+                        asize = a->data.str ? strlen(a->data.str) : 0;
+                        adata = a->data.str;
+                    } else if (a->which_data == criterion_protocol_result_object_raw_tag) {
+                        if (a->data.raw) {
+                            asize = a->data.raw->size;
+                            adata = a->data.raw->bytes;
+                        }
+                    }
+                }
+                log(assert_cmp, &asrt_stats, res->repr, ekind, edata, esize, akind, adata, asize);
+            }
+        }
+    }
     return false;
 }
 

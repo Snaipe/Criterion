@@ -114,6 +114,7 @@ struct criterion_logger {
     void (*log_post_suite   )(struct criterion_suite_stats *stats);
     void (*log_post_all     )(struct criterion_global_stats *stats);
     void (*log_message      )(enum criterion_severity, const char *msg);
+    void (*log_assert_cmp   )(struct criterion_assert_stats *stats, const char *, int, void *, size_t, int, void *, size_t);
 };
 
 extern struct criterion_logger normal_logging;

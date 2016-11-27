@@ -6,3 +6,9 @@ criterion.protocol.phase.name       type : FT_POINTER
 criterion.protocol.phase.message    type : FT_POINTER
 criterion.protocol.ack.message      type : FT_POINTER
 criterion.protocol.msg.uid          type : FT_POINTER
+
+criterion.protocol.assert.results       type : FT_POINTER
+criterion.protocol.result.diff          type : FT_POINTER
+criterion.protocol.result.repr          type : FT_POINTER
+criterion.protocol.result_object.raw    type : FT_POINTER
+criterion.protocol.result_object.str    type : FT_POINTER
