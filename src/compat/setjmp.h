@@ -41,8 +41,8 @@ CR_NORETURN void bxfi_longjmp(jmp_buf, int);
 #  define cri_longjmp    bxfi_longjmp
 # endif
 #else
-# define cri_setjmp      setjmp
-# define cri_longjmp     longjmp
+# define cri_setjmp     setjmp
+# define cri_longjmp    longjmp
 #endif
 
 #endif /* !SETJMP_H_ */

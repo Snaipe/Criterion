@@ -31,14 +31,14 @@
 # define _s(String, Plural, Quantity)    ((Quantity) == 1 ? String : Plural)
 #else
 # include <libintl.h>
-# define _(String)                       dgettext(PACKAGE, String)
+# define _(String)    dgettext(PACKAGE, String)
 # define _s(String, Plural, Quantity) \
     dngettext(PACKAGE, String, Plural, (Quantity))
 #endif
 
 /* Used to mark string for gettext */
-#define N_(Str)                          Str
-#define N_s(Str, Pl)                     { Str, Pl }
+#define N_(Str)         Str
+#define N_s(Str, Pl)    { Str, Pl }
 
 void init_i18n(void);
 

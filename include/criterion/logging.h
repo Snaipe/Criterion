@@ -71,7 +71,7 @@ CR_API void cr_log(enum criterion_severity severity, const char *msg, ...);
  * @param[in] ... Additional arguments depending on msg
  *
  *****************************************************************************/
-#define cr_log_info(...)     cr_log(CR_LOG_INFO, __VA_ARGS__)
+#define cr_log_info(...)    cr_log(CR_LOG_INFO, __VA_ARGS__)
 
 /**
  * Prints a warning message
@@ -83,7 +83,7 @@ CR_API void cr_log(enum criterion_severity severity, const char *msg, ...);
  * @param[in] ... Additional arguments depending on msg
  *
  *****************************************************************************/
-#define cr_log_warn(...)     cr_log(CR_LOG_WARNING, __VA_ARGS__)
+#define cr_log_warn(...)    cr_log(CR_LOG_WARNING, __VA_ARGS__)
 
 /**
  * Prints a error message

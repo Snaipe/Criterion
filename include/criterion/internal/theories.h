@@ -99,6 +99,6 @@ CR_END_C_API
     cr_assume(strcmp((Actual), (Expected)) Op 0)
 
 #undef Theory
-#define Theory(Args, ...)                      CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
+#define Theory(Args, ...)    CR_EXPAND(CR_THEORY_BASE(Args, __VA_ARGS__))
 
 #endif /* !CRITERION_INTERNAL_THEORIES_H_ */

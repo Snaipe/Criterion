@@ -24,7 +24,7 @@
 #ifndef CRITERION_PREPROCESS_H_
 #define CRITERION_PREPROCESS_H_
 
-#define CR_NOOP        do {} while (0)
+#define CR_NOOP    do {} while (0)
 
 #ifdef __cplusplus
 # define CR_NOTHROW    throw ()
@@ -69,6 +69,6 @@
         _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, \
         _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, \
         _51, _52, _53, _54, _55, _56, _57, _58, _59, _60, \
-        _61, _62, _63, X, ...)            X
+        _61, _62, _63, X, ...)    X
 
 #endif /* !CRITERION_PREPROCESS_H_ */

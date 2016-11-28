@@ -33,7 +33,7 @@
     || defined (__NetBSD__)  \
     || defined (__OpenBSD__) \
     || defined (__DragonFly__)
-# define OS_BSD           1
+# define OS_BSD    1
 #endif
 
 #if !defined (_POSIX_SOURCE)
@@ -44,11 +44,11 @@
 # include "off_t.h"
 
 # if !defined (__MINGW64__)
-#  define off_t           cr_off32
+#  define off_t     cr_off32
 # else
-#  define off_t           cr_off64
+#  define off_t     cr_off64
 # endif
-# define off64_t          cr_off64
+# define off64_t    cr_off64
 #endif
 #include <stdio.h>
 #include <string.h>
@@ -67,8 +67,8 @@
 # define WIFEXITED(Status)      (WTERMSIG(Status) == 0)
 # define WIFSIGNALED(Status)    (((signed char) (WTERMSIG(Status) + 1) >> 1) > 0)
 
-# define SIGPROF                 27
-# define SIGSYS                  31
+# define SIGPROF    27
+# define SIGSYS     31
 
 /*
  * We define a custom exception code following the ntstatus specification:

@@ -94,37 +94,37 @@ CR_END_C_API
 #define cr_expect_file_contents_neq(...)        CR_EXPAND(cr_assert_redir_f_op_va_(CR_FAIL_CONTINUES_, cr_file_match_file, !=, __VA_ARGS__))
 
 #undef cr_assert_stdout_eq_str
-#define cr_assert_stdout_eq_str(...)            CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_str, ==, stdout, __VA_ARGS__))
+#define cr_assert_stdout_eq_str(...)     CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_str, ==, stdout, __VA_ARGS__))
 #undef cr_expect_stdout_eq_str
-#define cr_expect_stdout_eq_str(...)            CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_str, ==, stdout, __VA_ARGS__))
+#define cr_expect_stdout_eq_str(...)     CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_str, ==, stdout, __VA_ARGS__))
 #undef cr_assert_stdout_neq_str
-#define cr_assert_stdout_neq_str(...)           CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_str, !=, stdout, __VA_ARGS__))
+#define cr_assert_stdout_neq_str(...)    CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_str, !=, stdout, __VA_ARGS__))
 #undef cr_expect_stdout_neq_str
-#define cr_expect_stdout_neq_str(...)           CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_str, !=, stdout, __VA_ARGS__))
+#define cr_expect_stdout_neq_str(...)    CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_str, !=, stdout, __VA_ARGS__))
 #undef cr_assert_stderr_eq_str
-#define cr_assert_stderr_eq_str(...)            CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_str, ==, stderr, __VA_ARGS__))
+#define cr_assert_stderr_eq_str(...)     CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_str, ==, stderr, __VA_ARGS__))
 #undef cr_expect_stderr_eq_str
-#define cr_expect_stderr_eq_str(...)            CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_str, ==, stderr, __VA_ARGS__))
+#define cr_expect_stderr_eq_str(...)     CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_str, ==, stderr, __VA_ARGS__))
 #undef cr_assert_stderr_neq_str
-#define cr_assert_stderr_neq_str(...)           CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_str, !=, stderr, __VA_ARGS__))
+#define cr_assert_stderr_neq_str(...)    CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_str, !=, stderr, __VA_ARGS__))
 #undef cr_expect_stderr_neq_str
-#define cr_expect_stderr_neq_str(...)           CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_str, !=, stderr, __VA_ARGS__))
+#define cr_expect_stderr_neq_str(...)    CR_EXPAND(cr_assert_redir_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_str, !=, stderr, __VA_ARGS__))
 #undef cr_assert_stdout_eq
-#define cr_assert_stdout_eq(...)                CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_file, ==, stdout, __VA_ARGS__))
+#define cr_assert_stdout_eq(...)         CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_file, ==, stdout, __VA_ARGS__))
 #undef cr_expect_stdout_eq
-#define cr_expect_stdout_eq(...)                CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_file, ==, stdout, __VA_ARGS__))
+#define cr_expect_stdout_eq(...)         CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_file, ==, stdout, __VA_ARGS__))
 #undef cr_assert_stdout_neq
-#define cr_assert_stdout_neq(...)               CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_file, !=, stdout, __VA_ARGS__))
+#define cr_assert_stdout_neq(...)        CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stdout_match_file, !=, stdout, __VA_ARGS__))
 #undef cr_expect_stdout_neq
-#define cr_expect_stdout_neq(...)               CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_file, !=, stdout, __VA_ARGS__))
+#define cr_expect_stdout_neq(...)        CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stdout_match_file, !=, stdout, __VA_ARGS__))
 #undef cr_assert_stderr_eq
-#define cr_assert_stderr_eq(...)                CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_file, ==, stderr, __VA_ARGS__))
+#define cr_assert_stderr_eq(...)         CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_file, ==, stderr, __VA_ARGS__))
 #undef cr_expect_stderr_eq
-#define cr_expect_stderr_eq(...)                CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_file, ==, stderr, __VA_ARGS__))
+#define cr_expect_stderr_eq(...)         CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_file, ==, stderr, __VA_ARGS__))
 #undef cr_assert_stderr_neq
-#define cr_assert_stderr_neq(...)               CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_file, !=, stderr, __VA_ARGS__))
+#define cr_assert_stderr_neq(...)        CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_ABORT_, cr_stderr_match_file, !=, stderr, __VA_ARGS__))
 #undef cr_expect_stderr_neq
-#define cr_expect_stderr_neq(...)               CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_file, !=, stderr, __VA_ARGS__))
+#define cr_expect_stderr_neq(...)        CR_EXPAND(cr_assert_redir_f_unop_va_(CR_FAIL_CONTINUES_, cr_stderr_match_file, !=, stderr, __VA_ARGS__))
 
 #define cr_assert_redir_unop_(Fail, Fun, Op, File, Str, ...) \
     CR_EXPAND(cr_assert_impl(                                \

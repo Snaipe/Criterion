@@ -24,12 +24,12 @@
 #ifndef CRITERION_INTERNAL_DEPRECATION_H_
 #define CRITERION_INTERNAL_DEPRECATION_H_
 
-#define CR_DEPRECATED(Msg)               CR_DEPRECATED_(message(Msg))
+#define CR_DEPRECATED(Msg)    CR_DEPRECATED_(message(Msg))
 
 #ifdef _MSC_VER
-# define CR_DEPRECATED_(Msg)             __pragma(Msg)
+# define CR_DEPRECATED_(Msg)    __pragma(Msg)
 #else
-# define CR_DEPRECATED_(Msg)             _Pragma(#Msg)
+# define CR_DEPRECATED_(Msg)    _Pragma(#Msg)
 #endif
 
 #ifdef __GNUC__

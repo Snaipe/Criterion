@@ -43,14 +43,14 @@
 
 #ifdef __cplusplus
 # ifdef __GNUC__
-#  define CR_ATTRIBUTE(Arg)               __attribute__((Arg))
+#  define CR_ATTRIBUTE(Arg)    __attribute__((Arg))
 # else
-#  define CR_ATTRIBUTE(Arg)               [[gnu::Arg]]
+#  define CR_ATTRIBUTE(Arg)    [[gnu::Arg]]
 # endif
 # define CR_BEGIN_C_API    extern "C" {
 # define CR_END_C_API      }
 #else
-# define CR_ATTRIBUTE(Arg)                __attribute__((Arg))
+# define CR_ATTRIBUTE(Arg)    __attribute__((Arg))
 # define CR_BEGIN_C_API
 # define CR_END_C_API
 #endif
@@ -72,7 +72,7 @@
 #else
 # define CR_SECTION_START_SUFFIX(Name)
 # define CR_SECTION_END_SUFFIX(Name)
-# define CR_SECTION_(Name)                  CR_ATTRIBUTE(section(Name))
+# define CR_SECTION_(Name)    CR_ATTRIBUTE(section(Name))
 # define CR_SECTION_SUFFIX_
 #endif
 
@@ -80,17 +80,17 @@
 #define CR_MAKE_IDENTIFIER__(Prefix, Id)    Prefix ## _ ## Id
 
 #ifdef __GNUC__
-# define CR_UNUSED           CR_ATTRIBUTE(unused)
-# define CR_NORETURN         CR_ATTRIBUTE(noreturn)
-# define CR_INLINE           CR_ATTRIBUTE(always_inline) inline
+# define CR_UNUSED      CR_ATTRIBUTE(unused)
+# define CR_NORETURN    CR_ATTRIBUTE(noreturn)
+# define CR_INLINE      CR_ATTRIBUTE(always_inline) inline
 #elif CR_IS_MSVC
-# define CR_UNUSED           __pragma(warning(suppress: 4100))
-# define CR_NORETURN         __declspec(noreturn)
-# define CR_INLINE           __forceinline
+# define CR_UNUSED      __pragma(warning(suppress: 4100))
+# define CR_NORETURN    __declspec(noreturn)
+# define CR_INLINE      __forceinline
 #else
 # define CR_UNUSED
 # define CR_NORETURN
-# define CR_INLINE           inline
+# define CR_INLINE    inline
 #endif
 
 #ifdef _WIN32
@@ -108,15 +108,15 @@
 #if defined _WIN32 || defined __CYGWIN__
 # ifdef CRITERION_BUILDING_DLL
 #  ifdef __GNUC__
-#   define CR_API     CR_ATTRIBUTE(dllexport)
+#   define CR_API    CR_ATTRIBUTE(dllexport)
 #  else
-#   define CR_API     __declspec(dllexport)
+#   define CR_API    __declspec(dllexport)
 #  endif
 # else
 #  ifdef __GNUC__
-#   define CR_API     CR_ATTRIBUTE(dllimport)
+#   define CR_API    CR_ATTRIBUTE(dllimport)
 #  else
-#   define CR_API     __declspec(dllimport)
+#   define CR_API    __declspec(dllimport)
 #  endif
 # endif
 # define CR_LOCAL
@@ -131,7 +131,7 @@
 #endif
 
 #ifdef __cplusplus
-# define CR_STDN      std::
+# define CR_STDN    std::
 #else
 # define CR_STDN
 #endif

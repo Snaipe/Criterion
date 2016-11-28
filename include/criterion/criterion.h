@@ -53,7 +53,7 @@
  *    (see criterion/types.h).
  *    These options will provide the defaults for each test.
  */
-#define TestSuite(Name, ...)      internal
+#define TestSuite(Name, ...)    internal
 
 CR_BEGIN_C_API
 

@@ -124,7 +124,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_file_contents_eq_str(File, ExpectedContents, FormatString, ...)       internal
+#define cr_assert_file_contents_eq_str(File, ExpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c File are equal to the string \c ExpectedContents
@@ -141,7 +141,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_file_contents_eq_str(File, ExpectedContents, FormatString, ...)       internal
+#define cr_expect_file_contents_eq_str(File, ExpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c File are not equal to the string
@@ -195,7 +195,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_file_contents_eq(File, RefFile, FormatString, ...)                    internal
+#define cr_assert_file_contents_eq(File, RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c File are equal to the contents of \c RefFile
@@ -211,7 +211,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_file_contents_eq(File, RefFile, FormatString, ...)                    internal
+#define cr_expect_file_contents_eq(File, RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c File are not equal to the contents of
@@ -230,7 +230,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_file_contents_neq(File, RefFile, FormatString, ...)                   internal
+#define cr_assert_file_contents_neq(File, RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c File are not equal to the contents of
@@ -248,7 +248,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_file_contents_neq(File, RefFile, FormatString, ...)                   internal
+#define cr_expect_file_contents_neq(File, RefFile, FormatString, ...)    internal
 
 /**@}*/
 
@@ -273,7 +273,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stdout_eq_str(ExpectedContents, FormatString, ...)                    internal
+#define cr_assert_stdout_eq_str(ExpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are equal to the contents of the string
@@ -290,7 +290,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stdout_eq_str(ExpectedContents, FormatString, ...)                    internal
+#define cr_expect_stdout_eq_str(ExpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of the
@@ -308,7 +308,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stdout_neq_str(UnexpectedContents, FormatString, ...)                 internal
+#define cr_assert_stdout_neq_str(UnexpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of the
@@ -325,7 +325,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stdout_neq_str(UnexpectedContents, FormatString, ...)                 internal
+#define cr_expect_stdout_neq_str(UnexpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of the string
@@ -343,7 +343,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stderr_eq_str(ExpectedContents, FormatString, ...)                    internal
+#define cr_assert_stderr_eq_str(ExpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of the string
@@ -360,7 +360,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stderr_eq_str(ExpectedContents, FormatString, ...)                    internal
+#define cr_expect_stderr_eq_str(ExpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of the
@@ -378,7 +378,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stderr_neq_str(UnexpectedContents, FormatString, ...)                 internal
+#define cr_assert_stderr_neq_str(UnexpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of the
@@ -395,7 +395,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stderr_neq_str(UnexpectedContents, FormatString, ...)                 internal
+#define cr_expect_stderr_neq_str(UnexpectedContents, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are equal to the contents of \c RefFile
@@ -411,7 +411,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stdout_eq(RefFile, FormatString, ...)                                 internal
+#define cr_assert_stdout_eq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are equal to the contents of \c RefFile
@@ -426,7 +426,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stdout_eq(RefFile, FormatString, ...)                                 internal
+#define cr_expect_stdout_eq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of \c
@@ -444,7 +444,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stdout_neq(RefFile, FormatString, ...)                                internal
+#define cr_assert_stdout_neq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stdout are not equal to the contents of \c
@@ -461,7 +461,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stdout_neq(RefFile, FormatString, ...)                                internal
+#define cr_expect_stdout_neq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of \c RefFile
@@ -477,7 +477,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stderr_eq(RefFile, FormatString, ...)                                 internal
+#define cr_assert_stderr_eq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are equal to the contents of \c RefFile
@@ -492,7 +492,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stderr_eq(RefFile, FormatString, ...)                                 internal
+#define cr_expect_stderr_eq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of \c
@@ -510,7 +510,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_stderr_neq(RefFile, FormatString, ...)                                internal
+#define cr_assert_stderr_neq(RefFile, FormatString, ...)    internal
 
 /**
  * Passes if the contents of \c stderr are not equal to the contents of \c
@@ -527,7 +527,7 @@ CR_END_C_API
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_stderr_neq(RefFile, FormatString, ...)                                internal
+#define cr_expect_stderr_neq(RefFile, FormatString, ...)    internal
 
 /**@}*/
 

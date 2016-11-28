@@ -52,21 +52,21 @@ struct criterion_prefix_data {
 
 #define CRIT_COLOR_NORMALIZE(Str)    (criterion_options.use_ascii ? "" : Str)
 
-#define CRIT_FG_BOLD               "\33[0;1m"
-#define CRIT_FG_RED                "\33[0;31m"
-#define CRIT_FG_GREEN              "\33[0;32m"
-#define CRIT_FG_GOLD               "\33[0;33m"
-#define CRIT_FG_BLUE               "\33[0;34m"
-#define CRIT_FG_GRAY               "\33[1;30m"
-#define CRIT_RESET                 "\33[0m"
+#define CRIT_FG_BOLD     "\33[0;1m"
+#define CRIT_FG_RED      "\33[0;31m"
+#define CRIT_FG_GREEN    "\33[0;32m"
+#define CRIT_FG_GOLD     "\33[0;33m"
+#define CRIT_FG_BLUE     "\33[0;34m"
+#define CRIT_FG_GRAY     "\33[1;30m"
+#define CRIT_RESET       "\33[0m"
 
-#define CR_FG_BOLD                 CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
-#define CR_FG_RED                  CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
-#define CR_FG_GREEN                CRIT_COLOR_NORMALIZE(CRIT_FG_GREEN)
-#define CR_FG_GOLD                 CRIT_COLOR_NORMALIZE(CRIT_FG_GOLD)
-#define CR_FG_BLUE                 CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
-#define CR_FG_GRAY                 CRIT_COLOR_NORMALIZE(CRIT_FG_GRAY)
-#define CR_RESET                   CRIT_COLOR_NORMALIZE(CRIT_RESET)
+#define CR_FG_BOLD       CRIT_COLOR_NORMALIZE(CRIT_FG_BOLD)
+#define CR_FG_RED        CRIT_COLOR_NORMALIZE(CRIT_FG_RED)
+#define CR_FG_GREEN      CRIT_COLOR_NORMALIZE(CRIT_FG_GREEN)
+#define CR_FG_GOLD       CRIT_COLOR_NORMALIZE(CRIT_FG_GOLD)
+#define CR_FG_BLUE       CRIT_COLOR_NORMALIZE(CRIT_FG_BLUE)
+#define CR_FG_GRAY       CRIT_COLOR_NORMALIZE(CRIT_FG_GRAY)
+#define CR_RESET         CRIT_COLOR_NORMALIZE(CRIT_RESET)
 
 extern const struct criterion_prefix_data g_criterion_logging_prefixes[];
 

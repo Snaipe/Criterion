@@ -644,74 +644,74 @@ CR_END_C_API
 #if defined (__GNUC__) || defined (__clang__) || defined (__cplusplus)
 
 # undef cr_assert_arr_eq_cmp
-# define cr_assert_arr_eq_cmp(...)      CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
+# define cr_assert_arr_eq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, ==, __VA_ARGS__))
 # undef cr_expect_arr_eq_cmp
-# define cr_expect_arr_eq_cmp(...)      CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, ==, __VA_ARGS__))
+# define cr_expect_arr_eq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, ==, __VA_ARGS__))
 # undef cr_assert_arr_neq_cmp
-# define cr_assert_arr_neq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, !=, __VA_ARGS__))
+# define cr_assert_arr_neq_cmp(...)    CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, !=, __VA_ARGS__))
 # undef cr_expect_arr_neq_cmp
-# define cr_expect_arr_neq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, !=, __VA_ARGS__))
+# define cr_expect_arr_neq_cmp(...)    CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, !=, __VA_ARGS__))
 # undef cr_assert_arr_lt_cmp
-# define cr_assert_arr_lt_cmp(...)      CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, <, __VA_ARGS__))
+# define cr_assert_arr_lt_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, <, __VA_ARGS__))
 # undef cr_expect_arr_lt_cmp
-# define cr_expect_arr_lt_cmp(...)      CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, <, __VA_ARGS__))
+# define cr_expect_arr_lt_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, <, __VA_ARGS__))
 # undef cr_assert_arr_leq_cmp
-# define cr_assert_arr_leq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, <=, __VA_ARGS__))
+# define cr_assert_arr_leq_cmp(...)    CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, <=, __VA_ARGS__))
 # undef cr_expect_arr_leq_cmp
-# define cr_expect_arr_leq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, <=, __VA_ARGS__))
+# define cr_expect_arr_leq_cmp(...)    CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, <=, __VA_ARGS__))
 # undef cr_assert_arr_gt_cmp
-# define cr_assert_arr_gt_cmp(...)      CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, >, __VA_ARGS__))
+# define cr_assert_arr_gt_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, >, __VA_ARGS__))
 # undef cr_expect_arr_gt_cmp
-# define cr_expect_arr_gt_cmp(...)      CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, >, __VA_ARGS__))
+# define cr_expect_arr_gt_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, >, __VA_ARGS__))
 # undef cr_assert_arr_geq_cmp
-# define cr_assert_arr_geq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, >=, __VA_ARGS__))
+# define cr_assert_arr_geq_cmp(...)    CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_ABORT_, >=, __VA_ARGS__))
 # undef cr_expect_arr_geq_cmp
-# define cr_expect_arr_geq_cmp(...)     CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, >=, __VA_ARGS__))
+# define cr_expect_arr_geq_cmp(...)    CR_EXPAND(cr_assert_arr_op_cmp_va_(CR_FAIL_CONTINUES_, >=, __VA_ARGS__))
 
 #else
 
 # undef cr_assert_arr_eq_cmp
-# define cr_assert_arr_eq_cmp(...)      CRITERION_GNUC_WARN_(cr_assert_arr_eq_cmp) CR_NOOP
+# define cr_assert_arr_eq_cmp(...)     CRITERION_GNUC_WARN_(cr_assert_arr_eq_cmp) CR_NOOP
 # undef cr_expect_arr_eq_cmp
-# define cr_expect_arr_eq_cmp(...)      CRITERION_GNUC_WARN_(cr_expect_arr_eq_cmp) CR_NOOP
+# define cr_expect_arr_eq_cmp(...)     CRITERION_GNUC_WARN_(cr_expect_arr_eq_cmp) CR_NOOP
 # undef cr_assert_arr_neq_cmp
-# define cr_assert_arr_neq_cmp(...)     CRITERION_GNUC_WARN_(cr_assert_arr_neq_cmp) CR_NOOP
+# define cr_assert_arr_neq_cmp(...)    CRITERION_GNUC_WARN_(cr_assert_arr_neq_cmp) CR_NOOP
 # undef cr_expect_arr_neq_cmp
-# define cr_expect_arr_neq_cmp(...)     CRITERION_GNUC_WARN_(cr_expect_arr_neq_cmp) CR_NOOP
+# define cr_expect_arr_neq_cmp(...)    CRITERION_GNUC_WARN_(cr_expect_arr_neq_cmp) CR_NOOP
 # undef cr_assert_arr_lt_cmp
-# define cr_assert_arr_lt_cmp(...)      CRITERION_GNUC_WARN_(cr_assert_arr_lt_cmp) CR_NOOP
+# define cr_assert_arr_lt_cmp(...)     CRITERION_GNUC_WARN_(cr_assert_arr_lt_cmp) CR_NOOP
 # undef cr_expect_arr_lt_cmp
-# define cr_expect_arr_lt_cmp(...)      CRITERION_GNUC_WARN_(cr_expect_arr_lt_cmp) CR_NOOP
+# define cr_expect_arr_lt_cmp(...)     CRITERION_GNUC_WARN_(cr_expect_arr_lt_cmp) CR_NOOP
 # undef cr_assert_arr_leq_cmp
-# define cr_assert_arr_leq_cmp(...)     CRITERION_GNUC_WARN_(cr_assert_arr_leq_cmp) CR_NOOP
+# define cr_assert_arr_leq_cmp(...)    CRITERION_GNUC_WARN_(cr_assert_arr_leq_cmp) CR_NOOP
 # undef cr_expect_arr_leq_cmp
-# define cr_expect_arr_leq_cmp(...)     CRITERION_GNUC_WARN_(cr_expect_arr_leq_cmp) CR_NOOP
+# define cr_expect_arr_leq_cmp(...)    CRITERION_GNUC_WARN_(cr_expect_arr_leq_cmp) CR_NOOP
 # undef cr_assert_arr_gt_cmp
-# define cr_assert_arr_gt_cmp(...)      CRITERION_GNUC_WARN_(cr_assert_arr_gt_cmp) CR_NOOP
+# define cr_assert_arr_gt_cmp(...)     CRITERION_GNUC_WARN_(cr_assert_arr_gt_cmp) CR_NOOP
 # undef cr_expect_arr_gt_cmp
-# define cr_expect_arr_gt_cmp(...)      CRITERION_GNUC_WARN_(cr_expect_arr_gt_cmp) CR_NOOP
+# define cr_expect_arr_gt_cmp(...)     CRITERION_GNUC_WARN_(cr_expect_arr_gt_cmp) CR_NOOP
 # undef cr_assert_arr_geq_cmp
-# define cr_assert_arr_geq_cmp(...)     CRITERION_GNUC_WARN_(cr_assert_arr_geq_cmp) CR_NOOP
+# define cr_assert_arr_geq_cmp(...)    CRITERION_GNUC_WARN_(cr_assert_arr_geq_cmp) CR_NOOP
 # undef cr_expect_arr_geq_cmp
-# define cr_expect_arr_geq_cmp(...)     CRITERION_GNUC_WARN_(cr_expect_arr_geq_cmp) CR_NOOP
+# define cr_expect_arr_geq_cmp(...)    CRITERION_GNUC_WARN_(cr_expect_arr_geq_cmp) CR_NOOP
 
 #endif
 
 #undef cr_assert_throw
-#define cr_assert_throw(...)            CR_EXPAND(cr_assert_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
+#define cr_assert_throw(...)         CR_EXPAND(cr_assert_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
 #undef cr_expect_throw
-#define cr_expect_throw(...)            CR_EXPAND(cr_assert_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
+#define cr_expect_throw(...)         CR_EXPAND(cr_assert_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
 #undef cr_assert_no_throw
-#define cr_assert_no_throw(...)         CR_EXPAND(cr_assert_no_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
+#define cr_assert_no_throw(...)      CR_EXPAND(cr_assert_no_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
 #undef cr_expect_no_throw
-#define cr_expect_no_throw(...)         CR_EXPAND(cr_assert_no_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
+#define cr_expect_no_throw(...)      CR_EXPAND(cr_assert_no_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
 #undef cr_assert_any_throw
-#define cr_assert_any_throw(...)        CR_EXPAND(cr_assert_any_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
+#define cr_assert_any_throw(...)     CR_EXPAND(cr_assert_any_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
 #undef cr_expect_any_throw
-#define cr_expect_any_throw(...)        CR_EXPAND(cr_assert_any_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
+#define cr_expect_any_throw(...)     CR_EXPAND(cr_assert_any_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
 #undef cr_assert_none_throw
-#define cr_assert_none_throw(...)       CR_EXPAND(cr_assert_none_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
+#define cr_assert_none_throw(...)    CR_EXPAND(cr_assert_none_throw_va_(CR_FAIL_ABORT_, __VA_ARGS__))
 #undef cr_expect_none_throw
-#define cr_expect_none_throw(...)       CR_EXPAND(cr_assert_none_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
+#define cr_expect_none_throw(...)    CR_EXPAND(cr_assert_none_throw_va_(CR_FAIL_CONTINUES_, __VA_ARGS__))
 
 #endif /* !CRITERION_INTERNAL_ASSERT_H_ */

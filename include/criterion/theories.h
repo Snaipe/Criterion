@@ -87,7 +87,7 @@ CR_END_C_API
  *  @param Suite   The name of the test suite containing this test.
  *  @param Name    The name of the test.
  */
-#define TheoryDataPoints(Suite, Name)       CR_TH_INTERNAL_TDPS(Suite, Name)
+#define TheoryDataPoints(Suite, Name)    CR_TH_INTERNAL_TDPS(Suite, Name)
 
 /**
  *  Defines a new set of data points.
@@ -95,7 +95,7 @@ CR_END_C_API
  *  @param Type The type of each data point in the set.
  *  @param ...  The data points in the set.
  */
-#define DataPoints(Type, ...)               CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
+#define DataPoints(Type, ...)    CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
 /**@}*/
 
@@ -130,7 +130,7 @@ CR_END_C_API
  * @param[in] Condition Condition to test
  *
  *****************************************************************************/
-#define cr_assume_not(Condition)             cr_assume(!(Condition))
+#define cr_assume_not(Condition)    cr_assume(!(Condition))
 
 /**
  * Assumes `Actual` is equal to `Expected`
@@ -143,7 +143,7 @@ CR_END_C_API
  * @param[in] Expected Expected value
  *
  *****************************************************************************/
-#define cr_assume_eq(Actual, Expected)       cr_assume_op_(==, Actual, Expected)
+#define cr_assume_eq(Actual, Expected)    cr_assume_op_(==, Actual, Expected)
 
 /**
  * Assumes `Actual` is not equal to `Unexpected`
@@ -169,7 +169,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_gt(Actual, Reference)      cr_assume_op_(>, Actual, Reference)
+#define cr_assume_gt(Actual, Reference)    cr_assume_op_(>, Actual, Reference)
 
 /**
  * Assumes `Actual` is greater or equal to `Reference`
@@ -182,7 +182,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_geq(Actual, Reference)     cr_assume_op_(>=, Actual, Reference)
+#define cr_assume_geq(Actual, Reference)    cr_assume_op_(>=, Actual, Reference)
 
 /**
  * Assumes `Actual` is less than `Reference`
@@ -195,7 +195,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_lt(Actual, Reference)      cr_assume_op_(<, Actual, Reference)
+#define cr_assume_lt(Actual, Reference)    cr_assume_op_(<, Actual, Reference)
 
 /**
  * Assumes `Actual` is less or equal to `Reference`
@@ -208,7 +208,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_leq(Actual, Reference)     cr_assume_op_(<=, Actual, Reference)
+#define cr_assume_leq(Actual, Reference)    cr_assume_op_(<=, Actual, Reference)
 
 /**
  * Assumes `Value` is NULL.
@@ -220,7 +220,7 @@ CR_END_C_API
  * @param[in] Value Value to test
  *
  *****************************************************************************/
-#define cr_assume_null(Value)                cr_assume_eq(Value, NULL)
+#define cr_assume_null(Value)    cr_assume_eq(Value, NULL)
 
 /**
  * Assumes `Value` is not NULL.
@@ -232,7 +232,7 @@ CR_END_C_API
  * @param[in] Value Value to test
  *
  *****************************************************************************/
-#define cr_assume_not_null(Value)            cr_assume_neq(Value, NULL)
+#define cr_assume_not_null(Value)    cr_assume_neq(Value, NULL)
 
 /**
  * Assumes `Actual` is equal to `Expected` with a tolerance of `Epsilon`
@@ -281,7 +281,7 @@ CR_END_C_API
  * @param[in] Expected Expected string
  *
  *****************************************************************************/
-#define cr_assume_str_eq(Actual, Expected)             cr_assume_str_op_(==, Actual, Expected)
+#define cr_assume_str_eq(Actual, Expected)    cr_assume_str_op_(==, Actual, Expected)
 
 /**
  * Assumes `Actual` is not lexicographically equal to `Unexpected`
@@ -294,7 +294,7 @@ CR_END_C_API
  * @param[in] Unexpected Unexpected string
  *
  *****************************************************************************/
-#define cr_assume_str_neq(Actual, Unexpected)          cr_assume_str_op_(!=, Actual, Unexpected)
+#define cr_assume_str_neq(Actual, Unexpected)    cr_assume_str_op_(!=, Actual, Unexpected)
 
 /**
  * Assumes `Actual` is lexicographically less than `Reference`
@@ -307,7 +307,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_str_lt(Actual, Reference)            cr_assume_str_op_(<, Actual, Reference)
+#define cr_assume_str_lt(Actual, Reference)    cr_assume_str_op_(<, Actual, Reference)
 
 /**
  * Assumes `Actual` is lexicographically less or equal to `Reference`
@@ -320,7 +320,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_str_leq(Actual, Reference)           cr_assume_str_op_(<=, Actual, Reference)
+#define cr_assume_str_leq(Actual, Reference)    cr_assume_str_op_(<=, Actual, Reference)
 
 /**
  * Assumes `Actual` is lexicographically greater than `Reference`
@@ -333,7 +333,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_str_gt(Actual, Reference)            cr_assume_str_op_(>, Actual, Reference)
+#define cr_assume_str_gt(Actual, Reference)    cr_assume_str_op_(>, Actual, Reference)
 
 /**
  * Assumes `Actual` is lexicographically greater or equal to `Reference`
@@ -346,7 +346,7 @@ CR_END_C_API
  * @param[in] Reference Reference value
  *
  *****************************************************************************/
-#define cr_assume_str_geq(Actual, Reference)           cr_assume_str_op_(>=, Actual, Reference)
+#define cr_assume_str_geq(Actual, Reference)    cr_assume_str_op_(>=, Actual, Reference)
 
 /**
  * Assumes `Actual` is byte-to-byte equal to `Expected`
@@ -384,15 +384,15 @@ CR_END_C_API
 /* Deprecated */
 
 #ifndef CRITERION_NO_COMPAT
-# define cr_assume_strings_eq(...)                     CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_eq, cr_assume_str_eq) cr_assume_str_eq(__VA_ARGS__)
-# define cr_assume_strings_neq(...)                    CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_neq, cr_assume_str_neq) cr_assume_str_neq(__VA_ARGS__)
-# define cr_assume_strings_lt(...)                     CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_lt, cr_assume_str_lt) cr_assume_str_lt(__VA_ARGS__)
-# define cr_assume_strings_leq(...)                    CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_leq, cr_assume_str_leq) cr_assume_str_leq(__VA_ARGS__)
-# define cr_assume_strings_gt(...)                     CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_gt, cr_assume_str_gt) cr_assume_str_gt(__VA_ARGS__)
-# define cr_assume_strings_geq(...)                    CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_geq, cr_assume_str_geq) cr_assume_str_geq(__VA_ARGS__)
+# define cr_assume_strings_eq(...)     CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_eq, cr_assume_str_eq) cr_assume_str_eq(__VA_ARGS__)
+# define cr_assume_strings_neq(...)    CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_neq, cr_assume_str_neq) cr_assume_str_neq(__VA_ARGS__)
+# define cr_assume_strings_lt(...)     CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_lt, cr_assume_str_lt) cr_assume_str_lt(__VA_ARGS__)
+# define cr_assume_strings_leq(...)    CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_leq, cr_assume_str_leq) cr_assume_str_leq(__VA_ARGS__)
+# define cr_assume_strings_gt(...)     CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_gt, cr_assume_str_gt) cr_assume_str_gt(__VA_ARGS__)
+# define cr_assume_strings_geq(...)    CRITERION_ASSERT_DEPRECATED_B(cr_assume_strings_geq, cr_assume_str_geq) cr_assume_str_geq(__VA_ARGS__)
 
-# define cr_assume_arrays_eq(...)                      CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_eq, cr_assume_arr_eq) cr_assume_arr_eq(__VA_ARGS__)
-# define cr_assume_arrays_neq(...)                     CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_neq, cr_assume_arr_neq) cr_assume_arr_neq(__VA_ARGS__)
+# define cr_assume_arrays_eq(...)      CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_eq, cr_assume_arr_eq) cr_assume_arr_eq(__VA_ARGS__)
+# define cr_assume_arrays_neq(...)     CRITERION_ASSERT_DEPRECATED_B(cr_assume_arrays_neq, cr_assume_arr_neq) cr_assume_arr_neq(__VA_ARGS__)
 #endif
 
 #include "internal/theories.h"

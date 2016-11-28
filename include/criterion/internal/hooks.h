@@ -40,17 +40,17 @@
 #endif
 
 /* Section abbreviations */
-#define CR_HOOK_SECTION_PRE_ALL           cr_pra
-#define CR_HOOK_SECTION_PRE_SUITE         cr_prs
-#define CR_HOOK_SECTION_PRE_INIT          cr_pri
-#define CR_HOOK_SECTION_PRE_TEST          cr_prt
-#define CR_HOOK_SECTION_ASSERT            cr_ast
-#define CR_HOOK_SECTION_THEORY_FAIL       cr_thf
-#define CR_HOOK_SECTION_TEST_CRASH        cr_tsc
-#define CR_HOOK_SECTION_POST_TEST         cr_pot
-#define CR_HOOK_SECTION_POST_FINI         cr_pof
-#define CR_HOOK_SECTION_POST_SUITE        cr_pos
-#define CR_HOOK_SECTION_POST_ALL          cr_poa
+#define CR_HOOK_SECTION_PRE_ALL        cr_pra
+#define CR_HOOK_SECTION_PRE_SUITE      cr_prs
+#define CR_HOOK_SECTION_PRE_INIT       cr_pri
+#define CR_HOOK_SECTION_PRE_TEST       cr_prt
+#define CR_HOOK_SECTION_ASSERT         cr_ast
+#define CR_HOOK_SECTION_THEORY_FAIL    cr_thf
+#define CR_HOOK_SECTION_TEST_CRASH     cr_tsc
+#define CR_HOOK_SECTION_POST_TEST      cr_pot
+#define CR_HOOK_SECTION_POST_FINI      cr_pof
+#define CR_HOOK_SECTION_POST_SUITE     cr_pos
+#define CR_HOOK_SECTION_POST_ALL       cr_poa
 
 #define CR_HOOK_SECTION(Kind)               CR_HOOK_SECTION_ ## Kind
 

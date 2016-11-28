@@ -52,7 +52,7 @@
  *    (see criterion/types.h).
  *    Example: `.exit_code = 1`
  */
-#define ParameterizedTest(Type, Suite, Name, ...)         internal
+#define ParameterizedTest(Type, Suite, Name, ...)    internal
 
 /**
  *  Defines the parameter generator prototype for the associated parameterized
@@ -63,7 +63,7 @@
  *  @returns A constructed instance of criterion::parameters, or the result of
  *    the cr_make_param_array macro.
  */
-#define ParameterizedTestParameters(Suite, Name)          internal
+#define ParameterizedTestParameters(Suite, Name)    internal
 
 /**
  *  Constructs a parameter list used as a return value for a parameter generator.

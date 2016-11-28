@@ -36,7 +36,7 @@
             _52, _51, _50, _49, _48, _47, _46, _45, _44, _43, _42, _41, _40, _39, _38, \
             _37, _36, _35, _34, _33, _32, _31, _30, _29, _28, _27, _26, _25, _24, _23, \
             _22, _21, _20, _19, _18, _17, _16, _15, _14, _13, _12, _11, _10, _9, _8,   \
-            _7, _6, _5, _4, _3, _2, _1, count, ...)     count
+            _7, _6, _5, _4, _3, _2, _1, count, ...)    count
 
 #define CRITERION_APPLY_1(Macro, ...)
 #define CRITERION_APPLY_2(Macro, Prefix, Head, ...)     Macro(Prefix, Head) CR_EXPAND(CRITERION_APPLY_1(Macro, Prefix, __VA_ARGS__))
@@ -121,7 +121,7 @@
         return t;                                       \
     } ()
 #else
-# define CRITERION_MAKE_STRUCT(Type, ...)               { __VA_ARGS__ }
+# define CRITERION_MAKE_STRUCT(Type, ...)    { __VA_ARGS__ }
 #endif
 
 #endif /* !CRITERION_DESIGNATED_INITIALIZER_COMPAT_HH_ */
