@@ -90,7 +90,7 @@ CR_END_C_API
 
 #define CRI_ASSERT_FAIL(File, Line, Fail, ...)                           \
     CR_EVAL(do {                                                         \
-        struct cri_assert_node cri_root, *cri_node = &cri_root;          \
+        struct cri_assert_node cri_root;                                 \
         cri_assert_node_init(&cri_root);                                 \
         cri_root.repr = cri_assert_message("x" CR_VA_TAIL(__VA_ARGS__)); \
         cri_assert_node_send(File, Line, &cri_root);                     \
@@ -266,9 +266,6 @@ CR_END_C_API
 #define CRI_ASSERT_TEST_TAGC_type_()      ,
 #define CRI_ASSERT_TYPE_TAG_type(T)       T,
 #define CRI_ASSERT_TYPE_TAG_ID_type(T)    CRI_ASSERT_SWALLOW_KEYWORD(T),
-
-#define CRI_ASSERT_TEST_TAG_mem       ,
-#define CRI_ASSERT_TYPE_TAG_mem       struct cr_mem
 
 #ifdef __cplusplus
 # include <complex>
@@ -749,7 +746,7 @@ bool ieee_eq(Float &a, Float &b, size_t ulp)
         return false;
 
     /* Not the most efficient but the most portable */
-    a = nextafter(a, b);
+    a = std::nextafter(a, b);
     return a == b ? true : ieee_eq(a, b, ulp - 1);
 }
 
@@ -770,15 +767,17 @@ bool ieee_eq(Float &a, Float &b, size_t ulp)
 # define CRI_IEEE_ULP_T_EQ(Tag, Lhs, Rhs, Ulp)    (CRI_USER_TAG_ID(ieee_ulp_eq, Tag)((Lhs), (Rhs), (Ulp)))
 # define CRI_IEEE_ULP_T_NE(Tag, Lhs, Rhs, Ulp)    !(CRI_USER_TAG_ID(ieee_ulp_eq, Tag)((Lhs), (Rhs), (Ulp)))
 
-# define CRI_DEFINE_IEEE_ULP_EQ(Tag, Suffix)                   \
-    int CRI_USER_TAG_ID(ieee_ulp_eq, Tag)(                     \
-        CRI_ASSERT_TYPE_TAG(Tag) a,                            \
-        CRI_ASSERT_TYPE_TAG(Tag) b, size_t ulp)                \
-    {                                                          \
-        if (ulp == 0)                                          \
-            return 0;                                          \
-        a = nextafter ## Suffix(a, b);                         \
-        return a == b ? 1 : CRI_USER_TAG_ID(ieee_ulp_eq, Tag); \
+# include <math.h>
+
+# define CRI_DEFINE_IEEE_ULP_EQ(Tag, Suffix)                                  \
+    static inline int CRI_USER_TAG_ID(ieee_ulp_eq, Tag)(                      \
+        CRI_ASSERT_TYPE_TAG(Tag) a,                                           \
+        CRI_ASSERT_TYPE_TAG(Tag) b, size_t ulp)                               \
+    {                                                                         \
+        if (ulp == 0)                                                         \
+            return 0;                                                         \
+        a = nextafter ## Suffix(a, b);                                        \
+        return a == b ? 1 : CRI_USER_TAG_ID(ieee_ulp_eq, Tag)(a, b, ulp - 1); \
     }
 
 CRI_DEFINE_IEEE_ULP_EQ(flt, f)
@@ -897,31 +896,30 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
         return str;                                  \
     }
 
-#define CRI_ASSERT_DECLARE_STR_FN(Tag, Fmt)                               \
-    static inline int CRI_USER_TAG_ID(le, Tag)(                           \
-        CRI_ASSERT_TYPE_TAG(Tag) * actual,                                \
-        CRI_ASSERT_TYPE_TAG(Tag) * expected)                              \
-    {                                                                     \
-        return Tag ## cmp(*actual, *expected) < 0;                        \
-    }                                                                     \
-    static inline int CRI_USER_TAG_ID(eq, Tag)(                           \
-        CRI_ASSERT_TYPE_TAG(Tag) * actual,                                \
-        CRI_ASSERT_TYPE_TAG(Tag) * expected)                              \
-    {                                                                     \
-        return !Tag ## cmp(*actual, *expected);                           \
-    }                                                                     \
-    static inline int CRI_USER_TAG_ID(zero, Tag)(                         \
-        CRI_ASSERT_TYPE_TAG(Tag) * val)                                   \
-    {                                                                     \
-        printf("len(" Fmt "'%" Fmt "') = %zu\n", *val, Tag ## len(*val)); \
-        return !Tag ## len(*val);                                         \
-    }                                                                     \
-    static inline char *CRI_USER_TAG_ID(tostr, Tag)(                      \
-        CRI_ASSERT_TYPE_TAG(Tag) * e)                                     \
-    {                                                                     \
-        char *str = NULL;                                                 \
-        cr_asprintf(&str, "%" Fmt, *e);                                   \
-        return str;                                                       \
+#define CRI_ASSERT_DECLARE_STR_FN(Tag, Fmt)          \
+    static inline int CRI_USER_TAG_ID(le, Tag)(      \
+        CRI_ASSERT_TYPE_TAG(Tag) * actual,           \
+        CRI_ASSERT_TYPE_TAG(Tag) * expected)         \
+    {                                                \
+        return Tag ## cmp(*actual, *expected) < 0;   \
+    }                                                \
+    static inline int CRI_USER_TAG_ID(eq, Tag)(      \
+        CRI_ASSERT_TYPE_TAG(Tag) * actual,           \
+        CRI_ASSERT_TYPE_TAG(Tag) * expected)         \
+    {                                                \
+        return !Tag ## cmp(*actual, *expected);      \
+    }                                                \
+    static inline int CRI_USER_TAG_ID(zero, Tag)(    \
+        CRI_ASSERT_TYPE_TAG(Tag) * val)              \
+    {                                                \
+        return !Tag ## len(*val);                    \
+    }                                                \
+    static inline char *CRI_USER_TAG_ID(tostr, Tag)( \
+        CRI_ASSERT_TYPE_TAG(Tag) * e)                \
+    {                                                \
+        char *str = NULL;                            \
+        cr_asprintf(&str, "%" Fmt, *e);              \
+        return str;                                  \
     }
 
 #ifndef __cplusplus
@@ -1027,17 +1025,17 @@ std::ostream &operator<<(std::ostream &s, const struct cr_mem &m)
 static inline int cr_user_eq_mem(struct cr_mem *m1, struct cr_mem *m2)
 {
     return m1->size == m2->size ? !memcmp(m1->data, m2->data, m1->size) : 0;
-};
+}
 
 static inline int cr_user_cmp_mem(struct cr_mem *m1, struct cr_mem *m2)
 {
     return m1->size == m2->size ? memcmp(m1->data, m2->data, m1->size) : (m1->size > m2->size ? 1 : -1);
-};
+}
 
 static inline char *cr_user_tostr_mem(struct cr_mem *m)
 {
     return cri_string_xxd(m->data, m->size);
-};
+}
 #endif
 
 #undef cr_assert_user
