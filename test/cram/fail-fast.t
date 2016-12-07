@@ -1,7 +1,7 @@
 Testing --fail-fast
 
   $ simple.c.bin --fail-fast --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m2\x1b[0m tests from \x1b[0;33mmisc\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] misc::failing (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1msimple.c\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion failed: The expression 0 is false. (esc)
@@ -12,7 +12,7 @@ Testing --fail-fast
 Testing CRITERION_FAIL_FAST
 
   $ CRITERION_FAIL_FAST=1 simple.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m2\x1b[0m tests from \x1b[0;33mmisc\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] misc::failing (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1msimple.c\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion failed: The expression 0 is false. (esc)
