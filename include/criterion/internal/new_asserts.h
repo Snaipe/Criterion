@@ -32,25 +32,7 @@
 #include "common.h"
 #include "designated-initializer-compat.h"
 #include "preprocess.h"
-
-struct cr_mem {
-    const void *data;
-    size_t size;
-
-#ifdef __cplusplus
-    template <typename T, size_t N>
-    constexpr cr_mem(const T (&arr)[N])
-        : data(static_cast<const void *>(&arr)),
-        size(N)
-    {}
-
-    template <typename T>
-    constexpr cr_mem(const T *arr, size_t n)
-        : data(static_cast<const void *>(arr)),
-        size(n)
-    {}
-#endif
-};
+#include "capabilities.h"
 
 enum cri_assert_result_type {
     CRI_ASSERT_RT_NONE = 0,
@@ -80,7 +62,6 @@ CR_API void cri_assert_node_negate(struct cri_assert_node *tree);
 CR_API void cri_assert_node_term(struct cri_assert_node *tree);
 CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_assert_node *tree);
 CR_API char *cri_assert_message(const char *fmt, ...);
-CR_API char *cri_string_xxd(const void *data, size_t size);
 
 CR_END_C_API
 
@@ -256,54 +237,11 @@ CR_END_C_API
 #define CRI_ASSERT_TYPE_TAG_ldbl       long double,
 #define CRI_ASSERT_TYPE_TAG_ID_ldbl    ldbl,
 
-#define CRI_ASSERT_TEST_TAG_mem        ,
-#define CRI_ASSERT_TEST_TAGC_mem()    ,
-#define CRI_ASSERT_TYPE_TAG_mem        struct cr_mem,
-#define CRI_ASSERT_TYPE_TAG_ID_mem     mem,
-
 #define CRI_ASSERT_TEST_TAG_type       ,
 #define CRI_ASSERT_TEST_TAGC_type(x)      CRI_ASSERT_TEST_TAGC_type_
 #define CRI_ASSERT_TEST_TAGC_type_()      ,
 #define CRI_ASSERT_TYPE_TAG_type(T)       T,
 #define CRI_ASSERT_TYPE_TAG_ID_type(T)    CRI_ASSERT_SWALLOW_KEYWORD(T),
-
-#ifdef __cplusplus
-# include <complex>
-
-# define CRI_ASSERT_TEST_TAG_cx_flt        ,
-# define CRI_ASSERT_TEST_TAGC_cx_flt()    ,
-# define CRI_ASSERT_TYPE_TAG_cx_flt        std::complex<float>
-# define CRI_ASSERT_TEST_TAG_ID_cx_flt     cx_flt,
-
-# define CRI_ASSERT_TEST_TAG_cx_dbl        ,
-# define CRI_ASSERT_TEST_TAGC_cx_dbl()    ,
-# define CRI_ASSERT_TYPE_TAG_cx_dbl        std::complex<double>
-# define CRI_ASSERT_TEST_TAG_ID_cx_dbl     cx_dbl,
-
-# define CRI_ASSERT_TEST_TAG_cx_ldbl       ,
-# define CRI_ASSERT_TEST_TAGC_cx_ldbl()    ,
-# define CRI_ASSERT_TYPE_TAG_cx_ldbl       std::complex<long double>
-# define CRI_ASSERT_TEST_TAG_ID_cx_ldbl    cx_ldbl,
-
-#elif __STDC_VERSION__ == 199901L && !defined (__STDC_NO_COMPLEX__)
-# include <complex.h>
-
-# define CRI_ASSERT_TEST_TAG_cx_flt        ,
-# define CRI_ASSERT_TEST_TAGC_cx_flt()    ,
-# define CRI_ASSERT_TYPE_TAG_cx_flt        _Complex float
-# define CRI_ASSERT_TEST_TAG_ID_cx_flt     cx_flt,
-
-# define CRI_ASSERT_TEST_TAG_cx_dbl        ,
-# define CRI_ASSERT_TEST_TAGC_cx_dbl()    ,
-# define CRI_ASSERT_TYPE_TAG_cx_dbl        _Complex double
-# define CRI_ASSERT_TEST_TAG_ID_cx_dbl     cx_dbl,
-
-# define CRI_ASSERT_TEST_TAG_cx_ldbl       ,
-# define CRI_ASSERT_TEST_TAGC_cx_ldbl()    ,
-# define CRI_ASSERT_TYPE_TAG_cx_ldbl       _Complex long double
-# define CRI_ASSERT_TEST_TAG_ID_cx_ldbl    cx_ldbl,
-
-#endif
 
 #define CRI_ASSERT_SPEC_OP_LEN(...)            \
     CR_EXPAND(CR_VA_TAIL_SELECT64(__VA_ARGS__, \
@@ -957,85 +895,10 @@ CRI_ASSERT_DECLARE_NATIVE_FN(tcs, "s")
 # endif
 #endif
 
-#ifdef __cplusplus
+#include "memory.h"
 
-# define CRI_ASSERT_DECLARE_COMPLEX_FN(Tag, Fmt)                      \
-    static inline int CRI_USER_TAG_ID(eq, Tag)(                       \
-        CRI_ASSERT_TYPE_TAG(Tag) actual,                              \
-        CRI_ASSERT_TYPE_TAG(Tag) expected)                            \
-    {                                                                 \
-        return actual == expected ? 1 : 0;                            \
-    }                                                                 \
-    static inline char *CRI_USER_TAG_ID(tostr, Tag)(                  \
-        CRI_ASSERT_TYPE_TAG(Tag) * e)                                 \
-    {                                                                 \
-        char *str = NULL;                                             \
-        cr_asprintf(&str, "%" Fmt " + i%" Fmt, e->real(), e->imag()); \
-        return str;                                                   \
-    }
-
-CRI_ASSERT_DECLARE_COMPLEX_FN(cx_flt, "f")
-CRI_ASSERT_DECLARE_COMPLEX_FN(cx_dbl, "f")
-CRI_ASSERT_DECLARE_COMPLEX_FN(cx_ldbl, "Lf")
-
-#elif __STDC_VERSION__ == 199901L && !defined (__STDC_NO_COMPLEX__)
-
-# define CRI_ASSERT_DECLARE_COMPLEX_FN(Tag, Fmt, S)                             \
-    static inline int CR_CONCAT(cr_user_eq_, CRI_ASSERT_TYPE_TAG_ID(Tag))(      \
-        CRI_ASSERT_TYPE_TAG(Tag) actual,                                        \
-        CRI_ASSERT_TYPE_TAG(Tag) expected)                                      \
-    {                                                                           \
-        return actual == expected ? 1 : 0;                                      \
-    }                                                                           \
-    static inline char *CR_CONCAT(cr_user_tostr_, CRI_ASSERT_TYPE_TAG_ID(Tag))( \
-        CRI_ASSERT_TYPE_TAG(Tag) * e)                                           \
-    {                                                                           \
-        char *str = NULL;                                                       \
-        cr_asprintf(&str, "%" Fmt " + i%" Fmt, creal ## S(*e), cimag ## S(*e)); \
-        return str;                                                             \
-    }
-
-CRI_ASSERT_DECLARE_COMPLEX_FN(cx_flt, "f", f)
-CRI_ASSERT_DECLARE_COMPLEX_FN(cx_dbl, "f", )
-CRI_ASSERT_DECLARE_COMPLEX_FN(cx_ldbl, "Lf", l)
-#endif
-
-#ifdef __cplusplus
-bool operator==(const struct cr_mem &m1, const struct cr_mem &m2)
-{
-    return m1.size == m2.size ? !memcmp(m1.data, m2.data, m1.size) : 0;
-}
-
-bool operator<(const struct cr_mem &m1, const struct cr_mem &m2)
-{
-    return m1.size == m2.size ? memcmp(m1.data, m2.data, m1.size) < 0 : (m1.size > m2.size ? 1 : 0);
-}
-
-std::ostream &operator<<(std::ostream &s, const struct cr_mem &m)
-{
-    char *str = cri_string_xxd(m.data, m.size);
-
-    s << std::string(str);
-    free(str);
-    return s;
-}
-#else
-# include <string.h>
-
-static inline int cr_user_eq_mem(struct cr_mem *m1, struct cr_mem *m2)
-{
-    return m1->size == m2->size ? !memcmp(m1->data, m2->data, m1->size) : 0;
-}
-
-static inline int cr_user_cmp_mem(struct cr_mem *m1, struct cr_mem *m2)
-{
-    return m1->size == m2->size ? memcmp(m1->data, m2->data, m1->size) : (m1->size > m2->size ? 1 : -1);
-}
-
-static inline char *cr_user_tostr_mem(struct cr_mem *m)
-{
-    return cri_string_xxd(m->data, m->size);
-}
+#ifdef CRI_CAPS_COMPLEX
+# include "complex.h"
 #endif
 
 #undef cr_assert_user
