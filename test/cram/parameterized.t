@@ -45,7 +45,7 @@ Using parameterized tests
 Using parameterized tests (verbose)
 
   $ parameterized.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m3\x1b[0m tests from \x1b[0;33mparams\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m78\x1b[0m: Assertion failed: Parameters: (1, 2.000000) (esc)
@@ -77,7 +77,7 @@ Using parameterized tests (verbose)
   [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m9\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m9\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
 
   $ parameterized.cc.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0-rc2 (esc)
+  [\x1b[0;34m----\x1b[0m] Criterion v2.3.0 (esc)
   [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m3\x1b[0m tests from \x1b[0;33mparams\x1b[0m: (esc)
   [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
   [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m71\x1b[0m: Assertion failed: Parameters: (1, 2.000000) (esc)
