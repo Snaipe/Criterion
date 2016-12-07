@@ -1,3 +1,15 @@
+2016-12-07  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.3.0-1
+    This is a re-release of v2.3.0.
+
+    There are no substantial changes in the release, only fixes in the build
+    system. If you are not building criterion from source, you can ignore this
+    changelog.
+
+    * Fix: Updated version strings in messages
+    * Fix: The build system now searches for local installations of non-criterion-specific dependencies.
+
 2016-09-18  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.3.0
