@@ -82,6 +82,7 @@ int cr_user_eq_dummy_struct(struct dummy_struct *a, struct dummy_struct *b)
 char *cr_user_tostr_dummy_struct(struct dummy_struct *d)
 {
     char *out;
+
     cr_asprintf(&out, "(struct dummy_struct) { .a = %c, .b = %llu }", d->a, (unsigned long long) d->b);
     return out;
 }

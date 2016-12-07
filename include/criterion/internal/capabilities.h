@@ -34,7 +34,7 @@
 /* Is the compiler a supported c99 compiler? */
 # if defined (_MSC_VER)
 #  if _MSC_VER < 1900
-#   error                                                             \
+#   error                                                               \
     Your version of MSVC is too old, please compile your tests using    \
     a c99 compiler, like MinGW or MSVC 14.0+ (Included in visual studio \
     2015)
@@ -56,4 +56,4 @@
 # define CRI_CAPS_COMPLEX
 #endif
 
-# endif /* !CRITERION_INTERNAL_DETECT_H_ */
+#endif /* !CRITERION_INTERNAL_DETECT_H_ */
