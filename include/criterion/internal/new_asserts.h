@@ -28,6 +28,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+# include <ostream>
+#endif
+
 #include "asprintf-compat.h"
 #include "common.h"
 #include "designated-initializer-compat.h"
@@ -673,11 +677,13 @@ std::wstring cri_val_escape(const wchar_t (&s)[N]) { return std::wstring(s); }
 
 #ifdef __cplusplus
 
+# include <cmath>
+
 /* *INDENT-OFF* */
 namespace criterion { namespace internal { namespace operators {
 /* *INDENT-ON* */
 
-template <typename Float, typename = typename std::enable_if<!std::numeric_limits<Float>::is_iec559>::type>
+template <typename Float, typename = typename std::enable_if<std::numeric_limits<Float>::is_iec559>::type>
 bool ieee_eq(Float &a, Float &b, size_t ulp)
 {
     if (ulp == 0)

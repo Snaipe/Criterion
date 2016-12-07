@@ -51,16 +51,16 @@ Test(asserts, wstring) {
 }
 
 Test(asserts, native) {
-    cr_assert(eq(1, 1));
-    cr_assert(ne(1, 2));
+    cr_assert(eq(i32, 1, 1));
+    cr_assert(ne(i32, 1, 2));
 
-    cr_assert(lt(1, 2));
-    cr_assert(le(1, 2));
-    cr_assert(le(2, 2));
+    cr_assert(lt(i32, 1, 2));
+    cr_assert(le(i32, 1, 2));
+    cr_assert(le(i32, 2, 2));
 
-    cr_assert(gt(2, 1));
-    cr_assert(ge(2, 1));
-    cr_assert(ge(2, 2));
+    cr_assert(gt(i32, 2, 1));
+    cr_assert(ge(i32, 2, 1));
+    cr_assert(ge(i32, 2, 2));
 }
 
 Test(asserts, float) {
@@ -81,8 +81,9 @@ int cr_user_eq_dummy_struct(struct dummy_struct *a, struct dummy_struct *b)
 
 char *cr_user_tostr_dummy_struct(struct dummy_struct *d)
 {
-    (void) d;
-    return NULL;
+    char *out;
+    cr_asprintf(&out, "(struct dummy_struct) { .a = %c, .b = %llu }", d->a, (unsigned long long) d->b);
+    return out;
 }
 
 Test(asserts, array) {

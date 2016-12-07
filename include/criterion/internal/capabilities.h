@@ -22,37 +22,38 @@
  * THE SOFTWARE.
  */
 #ifndef CRITERION_INTERNAL_DETECT_H_
-# define CRITERION_INTERNAL_DETECT_H_
+#define CRITERION_INTERNAL_DETECT_H_
 
 /* Standard version checks */
-# if defined (__cplusplus)
+#if defined (__cplusplus)
 /* Is the compiler a >C++11 compiler ?*/
-#  if __cplusplus < 201103L
-#   error The Criterion C++ API needs a C++11 compiler or later.
-#  elif defined (__STDC__)
+# if __cplusplus < 201103L
+#  error The Criterion C++ API needs a C++11 compiler or later.
+# endif
+#elif defined (__STDC__)
 /* Is the compiler a supported c99 compiler? */
-#   if defined (_MSC_VER)
-#    if _MSC_VER < 1900
-#     error                                                             \
+# if defined (_MSC_VER)
+#  if _MSC_VER < 1900
+#   error                                                             \
     Your version of MSVC is too old, please compile your tests using    \
     a c99 compiler, like MinGW or MSVC 14.0+ (Included in visual studio \
     2015)
-#    endif
-#   elif __STDC_VERSION__ < 199901L
-#    error The Criterion C API needs a C99 compiler or later.
-#   endif
-#  else
-#   error The Criterion C/C++ API needs a C or C++ compiler.
 #  endif
+# elif __STDC_VERSION__ < 199901L
+#  error The Criterion C API needs a C99 compiler or later.
+# endif
+#else
+# error The Criterion C/C++ API needs a C or C++ compiler.
+#endif
 
 /* Does the compiler support section attributes? */
-#  if !defined (__clang__) && !defined (__GNUC__) && !defined (_MSC_VER)
-#   error Criterion needs a compiler that supports section attributes.
-#  endif
+#if !defined (__clang__) && !defined (__GNUC__) && !defined (_MSC_VER)
+# error Criterion needs a compiler that supports section attributes.
+#endif
 
 /* Does the compiler support complex numbers? */
-#  if defined (__cplusplus) || (__STDC_VERSION__ >= 199901L && !defined (__STDC_NO_COMPLEX__))
-#   define CRI_CAPS_COMPLEX
-#  endif
+#if defined (__cplusplus) || (__STDC_VERSION__ >= 199901L && !defined (__STDC_NO_COMPLEX__))
+# define CRI_CAPS_COMPLEX
+#endif
 
 # endif /* !CRITERION_INTERNAL_DETECT_H_ */
