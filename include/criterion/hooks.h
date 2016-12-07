@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Report hooks
+ *****************************************************************************/
 #ifndef CRITERION_HOOKS_H_
-# define CRITERION_HOOKS_H_
+#define CRITERION_HOOKS_H_
 
-# include "internal/hooks.h"
+#include "internal/hooks.h"
 
 /**
  *  This enum lists all the phases of the runner lifecycle.
@@ -63,6 +67,6 @@ typedef void (*f_report_hook)();
  *
  *  @param Kind The report phase to hook the function onto.
  */
-# define ReportHook(Kind) CR_REPORT_HOOK_IMPL(Kind)
+#define ReportHook(Kind)    CR_REPORT_HOOK_IMPL(Kind)
 
 #endif /* !CRITERION_HOOKS_H_ */

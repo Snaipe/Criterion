@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/*!
+ * @file
+ * @brief Test stats
+ *****************************************************************************/
 #ifndef CRITERION_STATS_H_
-# define CRITERION_STATS_H_
+#define CRITERION_STATS_H_
 
-# include "types.h"
+#include "types.h"
+#include "internal/deprecation.h"
+
+enum criterion_test_status {
+    CR_STATUS_PASSED = 0,
+    CR_STATUS_FAILED = 1,
+    CR_STATUS_SKIPPED = 2,
+};
 
 struct criterion_assert_stats {
     const char *message;
@@ -38,7 +49,8 @@ struct criterion_assert_stats {
 struct criterion_test_stats {
     struct criterion_test *test;
     struct criterion_assert_stats *asserts;
-    bool failed;
+    bool CR_DEPRECATED_MEMBER(failed);
+    enum criterion_test_status test_status;
     int passed_asserts;
     int failed_asserts;
     int signal;
@@ -48,6 +60,7 @@ struct criterion_test_stats {
     bool crashed;
     unsigned progress;
     const char *file;
+    const char *message;
 
     struct criterion_test_stats *next;
 };

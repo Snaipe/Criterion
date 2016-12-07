@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/*!
+ * @file
+ * @brief Report functions
+ *****************************************************************************/
 #ifndef CRITERION_OUTPUT_H_
-# define CRITERION_OUTPUT_H_
+#define CRITERION_OUTPUT_H_
 
-# include "stats.h"
+#include "stats.h"
 
-typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
+typedef void criterion_reporter (FILE *stream, struct criterion_global_stats *);
 
 /**
  *  Register an output provider.
@@ -36,7 +40,7 @@ typedef void criterion_reporter(FILE *stream, struct criterion_global_stats *);
  *  @returns 1 if no output provider is registered at that name, 0 otherwise,
  *    and -1 on error.
  */
-int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
+CR_API int criterion_register_output_provider(const char *name, criterion_reporter *reporter);
 
 /**
  *  Use an output provider to write a report in a specific path.
@@ -45,6 +49,6 @@ int criterion_register_output_provider(const char *name, criterion_reporter *rep
  *  @param[in] path The path to the file to write the report to.
  *  @returns -1 on error.
  */
-int criterion_add_output(const char *provider, const char *path);
+CR_API int criterion_add_output(const char *provider, const char *path);
 
 #endif /* !CRITERION_OUTPUT_H_ */

@@ -1,11 +1,13 @@
 #include <criterion/criterion.h>
 #include <stdio.h>
 
-void setup(void) {
+void setup(void)
+{
     puts("Runs before the test");
 }
 
-void teardown(void) {
+void teardown(void)
+{
     puts("Runs after the test");
 }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,21 @@
  * THE SOFTWARE.
  */
 #ifndef CRITERION_RUNNER_H_
-# define CRITERION_RUNNER_H_
+#define CRITERION_RUNNER_H_
 
-# include "criterion/types.h"
-# include "compat/pipe.h"
-
-CR_DECL_SECTION_LIMITS(struct criterion_test*, cr_tst);
-CR_DECL_SECTION_LIMITS(struct criterion_suite*, cr_sts);
+#include "criterion/types.h"
+#include "compat/pipe.h"
 
 struct criterion_test_set *criterion_init(void);
-void run_test_child(struct criterion_test *test, struct criterion_suite *suite);
 
-# define FOREACH_TEST_SEC(Test)                                         \
-    for (struct criterion_test **Test = GET_SECTION_START(cr_tst);      \
-            Test < (struct criterion_test**) GET_SECTION_END(cr_tst);   \
+#define FOREACH_TEST_SEC(Test, Start, End)         \
+    for (struct criterion_test **Test = Start;     \
+            Test < (struct criterion_test **) End; \
             ++Test)
 
-# define FOREACH_SUITE_SEC(Suite)                                       \
-    for (struct criterion_suite **Suite = GET_SECTION_START(cr_sts);    \
-            Suite < (struct criterion_suite**) GET_SECTION_END(cr_sts); \
+#define FOREACH_SUITE_SEC(Suite, Start, End)         \
+    for (struct criterion_suite **Suite = Start;     \
+            Suite < (struct criterion_suite **) End; \
             ++Suite)
-
-void run_single_test_by_name(const char *testname);
 
 #endif /* !CRITERION_RUNNER_H_ */

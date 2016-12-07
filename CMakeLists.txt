@@ -1,312 +1,189 @@
-cmake_minimum_required(VERSION 2.8)
+# Copyright (C) 2015-2016 Franklin "Snaipe" Mathieu.
+# Redistribution and use of this file is allowed according to the terms of the MIT license.
+# For details see the LICENSE file distributed with Criterion.
 
-project(Criterion C)
+cmake_minimum_required (VERSION 2.8)
 
-set(MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
-set(LIBCSPTR_DISABLE_TESTS ON)
-set(LIBCSPTR_DISABLE_COVERALLS ON)
+project (Criterion C)
 
-# Content options
+set (MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.cmake/Modules")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${MODULE_DIR})
 
-option(THEORIES "Activate the support for theories" ON)
+if (POLICY CMP0054)
+  # http://www.cmake.org/cmake/help/v3.1/policy/CMP0054.html
+  # This is here to allow conditions to be passed as function parameters
+  cmake_policy (SET CMP0054 OLD)
+endif ()
 
 # Initialization
 
-include(Submodules)
-include(Capabilities)
+include (Options)
+include (Submodules)
+include (Capabilities)
+include (Subprojects)
+include (PackageUtils)
 
-if (MSVC)
-  add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+if (NOT WIN32)
+  set (PIC_C_FLAGS "-fPIC")
+  set (VISI_C_FLAGS "-fvisibility=hidden")
+else ()
+  set (PIC_C_FLAGS "")
+  set (VISI_C_FLAGS "")
 endif ()
 
-add_subdirectory(dependencies/libcsptr/ EXCLUDE_FROM_ALL)
+find_package(Libcsptr)
+find_package(Dyncall)
+find_package(Nanomsg)
+find_package(BoxFort)
 
-if (THEORIES)
-  add_subdirectory(dependencies/dyncall/ EXCLUDE_FROM_ALL)
-  include_directories(dependencies/dyncall/dyncall/)
-endif ()
-
-include_directories(SYSTEM
-  /usr/local/include
-  /usr/include/GNUstep
+cr_add_subproject (csptr
+  GIT "git://github.com/Snaipe/libcsptr#0d52904"
+  OPTS
+    -DLIBCSPTR_TESTS=OFF
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF NOT CSPTR_FOUND
 )
+
+cr_add_subproject (dyncall_s
+  GIT "git://github.com/Snaipe/dyncall#51e79a8"
+  OPTS
+    -DLANG_CXX=${LANG_CXX}
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF THEORIES AND NOT DYNCALL_FOUND
+)
+
+cr_add_subproject (nanomsg
+  GIT "git://github.com/nanomsg/nanomsg.git#7e12a20"
+  OPTS
+    -DNN_TESTS=OFF
+    -DNN_TOOLS=OFF
+    -DNN_STATIC_LIB=ON
+    -DCMAKE_INSTALL_LIBDIR=lib
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF NOT NANOMSG_FOUND
+)
+
+cr_add_subproject (boxfort PATH dependencies/boxfort
+  GIT "git://github.com/diacritic/BoxFort.git#8b641ca"
+  OPTS
+    -DBXF_TESTS=OFF
+    -DBXF_SAMPLES=OFF
+    -DBXF_STATIC_LIB=ON
+    -DBXF_FORK_RESILIENCE=OFF
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF NOT BOXFORT_FOUND)
+
+add_definitions(-DBXF_STATIC_LIB -DNN_STATIC_LIB)
+
+cr_add_subproject (wingetopt
+  GIT "git://github.com/alex85k/wingetopt.git#76a5d1a"
+  CMAKE
+  IF MSVC
+)
+
+include (Properties)
+
+if (NOT NANOMSG_FOUND OR NANOMSG_LIBRARIES MATCHES ".*\\.a")
+  set (STATIC_NANOMSG 1)
+  add_definitions (-DNN_STATIC_LIB)
+endif ()
 
 include_directories(
-  dependencies/libcsptr/include/
   dependencies/valgrind/include/
   dependencies/klib/
+  dependencies/nanopb/
+  dependencies/debugbreak/
 )
 
-if (MSVC)
-  add_subdirectory(dependencies/wingetopt/ EXCLUDE_FROM_ALL)
-  include_directories(dependencies/wingetopt/src/)
-endif ()
-
-# Check for C++11
-
-option(LANG_CXX "Turn on C++ support" ON)
-if (LANG_CXX)
-  enable_language(CXX)
-endif ()
-
-if (NOT MSVC AND CMAKE_CXX_COMPILER_WORKS)
-  include(CheckCXXCompilerFlag)
-  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-  CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-
-  if(COMPILER_SUPPORTS_CXX11)
-    set(CXX11_FLAG "-std=c++11")
-  elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CXX11_FLAG "-std=c++0x")
-  else()
-    message(FATAL_ERROR "Compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
-  endif()
-endif()
-
-# Project setup & environment variables
-
-set(PROJECT_VERSION "2.2.2")
-set(LOCALEDIR_REL "share/locale")
-set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${LOCALEDIR_REL}")
-set(GettextTranslate_ALL 1)
-set(GettextTranslate_GMO_BINARY 1)
-
-add_definitions(-DCRITERION_BUILDING_DLL=1)
-
-set(CMAKE_C_FLAGS_DEFAULT "${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS}")
-
-if (NOT MSVC)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -g -std=gnu99")
-  if (CMAKE_CXX_COMPILER_WORKS)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g ${CXX11_FLAG}")
-  endif ()
-endif ()
-
-if (MSVC)
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
-endif ()
-
-if (WIN32 AND NOT MSVC)
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-no-undefined")
-endif()
-
-# Compilation options
-
-option(MINGW_DEFINE_OFF_T "Define off_t and off64_t ourselves before including io.h" OFF)
-
-# Setup coveralls
-
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
-option(DEV_BUILD "Compile in developer mode" OFF)
-option(CTESTS "Turn on the samples and test" ${DEV_BUILD})
-
-if (DEV_BUILD)
-  set(ENABLE_VALGRIND_ERRORS 1)
-endif ()
+# Coverage
 
 if (COVERALLS)
   include(Coveralls)
   coveralls_turn_on_coverage()
 endif()
 
-# Find dependencies
+# I18N
 
-option(I18N "Turn on internationalization" ON)
-
-if (I18N)
-  find_package(Gettext)
-  find_package(Libintl)
-  if (GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
-    include(GettextTranslate)
-    add_subdirectory(po)
-    set(ENABLE_NLS 1)
-  endif ()
+if (I18N AND GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
+  include(GettextTranslate)
+  add_subdirectory(po)
 endif ()
 
-include(CheckLibraryExists)
-CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME)
-
-find_package(PCRE)
-
-# List sources and headers
-
-set(SOURCE_FILES
-  src/core/abort.c
-  src/core/abort.h
-  src/core/report.c
-  src/core/report.h
-  src/core/runner.c
-  src/core/runner.h
-  src/core/runner_coroutine.c
-  src/core/runner_coroutine.h
-  src/core/coroutine.h
-  src/core/worker.c
-  src/core/worker.h
-  src/core/stats.c
-  src/core/stats.h
-  src/core/ordered-set.c
-  src/core/test.c
-  src/compat/internal.h
-  src/compat/pipe.c
-  src/compat/pipe.h
-  src/compat/pipe-internal.h
-  src/compat/section.c
-  src/compat/section.h
-  src/compat/process.c
-  src/compat/process.h
-  src/compat/basename.c
-  src/compat/basename.h
-  src/compat/mockfile.c
-  src/compat/time.c
-  src/compat/time.h
-  src/compat/posix.h
-  src/compat/alloc.c
-  src/compat/alloc.h
-  src/compat/processor.c
-  src/compat/processor.h
-  src/io/redirect.c
-  src/io/event.c
-  src/io/event.h
-  src/io/asprintf.c
-  src/io/file.c
-  src/io/output.c
-  src/io/output.h
-  src/io/tap.c
-  src/io/xml.c
-  src/io/json.c
-  src/log/logging.c
-  src/log/normal.c
-  src/string/i18n.c
-  src/string/i18n.h
-  src/entry/options.c
-  src/entry/params.c
-  src/entry/entry.c
-  src/common.h
-  src/config.h
-)
-
-if (THEORIES)
-  set (SOURCE_FILES ${SOURCE_FILES}
-    src/core/theories.c
-  )
-endif ()
-
-if (PCRE_FOUND)
-  set (SOURCE_FILES ${SOURCE_FILES}
-    src/string/extmatch.c
-    src/string/extmatch.h
-  )
-  set(HAVE_PCRE 1)
-endif ()
-
-set(INTERFACE_FILES
-  include/criterion/assert.h
-  include/criterion/abort.h
-  include/criterion/criterion.h
-  include/criterion/event.h
-  include/criterion/hooks.h
-  include/criterion/logging.h
-  include/criterion/types.h
-  include/criterion/options.h
-  include/criterion/stats.h
-  include/criterion/alloc.h
-  include/criterion/parameterized.h
-  include/criterion/redirect.h
-  include/criterion/output.h
-  include/criterion/internal/assert.h
-  include/criterion/internal/test.h
-  include/criterion/internal/common.h
-  include/criterion/internal/ordered-set.h
-  include/criterion/internal/asprintf-compat.h
-  include/criterion/internal/designated-initializer-compat.h
-  include/criterion/internal/preprocess.h
-  include/criterion/internal/parameterized.h
-  include/criterion/internal/stdio_filebuf.hxx
-  include/criterion/internal/stream.hxx
-  include/criterion/internal/hooks.h
-  include/criterion/internal/redirect.h
-  include/criterion/internal/stdio_filebuf.hxx
-)
-
-if (THEORIES)
-  set(INTERFACE_FILES ${INTERFACE_FILES}
-    include/criterion/theories.h
-    include/criterion/internal/theories.h
-  )
-endif()
-
-# Generate the configure file
-
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h"
-)
+# Project
 
 include_directories(include src)
-add_library(criterion SHARED ${SOURCE_FILES} ${INTERFACE_FILES})
-target_link_libraries(criterion csptr)
+add_subdirectory (src)
 
-if (THEORIES)
-  target_link_libraries(criterion dyncall_s)
+cr_add_library(criterion SHARED
+    SOURCES ${SOURCE_FILES}
+    HEADERS ${INTERFACE_FILES}
+    COMPONENT dev
+    PROPERTIES
+       VERSION ${PROJECT_SONAME}
+       SOVERSION ${PROJECT_SOVERSION}
+)
+
+cr_link_subproject(criterion csptr STATIC IF NOT CSPTR_FOUND)
+cr_link_subproject(criterion nanomsg STATIC IF NOT NANOMSG_FOUND)
+cr_link_subproject(criterion dyncall_s STATIC IF NOT DYNCALL_FOUND)
+cr_link_subproject(criterion boxfort STATIC IF NOT BOXFORT_FOUND)
+cr_link_subproject(criterion wingetopt STATIC)
+
+if (CSPTR_FOUND)
+  include_directories("${CSPTR_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${CSPTR_LIBRARIES}")
+endif ()
+if (NANOMSG_FOUND)
+  include_directories("${NANOMSG_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${NANOMSG_LIBRARIES}" IF NANOMSG_FOUND)
+endif ()
+if (DYNCALL_FOUND)
+  include_directories("${DYNCALL_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${DYNCALL_LIBRARIES}" IF DYNCALL_FOUND)
+endif ()
+if (BOXFORT_FOUND)
+  include_directories("${BOXFORT_INCLUDE_DIRS}")
+  cr_link_libraries(criterion "${BOXFORT_LIBRARIES}" IF BOXFORT_FOUND)
 endif ()
 
-if (MSVC)
-  target_link_libraries(criterion wingetopt)
+cr_link_libraries(criterion pthread IF NOT WIN32)
+cr_link_libraries(criterion rt IF HAVE_LIBRT)
+
+# Required by nanomsg
+if (STATIC_NANOMSG)
+  cr_link_libraries(criterion anl IF HAVE_GETADDRINFO_A)
+  cr_link_libraries(criterion ws2_32 mswsock IF WIN32)
 endif ()
 
-if (HAVE_CLOCK_GETTIME)
-  target_link_libraries(criterion rt)
-endif()
-
-if (PCRE_FOUND)
-  target_link_libraries(criterion ${PCRE_LIBRARIES})
-endif()
-
-if (LIBINTL_LIB_FOUND)
-  target_link_libraries(criterion ${LIBINTL_LIBRARIES})
-  include_directories(${LIBINTL_INCLUDE_DIR})
-endif()
+cr_link_package(criterion LIBINTL)
 
 if (COVERALLS)
   coveralls_setup("${SOURCE_FILES}" ${COVERALLS_UPLOAD})
-endif()
 
-foreach (F ${INTERFACE_FILES})
-  get_filename_component(DEST "${F}" PATH)
-  install(FILES "${F}" DESTINATION "${DEST}" COMPONENT dev)
-endforeach ()
-
-install(TARGETS criterion
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib COMPONENT dev
-)
-
-add_custom_target(criterion_tests)
-
-add_custom_target(gcov
+  add_custom_target(gcov
     "${CMAKE_COMMAND}"
         -DSOURCE_FILES="${SOURCE_FILES}"
         -DCOV_PATH="${CMAKE_CURRENT_BINARY_DIR}"
         -P "${CMAKE_MODULE_PATH}/Gcov.cmake"
+  )
+endif()
+
+add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_MODULE_PATH}/uninstall.cmake"
 )
 
 if (CTESTS)
-enable_testing()
-add_subdirectory(samples)
-add_subdirectory(test)
+  enable_testing()
+  add_custom_target(criterion_tests)
+  add_subdirectory(samples)
+  add_subdirectory(test)
 endif ()
 
-# Add toolchain patch number for incremental deb builds
-set(PROJECT_VERSION "${PROJECT_VERSION}-6")
-
-include (PackageConfig)
-
-option(UPLOAD_DEB "Upload package to launchpad" OFF)
-
-if (UNIX AND UPLOAD_DEB)
-  include (DebConfig)
+if (UPLOAD_DEB)
+  include (DebUpload)
 endif ()

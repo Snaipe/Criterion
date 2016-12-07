@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,12 @@
  */
 #include "criterion/criterion.h"
 
-CR_API int main(int argc, char *argv[]) {
+CR_API int main(int argc, char *argv[])
+{
     struct criterion_test_set *tests = criterion_initialize();
 
     int result = 0;
+
     if (criterion_handle_args(argc, argv, true))
         result = !criterion_run_all_tests(tests);
 

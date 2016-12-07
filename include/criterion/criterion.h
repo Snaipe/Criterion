@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,41 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Include this to use criterion
+ *****************************************************************************/
 #ifndef CRITERION_H_
-# define CRITERION_H_
+#define CRITERION_H_
 
-# include "types.h"
-# include "assert.h"
-# include "alloc.h"
-
-# include "internal/test.h"
+#include "types.h"
+#include "assert.h"
+#include "alloc.h"
 
 /**
- *  Test(Suite, Name, [Options...]) { Function body }
- *
  *  Defines a new test.
  *
  *  @param Suite   The name of the test suite containing this test.
  *  @param Name    The name of the test.
- *  @param Options An optional sequence of designated initializer key/value
+ *  @param ...     An optional sequence of designated initializer key/value
  *    pairs as described in the `criterion_test_extra_data` structure
- *    (see criterion/types.h).
+ *    (see criterion/types.h).\n
  *    Example: .exit_code = 1
  */
-# define Test(...) CR_EXPAND(CR_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
+#define Test(Suite, Name, ...)    internal
 
 /**
- *  TestSuite(Name, [Options...]);
- *
  *  Explicitely defines a test suite and its options.
  *
- *  @param Name    The name of the test suite.
- *  @param Options An optional sequence of designated initializer key/value
+ *  @param Name The name of the test suite.
+ *  @param ...  An optional sequence of designated initializer key/value
  *    pairs as described in the `criterion_test_extra_data` structure
  *    (see criterion/types.h).
  *    These options will provide the defaults for each test.
  */
-# define TestSuite(...) CR_EXPAND(CR_SUITE_BASE(__VA_ARGS__, .sentinel_ = 0))
+#define TestSuite(Name, ...)    internal
 
 CR_BEGIN_C_API
 
@@ -111,11 +109,13 @@ CR_API int criterion_handle_args(int argc, char *argv[], bool handle_unknown_arg
  *  @param[in] test  The newly created test.
  */
 CR_API void criterion_register_test(struct criterion_test_set *tests,
-                                    struct criterion_test *test);
+        struct criterion_test *test);
 
-extern const struct criterion_test  *const criterion_current_test;
-extern const struct criterion_suite *const criterion_current_suite;
+CR_API extern const struct criterion_test *const criterion_current_test;
+CR_API extern const struct criterion_suite *const criterion_current_suite;
 
 CR_END_C_API
+
+#include "internal/test.h"
 
 #endif /* !CRITERION_H_ */

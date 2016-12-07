@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,17 @@
  * THE SOFTWARE.
  */
 #ifndef SECTION_H_
-# define SECTION_H_
+#define SECTION_H_
 
-# include "criterion/internal/common.h"
+#include "config.h"
 
-# ifdef _WIN32
-void *get_win_section_start(const char *section);
-void *get_win_section_end(const char *section);
-#  define CR_STRINGIFY_(Param) #Param
-#  define CR_STRINGIFY(Param) CR_STRINGIFY_(Param)
-#  define GET_SECTION_START(Name) get_win_section_start(CR_STRINGIFY(Name))
-#  define GET_SECTION_END(Name)   get_win_section_end(CR_STRINGIFY(Name))
-# elif defined(__APPLE__)
-void *get_osx_section_start(const char *section);
-void *get_osx_section_end(const char *section);
-#  define CR_STRINGIFY_(Param) #Param
-#  define CR_STRINGIFY(Param) CR_STRINGIFY_(Param)
-#  define GET_SECTION_START(Name) get_osx_section_start(CR_STRINGIFY(Name))
-#  define GET_SECTION_END(Name)   get_osx_section_end(CR_STRINGIFY(Name))
-# else
-#  define GET_SECTION_START(Name) CR_SECTION_START(Name)
-#  define GET_SECTION_END(Name)   CR_SECTION_END(Name)
-# endif
+#include <stddef.h>
+
+struct cri_section {
+    void *addr;
+    size_t length;
+};
+
+int cri_sections_getaddr(const char *sectname, struct cri_section **sect);
 
 #endif /* !SECTION_H_ */

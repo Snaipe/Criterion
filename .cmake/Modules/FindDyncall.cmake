@@ -1,4 +1,4 @@
-# Copyright (C) 2015 Franklin "Snaipe" Mathieu.
+# Copyright (C) 2015-2016 Franklin "Snaipe" Mathieu.
 # Redistribution and use of this file is allowed according to the terms of the MIT license.
 # For details see the LICENSE file distributed with Criterion.
 

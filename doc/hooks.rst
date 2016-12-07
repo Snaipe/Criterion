@@ -17,9 +17,17 @@ A report hook can be declared using the ``ReportHook`` macro:
 The macro takes a Phase parameter that indicates the phase at which the function
 shall be run. Valid phases are described below.
 
-**Note**: there are no guarantees regarding the order of execution of report hooks
-on the same phase. In other words, all report hooks of a specific phase could
-be executed in any order.
+.. note::
+
+    There are no guarantees regarding the order of execution of report hooks
+    on the same phase. In other words, all report hooks of a specific phase could
+    be executed in any order.
+
+.. note::
+
+    Aborting the runner with any means (abort(), exit(), cr_assert(), ...) is
+    unsupported. If you need to abort the runner, you need to iterate all
+    subsequent tests and set their `disabled` field to 1.
 
 Testing Phases
 --------------

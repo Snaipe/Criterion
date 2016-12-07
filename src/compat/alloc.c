@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,97 +21,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "alloc.h"
-#include "internal.h"
-#include "criterion/logging.h"
 #include <stdlib.h>
+#include <string.h>
 
-#ifdef VANILLA_WIN32
-HANDLE g_heap;
+#include "alloc.h"
+#include "err.h"
 
-struct garbage_heap {
-    HANDLE handle;
-    struct garbage_heap *next;
-};
+static bxf_arena inheritable_arena;
 
-# define HEAP_MIN_BASE 0x08000000
+void cri_alloc_init(void)
+{
+    int rc = bxf_arena_init(0, BXF_ARENA_RESIZE | BXF_ARENA_IDENTITY
+                    | BXF_ARENA_KEEPMAPPED, &inheritable_arena);
 
-void init_inheritable_heap(void) {
-    struct garbage_heap *heaps = NULL;
+    if (rc < 0)
+        cr_panic("Could not initialize inheritable arena: %s", strerror(-rc));
+}
 
-    while ((void*)(g_heap = HeapCreate(0, 0, 0)) < (void*)HEAP_MIN_BASE) {
-        if (g_heap == NULL)
-            break;
+void cri_alloc_term(void)
+{
+    bxf_arena_term(&inheritable_arena);
+}
 
-        struct garbage_heap *heap = malloc(sizeof(struct garbage_heap));
-        heap->handle = g_heap;
-        heap->next = heaps;
-        heaps = heap;
+bxf_arena cri_alloc_getarena(void)
+{
+    return inheritable_arena;
+}
+
+void *cr_malloc(size_t size)
+{
+    bxf_ptr ptr = bxf_arena_alloc(&inheritable_arena, size);
+
+    if (ptr < 0) {
+        errno = -ptr;
+        return NULL;
     }
-    for (struct garbage_heap *h = heaps; h != NULL; h = h->next)
-        HeapDestroy(h->handle);
+    return bxf_arena_ptr(inheritable_arena, ptr);
+}
 
-    if (g_heap == (HANDLE) NULL) {
-        criterion_perror("Could not create the private inheritable heap.\n");
-        abort();
+void *cr_calloc(size_t nmemb, size_t size)
+{
+    void *ptr = cr_malloc(size * nmemb);
+
+    if (ptr)
+        memset(ptr, 0, size * nmemb);
+    return ptr;
+}
+
+void *cr_realloc(void *ptr, size_t size)
+{
+    bxf_ptr p = (intptr_t) ptr - (intptr_t) inheritable_arena;
+    bxf_ptr newptr = bxf_arena_realloc(&inheritable_arena, p, size);
+
+    if (newptr < 0) {
+        errno = -newptr;
+        return NULL;
     }
+    return bxf_arena_ptr(inheritable_arena, newptr);
 }
 
-int inherit_heap(HANDLE child_process) {
-    PROCESS_HEAP_ENTRY entry = { .lpData = NULL };
+void cr_free(void *ptr)
+{
+    bxf_ptr p = (intptr_t) ptr - (intptr_t) inheritable_arena;
 
-    while (HeapWalk(g_heap, &entry)) {
-        if (!(entry.wFlags & PROCESS_HEAP_REGION))
-            continue;
-
-        DWORD region_size = entry.Region.dwCommittedSize;
-
-        if (!VirtualAllocEx(child_process,
-                entry.lpData,
-                region_size,
-                MEM_RESERVE | MEM_COMMIT,
-                PAGE_READWRITE))
-            return -1;
-
-        if (!WriteProcessMemory(child_process,
-                entry.lpData,
-                entry.lpData,
-                region_size,
-                NULL))
-            return -1;
-    }
-    return 0;
-}
-#endif
-
-void *cr_malloc(size_t size) {
-#ifdef VANILLA_WIN32
-    return HeapAlloc(g_heap, 0, size);
-#else
-    return malloc(size);
-#endif
-}
-
-void *cr_calloc(size_t nmemb, size_t size) {
-#ifdef VANILLA_WIN32
-    return HeapAlloc(g_heap, HEAP_ZERO_MEMORY, nmemb * size);
-#else
-    return calloc(nmemb, size);
-#endif
-}
-
-void *cr_realloc(void *ptr, size_t size) {
-#ifdef VANILLA_WIN32
-    return HeapReAlloc(g_heap, 0, ptr, size);
-#else
-    return realloc(ptr, size);
-#endif
-}
-
-void cr_free(void *ptr) {
-#ifdef VANILLA_WIN32
-    HeapFree(g_heap, 0, ptr);
-#else
-    free(ptr);
-#endif
+    (void) bxf_arena_free(&inheritable_arena, p);
 }

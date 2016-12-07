@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,50 +26,31 @@
 #include <stdlib.h>
 #include "criterion/types.h"
 #include "criterion/stats.h"
-#include "criterion/logging.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
+#include "log/logging.h"
 #include "report.h"
 #include "config.h"
 #include "compat/posix.h"
 
-static inline void nothing() {}
+#define CR_HSEC_STR(Kind)    CR_HSEC_STR_(CR_HOOK_SECTION(Kind))
+#define CR_HSEC_STR_(S)      CR_HSEC_STR__(S)
+#define CR_HSEC_STR__(S)     #S
 
-#define IMPL_CALL_REPORT_HOOKS(Kind)                                        \
-    CR_IMPL_SECTION_LIMITS(f_report_hook, CR_HOOK_SECTION(Kind));                 \
-    void call_report_hooks_##Kind(void *data) {                             \
-        for (f_report_hook *hook = GET_SECTION_START(CR_HOOK_SECTION(Kind));   \
-             hook < (f_report_hook*) GET_SECTION_END(CR_HOOK_SECTION(Kind));   \
-             ++hook) {                                                      \
-            (*hook ? *hook : nothing)(data);                                \
-        }                                                                   \
+#define IMPL_CALL_REPORT_HOOKS(Kind)                              \
+    void call_report_hooks_ ## Kind(void *data) {                 \
+        struct cri_section *sections;                             \
+        if (cri_sections_getaddr(CR_HSEC_STR(Kind), &sections))   \
+            return;                                               \
+        for (struct cri_section *s = sections; s->addr; ++s) {    \
+            void *start = s->addr;                                \
+            f_report_hook *end = (void *)                         \
+                    ((char *) s->addr + s->length);               \
+            for (f_report_hook *hook = start; hook < end; ++hook) \
+                (*hook ? *hook : nothing)(data);                  \
+        }                                                         \
+        free(sections);                                           \
     }
-
-#ifdef _MSC_VER
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_ALL));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_SUITE));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_INIT));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(PRE_TEST));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(ASSERT));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(THEORY_FAIL));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(TEST_CRASH));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_TEST));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_FINI));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_SUITE));
-f_report_hook CR_SECTION_START_(CR_HOOK_SECTION(POST_ALL));
-
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_ALL));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_SUITE));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_INIT));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(PRE_TEST));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(ASSERT));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(THEORY_FAIL));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(TEST_CRASH));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_TEST));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_FINI));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_SUITE));
-f_report_hook CR_SECTION_END_(CR_HOOK_SECTION(POST_ALL));
-#endif
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL)
 IMPL_CALL_REPORT_HOOKS(PRE_SUITE)
@@ -83,15 +64,25 @@ IMPL_CALL_REPORT_HOOKS(POST_FINI)
 IMPL_CALL_REPORT_HOOKS(POST_SUITE)
 IMPL_CALL_REPORT_HOOKS(POST_ALL)
 
-ReportHook(PRE_ALL)(CR_UNUSED struct criterion_test_set *arg) {}
-ReportHook(PRE_SUITE)(CR_UNUSED struct criterion_suite_set *arg) {}
-ReportHook(PRE_INIT)(CR_UNUSED struct criterion_test *arg) {}
-ReportHook(PRE_TEST)(CR_UNUSED struct criterion_test *arg) {}
-ReportHook(ASSERT)(CR_UNUSED struct criterion_assert_stats *arg) {}
-ReportHook(THEORY_FAIL)(CR_UNUSED struct criterion_theory_stats *arg) {}
-ReportHook(TEST_CRASH)(CR_UNUSED struct criterion_test_stats *arg) {}
-ReportHook(POST_TEST)(CR_UNUSED struct criterion_test_stats *arg) {}
-ReportHook(POST_FINI)(CR_UNUSED struct criterion_test_stats *arg) {}
-ReportHook(POST_SUITE)(CR_UNUSED struct criterion_suite_stats *arg) {}
-ReportHook(POST_ALL)(CR_UNUSED struct criterion_global_stats *arg) {}
-
+ReportHook(PRE_ALL)(CR_UNUSED struct criterion_test_set *arg) {
+}
+ReportHook(PRE_SUITE)(CR_UNUSED struct criterion_suite_set *arg) {
+}
+ReportHook(PRE_INIT)(CR_UNUSED struct criterion_test *arg) {
+}
+ReportHook(PRE_TEST)(CR_UNUSED struct criterion_test *arg) {
+}
+ReportHook(ASSERT)(CR_UNUSED struct criterion_assert_stats *arg) {
+}
+ReportHook(THEORY_FAIL)(CR_UNUSED struct criterion_theory_stats *arg) {
+}
+ReportHook(TEST_CRASH)(CR_UNUSED struct criterion_test_stats *arg) {
+}
+ReportHook(POST_TEST)(CR_UNUSED struct criterion_test_stats *arg) {
+}
+ReportHook(POST_FINI)(CR_UNUSED struct criterion_test_stats *arg) {
+}
+ReportHook(POST_SUITE)(CR_UNUSED struct criterion_suite_stats *arg) {
+}
+ReportHook(POST_ALL)(CR_UNUSED struct criterion_global_stats *arg) {
+}

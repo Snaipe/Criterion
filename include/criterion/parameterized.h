@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief Parameterized tests
+ *****************************************************************************/
 #ifndef CRITERION_PARAMETERIZED_H_
-# define CRITERION_PARAMETERIZED_H_
+#define CRITERION_PARAMETERIZED_H_
 
-# include "alloc.h"
-# include "assert.h"
-# include "internal/parameterized.h"
+#include "alloc.h"
+#include "assert.h"
+
+/**
+ * @defgroup ParameterizedBase Parameterized test & generator macros
+ * @{
+ */
 
 /**
  *  ParameterizedTest(Type *param, Suite, Name, [Options...]) { Function Body }
@@ -39,29 +47,29 @@
  *  @param Type    The type of the parameter.
  *  @param Suite   The name of the test suite containing this test.
  *  @param Name    The name of the test.
- *  @param Options An optional sequence of designated initializer key/value
+ *  @param ...     An optional sequence of designated initializer key/value
  *    pairs as described in the `criterion_test_extra_data` structure
  *    (see criterion/types.h).
- *    Example: .exit_code = 1
+ *    Example: `.exit_code = 1`
  */
-# define ParameterizedTest(...) CR_EXPAND(CR_PARAM_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
+#define ParameterizedTest(Type, Suite, Name, ...)    internal
 
 /**
- *  ParameterizedTestParameters(Suite, Test) { Function Body }
- *
- *  Defines the parameter generator for the associated parameterized test.
+ *  Defines the parameter generator prototype for the associated parameterized
+ *  test.
  *
  *  @param Suite   The name of the test suite containing the test.
  *  @param Test    The name of the test.
  *  @returns A constructed instance of criterion::parameters, or the result of
  *    the cr_make_param_array macro.
  */
-# define ParameterizedTestParameters(Suite, Name) CR_PARAM_TEST_PARAMS(Suite, Name)
+#define ParameterizedTestParameters(Suite, Name)    internal
 
 /**
- *  cr_make_param_array(Type, Array, Len, [Cleanup]);
- *
  *  Constructs a parameter list used as a return value for a parameter generator.
+ *
+ *  This is only recommended for C sources. For C++, use `criterion::parameters`
+ *  or `criterion_test_params`.
  *
  *  @param Type     The type of the array subscript.
  *  @param Array    The array of parameters.
@@ -69,15 +77,27 @@
  *  @param Cleanup  The optional cleanup function for the array.
  *  @returns The parameter list.
  */
-# define cr_make_param_array(...) CR_EXPAND(cr_make_param_array_(__VA_ARGS__))
+#define cr_make_param_array(Type, Array, Len, Cleanup)    internal
 
-# ifdef __cplusplus
-#  include <vector>
+/** @} */
 
-namespace criterion {
-    template <typename T>
-    using parameters = std::vector<T, criterion::allocator<T>>;
+#ifdef __cplusplus
+# include <vector>
+
+namespace criterion
+{
+/**
+ *  Represents a C++ dynamic parameter list for a parameter generator.
+ *
+ *  @ingroup ParameterizedBase
+ *
+ *  @param T The type of the parameter.
+ */
+template <typename T>
+using parameters = std::vector<T, criterion::allocator<T> >;
 }
-# endif
+#endif
+
+#include "internal/parameterized.h"
 
 #endif /* !CRITERION_PARAMETERIZED_H_ */

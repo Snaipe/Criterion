@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 #include <exception>
 #include <new>
+#include <array>
 
 Test(asserts, base) {
     cr_assert(true);
@@ -17,7 +18,7 @@ Test(asserts, base) {
 
 Test(asserts, old_school) {
     cr_expect_fail("You can fail an assertion with a message from anywhere");
-    cr_assert_fail(); // or without a message
+    cr_assert_fail(); /* or without a message */
 }
 
 Test(asserts, string) {
@@ -34,6 +35,22 @@ Test(asserts, string) {
     cr_assert_str_lt("hell", "hello");
     cr_assert_str_leq("hell", "hello");
     cr_assert_str_leq("hello", "hello");
+}
+
+Test(asserts, wstring) {
+    cr_assert_wcs_empty(L"");
+    cr_assert_wcs_not_empty(L"foo");
+
+    cr_assert_wcs_eq(L"hello", L"hello");
+    cr_assert_wcs_neq(L"hello", L"olleh");
+
+    cr_assert_wcs_gt(L"hello", L"hell");
+    cr_assert_wcs_geq(L"hello", L"hell");
+    cr_assert_wcs_geq(L"hello", L"hello");
+
+    cr_assert_wcs_lt(L"hell", L"hello");
+    cr_assert_wcs_leq(L"hell", L"hello");
+    cr_assert_wcs_leq(L"hello", L"hello");
 }
 
 Test(asserts, native) {
@@ -57,31 +74,54 @@ Test(asserts, float) {
 struct dummy_struct {
     char a;
     size_t b;
+
+    bool operator==(const struct dummy_struct &rhs) const
+    {
+        return this->a == rhs.a && this->b == rhs.b;
+    }
+
+    bool operator<(const struct dummy_struct &rhs) const
+    {
+        return this->a < rhs.a;
+    }
 };
 
-int eq_dummy(struct dummy_struct *a, struct dummy_struct *b) {
-    return a->a != b->a || a->b != b->b;
+int eq_dummy(struct dummy_struct &a, struct dummy_struct &b)
+{
+    return a == b ? 0 : (a < b ? -1 : 1);
 }
 
 Test(asserts, array) {
-    int arr1[] = {1, 2, 3, 4};
-    int arr2[] = {4, 3, 2, 1};
+    /* 1. (recommended): use std::array and cr_assert_eq */
+    std::array<dummy_struct, 2> cpparr1 = { { { 4, 2 }, { 2, 4 } } };
+    std::array<dummy_struct, 2> cpparr2;
+    memset(&cpparr2[0], 0xFF, 2 * sizeof (struct dummy_struct));
+    cpparr2[0].a = 4;
+    cpparr2[0].b = 2;
+    cpparr2[1].a = 2;
+    cpparr2[1].b = 4;
 
-    cr_assert_arr_eq(arr1, arr1, 4);
-    cr_assert_arr_neq(arr1, arr2, 4);
+    cr_assert_eq(cpparr1, cpparr2);
 
-#ifdef __GNUC__
-    struct dummy_struct s1[] = {{4, 2}, {2, 4}};
+    /* 2. Compare arrays byte-to-byte */
+    int arr1[] = { 1, 2, 3, 4 };
+    int arr2[] = { 4, 3, 2, 1 };
+
+    cr_assert_arr_eq(arr1, arr1, 4 * sizeof (int));
+    cr_assert_arr_neq(arr1, arr2, 4 * sizeof (int));
+
+    /* 3. Compare arrays with a comparison function */
+    struct dummy_struct s1[] = { { 4, 2 }, { 2, 4 } };
     struct dummy_struct s2[2];
-    memset(s2, 0xFF, sizeof(s2));
+    memset(s2, 0xFF, sizeof (s2));
     s2[0].a = 4;
     s2[0].b = 2;
     s2[1].a = 2;
     s2[1].b = 4;
 
-    // cr_assert_arrays_eq(&s1, &s2, 2); not guaranteed to work on structs.
-    cr_assert_arr_eq_cmp(&s1, &s2, 2, eq_dummy);
-#endif
+    /* cr_assert_arr_eq(&s1, &s2, 2 * sizeof (struct dummy_struct));
+       isn't guaranteed to work on structs. */
+    cr_assert_arr_eq_cmp(s1, s2, 2, eq_dummy);
 }
 
 Test(asserts, exception) {

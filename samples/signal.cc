@@ -1,19 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
+#include <csignal>
 #include <criterion/criterion.h>
 
+void crash(void);
+
 Test(simple, caught, .signal = SIGSEGV) {
-    int *i = NULL;
-    *i = 42;
+    crash();
 }
 
 Test(simple, wrong_signal, .signal = SIGINT) {
-    int *i = NULL;
-    *i = 42;
+    crash();
 }
 
 Test(simple, uncaught) {
-    int *i = NULL;
-    *i = 42;
+    crash();
+}
+
+void crash(void)
+{
+    volatile int *ptr = NULL;
+
+    *ptr = 42;
 }

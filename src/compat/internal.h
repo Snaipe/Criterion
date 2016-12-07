@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,50 +22,46 @@
  * THE SOFTWARE.
  */
 #ifndef INTERNAL_H_
-# define INTERNAL_H_
+#define INTERNAL_H_
 
-# if defined(_WIN32) && !defined(__CYGWIN__)
-#  define VC_EXTRALEAN
-#  define WIN32_LEAN_AND_MEAN
-#  undef _WIN32_WINNT
-#  define _WIN32_WINNT 0x0502
-#  include <windows.h>
+#if defined (_WIN32) && !defined (__CYGWIN__)
+# include <windows.h>
 
-#  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
-#   include "off_t.h"
+# if defined (MINGW_DEFINE_OFF_T) && (defined (__MINGW32__) || defined (__MINGW64__))
+#  include "off_t.h"
 
-#   if !defined(__MINGW64__)
-#    define off_t cr_off32
-#   else
-#    define off_t cr_off64
-#   endif
-#   define off64_t cr_off64
+#  if !defined (__MINGW64__)
+#   define off_t     cr_off32
+#  else
+#   define off_t     cr_off64
 #  endif
-#  include <io.h>
-#  if defined(MINGW_DEFINE_OFF_T) && (defined(__MINGW32__) || defined(__MINGW64__))
-#   undef off_t
-#   undef off64_t
-#  endif
-#  include <fcntl.h>
-#  include <winnt.h>
-#  include <stdint.h>
-#  include <signal.h>
-# else
-#  include <unistd.h>
-#  include <sys/wait.h>
-#  include <sys/signal.h>
-#  include <sys/fcntl.h>
-#  include <sys/param.h>
-#  ifdef BSD
-#   include <sys/types.h>
+#  define off64_t    cr_off64
+# endif
+# include <io.h>
+# if defined (MINGW_DEFINE_OFF_T) && (defined (__MINGW32__) || defined (__MINGW64__))
+#  undef off_t
+#  undef off64_t
+# endif
+# include <fcntl.h>
+# include <winnt.h>
+# include <stdint.h>
+# include <signal.h>
+#else
+# include <fcntl.h>
+# include <signal.h>
+# include <sys/param.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# ifdef BSD
+#  include <sys/types.h>
 typedef unsigned long u_long;
 typedef unsigned int u_int;
 typedef unsigned short u_short;
 typedef unsigned char u_char;
-#   include <sys/sysctl.h>
-#  endif
+#  include <sys/sysctl.h>
 # endif
+#endif
 
-# include "posix.h"
+#include "posix.h"
 
 #endif /* !INTERNAL_H_ */

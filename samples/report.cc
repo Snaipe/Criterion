@@ -17,6 +17,8 @@ ReportHook(POST_TEST)(struct criterion_test_stats *stats) {
 
 ReportHook(PRE_ALL)(struct criterion_test_set *tests) {
     (void) tests;
+    setbuf(stdout, NULL);
+    setbuf(stderr, NULL);
     puts("criterion_init");
 }
 

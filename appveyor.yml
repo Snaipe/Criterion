@@ -1,10 +1,6 @@
-version: 2.2.2_b{build}-{branch}
+version: 2.3.0_b{build}-{branch}
 
 os: Visual Studio 2015
-
-init:
-  - git config --global core.autocrlf input
-  - 'SET PATH=C:\MinGW\bin;%PATH%;C:\MinGW\msys\1.0\bin;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug'
 
 environment:
   COVERALLS_REPO_TOKEN:
@@ -12,30 +8,51 @@ environment:
   CI_NAME: appveyor
   CI_JOB_ID: $(APPVEYOR_JOB_ID)
   GCOV_PREFIX: $(APPVEYOR_BUILD_FOLDER)
+  PYTHON_BIN: python
+  PYTHONIOENCODING: "utf-8" # consider cmd encoding to be unicode
+  CRAM_SHELL: "C:\\msys64\\usr\\bin\\sh.exe"
   matrix:
   - COMPILER: mingw
     GENERATOR: "MSYS Makefiles"
-    CXXFLAGS: -D__NO_INLINE__
+    BUILD_FLAGS: -j2
   - COMPILER: msvc
-    GENERATOR: "Visual Studio 14 2015"
+    GENERATOR: "Visual Studio 14 2015 Win64"
     CFLAGS: /MP
     CXXFLAGS: /MP
+    BUILD_FLAGS: /verbosity:m
+
+init:
+  - git config --global core.autocrlf input
+  - set MSYSTEM=MINGW64
+
+  # Disable windows process crash popup
+  # See: https://msdn.microsoft.com/en-us/library/bb513638%28VS.85%29.aspx
+  - reg add "HKLM\SYSTEM\CurrentControlSet\Control\Windows" /f /v ErrorMode /t REG_DWORD /d 2
+  - reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /t REG_DWORD /d 1
+  - reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v Disable /t REG_DWORD /d 1
+
+  - set PATH=C:\Python35;C:\Python35\Scripts;C:\msys64\mingw64\bin;C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%
+  - set PATH=%PATH%;%APPVEYOR_BUILD_FOLDER%\build;%APPVEYOR_BUILD_FOLDER%\build\Debug;%APPVEYOR_BUILD_FOLDER%\build\external\bin;%APPVEYOR_BUILD_FOLDER%\build\external\lib"
+  - set MSYSTEM=MINGW64
+  - pip install cram==0.7
+
+  # Remove Xamarin msbuild warnings
+  - del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
 
 clone_depth: 5
 
-platform:
-  - x86
-  - x64
-
 configuration:
   - Debug
-  - Release
   - RelWithDebInfo
 
 install:
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
   # Hack to make git think it is on the tip of the repo branch
   - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
+
+  # Patch buggy cram
+  - sh -c "patch /c/Python35/lib/site-packages/cram/_test.py .cmake/cram-env.patch"
+
   # Configure project
   - 'mkdir build && cd build'
   - >
@@ -50,7 +67,8 @@ install:
       ..
 
 build_script:
-  - cmake --build .
+  # open dummy fd 0 to prevent errors at configure time for autoconf dependencies
+  - cmake --build . -- %BUILD_FLAGS% 0<nul
 
 before_deploy:
   - ps: |
@@ -63,19 +81,13 @@ before_deploy:
 test_script:
   - cmake --build . --target criterion_tests
   - ps: |
-        ctest -j2
+        sh -c "ctest --output-on-failure --timeout 10"
         if (-not $lastexitcode -eq 0) {
-            type Testing/Temporary/LastTest.log
+            $host.setshouldexit(1)
         }
 
 #after_test:
 #  - 'make coveralls'
-
-notifications:
-
-  - provider: Email
-    to: [franklinmathieu@gmail.com]
-    on_build_status_changed: true
 
 deploy:
   provider: GitHub

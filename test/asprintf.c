@@ -24,27 +24,28 @@ struct format_test {
     union anyval *val;
 };
 
-# define VALUE(Fmt, Val) &(struct format_test) { .format = "%" #Fmt, .val = &(union anyval) { . Fmt = Val } }
+#define VALUE(Fmt, Val)    & (struct format_test) { .format = "%" #Fmt, .val = &(union anyval) { .Fmt = Val } }
 
 TheoryDataPoints(asprintf, valid) = {
     DataPoints(struct format_test *,
-            VALUE(c, 'a'),
-            VALUE(hd, 42),
-            VALUE(d, 42),
-            VALUE(ld, 42),
-            VALUE(lld, 42),
-            VALUE(hu, 42),
-            VALUE(u, 42),
-            VALUE(lu, 42),
-            VALUE(llu, 42),
-            VALUE(f, 3.14),
-            VALUE(s, "foo"),
-            VALUE(p, NULL),
-        ),
+            VALUE(c,                'a'),
+            VALUE(hd,               42),
+            VALUE(d,                42),
+            VALUE(ld,               42),
+            VALUE(lld,              42),
+            VALUE(hu,               42),
+            VALUE(u,                42),
+            VALUE(lu,               42),
+            VALUE(llu,              42),
+            VALUE(f,                3.14),
+            VALUE(s,                "foo"),
+            VALUE(p,                NULL),
+            ),
 };
 
 Theory((struct format_test *fmt), asprintf, valid) {
     char expected[32];
+
     snprintf(expected, sizeof (expected), fmt->format, *fmt->val);
 
     char *actual;

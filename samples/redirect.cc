@@ -5,9 +5,10 @@
 #include <iostream>
 #include <cctype>
 
-// Testing stdout/stderr
+/* Testing stdout/stderr */
 
-void redirect_all_std(void) {
+void redirect_all_std(void)
+{
     cr_redirect_stdout();
     cr_redirect_stderr();
 }
@@ -20,13 +21,15 @@ Test(redirect, test_outputs, .init = redirect_all_std) {
     cr_assert_stderr_eq_str("bar");
 }
 
-// Testing general I/O with sample command-line rot13
+/* Testing general I/O with sample command-line rot13 */
 
-char rot13_char(char c) {
+char rot13_char(char c)
+{
     return std::isalpha(c) ? (c - 'a' + 13) % 26 + 'a' : c;
 }
 
-void rot13_io(void) {
+void rot13_io(void)
+{
     std::string s;
 
     std::cin >> s;
@@ -36,7 +39,7 @@ void rot13_io(void) {
 }
 
 Test(redirect, rot13, .init = cr_redirect_stdout) {
-    auto& f_cin = criterion::get_redirected_cin();
+    auto &f_cin = criterion::get_redirected_cin();
 
     f_cin << "the quick brown fox jumps over the lazy dog";
     f_cin.close();

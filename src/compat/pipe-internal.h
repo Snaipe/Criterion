@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef PIPE_INTERNAL_H_
-# define PIPE_INTERNAL_H_
+#define PIPE_INTERNAL_H_
 
-# include "internal.h"
-# include "pipe.h"
+#include "internal.h"
+#include "pipe.h"
 
 struct pipe_handle {
 #ifdef VANILLA_WIN32

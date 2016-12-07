@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef COMPAT_PROCESSOR_H_
-# define COMPAT_PROCESSOR_H_
+#define COMPAT_PROCESSOR_H_
 
-# include <stddef.h>
+#include <stddef.h>
 
 size_t get_processor_count(void);
 

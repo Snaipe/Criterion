@@ -14,6 +14,8 @@ Adding parameterized tests
 Adding parameterized tests is done by defining the parameterized test function,
 and the parameter generator function:
 
+.. doxygengroup:: ParameterizedBase
+
 .. code-block:: c
 
     #include <criterion/parameterized.h>
@@ -37,6 +39,10 @@ identifier format.
 ``Type`` is the compound type of the generated array. ``params`` and ``nb_params``
 are the pointer and the length of the generated array, respectively.
 
+.. note::
+    The parameter array must be reachable after the function returns -- as
+    such, local arrays must be declared with `static` or dynamically allocated.
+
 Passing multiple parameters
 ---------------------------
 
@@ -55,7 +61,7 @@ easily use a struct to hold the context as a workaround:
     };
 
     ParameterizedTestParameters(suite_name, test_name) {
-        struct my_params params[] = {
+        static struct my_params params[] = {
             // parameter set
         };
 
@@ -72,7 +78,7 @@ C++ users can also use a simpler syntax before returning an array of parameters:
 .. code-block:: c++
 
     ParameterizedTestParameters(suite_name, test_name) {
-        struct my_params params[] = {
+        static struct my_params params[] = {
             // parameter set
         };
 

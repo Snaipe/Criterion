@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef CR_OFF_T_DEFINED
-# define CR_OFF_T_DEFINED
+#define CR_OFF_T_DEFINED
 
-# include <stdint.h>
+#include <stdint.h>
 
 typedef int32_t cr_off32;
 typedef int64_t cr_off64;

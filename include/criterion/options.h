@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/**
+ * @file
+ * @brief criterion options
+ *****************************************************************************/
 #ifndef CRITERION_OPTIONS_H_
-# define CRITERION_OPTIONS_H_
+#define CRITERION_OPTIONS_H_
 
-# include <stdbool.h>
-# include "logging.h"
+#include <stdbool.h>
+#include "logging.h"
+#include "internal/common.h"
+
+enum criterion_debugger {
+    /**
+     *  Do not run the underlying test in a debugger
+     */
+    CR_DBG_NONE,
+
+    /**
+     *  Run the test suspended, without a debugger, and print its PID.
+     *
+     *  Allows external debuggers to attach.
+     */
+    CR_DBG_IDLE,
+
+    /**
+     *  Run the test with a debugging server compatible with the compiler
+     *  it was built with.
+     */
+    CR_DBG_NATIVE,
+
+    /**
+     *  Run the test with gdbserver
+     */
+    CR_DBG_GDB,
+
+    /**
+     *  Run the test with lldb-server
+     */
+    CR_DBG_LLDB,
+
+    /**
+     *  Run the test with windbg in server mode
+     */
+    CR_DBG_WINDBG,
+};
 
 struct criterion_options {
-
     /**
      *  The current logging threshold.
      *
@@ -44,13 +83,7 @@ struct criterion_options {
     struct criterion_logger *logger;
 
     /**
-     *  Don't exit the child immediately after finishing to run the test
-     *  function, and perform a full cleanup.
-     *
-     *  Useful when tracking memory leaks, and is immediately implied when
-     *  running the process under valgrind.
-     *
-     *  default: false
+     * This option doesn't do anything and is deprecated.
      */
     bool no_early_exit;
 
@@ -105,6 +138,48 @@ struct criterion_options {
      *  default: true
      */
     bool measure_time;
+
+    /**
+     *  Whether criterion should wait for incoming connections in server mode
+     *
+     *  default: false
+     */
+    bool wait_for_clients;
+
+    /**
+     * Raise a debug trap to crash the test if an assert fails so that a
+     * debugger can gain control.
+     *
+     * default: false
+     */
+    bool crash;
+
+    /**
+     *  Whether criterion should run its tests in a debugging server.
+     *
+     *  The server hangs until a connection from a debugger gets accepted.
+     *
+     *  This forces jobs = 1 and crash = true.
+     *
+     *  default: CR_DBG_NONE;
+     */
+    enum criterion_debugger debug;
+
+    /**
+     *  The TCP port of the debugging server.
+     *
+     *  default: 1234
+     */
+    unsigned debug_port;
+
+    /**
+     *  The default timeout for each test when none is specified, in seconds.
+     *
+     *  If the value is non-positive, no timeout is applied.
+     *
+     *  default: 0
+     */
+    double timeout;
 };
 
 CR_BEGIN_C_API
@@ -112,7 +187,7 @@ CR_BEGIN_C_API
 /**
  *  The runtime options for the test runner.
  */
-extern struct criterion_options criterion_options;
+CR_API extern struct criterion_options criterion_options;
 
 CR_END_C_API
 

@@ -7,12 +7,9 @@ set(CPACK_DEBIAN_BUILD_DEPENDS
   debhelper
   cmake
   gettext
-  libpcre3-dev
 )
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS
-  libpcre3
-)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS)
 
 set(CPACK_DEBIAN_CMAKE_OPTIONS)
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/description.txt")
@@ -35,6 +32,10 @@ set(CPACK_COMPONENTS_ALL "dev")
 set(CPACK_COMPONENT_DEV_DISPLAY_NAME "Criterion library development files")
 set(CPACK_COMPONENT_DEV_DESCRIPTION "These are the development files.")
 set(CPACK_COMPONENT_DEV_SECTION "devel")
+
+set(CPACK_COMPONENT_DEV_DEPENDS
+  criterion
+)
 
 set(CPACK_COMPONENT_DEV_DOCS "")
 set(CPACK_COMPONENT_DEV_INSTALL "/usr/include")

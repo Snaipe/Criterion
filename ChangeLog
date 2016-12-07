@@ -1,3 +1,49 @@
+2016-12-07  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.3.0-1
+    This is a re-release of v2.3.0.
+
+    There are no substantial changes in the release, only fixes in the build
+    system. If you are not building criterion from source, you can ignore this
+    changelog.
+
+    * Fix: Updated version strings in messages
+    * Fix: The build system now searches for local installations of non-criterion-specific dependencies.
+
+2016-09-18  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.3.0
+    * Addition: added German translation files (Matthias "ailu" Günzel).
+    * Addition: added a pkg-config file.
+    * Addition: allow tests to be skipped with cr_skip_test() (Matthias "ailu" Günzel).
+    * Addition: assertions on wide-strings are now available (Kevin "kevinoid" Locke).
+    * Addition: crash-mode with --crash to raise a trap when an assertion fails for debugging purposes (Matthias "ailu" Günzel).
+    * Addition: debugging mode with --debug.
+    * Addition: global test timeout with --timeout.
+    * Addition: header files in the public API now have doxygen documentation (Matthias "ailu" Günzel).
+    * Addition: test filtering now works on windows.
+    * Addition: user logging API with cr_log, cr_log_info, cr_log_warning, and cr_log_error.
+    * Breaking: dropped support for MinGW, use MinGW-w64.
+    * Breaking: dropped support for Windows XP, use Windows 7 and later.
+    * Breaking: log_pre_init and log_pre_test in the internal logger API now takes an additional parameter.
+    * Breaking: the SOVERSION now follows the SONAME major independently of the project version.
+    * Change: --pattern has been renamed to --filter.
+    * Change: removed dependency on PCRE for filtering (Matthias "ailu" Günzel).
+    * Change: sections of all loaded shared modules are now inspected for tests and hooks.
+    * Change: setting .exit_code = 0 now enforces the exit code of the test to be 0.
+    * Change: string assertions now print the contents of string parameters ("kaidowei").
+    * Change: xml reports now includes elapsed times ("kaidowei").
+    * Deprecation: --no-early-exit is now a no-op and should no longer be used.
+    * Deprecation: internal logging API is no longer public, fallbacks to the new logging API.
+    * Fix: fail-fast now works correctly.
+    * Fix: fixed FindCriterion.cmake with the correct package name (László "MrAnno" Várady).
+    * Fix: position-independent executables now work.
+    * Fix: string assertions no longer crash with a NULL parameter ("kaidowei").
+    * Fix: the data pipe no longer gets corrupted when running a large quantity of assertions in parallel.
+    * Fix: using dmalloc on tests now works.
+    * Fix: using the GOLD linker rather than BFD now works.
+    * Fix: using the musl C library now works.
+
 2016-06-20  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.2.2

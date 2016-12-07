@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #ifndef OUTPUT_H_
-# define OUTPUT_H_
+#define OUTPUT_H_
 
-# include "criterion/output.h"
+#include "criterion/output.h"
 
 void process_all_output(struct criterion_global_stats *stats);
 void criterion_free_output(void);

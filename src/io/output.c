@@ -1,10 +1,33 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 #include <stdio.h>
 #include <string.h>
 #include <khash.h>
 #include <kvec.h>
 #include <errno.h>
 #include "criterion/output.h"
-#include "criterion/logging.h"
+#include "log/logging.h"
 #include "string/i18n.h"
 
 typedef const char *const msg_t;
@@ -17,15 +40,16 @@ static msg_t msg_err = "Could not open the file @ `%s` for %s reporting: %s.\n";
 static msg_t msg_ok  = "Writing %s report in `%s`.\n";
 #endif
 
-typedef kvec_t(const char *) str_vec;
+typedef kvec_t (const char *) str_vec;
 
-KHASH_MAP_INIT_STR(ht_str, criterion_reporter*)
-KHASH_MAP_INIT_STR(ht_path, str_vec*)
+KHASH_MAP_INIT_STR(ht_str, criterion_reporter *)
+KHASH_MAP_INIT_STR(ht_path, str_vec *)
 
-static khash_t(ht_str) *reporters;
-static khash_t(ht_path) *outputs;
+static khash_t(ht_str) * reporters;
+static khash_t(ht_path) * outputs;
 
-int criterion_register_output_provider(const char *name, criterion_reporter *reporter) {
+int criterion_register_output_provider(const char *name, criterion_reporter *reporter)
+{
     if (!reporters)
         reporters = kh_init(ht_str);
 
@@ -35,7 +59,8 @@ int criterion_register_output_provider(const char *name, criterion_reporter *rep
     return absent;
 }
 
-int criterion_add_output(const char *provider, const char *path) {
+int criterion_add_output(const char *provider, const char *path)
+{
     if (!outputs)
         outputs = kh_init(ht_path);
 
@@ -57,7 +82,8 @@ int criterion_add_output(const char *provider, const char *path) {
     return 1;
 }
 
-void criterion_free_output(void) {
+void criterion_free_output(void)
+{
     if (reporters)
         kh_destroy(ht_str, reporters);
 
@@ -73,7 +99,8 @@ void criterion_free_output(void) {
     }
 }
 
-void process_all_output(struct criterion_global_stats *stats) {
+void process_all_output(struct criterion_global_stats *stats)
+{
     if (!outputs || !reporters)
         return;
 

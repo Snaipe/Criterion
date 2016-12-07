@@ -9,9 +9,11 @@ Criterion
     starter
     assert
     hooks
+    logging
     env
     output
     parameterized
     theories
     internal
+    debug
     faq

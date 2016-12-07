@@ -1,0 +1,204 @@
+# German translations for Criterion package
+# German translation for Criterion.
+# Copyright (C) 2016 Franklin Snaipe Mathieu
+# This file is distributed under the same license as the Criterion package.
+#  <a1lu@arcor.de>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Criterion \n"
+"Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
+"POT-Creation-Date: 2016-09-16 11:24+0200\n"
+"PO-Revision-Date: 2016-02-12 11:12+0100\n"
+"Last-Translator:  <a1lu@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/log/normal.c:42
+#, c-format
+msgid "Criterion v%s\n"
+msgstr "Criterion v%s\n"
+
+#: src/log/normal.c:43
+#, c-format
+msgid "  %s\n"
+msgstr "  %s\n"
+
+#: src/log/normal.c:46
+#, c-format
+msgid "%1$s::%2$s\n"
+msgstr "%1$s::%2$s\n"
+
+#: src/log/normal.c:47
+#, c-format
+msgid "%1$s::%2$s: (%3$3.2fs)\n"
+msgstr "%1$s::%2$s: (%3$3.2fs)\n"
+
+#: src/log/normal.c:48
+#, c-format
+msgid "%1$s::%2$s: Test was skipped\n"
+msgstr "%1$s::%2$s: Test wurde übersprungen\n"
+
+#: src/log/normal.c:49
+#, c-format
+msgid "%1$s::%2$s: Test is disabled\n"
+msgstr "%1$s::%2$s: Test ist deaktiviert\n"
+
+#: src/log/normal.c:50
+#, c-format
+msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: Assertion failed: %7$s\n"
+msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Fehlerhafte Behauptung: %7$s\n"
+
+#: src/log/normal.c:51
+#, c-format
+msgid "  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n"
+msgstr ""
+"  Hypothese %1$s::%2$s schlug fehl mit den folgenden Parametern: (%3$s)\n"
+
+#: src/log/normal.c:52
+#, c-format
+msgid "%1$s::%2$s: Timed out. (%3$3.2fs)\n"
+msgstr "%1$s::%2$s: Außerhalb der Vorgabezeit. (%3$3.2fs)\n"
+
+#: src/log/normal.c:53
+#, c-format
+msgid "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n"
+msgstr ""
+"%1$s%2$s%3$s:%4$s%5$u%6$s: Unerwartetes Signal gefangen unterhalb dieser "
+"Zeile!\n"
+
+#: src/log/normal.c:54
+#, c-format
+msgid "%1$s::%2$s: CRASH!\n"
+msgstr "%1$s::%2$s: ABSTURZ!\n"
+
+#: src/log/normal.c:55
+#, c-format
+msgid "%1$s::%2$s: %3$s\n"
+msgstr "%1$s::%2$s: %3$s\n"
+
+#: src/log/normal.c:56
+#, c-format
+msgid ""
+"%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown."
+"%4$s\n"
+msgstr ""
+"%1$sWarnung! Der Test `%2$s::%3$s` ist abgestürzt während der "
+"Initialisierung oder Beendung %4$s\n"
+
+#: src/log/normal.c:57
+#, c-format
+msgid ""
+"%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n"
+msgstr ""
+"%1$sWarnung! Der Test `%2$s::%3$s` hat sich beendet während der "
+"Initialisierung oder Beendung.%4$s\n"
+
+#: src/log/normal.c:58
+#, c-format
+msgid "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n"
+msgid_plural "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n"
+msgstr[0] "Führe %1$s%2$lu%3$s Test durch von %4$s%5$s%6$s:\n"
+msgstr[1] "Führe %1$s%2$lu%3$s Tests durch von %4$s%5$s%6$s:\n"
+
+#: src/log/normal.c:60
+#, c-format
+msgid ""
+"%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"
+"%9$lu%10$s | Crashing: %11$s%12$lu%13$s %14$s\n"
+msgstr ""
+"%1$sSynthese: Getestet: %2$s%3$lu%4$s | Bestanden: %5$s%6$lu%7$s | Fehler: "
+"%8$s%9$lu%10$s | Abstürze: %11$s%12$lu%13$s %14$s\n"
+
+#: src/string/i18n.c:15
+msgid "The conditions for this assertion were not met."
+msgstr "Die Bedingung für diesen Behauptung wurden nicht erfüllt"
+
+#: src/string/i18n.c:16
+#, c-format
+msgid "The expression %s is false."
+msgstr "Der Ausdruck %s ist falsch."
+
+#: src/string/i18n.c:17
+#, c-format
+msgid "%s is null."
+msgstr "%s ist null."
+
+#: src/string/i18n.c:18
+#, c-format
+msgid "%s is not null."
+msgstr "%s ist nicht null."
+
+#: src/string/i18n.c:19
+#, c-format
+msgid "%s is empty."
+msgstr "%s ist leer."
+
+#: src/string/i18n.c:20
+#, c-format
+msgid "The statement `%s` did not throw any exception."
+msgstr "Die Anweisung `%s` hat keine Ausnahme geworfen."
+
+#: src/string/i18n.c:21
+#, c-format
+msgid "The statement `%s` threw some exception."
+msgstr "Die Anweisung `%s` hat Ausnahmen geworfen."
+
+#: src/string/i18n.c:24
+#, c-format
+msgid ""
+"The expression (as strings) %1$s is false: actual=`%2$s` expected=`%3$s`."
+msgstr ""
+"Der Ausdruck (als Zeichenkette) %1$s ist falsch: tatsächlich=`%2$s` "
+"erwartet=`%3$s`."
+
+#: src/string/i18n.c:25
+#, c-format
+msgid "%1$s (`%2$s`) is not empty."
+msgstr "%1$s (`%2$s`) ist nicht leer."
+
+#: src/string/i18n.c:26
+#, c-format
+msgid "The file contents of %1$s does not match the string \"%2$s\"."
+msgstr "Der Inhalt der Datei %1$s ist nicht gleich der Zeichenkette \"%2$s\"."
+
+#: src/string/i18n.c:27
+#, c-format
+msgid "The file contents of %1$s does not match the contents of %2$s."
+msgstr "Der Inhalt der Datei %1$s ist nicht gleich dem Inhalt von %2$s."
+
+#: src/string/i18n.c:28
+#, c-format
+msgid "The statement `%1$s` did throw an instance of the `%2$s` exception."
+msgstr "Die Anweisung `%1$s` hat eine Instanz der Ausname `%2$s` geworfen."
+
+#: src/string/i18n.c:29
+#, c-format
+msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
+msgstr "Die Anweisung `%1$s` hat keine Instanz der Ausname `%2$s` geworfen."
+
+#: src/core/runner.c:68
+#, c-format
+msgid ""
+"%1$sWarning! Criterion has detected that it is running under valgrind, but "
+"the number of jobs have been explicitely set. Reports might appear confusing!"
+"%2$s\n"
+msgstr ""
+"%1$sWarnung! Criterion hat festgestellt, dass es unter valgrind läuft, aber "
+"die Anzahl an Aufträgen wurde explizit festgelegt. Die Berichte können "
+"verwirrend sein!%2$s\n"
+
+#: src/io/output.c:36
+#, c-format
+msgid "Could not open the file @ `%1$s` for %2$s reporting: %3$s.\n"
+msgstr ""
+"Konnte die Datei `%1$s` nicht für die Berichte von %2$s öffnen: %3$s.\n"
+
+#: src/io/output.c:37
+#, c-format
+msgid "Writing %1$s report in `%2$s`.\n"
+msgstr "Schreibe Bericht von %1$s nach `%2$s`.\n"

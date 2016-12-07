@@ -1,6 +1,11 @@
 if (NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEFAULT} -std=c99 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEFAULT} ${CXX11_FLAG} -Wall -Wextra -pedantic")
+
+  if (MINGW)
+    # see http://sourceforge.net/p/mingw/bugs/2250/
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__NO_INLINE__")
+  endif ()
 endif ()
 
 include_directories(../include)
@@ -17,7 +22,8 @@ set(SAMPLES
   timeout.c
   redirect.c
   parameterized.c
-
+  log.c
+  skip.c
 )
 
 if (CMAKE_CXX_COMPILER_WORKS)
@@ -32,6 +38,8 @@ if (CMAKE_CXX_COMPILER_WORKS)
     simple.cc
     redirect.cc
     parameterized.cc
+    log.cc
+    skip.cc
   )
 endif ()
 
@@ -40,21 +48,6 @@ if (THEORIES)
   if (CMAKE_CXX_COMPILER_WORKS)
     set(SAMPLES ${SAMPLES} theories.cc)
   endif ()
-endif ()
-
-set(SCRIPTS
-  tap_test
-  xml_test
-  json_test
-  early_exit
-  verbose
-  list
-  fail_fast
-  help
-)
-
-if (HAVE_PCRE)
-    set(SCRIPTS ${SCRIPTS} pattern)
 endif ()
 
 add_custom_target(criterion_samples)
@@ -68,44 +61,10 @@ macro(add_samples DIR_ SAMPLES_)
         add_test(${sample} ${sample}.bin)
         set_property(TEST ${sample} PROPERTY
             ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-            ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
         )
-
-        if (NOT MSVC) # we disable the scripted tests when building with MSVC
-            add_test(${sample}_compare sh ${DIR_}/run_test.sh "${CMAKE_CURRENT_LIST_DIR}/outputs" . . ${sample}.bin)
-            set_property(TEST ${sample}_compare PROPERTY
-                ENVIRONMENT "LC_ALL=en_US.utf8"
-                ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-                ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
-                ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
-                ENVIRONMENT "CRITERION_JOBS=1" # for output ordering
-                ENVIRONMENT "CRITERION_DISABLE_TIME_MEASUREMENTS=1" # do not compare timings
-            )
-        endif ()
     endforeach()
 endmacro()
 
 add_samples("${CMAKE_CURRENT_LIST_DIR}/tests" "${SAMPLES}")
-
-if (NOT MSVC) # we disable the scripted tests when building with MSVC
-
-foreach(script ${SCRIPTS})
-    add_test(${script} sh "${CMAKE_CURRENT_LIST_DIR}/tests/${script}.sh")
-    set_property(TEST ${script} PROPERTY
-        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-        ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
-    )
-
-    add_test(${script}_compare sh ${CMAKE_CURRENT_LIST_DIR}/tests/run_test.sh "${CMAKE_CURRENT_LIST_DIR}" . "${CMAKE_CURRENT_LIST_DIR}" "tests/${script}.sh")
-    set_property(TEST ${script}_compare PROPERTY
-        ENVIRONMENT "LC_ALL=en_US.utf8"
-        ENVIRONMENT "CRITERION_ALWAYS_SUCCEED=1"
-        ENVIRONMENT "CRITERION_SHORT_FILENAME=1"
-        ENVIRONMENT "CRITERION_NO_EARLY_EXIT=1" # for coverage
-        ENVIRONMENT "CRITERION_JOBS=1" # for output ordering
-    )
-endforeach()
-
-endif()
 
 add_subdirectory(tests)
