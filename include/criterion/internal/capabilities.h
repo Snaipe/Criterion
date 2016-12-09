@@ -30,7 +30,7 @@
 # if __cplusplus < 201103L
 #  error The Criterion C++ API needs a C++11 compiler or later.
 # endif
-#elif defined (__STDC__)
+#elif defined (__STDC__) || defined (_MSC_VER)
 /* Is the compiler a supported c99 compiler? */
 # if defined (_MSC_VER)
 #  if _MSC_VER < 1900
