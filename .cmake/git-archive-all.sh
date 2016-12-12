@@ -220,12 +220,8 @@ superfile=`head -n 1 $TMPFILE`
 if [ $VERBOSE -eq 1 ]; then
     echo -n "looking for subprojects..."
 fi
-# find all '.git' dirs, these show us the remaining to-be-archived dirs
-# we only want directories that are below the current directory
-find . -mindepth 2 -name '.git' -type d -print | sed -e 's/^\.\///' -e 's/\.git$//' >> $TOARCHIVE
-# as of version 1.7.8, git places the submodule .git directories under the superprojects .git dir
-# the submodules get a .git file that points to their .git dir. we need to find all of these too
-find . -mindepth 2 -name '.git' -type f -print | xargs grep -l "gitdir" | sed -e 's/^\.\///' -e 's/\.git$//' >> $TOARCHIVE
+
+git config --file .gitmodules --get-regexp path | cut -d' ' -f2 | sed -e 's/$/\//' >> $TOARCHIVE
 if [ $VERBOSE -eq 1 ]; then
     echo "done"
     echo "  found:"
