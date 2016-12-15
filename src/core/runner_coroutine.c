@@ -341,8 +341,23 @@ static bxf_instance *run_test(struct run_next_context *ctx,
 
     bxf_instance *instance;
     rc = bxf_spawn_struct(&instance, &sp);
-    if (rc < 0)
+    if (rc < 0) {
+        if (rc == -ENOENT && criterion_options.debug) {
+            const char *dbgname = "<unknown>";
+            switch (sp.debug.debugger) {
+                case BXF_DBG_GDB:    dbgname = "gdbserver"; break;
+                case BXF_DBG_LLDB:   dbgname = "lldb-server"; break;
+                case BXF_DBG_WINDBG: dbgname = "windbg"; break;
+                default: break;
+            }
+            cr_panic("Could not spawn test instance: Debugger does not exist.\n\n"
+                    "Please make sure that `%s` is installed on your system and\n"
+                    "available in your PATH, or manually specify another\n"
+                    "debugging mode with --debug=mode.",
+                    dbgname);
+        }
         cr_panic("Could not spawn test instance: %s", strerror(-rc));
+    }
 
     bxf_context_term(inst_ctx);
 
