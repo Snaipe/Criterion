@@ -38,36 +38,9 @@
 #include "preprocess.h"
 #include "capabilities.h"
 
-enum cri_assert_result_type {
-    CRI_ASSERT_RT_NONE = 0,
-    CRI_ASSERT_RT_DATA,
-    CRI_ASSERT_RT_FILE,
-
-    CRI_ASSERT_RT_STRING = 1 << 8 | CRI_ASSERT_RT_DATA,
-};
-
-struct cri_assert_node {
-    const char *repr;
-    void *expected;
-    void *actual;
-    int pass;
-    enum cri_assert_result_type rtype;
-    size_t nchild;
-    size_t maxchild;
-    struct cri_assert_node *children;
-};
-
-CR_BEGIN_C_API
-
-CR_API void cri_assert_node_init(struct cri_assert_node *node);
-CR_API struct cri_assert_node *cri_assert_node_add(struct cri_assert_node *tree,
-        struct cri_assert_node *node);
-CR_API void cri_assert_node_negate(struct cri_assert_node *tree);
-CR_API void cri_assert_node_term(struct cri_assert_node *tree);
-CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_assert_node *tree);
-CR_API char *cri_assert_message(const char *fmt, ...);
-
-CR_END_C_API
+#include "assert/types.h"
+#include "assert/tag.h"
+#include "assert/op.h"
 
 #define CRI_SPECIFIER_INDIRECT()      CRI_ASSERT_SPECIFIER
 
@@ -101,262 +74,6 @@ CR_END_C_API
         if (!cri_cond)                                                       \
             Fail();                                                          \
     } while (0))
-
-#define CRI_ASSERT_TYPE_TAG(Tag)           CR_EXPAND(CRI_ASSERT_TYPE_TAG_(Tag))
-#define CRI_ASSERT_TYPE_TAG_(Tag)          CRI_IF_DEFINED(CRI_ASSERT_TEST_TAG_ ## Tag, CR_VA_HEAD(CRI_ASSERT_TYPE_TAG_ ## Tag), , CRI_ASSERT_TYPE_TAG_UNKNOWN, (Tag))
-
-#define CRI_USER_TAG_ID(Id, Tag)           CR_CONCAT(cr_user_ ## Id ## _, CRI_ASSERT_TYPE_TAG_ID(Tag))
-
-#define CRI_ASSERT_TYPE_TAG_ID(Tag)        CR_EXPAND(CRI_ASSERT_TYPE_TAG_ID_(Tag))
-#define CRI_ASSERT_TYPE_TAG_ID_(Tag)       CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAG_ ## Tag, CR_VA_HEAD(CRI_ASSERT_TYPE_TAG_ID_ ## Tag), , CRI_ASSERT_SWALLOW_KEYWORD, (Tag))
-
-#define CRI_ASSERT_TYPE_TAG_ARRLEN(Tag)    CR_EXPAND(CRI_ASSERT_TYPE_TAG_ARRLEN_(Tag))
-#define CRI_ASSERT_TYPE_TAG_ARRLEN_(Tag)                                                                   \
-    CRI_IF_DEFINED(CRI_ASSERT_TEST_TAG_ ## Tag,                                                            \
-            ((intptr_t) &((*(char (*)[])((char volatile *) 0))CR_VA_TAIL(CRI_ASSERT_TYPE_TAG_ ## Tag))), , \
-            CRI_ASSERT_TYPE_TAG_UNKNOWN, (Tag))
-
-#define CRI_ASSERT_TYPE_TAG_UNKNOWN(Tag)    CR_COMPILE_ERROR(Unknown tag #Tag.)
-
-#define CRI_ASSERT_SWALLOW_KEYWORD(Tag)     CRI_IF_DEFINED(CRI_ASSERT_TEST_KW_ ## Tag, CRI_ASSERT_SWALLOW_KW_ ## Tag, , Tag, )
-#define CRI_ASSERT_TEST_KW_struct    ,
-#define CRI_ASSERT_SWALLOW_KW_struct
-#define CRI_ASSERT_TEST_KW_class     ,
-#define CRI_ASSERT_SWALLOW_KW_class
-#define CRI_ASSERT_TEST_KW_enum      ,
-#define CRI_ASSERT_SWALLOW_KW_enum
-#define CRI_ASSERT_TEST_KW_union     ,
-#define CRI_ASSERT_SWALLOW_KW_union
-
-#define CRI_ASSERT_TEST_TAG_i8           ,
-#define CRI_ASSERT_TEST_TAGC_i8()    ,
-#define CRI_ASSERT_TYPE_TAG_i8           int8_t,
-#define CRI_ASSERT_TYPE_TAG_ID_i8        i8,
-
-#define CRI_ASSERT_TEST_TAG_i16          ,
-#define CRI_ASSERT_TEST_TAGC_i16()    ,
-#define CRI_ASSERT_TYPE_TAG_i16          int16_t,
-#define CRI_ASSERT_TYPE_TAG_ID_i16       i16,
-
-#define CRI_ASSERT_TEST_TAG_i32          ,
-#define CRI_ASSERT_TEST_TAGC_i32()    ,
-#define CRI_ASSERT_TYPE_TAG_i32          int32_t,
-#define CRI_ASSERT_TYPE_TAG_ID_i32       i32,
-
-#define CRI_ASSERT_TEST_TAG_i64          ,
-#define CRI_ASSERT_TEST_TAGC_i64()    ,
-#define CRI_ASSERT_TYPE_TAG_i64          int64_t,
-#define CRI_ASSERT_TYPE_TAG_ID_i64       i64,
-
-#define CRI_ASSERT_TEST_TAG_u8           ,
-#define CRI_ASSERT_TEST_TAGC_u8()    ,
-#define CRI_ASSERT_TYPE_TAG_u8           uint8_t,
-#define CRI_ASSERT_TYPE_TAG_ID_u8        u8,
-
-#define CRI_ASSERT_TEST_TAG_u16          ,
-#define CRI_ASSERT_TEST_TAGC_u16()    ,
-#define CRI_ASSERT_TYPE_TAG_u16          uint16_t,
-#define CRI_ASSERT_TYPE_TAG_ID_u16       u16,
-
-#define CRI_ASSERT_TEST_TAG_u32          ,
-#define CRI_ASSERT_TEST_TAGC_u32()    ,
-#define CRI_ASSERT_TYPE_TAG_u32          uint32_t,
-#define CRI_ASSERT_TYPE_TAG_ID_u32       u32,
-
-#define CRI_ASSERT_TEST_TAG_u64          ,
-#define CRI_ASSERT_TEST_TAGC_u64()    ,
-#define CRI_ASSERT_TYPE_TAG_u64          uint64_t,
-#define CRI_ASSERT_TYPE_TAG_ID_u64       u64,
-
-#define CRI_ASSERT_TEST_TAG_int          ,
-#define CRI_ASSERT_TEST_TAGC_int()    ,
-#define CRI_ASSERT_TYPE_TAG_int          int,
-#define CRI_ASSERT_TYPE_TAG_ID_int       int,
-
-#define CRI_ASSERT_TEST_TAG_uint         ,
-#define CRI_ASSERT_TEST_TAGC_uint()    ,
-#define CRI_ASSERT_TYPE_TAG_uint         unsigned int,
-#define CRI_ASSERT_TYPE_TAG_ID_uint      uint,
-
-#define CRI_ASSERT_TEST_TAG_long         ,
-#define CRI_ASSERT_TEST_TAGC_long()    ,
-#define CRI_ASSERT_TYPE_TAG_long         long,
-#define CRI_ASSERT_TYPE_TAG_ID_long      long,
-
-#define CRI_ASSERT_TEST_TAG_ulong        ,
-#define CRI_ASSERT_TEST_TAGC_ulong()    ,
-#define CRI_ASSERT_TYPE_TAG_ulong        unsigned long,
-#define CRI_ASSERT_TYPE_TAG_ID_ulong     ulong,
-
-#define CRI_ASSERT_TEST_TAG_llong        ,
-#define CRI_ASSERT_TEST_TAGC_llong()    ,
-#define CRI_ASSERT_TYPE_TAG_llong        long long,
-#define CRI_ASSERT_TYPE_TAG_ID_llong     llong,
-
-#define CRI_ASSERT_TEST_TAG_ullong       ,
-#define CRI_ASSERT_TEST_TAGC_ullong()    ,
-#define CRI_ASSERT_TYPE_TAG_ullong       unsigned long long,
-#define CRI_ASSERT_TYPE_TAG_ID_ullong    ullong,
-
-#define CRI_ASSERT_TEST_TAG_ptr          ,
-#define CRI_ASSERT_TEST_TAGC_ptr()    ,
-#define CRI_ASSERT_TYPE_TAG_ptr          void *,
-#define CRI_ASSERT_TYPE_TAG_ID_ptr       ptr,
-
-#define CRI_ASSERT_TEST_TAG_str          ,
-#define CRI_ASSERT_TEST_TAGC_str()    ,
-#ifdef __cplusplus
-# define CRI_ASSERT_TYPE_TAG_str      std::string,
-#else
-# define CRI_ASSERT_TYPE_TAG_str      char *,
-#endif
-#define CRI_ASSERT_TYPE_TAG_ID_str    str,
-
-#define CRI_ASSERT_TEST_TAG_wcs       ,
-#define CRI_ASSERT_TEST_TAGC_wcs()    ,
-#ifdef __cplusplus
-# define CRI_ASSERT_TYPE_TAG_wcs       std::wstring,
-#else
-# define CRI_ASSERT_TYPE_TAG_wcs       wchar_t *,
-#endif
-#define CRI_ASSERT_TYPE_TAG_ID_wcs     wcs,
-
-#define CRI_ASSERT_TEST_TAG_tcs        ,
-#define CRI_ASSERT_TEST_TAGC_tcs()    ,
-#define CRI_ASSERT_TYPE_TAG_tcs        _TCHAR *,
-#define CRI_ASSERT_TYPE_TAG_ID_tcs     tcs,
-
-#define CRI_ASSERT_TEST_TAG_flt        ,
-#define CRI_ASSERT_TEST_TAGC_flt()    ,
-#define CRI_ASSERT_TYPE_TAG_flt        float,
-#define CRI_ASSERT_TYPE_TAG_ID_flt     flt,
-
-#define CRI_ASSERT_TEST_TAG_dbl        ,
-#define CRI_ASSERT_TEST_TAGC_dbl()    ,
-#define CRI_ASSERT_TYPE_TAG_dbl        double,
-#define CRI_ASSERT_TYPE_TAG_ID_dbl     dbl,
-
-#define CRI_ASSERT_TEST_TAG_ldbl       ,
-#define CRI_ASSERT_TEST_TAGC_ldbl()    ,
-#define CRI_ASSERT_TYPE_TAG_ldbl       long double,
-#define CRI_ASSERT_TYPE_TAG_ID_ldbl    ldbl,
-
-#define CRI_ASSERT_TEST_TAG_type       ,
-#define CRI_ASSERT_TEST_TAGC_type(x)      CRI_ASSERT_TEST_TAGC_type_
-#define CRI_ASSERT_TEST_TAGC_type_()      ,
-#define CRI_ASSERT_TYPE_TAG_type(T)       T,
-#define CRI_ASSERT_TYPE_TAG_ID_type(T)    CRI_ASSERT_SWALLOW_KEYWORD(T),
-
-#define CRI_ASSERT_SPEC_OP_LEN(...)            \
-    CR_EXPAND(CR_VA_TAIL_SELECT64(__VA_ARGS__, \
-            3, 3, 3, 3,                        \
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3,      \
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3,      \
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3,      \
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3,      \
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3,      \
-            3, 3, 3, 3, 3, 3, 3, 2, 2, 2))
-
-#define CRI_ASSERT_SPEC_UNOP_LEN(...)          \
-    CR_EXPAND(CR_VA_TAIL_SELECT64(__VA_ARGS__, \
-            2, 2, 2, 2,                        \
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2,      \
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2,      \
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2,      \
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2,      \
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2,      \
-            2, 2, 2, 2, 2, 2, 2, 2, 1, 1))
-
-#define CRI_ASSERT_SPEC_TRIOP_LEN(...)         \
-    CR_EXPAND(CR_VA_TAIL_SELECT64(__VA_ARGS__, \
-            4, 4, 4, 4,                        \
-            4, 4, 4, 4, 4, 4, 4, 4, 4, 4,      \
-            4, 4, 4, 4, 4, 4, 4, 4, 4, 4,      \
-            4, 4, 4, 4, 4, 4, 4, 4, 4, 4,      \
-            4, 4, 4, 4, 4, 4, 4, 4, 4, 4,      \
-            4, 4, 4, 4, 4, 4, 4, 4, 4, 4,      \
-            4, 4, 4, 4, 4, 4, 3, 3, 3, 3))
-
-#define CRI_BINOP(Op, Actual, Ref)    Actual Op Ref
-#define CRI_BINOP_EQ(Actual, Ref)     CRI_BINOP(==, Actual, Ref)
-#define CRI_BINOP_NE(Actual, Ref)     CRI_BINOP(!=, Actual, Ref)
-#define CRI_BINOP_LE(Actual, Ref)     CRI_BINOP(<=, Actual, Ref)
-#define CRI_BINOP_LT(Actual, Ref)     CRI_BINOP(<, Actual, Ref)
-#define CRI_BINOP_GE(Actual, Ref)     CRI_BINOP(>=, Actual, Ref)
-#define CRI_BINOP_GT(Actual, Ref)     CRI_BINOP(>, Actual, Ref)
-
-#ifdef __cplusplus
-# define CRI_BINOP_T_EQ(Tag, Actual, Ref)    CRI_BINOP_EQ(Actual, Ref)
-# define CRI_BINOP_T_NE(Tag, Actual, Ref)    CRI_BINOP_NE(Actual, Ref)
-# define CRI_BINOP_T_LE(Tag, Actual, Ref)    CRI_BINOP_LE(Actual, Ref)
-# define CRI_BINOP_T_LT(Tag, Actual, Ref)    CRI_BINOP_LT(Actual, Ref)
-# define CRI_BINOP_T_GE(Tag, Actual, Ref)    CRI_BINOP_GE(Actual, Ref)
-# define CRI_BINOP_T_GT(Tag, Actual, Ref)    CRI_BINOP_GT(Actual, Ref)
-
-# define CRI_UNOP_ZERO(X)                    ::criterion::internal::operators::zero(X)
-# define CRI_UNOP_T_ZERO(Tag, X)             ::criterion::internal::operators::zero(X)
-
-# include <locale>
-# include <codecvt>
-
-/* *INDENT-OFF* */
-namespace criterion { namespace internal { namespace operators {
-/* *INDENT-ON* */
-
-# define CRI_DEFINE_MEMBER_DETECTOR(Member)                                                 \
-    template <class T>                                                                      \
-    class HasMember_ ## Member {                                                            \
-        private:                                                                            \
-            using yes = char[2];                                                            \
-            using no  = char[1];                                                            \
-            struct fallback { int Member; };                                                \
-            struct derived : T, fallback {};                                                \
-            template <class U> static no &test(decltype (U::Member) *);                     \
-            template <typename U> static yes &test(U *);                                    \
-        public:                                                                             \
-            static constexpr bool result = sizeof (test<derived>(nullptr)) == sizeof (yes); \
-    };                                                                                      \
-    template <class T>                                                                      \
-    struct has_member_ ## Member : public std::integral_constant<bool, HasMember_ ## Member<T>::result> {}
-
-CRI_DEFINE_MEMBER_DETECTOR(empty);
-
-template <typename T>
-bool zero(const T *t) { return !t; }
-
-template <typename T>
-bool zero(const typename std::enable_if<!std::is_pointer<T>::value, T>::type &t) { return !t; }
-
-template <typename T, typename = typename has_member_empty<T>::type>
-bool zero(const T &t) { return t.empty(); }
-
-template <> inline bool zero<>(const char *t) { return !*t; }
-template <> inline bool zero<>(const wchar_t *t) { return !*t; }
-
-std::ostream &operator<<(std::ostream &s, std::wstring &ws)
-{
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> conv;
-    s << conv.to_bytes(ws);
-    return s;
-}
-
-/* *INDENT-OFF* */
-}}}
-/* *INDENT-ON* */
-#else
-# define CRI_BINOP_EQ_TAG(Tag, Op, Actual, Ref)    (Op (CRI_USER_TAG_ID(eq, Tag)(&(Actual), &(Ref))))
-# define CRI_BINOP_LE_TAG(Tag, Op, Actual, Ref)    (Op (CRI_USER_TAG_ID(le, Tag)(&(Actual), &(Ref))))
-
-# define CRI_BINOP_T_EQ(Tag, Actual, Ref)          (CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_NE(Tag, Actual, Ref)          (CRI_BINOP_EQ_TAG(Tag, !, Actual, Ref))
-# define CRI_BINOP_T_LE(Tag, Actual, Ref)          (CRI_BINOP_LE_TAG(Tag, , Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_LT(Tag, Actual, Ref)          (CRI_BINOP_LE_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_GE(Tag, Actual, Ref)          (CRI_BINOP_LE_TAG(Tag, !, Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_GT(Tag, Actual, Ref)          (CRI_BINOP_LE_TAG(Tag, !, Actual, Ref))
-
-# define CRI_UNOP_ZERO(X)                          !(X)
-# define CRI_UNOP_T_ZERO(Tag, X)                   CRI_USER_TAG_ID(zero, Tag)(&(X))
-#endif
 
 #ifdef __cplusplus
 
@@ -404,7 +121,7 @@ std::string cri_val_escape(const char (&s)[N]) { return std::string(s); }
 template <size_t N>
 std::wstring cri_val_escape(const wchar_t (&s)[N]) { return std::wstring(s); }
 
-# define CRI_VALUE_ESCAPE(T, X)              cri_val_escape<std::remove_reference<T>::type>(X)
+# define CRI_VALUE_ESCAPE(T, X)         cri_val_escape<std::remove_reference<T>::type>(X)
 # define CRI_USER_TOSTR(Tag, Var)                                     \
     ([&]() -> char * {                                                \
         using namespace criterion::internal::stream_char_conv;        \
@@ -416,19 +133,15 @@ std::wstring cri_val_escape(const wchar_t (&s)[N]) { return std::wstring(s); }
         out[str.size()] = '\0';                                       \
         return out;                                                   \
     } ())
-# define CRI_ASSERT_UNPRINTABLE(Tag, Var)    (void *) CRI_USER_TOSTR(Tag, Var)
+# define CRI_ASSERT_UNPRINTABLE(Var)    CRI_USER_TOSTR(, Var)
 # define CRI_ASSERT_NAMESPACES    \
     using namespace std::rel_ops; \
     using namespace criterion::internal::operators
-# define CRI_AUTOTYPE    auto
 #else
-# define CRI_VALUE_ESCAPE(T, X)              X
-# define CRI_USER_TOSTR(Tag, Var)            CRI_USER_TAG_ID(tostr, Tag)(&(Var))
-# define CRI_ASSERT_UNPRINTABLE(Tag, Var)    (void *) "<unprintable>"
+# define CRI_VALUE_ESCAPE(T, X)         X
+# define CRI_USER_TOSTR(Tag, Var)       CRI_USER_TAG_ID(tostr, Tag)(&(Var))
+# define CRI_ASSERT_UNPRINTABLE(Var)    "<unprintable>"
 # define CRI_ASSERT_NAMESPACES    do {} while (0)
-# ifdef __GNUC__
-#  define CRI_AUTOTYPE            __extension__ __auto_type
-# endif
 #endif
 
 #define CRI_ASSERT_SPECIFIER_VALUE(Val)           \
@@ -444,234 +157,50 @@ std::wstring cri_val_escape(const wchar_t (&s)[N]) { return std::wstring(s); }
 #define CRI_SIZE_T_FMT %zu
 /* *INDENT-ON* */
 
-#define CRI_ASSERT_SPECIFIER_OP_HELPER(Op, N, ...)    CR_DEFER(CR_CONCAT)(CRI_ASSERT_SPECIFIER_ ## Op, N)(__VA_ARGS__)
-
-/* Binary specifier helpers */
-
-#ifdef CRI_AUTOTYPE
-# define CRI_ASSERT_SPECIFIER_OP2(Op, Name, Lhs, Rhs)                 \
-    1; do {                                                           \
-        CRI_ASSERT_NAMESPACES;                                        \
-        CRI_AUTOTYPE cri_lhs = CRI_VALUE_ESCAPE(decltype (Lhs), Lhs); \
-        CRI_AUTOTYPE cri_rhs = CRI_VALUE_ESCAPE(decltype (Rhs), Rhs); \
-        cri_cond_un = Op (cri_lhs, cri_rhs);                          \
-        cri_assert_node_init(&cri_tmpn);                              \
-        cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                        \
-        cri_tmpn.repr = CR_STR(Name(Lhs, Rhs));                       \
-        cri_tmpn.actual = CRI_ASSERT_UNPRINTABLE(Tag, cri_lhs);       \
-        cri_tmpn.expected = CRI_ASSERT_UNPRINTABLE(Tag, cri_rhs);     \
-        cri_tmpn.pass = cri_cond_un;                                  \
-        cri_assert_node_add(cri_node, &cri_tmpn);                     \
-    } while (0)
-#else
-# define CRI_ASSERT_SPECIFIER_OP2(Op, Name, Lhs, Rhs) \
-    1; CR_COMPILE_ERROR(Name without a tag parameter is unsupported on this compiler.)
-#endif
-
-#define CRI_ASSERT_SPECIFIER_OP3(Op, Name, Tag, Lhs, Rhs) \
-    CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAGC_ ## Tag(), CRI_ASSERT_SPECIFIER_OP3_SINGLE, , CRI_ASSERT_SPECIFIER_OP3_ARRAY, )(Op, Name, Tag, Lhs, Rhs)
-
-#define CRI_ASSERT_SPECIFIER_OP3_SINGLE(Op, Name, Tag, Lhs, Rhs)                      \
-    1; do {                                                                           \
-        CRI_ASSERT_NAMESPACES;                                                        \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_lhs = CRI_VALUE_ESCAPE(decltype (cri_lhs), Lhs); \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_rhs = CRI_VALUE_ESCAPE(decltype (cri_rhs), Rhs); \
-        cri_cond_un = Op (Tag, cri_lhs, cri_rhs);                                     \
-        cri_assert_node_init(&cri_tmpn);                                              \
-        cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                                        \
-        cri_tmpn.repr = CR_STR(Name(Tag, Lhs, Rhs));                                  \
-        cri_tmpn.actual = (void *) CRI_USER_TOSTR(Tag, cri_lhs);                      \
-        cri_tmpn.expected = (void *) CRI_USER_TOSTR(Tag, cri_rhs);                    \
-        cri_tmpn.pass = cri_cond_un;                                                  \
-        cri_assert_node_add(cri_node, &cri_tmpn);                                     \
-    } while (0)
-
-#define CRI_ASSERT_SPECIFIER_OP3_ARRAY(Op, Name, Tag, Lhs, Rhs)                                          \
-    1; do {                                                                                              \
-        CRI_ASSERT_NAMESPACES;                                                                           \
-        CRI_ASSERT_TYPE_TAG(Tag) * cri_lhs = CRI_VALUE_ESCAPE(decltype (cri_lhs), Lhs);                  \
-        CRI_ASSERT_TYPE_TAG(Tag) * cri_rhs = CRI_VALUE_ESCAPE(decltype (cri_rhs), Rhs);                  \
-        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag);                                               \
-        cri_assert_node_init(&cri_tmpn);                                                                 \
-        cri_tmpn.repr = CR_STR(Name(Tag, Lhs, Rhs));                                                     \
-        cri_tmpn.pass = 1;                                                                               \
-        struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);                      \
-        struct cri_assert_node *cri_node = cri_tmp;                                                      \
-        for (size_t cri_i = 0; cri_node->pass && cri_i < cri_size; ++cri_i) {                            \
-            cri_assert_node_init(&cri_tmpn);                                                             \
-            cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                                                       \
-            cr_asprintf((char **) &cri_tmpn.repr,                                                        \
-                    CR_STR(Name(CRI_ASSERT_TYPE_TAG_ID(Tag), Lhs[CRI_SIZE_T_FMT], Rhs[CRI_SIZE_T_FMT])), \
-                    cri_i, cri_i);                                                                       \
-            cri_tmpn.actual = (void *) CRI_USER_TOSTR(Tag, cri_lhs[cri_i]);                              \
-            cri_tmpn.expected = (void *) CRI_USER_TOSTR(Tag, cri_rhs[cri_i]);                            \
-            cri_tmpn.pass = Op (Tag, cri_lhs[cri_i], cri_rhs[cri_i]);                                    \
-            cri_assert_node_add(cri_node, &cri_tmpn);                                                    \
-            cri_node->pass = cri_node->pass && cri_tmpn.pass;                                            \
-        }                                                                                                \
-        cri_cond_un = cri_node->pass;                                                                    \
-    } while (0)
-
-/* Unary specifier helpers */
-
-#ifdef CRI_AUTOTYPE
-# define CRI_ASSERT_SPECIFIER_UNOP1(Op, Name, Val)                    \
-    1; do {                                                           \
-        CRI_ASSERT_NAMESPACES;                                        \
-        CRI_AUTOTYPE cri_val = CRI_VALUE_ESCAPE(decltype (Val), Val); \
-        cri_cond_un = Op (cri_val);                                   \
-        cri_assert_node_init(&cri_tmpn);                              \
-        cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                        \
-        cri_tmpn.repr = CR_STR(Name(Val));                            \
-        cri_tmpn.actual = CRI_ASSERT_UNPRINTABLE(Tag, cri_val);       \
-        cri_tmpn.pass = cri_cond_un;                                  \
-        cri_assert_node_add(cri_node, &cri_tmpn);                     \
-    } while (0)
-#else
-# define CRI_ASSERT_SPECIFIER_UNOP1(Op, Name, Val) \
-    1; CR_COMPILE_ERROR(Name without a tag parameter is unsupported on this compiler.)
-#endif
-
-#define CRI_ASSERT_SPECIFIER_UNOP2(Op, Name, Tag, Val) \
-    CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAGC_ ## Tag(), CRI_ASSERT_SPECIFIER_UNOP2_SINGLE, , CRI_ASSERT_SPECIFIER_UNOP2_ARRAY, )(Op, Name, Tag, Val)
-
-#define CRI_ASSERT_SPECIFIER_UNOP2_SINGLE(Op, Name, Tag, Val)                         \
-    1; do {                                                                           \
-        CRI_ASSERT_NAMESPACES;                                                        \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_val = CRI_VALUE_ESCAPE(decltype (cri_val), Val); \
-        cri_cond_un = Op (Tag, cri_val);                                              \
-        cri_assert_node_init(&cri_tmpn);                                              \
-        cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                                        \
-        cri_tmpn.repr = CR_STR(Name(Tag, Val));                                       \
-        cri_tmpn.actual = (void *) CRI_USER_TOSTR(Tag, cri_val);                      \
-        cri_tmpn.expected = (void *) "<zero-ish>";                                    \
-        cri_tmpn.pass = cri_cond_un;                                                  \
-        cri_assert_node_add(cri_node, &cri_tmpn);                                     \
-    } while (0)
-
-#define CRI_ASSERT_SPECIFIER_UNOP2_ARRAY(Op, Name, Tag, Val)                                                              \
-    1; do {                                                                                                               \
-        CRI_ASSERT_NAMESPACES;                                                                                            \
-        CRI_ASSERT_TYPE_TAG(Tag) * cri_val = CRI_VALUE_ESCAPE(decltype (cri_val), Val);                                   \
-        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag);                                                                \
-        cri_assert_node_init(&cri_tmpn);                                                                                  \
-        cri_tmpn.repr = CR_STR(Name(Tag, Val));                                                                           \
-        cri_tmpn.pass = 1;                                                                                                \
-        struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);                                       \
-        struct cri_assert_node *cri_node = cri_tmp;                                                                       \
-        for (size_t cri_i = 0; cri_node->pass && cri_i < cri_size; ++cri_i) {                                             \
-            cri_assert_node_init(&cri_tmpn);                                                                              \
-            cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                                                                        \
-            cr_asprintf((char **) &cri_tmpn.repr, CR_STR(Name(CRI_ASSERT_TYPE_TAG_ID(Tag), val[CRI_SIZE_T_FMT])), cri_i); \
-            cri_tmpn.actual = (void *) CRI_USER_TOSTR(Tag, cri_val[cri_i]);                                               \
-            cri_tmpn.expected = (void *) "<zero-ish>";                                                                    \
-            cri_tmpn.pass = Op (Tag, cri_val[cri_i]);                                                                     \
-            cri_assert_node_add(cri_node, &cri_tmpn);                                                                     \
-            cri_node->pass = cri_node->pass && cri_tmpn.pass;                                                             \
-        }                                                                                                                 \
-        cri_cond_un = cri_node->pass;                                                                                     \
-    } while (0)
-
-/* Ternary specifier helpers */
-
-#ifdef CRI_AUTOTYPE
-# define CRI_ASSERT_SPECIFIER_TERNOP3(Op, Name, Lhs, Rhs, Val, ValType) \
-    1; do {                                                             \
-        CRI_ASSERT_NAMESPACES;                                          \
-        CRI_AUTOTYPE cri_lhs = CRI_VALUE_ESCAPE(decltype (Lhs), Lhs);   \
-        CRI_AUTOTYPE cri_rhs = CRI_VALUE_ESCAPE(decltype (Rhs), Rhs);   \
-        ValType cri_val = CRI_VALUE_ESCAPE(ValType, Val);               \
-        cri_cond_un = Op (cri_lhs, cri_rhs, cri_val);                   \
-        cri_assert_node_init(&cri_tmpn);                                \
-        cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                          \
-        cri_tmpn.repr = CR_STR(Name(Lhs, Rhs, Val));                    \
-        cri_tmpn.actual = CRI_ASSERT_UNPRINTABLE(Tag, cri_lhs);         \
-        cri_tmpn.expected = CRI_ASSERT_UNPRINTABLE(Tag, cri_rhs);       \
-        cri_tmpn.pass = cri_cond_un;                                    \
-        cri_assert_node_add(cri_node, &cri_tmpn);                       \
-    } while (0)
-#else
-# define CRI_ASSERT_SPECIFIER_TERNOP3(Op, Name, Lhs, Rhs, Val, ValType) \
-    1; CR_COMPILE_ERROR(Name without a tag parameter is unsupported on this compiler.)
-#endif
-
-#define CRI_ASSERT_SPECIFIER_TERNOP4(Op, Name, Tag, Lhs, Rhs, Val, ValType) \
-    CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAGC_ ## Tag(), CRI_ASSERT_SPECIFIER_TERNOP4_SINGLE, , CRI_ASSERT_SPECIFIER_TERNOP4_ARRAY, )(Op, Name, Tag, Lhs, Rhs, Val, ValType)
-
-#define CRI_ASSERT_SPECIFIER_TERNOP4_SINGLE(Op, Name, Tag, Lhs, Rhs, Val, ValType)    \
-    1; do {                                                                           \
-        CRI_ASSERT_NAMESPACES;                                                        \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_lhs = CRI_VALUE_ESCAPE(decltype (cri_lhs), Lhs); \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_rhs = CRI_VALUE_ESCAPE(decltype (cri_rhs), Rhs); \
-        ValType cri_val = CRI_VALUE_ESCAPE(ValType, Val);                             \
-        cri_cond_un = Op (Tag, cri_lhs, cri_rhs, cri_val);                            \
-        cri_assert_node_init(&cri_tmpn);                                              \
-        cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                                        \
-        cri_tmpn.repr = CR_STR(Name(Tag, Val));                                       \
-        cri_tmpn.actual = (void *) CRI_USER_TOSTR(Tag, cri_lhs);                      \
-        cri_tmpn.expected = (void *) CRI_USER_TOSTR(Tag, cri_rhs);                    \
-        cri_tmpn.pass = cri_cond_un;                                                  \
-        cri_assert_node_add(cri_node, &cri_tmpn);                                     \
-    } while (0)
-
-#define CRI_ASSERT_SPECIFIER_TERNOP4_ARRAY(Op, Name, Tag, Lhs, Rhs, Val, ValType)                             \
-    1; do {                                                                                                   \
-        CRI_ASSERT_NAMESPACES;                                                                                \
-        CRI_ASSERT_TYPE_TAG(Tag) * cri_lhs = CRI_VALUE_ESCAPE(decltype (cri_lhs), Lhs);                       \
-        CRI_ASSERT_TYPE_TAG(Tag) * cri_rhs = CRI_VALUE_ESCAPE(decltype (cri_rhs), Rhs);                       \
-        ValType cri_val = CRI_VALUE_ESCAPE(ValType, Val);                                                     \
-        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag);                                                    \
-        cri_assert_node_init(&cri_tmpn);                                                                      \
-        cri_tmpn.repr = CR_STR(Name(Tag, Val));                                                               \
-        cri_tmpn.pass = 1;                                                                                    \
-        struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);                           \
-        struct cri_assert_node *cri_node = cri_tmp;                                                           \
-        for (size_t cri_i = 0; cri_node->pass && cri_i < cri_size; ++cri_i) {                                 \
-            cri_assert_node_init(&cri_tmpn);                                                                  \
-            cri_tmpn.rtype = CRI_ASSERT_RT_STRING;                                                            \
-            cr_asprintf((char **) &cri_tmpn.repr,                                                             \
-                    CR_STR(Name(CRI_ASSERT_TYPE_TAG_ID(Tag), Lhs[CRI_SIZE_T_FMT], Rhs[CRI_SIZE_T_FMT], Val)), \
-                    cri_i, cri_i);                                                                            \
-            cri_tmpn.actual = (void *) CRI_USER_TOSTR(Tag, cri_lhs[cri_i]);                                   \
-            cri_tmpn.expected = (void *) CRI_USER_TOSTR(Tag, cri_rhs[cri_i]);                                 \
-            cri_tmpn.pass = Op (Tag, cri_lhs[cri_i], cri_rhs[cri_i], cri_val);                                \
-            cri_assert_node_add(cri_node, &cri_tmpn);                                                         \
-            cri_node->pass = cri_node->pass && cri_tmpn.pass;                                                 \
-        }                                                                                                     \
-        cri_cond_un = cri_node->pass;                                                                         \
-    } while (0)
-
 /* Comparison specifiers */
 
-#define CRI_ASSERT_TEST_SPECIFIER_eq(...)          ,
-#define CRI_ASSERT_SPECIFIER_eq(...)               CRI_ASSERT_SPECIFIER_OP_HELPER(eq, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_eq2(Lhs, Rhs)         CRI_ASSERT_SPECIFIER_OP2(CRI_BINOP_EQ, eq, Lhs, Rhs)
-#define CRI_ASSERT_SPECIFIER_eq3(Tag, Lhs, Rhs)    CRI_ASSERT_SPECIFIER_OP3(CRI_BINOP_T_EQ, eq, Tag, Lhs, Rhs)
+#define CRI_ASSERT_TEST_SPECIFIER_eq(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_ne(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_le(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_lt(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_ge(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_gt(...)    ,
 
-#define CRI_ASSERT_TEST_SPECIFIER_ne(...)          ,
-#define CRI_ASSERT_SPECIFIER_ne(...)               CRI_ASSERT_SPECIFIER_OP_HELPER(ne, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_ne2(Lhs, Rhs)         CRI_ASSERT_SPECIFIER_OP2(CRI_BINOP_NE, ne, Lhs, Rhs)
-#define CRI_ASSERT_SPECIFIER_ne3(Tag, Lhs, Rhs)    CRI_ASSERT_SPECIFIER_OP3(CRI_BINOP_T_NE, ne, Tag, Lhs, Rhs)
+#define CRI_ASSERT_SPECIFIER_eq(...)                                                            \
+    CRI_ASSERT_SPECIFIER_OP(CRI_BINOP_T_EQ, CRI_BINOP_EQ, eq, (                                 \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),    \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_expected, "expected", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
 
-#define CRI_ASSERT_TEST_SPECIFIER_le(...)          ,
-#define CRI_ASSERT_SPECIFIER_le(...)               CRI_ASSERT_SPECIFIER_OP_HELPER(le, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_le2(Lhs, Rhs)         CRI_ASSERT_SPECIFIER_OP2(CRI_BINOP_LE, le, Lhs, Rhs)
-#define CRI_ASSERT_SPECIFIER_le3(Tag, Lhs, Rhs)    CRI_ASSERT_SPECIFIER_OP3(CRI_BINOP_T_LE, le, Tag, Lhs, Rhs)
+#define CRI_ASSERT_SPECIFIER_ne(...)                                                                \
+    CRI_ASSERT_SPECIFIER_OP(CRI_BINOP_T_NE, CRI_BINOP_NE, ne, (                                     \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),        \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_unexpected, "unexpected", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
 
-#define CRI_ASSERT_TEST_SPECIFIER_lt(...)          ,
-#define CRI_ASSERT_SPECIFIER_lt(...)               CRI_ASSERT_SPECIFIER_OP_HELPER(lt, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_lt2(Lhs, Rhs)         CRI_ASSERT_SPECIFIER_OP2(CRI_BINOP_LT, lt, Lhs, Rhs)
-#define CRI_ASSERT_SPECIFIER_lt3(Tag, Lhs, Rhs)    CRI_ASSERT_SPECIFIER_OP3(CRI_BINOP_T_LT, lt, Tag, Lhs, Rhs)
+#define CRI_ASSERT_SPECIFIER_lt(...)                                                              \
+    CRI_ASSERT_SPECIFIER_OP(CRI_BINOP_T_LT, CRI_BINOP_LT, lt, (                                   \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),      \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_reference, "reference", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
 
-#define CRI_ASSERT_TEST_SPECIFIER_ge(...)          ,
-#define CRI_ASSERT_SPECIFIER_ge(...)               CRI_ASSERT_SPECIFIER_OP_HELPER(ge, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_ge2(Lhs, Rhs)         CRI_ASSERT_SPECIFIER_OP2(CRI_BINOP_GE, ge, Lhs, Rhs)
-#define CRI_ASSERT_SPECIFIER_ge3(Tag, Lhs, Rhs)    CRI_ASSERT_SPECIFIER_OP3(CRI_BINOP_T_GE, ge, Tag, Lhs, Rhs)
+#define CRI_ASSERT_SPECIFIER_le(...)                                                              \
+    CRI_ASSERT_SPECIFIER_OP(CRI_BINOP_T_LE, CRI_BINOP_LE, le, (                                   \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),      \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_reference, "reference", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
 
-#define CRI_ASSERT_TEST_SPECIFIER_gt(...)          ,
-#define CRI_ASSERT_SPECIFIER_gt(...)               CRI_ASSERT_SPECIFIER_OP_HELPER(gt, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_gt2(Lhs, Rhs)         CRI_ASSERT_SPECIFIER_OP2(CRI_BINOP_GT, gt, Lhs, Rhs)
-#define CRI_ASSERT_SPECIFIER_gt3(Tag, Lhs, Rhs)    CRI_ASSERT_SPECIFIER_OP3(CRI_BINOP_T_GT, gt, Tag, Lhs, Rhs)
+#define CRI_ASSERT_SPECIFIER_gt(...)                                                              \
+    CRI_ASSERT_SPECIFIER_OP(CRI_BINOP_T_GT, CRI_BINOP_GT, gt, (                                   \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),      \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_reference, "reference", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
+
+#define CRI_ASSERT_SPECIFIER_ge(...)                                                              \
+    CRI_ASSERT_SPECIFIER_OP(CRI_BINOP_T_GE, CRI_BINOP_GE, ge, (                                   \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),      \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_reference, "reference", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
 
 /* IEEE specifiers */
 
@@ -729,40 +258,60 @@ CRI_DEFINE_IEEE_ULP_EQ(dbl, )
 CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 #endif
 
-#define CRI_ASSERT_TEST_SPECIFIER_ieee_ulp_eq(...)               ,
-#define CRI_ASSERT_SPECIFIER_ieee_ulp_eq(...)                    CRI_ASSERT_SPECIFIER_OP_HELPER(ieee_ulp_eq, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_ieee_ulp_eq2(Lhs, Rhs, Ulp)         CRI_ASSERT_SPECIFIER_TERNOP3(CRI_IEEE_ULP_EQ, ieee_ulp_eq, Lhs, Rhs, Ulp, size_t)
-#define CRI_ASSERT_SPECIFIER_ieee_ulp_eq3(Tag, Lhs, Rhs, Ulp)    CRI_ASSERT_SPECIFIER_TERNOP4(CRI_IEEE_ULP_T_EQ, ieee_ulp_eq, Tag, Lhs, Rhs, Ulp, size_t)
+#define CRI_ASSERT_TEST_SPECIFIER_ieee_ulp_eq(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_ieee_ulp_ne(...)    ,
 
-#define CRI_ASSERT_TEST_SPECIFIER_ieee_ulp_ne(...)               ,
-#define CRI_ASSERT_SPECIFIER_ieee_ulp_ne(...)                    CRI_ASSERT_SPECIFIER_OP_HELPER(ieee_ulp_ne, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_ieee_ulp_ne2(Lhs, Rhs, Ulp)         CRI_ASSERT_SPECIFIER_TERNOP3(CRI_IEEE_ULP_NE, ieee_ulp_ne, Lhs, Rhs, Ulp, size_t)
-#define CRI_ASSERT_SPECIFIER_ieee_ulp_ne3(Tag, Lhs, Rhs, Ulp)    CRI_ASSERT_SPECIFIER_TERNOP4(CRI_IEEE_ULP_T_NE, ieee_ulp_ne, Tag, Lhs, Rhs, Ulp, size_t)
+#define CRI_MKNODE_ULP(_, Var)                        CRI_MKNODE_STR(sz, Var)
+
+#define CRI_ASSERT_SPECIFIER_ieee_ulp_eq(...)                                                    \
+    CRI_ASSERT_SPECIFIER_OP(CRI_IEEE_ULP_T_EQ, CRI_IEEE_ULP_EQ, ieee_ulp_eq, (                   \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),     \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_expected, "expected", CRI_MKNODE_STR), \
+                (SINGLE, size_t, cri_ulp, "ulp", CRI_MKNODE_ULP)                                 \
+                ), __VA_ARGS__)
+
+#define CRI_ASSERT_SPECIFIER_ieee_ulp_ne(...)                                                      \
+    CRI_ASSERT_SPECIFIER_OP(CRI_IEEE_ULP_T_NE, CRI_IEEE_ULP_NE, ieee_ulp_ne, (                     \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),       \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_expected, "unexpected", CRI_MKNODE_STR), \
+                (SINGLE, size_t, cri_ulp, "ulp", CRI_MKNODE_ULP)                                   \
+                ), __VA_ARGS__)
 
 /* Epsilon specifiers */
 
-#define CRI_EPSILON_EQ(Lhs, Rhs, Eps)                           ((Rhs) - (Lhs) <= (Eps) && (Lhs) - (Rhs) <= (Eps))
-#define CRI_EPSILON_NE(Lhs, Rhs, Eps)                           !CRI_EPSILON_EQ(Lhs, Rhs, Eps)
+#define CRI_EPSILON_EQ(Lhs, Rhs, Eps)                ((Rhs) - (Lhs) <= (Eps) && (Lhs) - (Rhs) <= (Eps))
+#define CRI_EPSILON_NE(Lhs, Rhs, Eps)                !CRI_EPSILON_EQ(Lhs, Rhs, Eps)
 
-#define CRI_EPSILON_T_EQ(Tag, Lhs, Rhs, Eps)                    CRI_EPSILON_EQ(Lhs, Rhs, Eps)
-#define CRI_EPSILON_T_NE(Tag, Lhs, Rhs, Eps)                    CRI_EPSILON_NE(Lhs, Rhs, Eps)
+#define CRI_EPSILON_T_EQ(Tag, Lhs, Rhs, Eps)         CRI_EPSILON_EQ(Lhs, Rhs, Eps)
+#define CRI_EPSILON_T_NE(Tag, Lhs, Rhs, Eps)         CRI_EPSILON_NE(Lhs, Rhs, Eps)
 
-#define CRI_ASSERT_TEST_SPECIFIER_epsilon_eq(...)               ,
-#define CRI_ASSERT_SPECIFIER_epsilon_eq(...)                    CRI_ASSERT_SPECIFIER_OP_HELPER(epsilon_eq, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_epsilon_eq2(Lhs, Rhs, Eps)         CRI_ASSERT_SPECIFIER_TERNOP3(CRI_EPSILON_EQ, epsilon_eq, Lhs, Rhs, Eps, long double)
-#define CRI_ASSERT_SPECIFIER_epsilon_eq3(Tag, Lhs, Rhs, Eps)    CRI_ASSERT_SPECIFIER_TERNOP4(CRI_EPSILON_T_EQ, epsilon_eq, Tag, Lhs, Rhs, Eps, long double)
+#define CRI_ASSERT_TEST_SPECIFIER_epsilon_eq(...)    ,
+#define CRI_ASSERT_TEST_SPECIFIER_epsilon_ne(...)    ,
 
-#define CRI_ASSERT_TEST_SPECIFIER_epsilon_ne(...)               ,
-#define CRI_ASSERT_SPECIFIER_epsilon_ne(...)                    CRI_ASSERT_SPECIFIER_OP_HELPER(epsilon_ne, CRI_ASSERT_SPEC_OP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_epsilon_ne2(Lhs, Rhs, Eps)         CRI_ASSERT_SPECIFIER_TERNOP3(CRI_EPSILON_NE, epsilon_ne, Lhs, Rhs, Eps, long double)
-#define CRI_ASSERT_SPECIFIER_epsilon_ne3(Tag, Lhs, Rhs, Eps)    CRI_ASSERT_SPECIFIER_TERNOP4(CRI_EPSILON_T_NE, epsilon_ne, Tag, Lhs, Rhs, Eps, long double)
+#define CRI_MKNODE_EPS(_, Var)                       CRI_MKNODE_STR(ldbl, Var)
+
+#define CRI_ASSERT_SPECIFIER_epsilon_eq(...)                                                     \
+    CRI_ASSERT_SPECIFIER_OP(CRI_EPSILON_T_EQ, CRI_EPSILON_EQ, epsilon_eq, (                      \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),     \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_expected, "expected", CRI_MKNODE_STR), \
+                (SINGLE, long double, cri_epsilon, "epsilon", CRI_MKNODE_EPS)                    \
+                ), __VA_ARGS__)
+
+#define CRI_ASSERT_SPECIFIER_epsilon_ne(...)                                                       \
+    CRI_ASSERT_SPECIFIER_OP(CRI_EPSILON_T_NE, CRI_EPSILON_NE, epsilon_ne, (                        \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_actual, "actual", CRI_MKNODE_STR),       \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_expected, "unexpected", CRI_MKNODE_STR), \
+                (SINGLE, long double, cri_epsilon, "epsilon", CRI_MKNODE_EPS)                      \
+                ), __VA_ARGS__)
 
 /* Other specifiers */
 
 #define CRI_ASSERT_TEST_SPECIFIER_zero(...)    ,
-#define CRI_ASSERT_SPECIFIER_zero(...)         CRI_ASSERT_SPECIFIER_OP_HELPER(zero, CRI_ASSERT_SPEC_UNOP_LEN(__VA_ARGS__), __VA_ARGS__)
-#define CRI_ASSERT_SPECIFIER_zero1(X)          CRI_ASSERT_SPECIFIER_UNOP1(CRI_UNOP_ZERO, zero, X)
-#define CRI_ASSERT_SPECIFIER_zero2(Tag, X)     CRI_ASSERT_SPECIFIER_UNOP2(CRI_UNOP_T_ZERO, zero, Tag, X)
+
+#define CRI_ASSERT_SPECIFIER_zero(...)                                                    \
+    CRI_ASSERT_SPECIFIER_OP(CRI_UNOP_T_ZERO, CRI_UNOP_ZERO, zero, (                       \
+                (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_value, "value", CRI_MKNODE_STR) \
+                ), __VA_ARGS__)
 
 /* Logical specifiers */
 
@@ -890,6 +439,12 @@ CRI_ASSERT_DECLARE_NATIVE_FN(dbl, "f")
 CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "Lf")
 CRI_ASSERT_DECLARE_STR_FN(str, "s")
 CRI_ASSERT_DECLARE_STR_FN(wcs, "ls")
+
+# ifdef _WIN32
+CRI_ASSERT_DECLARE_NATIVE_FN(sz, "Iu")
+# else
+CRI_ASSERT_DECLARE_NATIVE_FN(sz, "zu")
+# endif
 #endif
 
 #if defined (_WIN32)
@@ -901,10 +456,10 @@ CRI_ASSERT_DECLARE_NATIVE_FN(tcs, "s")
 # endif
 #endif
 
-#include "memory.h"
+#include "assert/memory.h"
 
 #ifdef CRI_CAPS_COMPLEX
-# include "complex.h"
+# include "assert/complex.h"
 #endif
 
 #undef cr_assert_user

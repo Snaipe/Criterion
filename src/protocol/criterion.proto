@@ -35,32 +35,26 @@ message death {
     optional int64 timestamp = 3;
 }
 
-message result_object {
-    enum result_type {
-        DATA = 1;
-        PATH = 2;
-    }
-
-    required result_type type = 1;
+message param_entry {
+    optional string name = 1;
 
     oneof data {
-        bytes raw = 2;
-        string str = 3;
+        bytes raw   = 2;
+        string str  = 3;
     }
 }
 
+message param_list {
+    repeated param_entry list = 1;
+}
+
 message result {
-
-    message pair {
-        optional result_object expected = 1;
-        optional result_object actual = 2;
-    }
-
     required string repr = 1;
+    optional string message = 2;
 
     oneof value {
-        pair obj = 2;
-        string diff = 3;
+        param_list params = 3;
+        string formatted = 4;
     }
 }
 

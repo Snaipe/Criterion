@@ -38,6 +38,8 @@
 #define CR_DEFER(x)                       x CR_EMPTY()
 #define CR_OBSTRUCT(...)                  __VA_ARGS__ CR_DEFER(CR_EMPTY)()
 
+#define CR_EAT(...)                       __VA_ARGS__
+
 #define CRI_DEFER1(x)                     CR_DEFER(x)
 #define CRI_DEFER2(x)                     CR_DEFER(CRI_DEFER1)(x)
 #define CRI_DEFER3(x)                     CR_DEFER(CRI_DEFER2)(x)
@@ -56,8 +58,8 @@
 #define CR_EVAL3(...)                     CR_EVAL4(CR_EVAL4(CR_EVAL4(CR_EVAL4(__VA_ARGS__))))
 #define CR_EVAL4(...)                     CR_IDENTITY(__VA_ARGS__)
 
-#define CR_STR(x)                         CR_EXPAND(CR_STR_(x))
-#define CR_STR_(x)                        #x
+#define CR_STR(...)                       CR_EXPAND(CR_STR_(__VA_ARGS__))
+#define CR_STR_(...)                      #__VA_ARGS__
 
 #define CR_VA_TAIL(...)                   CR_EXPAND(CR_VA_TAIL_HELPER(CR_VA_TAIL_SELECT(__VA_ARGS__), __VA_ARGS__))
 
@@ -97,11 +99,15 @@
 #define CR_CONCAT2(A, B)                                                 CR_CONCAT3(A, B)
 #define CR_CONCAT3(A, B)                                                 A ## B
 
-#define CRI_IF_DEFINED(M, Then, ThenParams, Else, ElseParams)            CR_CONCAT_E(CRI_IF_DEFINED_, CR_VA_TAIL_SELECT(M))(Then, ThenParams, Else, ElseParams)
+#define CRI_IF_DEFINED__(M, N)                                           M ## N
+#define CRI_IF_DEFINED_(M, N)                                            CRI_IF_DEFINED__(M, N)
+#define CRI_IF_DEFINED(M, Then, ThenParams, Else, ElseParams)            CRI_IF_DEFINED_(CRI_IF_DEFINED_, CR_VA_TAIL_SELECT(M))(Then, ThenParams, Else, ElseParams)
 #define CRI_IF_DEFINED_1(Then, ThenParams, Else, ElseParams)             CRI_DEFER2(Else) ElseParams
 #define CRI_IF_DEFINED_2(Then, ThenParams, Else, ElseParams)             CRI_DEFER2(Then) ThenParams
 
-#define CRI_IF_DEFINED_NODEFER(M, Then, ThenParams, Else, ElseParams)    CR_CONCAT_E(CRI_IF_DEFINED_NODEFER_, CR_VA_TAIL_SELECT(M))(Then, ThenParams, Else, ElseParams)
+#define CRI_IF_DEFINED_NODEFER__(M, N)                                   M ## N
+#define CRI_IF_DEFINED_NODEFER_(M, N)                                    CRI_IF_DEFINED_NODEFER__(M, N)
+#define CRI_IF_DEFINED_NODEFER(M, Then, ThenParams, Else, ElseParams)    CRI_IF_DEFINED_NODEFER_(CRI_IF_DEFINED_NODEFER_, CR_VA_TAIL_SELECT(M))(Then, ThenParams, Else, ElseParams)
 #define CRI_IF_DEFINED_NODEFER_1(Then, ThenParams, Else, ElseParams)     Else ElseParams
 #define CRI_IF_DEFINED_NODEFER_2(Then, ThenParams, Else, ElseParams)     Then ThenParams
 

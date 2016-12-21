@@ -46,7 +46,14 @@
 # define CR_COMPILE_ERROR_(Msg)    ((void) sizeof (char[-1]))
 #endif
 
-#define CR_DEPRECATED(Msg)    CR_PRAGMA(message(Msg))
+#define CRI_COMPILE_ERROR(...)    ,
+#define CR_CHECKERROR__(M, N)     M ## N
+#define CR_CHECKERROR_(M, N)      CR_CHECKERROR__(M, N)
+#define CR_CHECKERROR(M)          CR_CHECKERROR_(CR_CHECKERROR_, CR_VA_TAIL_SELECT(CR_CHECKERROR_(CRI_, M)))(M)
+#define CR_CHECKERROR_1(M)        M
+#define CR_CHECKERROR_2(M)        CR_CHECKERROR_(CR_, M)
+
+#define CR_DEPRECATED(Msg)        CR_PRAGMA(message(Msg))
 
 #ifdef __GNUC__
 # define CR_DEPRECATED_MEMBER(Member)    Member __attribute__((deprecated))

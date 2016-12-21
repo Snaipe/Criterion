@@ -54,6 +54,13 @@ struct cr_mem {
 #define CRI_ASSERT_TYPE_TAG_mem       struct cr_mem,
 #define CRI_ASSERT_TYPE_TAG_ID_mem    mem,
 
+#define CRI_ASSERT_MEM_MKNODE(Tag, Var)                           \
+    cri_tmpn.params[cri_paramidx++] = (struct cri_assert_param) { \
+        .type = CRI_ASSERT_RT_RAW,                                \
+        .data = CRI_ASSERT_VAR(Var).data,                         \
+        .size = CRI_ASSERT_VAR(Var).size,                         \
+    };
+
 #ifdef __cplusplus
 bool operator==(const struct cr_mem &m1, const struct cr_mem &m2)
 {

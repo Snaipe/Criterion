@@ -43,8 +43,8 @@ CR_API void cri_assert_node_init(struct cri_assert_node *node)
 CR_API struct cri_assert_node *cri_assert_node_add(struct cri_assert_node *tree,
         struct cri_assert_node *node)
 {
-    if (tree->nchild + 1 >= tree->maxchild) {
-        tree->maxchild = (tree->maxchild + 1) * 1.5;
+    if (tree->nchild + 1u >= tree->maxchild) {
+        tree->maxchild = (tree->maxchild + 1u) * 1.5;
         tree->children = realloc(tree->children, tree->maxchild * sizeof (*tree->children));
         if (!tree->children)
             criterion_test_die("Could not realloc assert result tree: %s", strerror(errno));
@@ -75,26 +75,27 @@ static size_t leaf_count(struct cri_assert_node *tree)
         struct cri_assert_node *node = &tree->children[i];
         if (node->nchild > 0)
             count += leaf_count(&tree->children[i]);
-        if (node->rtype && !node->pass)
+        if (!node->pass)
             ++count;
     }
     return count;
 }
 
-static inline void make_obj(criterion_protocol_result_object *obj,
-        void *data, enum cri_assert_result_type rtype)
+static inline void make_obj(criterion_protocol_param_entry *obj,
+        struct cri_assert_param *p)
 {
-    int type = rtype & 0xff;
-
-    *obj = (criterion_protocol_result_object) {
-        .type = (criterion_protocol_result_object_result_type) type,
+    *obj = (criterion_protocol_param_entry) {
+        .name = (char *) p->name,
     };
-    if (rtype == CRI_ASSERT_RT_DATA) {
-        obj->which_data = criterion_protocol_result_object_raw_tag;
-        obj->data.raw = data;
+
+    if (p->type == CRI_ASSERT_RT_RAW) {
+        obj->which_data = criterion_protocol_param_entry_raw_tag;
+        obj->data.raw = p->data;
+    } else if (p->type == CRI_ASSERT_RT_STR) {
+        obj->which_data = criterion_protocol_param_entry_str_tag;
+        obj->data.str = p->data;
     } else {
-        obj->which_data = criterion_protocol_result_object_str_tag;
-        obj->data.str = data;
+        criterion_test_die("Unknown assert param type %d", p->type);
     }
 }
 
@@ -107,23 +108,41 @@ static criterion_protocol_result *collect_leaves(
             res = collect_leaves(res, node);
             continue;
         }
-        if (!node->rtype || node->pass)
+        if (node->pass)
             continue;
 
         res->repr = (char *) node->repr;
-        res->which_value = criterion_protocol_result_obj_tag;
+        res->message = (char *) node->message;
+        res->which_value = criterion_protocol_result_params_tag;
 
-        if (node->expected) {
-            res->value.obj.has_expected = true;
-            make_obj(&res->value.obj.expected, node->expected, node->rtype);
-        }
-        if (node->actual) {
-            res->value.obj.has_actual = true;
-            make_obj(&res->value.obj.actual, node->actual, node->rtype);
-        }
+        size_t nbparams = 0;
+        for (struct cri_assert_param *p = &node->params[0]; p->name; ++p)
+            ++nbparams;
+
+        res->value.params = malloc(sizeof (res->value.params));
+        res->value.params->list_count = nbparams;
+        res->value.params->list = malloc(sizeof (res->value.params->list) * nbparams);
+
+        for (struct cri_assert_param *p = &node->params[0]; p->name; ++p)
+            make_obj(res->value.params->list, p);
         ++res;
     }
     return res;
+}
+
+static void destroy_tree(criterion_protocol_result *res, size_t len)
+{
+    for (size_t i = 0; i < len; ++i) {
+        for (size_t j = 0; j < res[i].value.params->list_count; ++j) {
+            criterion_protocol_param_entry *obj = &res[i].value.params->list[j];
+            switch (obj->which_data) {
+                case criterion_protocol_param_entry_raw_tag: free(obj->data.raw); break;
+                case criterion_protocol_param_entry_str_tag: free(obj->data.str); break;
+            }
+        }
+        free(res[i].value.params->list);
+        free(res[i].value.params);
+    }
 }
 
 CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_assert_node *tree)
@@ -150,6 +169,8 @@ CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_asser
 
     criterion_message_set_id(msg);
     cr_send_to_runner(&msg);
+
+    destroy_tree(results, nb_results);
 }
 
 CR_API char *cri_assert_message(const char *fmt, ...)
@@ -165,4 +186,13 @@ CR_API char *cri_assert_message(const char *fmt, ...)
     va_end(vl);
 
     return out;
+}
+
+CR_API void *cri_assert_mkbytes(size_t size, const void *bytes)
+{
+    pb_bytes_array_t *data = malloc(PB_BYTES_ARRAY_T_ALLOCSIZE(size));
+
+    data->size = size;
+    memcpy(data->bytes, bytes, size);
+    return data;
 }

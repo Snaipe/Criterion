@@ -56,4 +56,15 @@
 # define CRI_CAPS_COMPLEX
 #endif
 
+/* Does the compiler support auto types? */
+#if defined (__cplusplus)
+# define CRI_AUTOTYPE    auto
+# define CRI_CAPS_AUTOTYPE
+#elif defined (__GNUC__)
+# define CRI_AUTOTYPE    __extension__ __auto_type
+# define CRI_CAPS_AUTOTYPE
+#else
+# define CRI_AUTOTYPE
+#endif
+
 #endif /* !CRITERION_INTERNAL_DETECT_H_ */
