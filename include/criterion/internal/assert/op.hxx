@@ -62,16 +62,22 @@ bool zero(const T &t) { return t.empty(); }
 template <> inline bool zero<>(const char *t) { return !*t; }
 template <> inline bool zero<>(const wchar_t *t) { return !*t; }
 
-std::ostream &operator<<(std::ostream &s, std::wstring &ws)
+std::ostream &operator<<(std::ostream &s, const std::wstring &ws)
 {
     std::mbstate_t state = std::mbstate_t();
     char *curloc = std::setlocale(LC_ALL, NULL);
+    const wchar_t *wc = ws.c_str();
 
     std::setlocale(LC_ALL, "en_US.utf8");
-    std::string ns(std::wcsrtombs(NULL, ws.c_str(), 0, &state) + 1);
-    std::wcsrtombs(&ns[0], ws.c_str(), ns.size(), &state);
-    ns.pop_back();
-    s << ns;
+    size_t sz = std::wcsrtombs(NULL, &wc, 0, &state);
+    if (sz == -1) {
+        s << "<invalid multibyte string>";
+    } else {
+        std::string ns(sz + 1, 0);
+        std::wcsrtombs(&ns[0], &wc, ns.size(), &state);
+        ns.pop_back();
+        s << ns;
+    }
 
     std::setlocale(LC_ALL, curloc);
     return s;
