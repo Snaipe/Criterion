@@ -117,6 +117,6 @@ Test(asserts, array) {
 }
 
 Test(asserts, exception) {
-    cr_assert(throw (std::exception, throw std::exception()));
-    cr_assert(throw (std::bad_alloc, throw std::exception()));
+    cr_assert(throw (std::invalid_argument, throw std::invalid_argument("")));
+    cr_assert(throw (std::bad_alloc, throw std::invalid_argument("")));
 }

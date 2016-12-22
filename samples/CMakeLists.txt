@@ -8,7 +8,7 @@ if (NOT MSVC)
   endif ()
 endif ()
 
-include_directories(../include)
+include_directories(SYSTEM ../include)
 
 set(SAMPLES
   signal.c
