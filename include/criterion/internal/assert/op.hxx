@@ -64,12 +64,12 @@ template <> inline bool zero<>(const wchar_t *t) { return !*t; }
 
 std::ostream &operator<<(std::ostream &s, std::wstring &ws)
 {
-    std::mbstate_t state = {};
+    std::mbstate_t state = std::mbstate_t();
     char *curloc = std::setlocale(LC_ALL, NULL);
 
     std::setlocale(LC_ALL, "en_US.utf8");
-    std::string ns(std::wcsrtombs(NULL, &ws.c_str(), 0, &state) + 1);
-    std::wcsrtombs(&ns[0], &ws.c_str(), ns.size(), &state);
+    std::string ns(std::wcsrtombs(NULL, ws.c_str(), 0, &state) + 1);
+    std::wcsrtombs(&ns[0], ws.c_str(), ns.size(), &state);
     ns.pop_back();
     s << ns;
 
