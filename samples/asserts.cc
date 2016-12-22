@@ -116,7 +116,7 @@ Test(asserts, array) {
     cr_assert(eq(type(struct dummy_struct)[2], s1, s2));
 }
 
-/* Test(asserts, exception) {
-      cr_assert_throw(throw std::exception(), std::exception);
-      cr_assert_throw(throw std::exception(), std::bad_alloc);
-   } */
+Test(asserts, exception) {
+    cr_assert(throw (std::exception, throw std::exception()));
+    cr_assert(throw (std::bad_alloc, throw std::exception()));
+}

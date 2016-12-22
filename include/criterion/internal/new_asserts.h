@@ -313,6 +313,64 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
                 (TAGGED, CRI_AS_GETTYPE(__VA_ARGS__), cri_value, "value", CRI_MKNODE_STR) \
                 ), __VA_ARGS__)
 
+/* Exception specifiers */
+
+#ifdef __cplusplus
+
+# define CRI_ASSERT_TEST_SPECIFIER_throw(...)    ,
+# define CRI_ASSERT_SPECIFIER_throw(Ex, Stmt)         \
+    cri_cond_def; do {                                \
+        cri_assert_node_init(&cri_tmpn);              \
+        cri_tmpn.repr = "throw(" #Ex ", " #Stmt ")";  \
+        try {                                         \
+            Stmt;                                     \
+        } catch (Ex &cri_ex) {                        \
+            cri_cond_un = 1;                          \
+        } catch (std::exception &cri_ex) {            \
+            cri_cond_un = 0;                          \
+            /* TODO: Add std::exception message */    \
+        } catch (...) {                               \
+            cri_cond_un = 0;                          \
+            /* TODO: Add generic exception message */ \
+        }                                             \
+        cri_assert_node_add(cri_node, &cri_tmpn);     \
+    } while (0)
+
+# define CRI_ASSERT_TEST_SPECIFIER_nothrow(...)    ,
+# define CRI_ASSERT_SPECIFIER_nothrow(Stmt)           \
+    cri_cond_def; do {                                \
+        cri_assert_node_init(&cri_tmpn);              \
+        cri_tmpn.repr = "throw(" #Stmt ")";           \
+        try {                                         \
+            Stmt;                                     \
+            cri_cond_un = 1;                          \
+        } catch (std::exception &cri_ex) {            \
+            cri_cond_un = 0;                          \
+            /* TODO: Add std::exception message */    \
+        } catch (...) {                               \
+            cri_cond_un = 0;                          \
+            /* TODO: Add generic exception message */ \
+        }                                             \
+        cri_assert_node_add(cri_node, &cri_tmpn);     \
+    } while (0)
+
+# define CRI_ASSERT_TEST_SPECIFIER_anythrow(...)    ,
+# define CRI_ASSERT_SPECIFIER_anythrow(Stmt)          \
+    cri_cond_def; do {                                \
+        cri_assert_node_init(&cri_tmpn);              \
+        cri_tmpn.repr = "anythrow(" #Stmt ")";        \
+        try {                                         \
+            Stmt;                                     \
+            cri_cond_un = 0;                          \
+        } catch (...) {                               \
+            cri_cond_un = 1;                          \
+            /* TODO: Add generic exception message */ \
+        }                                             \
+        cri_assert_node_add(cri_node, &cri_tmpn);     \
+    } while (0)
+
+#endif /* __cplusplus */
+
 /* Logical specifiers */
 
 #define CRI_ASSERT_TEST_SPECIFIER_not(...)    ,
