@@ -70,7 +70,7 @@ std::ostream &operator<<(std::ostream &s, const std::wstring &ws)
 
     std::setlocale(LC_ALL, "en_US.utf8");
     size_t sz = std::wcsrtombs(NULL, &wc, 0, &state);
-    if (sz == -1) {
+    if (sz == (size_t) -1) {
         s << "<invalid multibyte string>";
     } else {
         std::string ns(sz + 1, 0);
