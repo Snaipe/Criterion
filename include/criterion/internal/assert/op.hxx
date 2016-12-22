@@ -25,7 +25,8 @@
 #define CRITERION_INTERNAL_ASSERT_OP_HXX_
 
 #include <locale>
-#include <codecvt>
+#include <clocale>
+#include <cwchar>
 
 /* *INDENT-OFF* */
 namespace criterion { namespace internal { namespace operators {
@@ -63,8 +64,16 @@ template <> inline bool zero<>(const wchar_t *t) { return !*t; }
 
 std::ostream &operator<<(std::ostream &s, std::wstring &ws)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> conv;
-    s << conv.to_bytes(ws);
+    std::mbstate_t state = {};
+    char *curloc = std::setlocale(LC_ALL, NULL);
+
+    std::setlocale(LC_ALL, "en_US.utf8");
+    std::string ns(std::wcsrtombs(NULL, &ws.c_str(), 0, &state) + 1);
+    std::wcsrtombs(&ns[0], &ws.c_str(), ns.size(), &state);
+    ns.pop_back();
+    s << ns;
+
+    std::setlocale(LC_ALL, curloc);
     return s;
 }
 
