@@ -44,19 +44,16 @@
 #define CRI_DEFER2(x)                     CR_DEFER(CRI_DEFER1)(x)
 #define CRI_DEFER3(x)                     CR_DEFER(CRI_DEFER2)(x)
 #define CRI_DEFER4(x)                     CR_DEFER(CRI_DEFER3)(x)
-#define CRI_DEFER5(x)                     CR_DEFER(CRI_DEFER4)(x)
 
-#define CRI_OBSTRUCT1(...)                __VA_ARGS__ CRI_DEFER5(CR_EMPTY)()
-#define CRI_OBSTRUCT2(...)                __VA_ARGS__ CRI_DEFER5(CRI_OBSTRUCT1)()
-#define CRI_OBSTRUCT3(...)                __VA_ARGS__ CRI_DEFER5(CRI_OBSTRUCT2)()
-#define CRI_OBSTRUCT4(...)                __VA_ARGS__ CRI_DEFER5(CRI_OBSTRUCT3)()
-#define CRI_OBSTRUCT_N(...)               __VA_ARGS__ CRI_DEFER5(CRI_OBSTRUCT4)()
+#define CRI_OBSTRUCT1(...)                __VA_ARGS__ CRI_DEFER4(CR_EMPTY)()
+#define CRI_OBSTRUCT2(...)                __VA_ARGS__ CRI_DEFER4(CRI_OBSTRUCT1)()
+#define CRI_OBSTRUCT3(...)                __VA_ARGS__ CRI_DEFER4(CRI_OBSTRUCT2)()
+#define CRI_OBSTRUCT_N(...)               __VA_ARGS__ CRI_DEFER4(CRI_OBSTRUCT3)()
 
 #define CR_EVAL(...)                      CR_EVAL1(CR_EVAL1(CR_EVAL1(CR_EVAL1(__VA_ARGS__))))
 #define CR_EVAL1(...)                     CR_EVAL2(CR_EVAL2(CR_EVAL2(CR_EVAL2(__VA_ARGS__))))
 #define CR_EVAL2(...)                     CR_EVAL3(CR_EVAL3(CR_EVAL3(CR_EVAL3(__VA_ARGS__))))
-#define CR_EVAL3(...)                     CR_EVAL4(CR_EVAL4(CR_EVAL4(CR_EVAL4(__VA_ARGS__))))
-#define CR_EVAL4(...)                     CR_IDENTITY(__VA_ARGS__)
+#define CR_EVAL3(...)                     CR_IDENTITY(__VA_ARGS__)
 
 #define CR_STR(...)                       CR_EXPAND(CR_STR_(__VA_ARGS__))
 #define CR_STR_(...)                      #__VA_ARGS__
