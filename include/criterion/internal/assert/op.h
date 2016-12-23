@@ -109,14 +109,14 @@
 /* MSVC doesn't like obstructions, but it isn't necessary for their preprocessor
  * implementation */
 #ifdef _MSC_VER
-# define CRI_ASSERT_IT_MKNODE(Tag, Var)        CRI_ASSERT_OPGET(MKNODE, Var)(Tag, CRI_ASSERT_OPGET(VAR, Var));
-# define CRI_ASSERT_IT_MKNODE_ARR(Tag, Var)    CRI_ASSERT_OPGET(MKNODE, Var)(Tag, CRI_ASSERT_OPGET(VAR, Var)[cri_i]);
+# define CRI_ASSERT_IT_MKNODE(Tag, Var)        CRI_ASSERT_OPGET(MKNODE, Var)(Tag, CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(NAME, Var));
+# define CRI_ASSERT_IT_MKNODE_ARR(Tag, Var)    CRI_ASSERT_OPGET(MKNODE, Var)(Tag, CRI_ASSERT_OPGET(VAR, Var)[cri_i], CRI_ASSERT_OPGET(NAME, Var));
 #else
-# define CRI_ASSERT_IT_MKNODE(Tag, Var)        CRI_OBSTRUCT_N(CRI_ASSERT_OPGET(MKNODE, Var))(Tag, CRI_ASSERT_OPGET(VAR, Var));
-# define CRI_ASSERT_IT_MKNODE_ARR(Tag, Var)    CRI_OBSTRUCT_N(CRI_ASSERT_OPGET(MKNODE, Var))(Tag, CRI_ASSERT_OPGET(VAR, Var)[cri_i]);
+# define CRI_ASSERT_IT_MKNODE(Tag, Var)        CRI_OBSTRUCT_N(CRI_ASSERT_OPGET(MKNODE, Var))(Tag, CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(NAME, Var));
+# define CRI_ASSERT_IT_MKNODE_ARR(Tag, Var)    CRI_OBSTRUCT_N(CRI_ASSERT_OPGET(MKNODE, Var))(Tag, CRI_ASSERT_OPGET(VAR, Var)[cri_i], CRI_ASSERT_OPGET(NAME, Var));
 #endif
 
-#define CRI_ASSERT_IT_MKNODE_AUTO(Tag, Var)      CRI_MKNODE_UNPRINTABLE(, CRI_ASSERT_OPGET(VAR, Var));
+#define CRI_ASSERT_IT_MKNODE_AUTO(Tag, Var)      CRI_MKNODE_UNPRINTABLE(, CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(NAME, Var));
 
 #define CRI_ASSERT_IT_UNPACK(_, Var)             , CRI_ASSERT_OPGET(VAR, Var)
 #define CRI_ASSERT_IT_VUNPACK(_, Var)            , CRI_ASSERT_OPGET(VAL, Var)
@@ -133,17 +133,19 @@
 #define CRI_ASSERT_MKLIST_(Macro, n, L1, L2)     CRI_ASSERT_MKLIST__(Macro, n, L1, L2)
 #define CRI_ASSERT_MKLIST(Macro, L1, L2)         CRI_ASSERT_MKLIST_(Macro, CRITERION_ARG_LENGTH L1, L1, L2)
 
-#define CRI_MKNODE_STR(Tag, Var)                                \
+#define CRI_MKNODE_STR(Tag, Var, Name)                          \
     do {                                                        \
         char *cri_str = CRI_USER_TOSTR(Tag, Var);               \
+        cri_tmpn.params[cri_paramidx].name = Name;              \
         cri_tmpn.params[cri_paramidx].type = CRI_ASSERT_RT_STR; \
         cri_tmpn.params[cri_paramidx].data = cri_str;           \
         cri_paramidx++;                                         \
     } while (0)
 
-#define CRI_MKNODE_UNPRINTABLE(_, Var)                          \
+#define CRI_MKNODE_UNPRINTABLE(_, Var, Name)                    \
     do {                                                        \
         char *cri_str = CRI_ASSERT_UNPRINTABLE(Var);            \
+        cri_tmpn.params[cri_paramidx].name = Name;              \
         cri_tmpn.params[cri_paramidx].type = CRI_ASSERT_RT_STR; \
         cri_tmpn.params[cri_paramidx].data = cri_str;           \
         cri_paramidx++;                                         \

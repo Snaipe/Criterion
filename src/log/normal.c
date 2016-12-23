@@ -186,6 +186,9 @@ void normal_log_assert_sub(struct criterion_assert_stats *stats,
 {
     (void) stats;
 
+    if (!msg)
+        return;
+
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_assert_repr), repr, msg);
 }
@@ -211,6 +214,9 @@ void normal_log_assert_param_eq(struct criterion_assert_stats *stats,
 {
     (void) stats;
 
+    if (!expected->data || !actual->data)
+        return;
+
     if (expected->size + actual->size <= LOG_DIFF_THRESHOLD
             && expected->kind == CR_LOG_PARAM_STR
             && actual->kind == CR_LOG_PARAM_STR) {
@@ -226,10 +232,13 @@ void normal_log_assert_param(struct criterion_assert_stats *stats,
 {
     (void) stats;
 
-    if (!param->name || !param->name[0])
+    if (!param->name || !param->name[0] || !param->data)
         return;
 
     if (param->kind == CR_LOG_PARAM_STR) {
+        if (!*(char *)param->data)
+            return;
+
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_param), param->name, (char *) param->data);
     } else if (param->kind == CR_LOG_PARAM_RAW) {

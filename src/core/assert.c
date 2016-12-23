@@ -119,12 +119,13 @@ static criterion_protocol_result *collect_leaves(
         for (struct cri_assert_param *p = &node->params[0]; p->name; ++p)
             ++nbparams;
 
-        res->value.params = malloc(sizeof (res->value.params));
+        res->value.params = malloc(sizeof (*res->value.params));
         res->value.params->list_count = nbparams;
-        res->value.params->list = malloc(sizeof (res->value.params->list) * nbparams);
+        res->value.params->list = malloc(sizeof (*res->value.params->list) * nbparams);
 
-        for (struct cri_assert_param *p = &node->params[0]; p->name; ++p)
-            make_obj(res->value.params->list, p);
+        size_t j = 0;
+        for (struct cri_assert_param *p = &node->params[0]; p->name; ++p, ++j)
+            make_obj(&res->value.params->list[j], p);
         ++res;
     }
     return res;

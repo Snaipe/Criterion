@@ -261,7 +261,7 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 #define CRI_ASSERT_TEST_SPECIFIER_ieee_ulp_eq(...)    ,
 #define CRI_ASSERT_TEST_SPECIFIER_ieee_ulp_ne(...)    ,
 
-#define CRI_MKNODE_ULP(_, Var)                        CRI_MKNODE_STR(sz, Var)
+#define CRI_MKNODE_ULP(_, Var, Name)                  CRI_MKNODE_STR(sz, Var, Name)
 
 #define CRI_ASSERT_SPECIFIER_ieee_ulp_eq(...)                                                    \
     CRI_ASSERT_SPECIFIER_OP(CRI_IEEE_ULP_T_EQ, CRI_IEEE_ULP_EQ, ieee_ulp_eq, (                   \
@@ -288,7 +288,7 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 #define CRI_ASSERT_TEST_SPECIFIER_epsilon_eq(...)    ,
 #define CRI_ASSERT_TEST_SPECIFIER_epsilon_ne(...)    ,
 
-#define CRI_MKNODE_EPS(_, Var)                       CRI_MKNODE_STR(ldbl, Var)
+#define CRI_MKNODE_EPS(_, Var, Name)                 CRI_MKNODE_STR(ldbl, Var, Name)
 
 #define CRI_ASSERT_SPECIFIER_epsilon_eq(...)                                                     \
     CRI_ASSERT_SPECIFIER_OP(CRI_EPSILON_T_EQ, CRI_EPSILON_EQ, epsilon_eq, (                      \
