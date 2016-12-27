@@ -27,7 +27,7 @@
 /* Standard version checks */
 #if defined (__cplusplus)
 /* Is the compiler a >C++11 compiler ?*/
-# if __cplusplus < 201103L || (defined(_MSC_VER) && _MSC_VER < 1800)
+# if __cplusplus < 201103L || (defined (_MSC_VER) && _MSC_VER < 1800)
 #  error The Criterion C++ API needs a C++11 compiler or later.
 # endif
 #elif defined (__STDC__) || defined (_MSC_VER)

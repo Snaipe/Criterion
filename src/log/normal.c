@@ -236,7 +236,7 @@ void normal_log_assert_param(struct criterion_assert_stats *stats,
         return;
 
     if (param->kind == CR_LOG_PARAM_STR) {
-        if (!*(char *)param->data)
+        if (!*(char *) param->data)
             return;
 
         criterion_pimportant(CRITERION_PREFIX_DASHES,
