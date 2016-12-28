@@ -83,7 +83,17 @@ Sample tests can be found in the [sample directory][samples].
 
 ## Credits
 
-Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue)
+Criterion is built with the following projects:
+
+* [boxfort](https://github.com/diacritic/BoxFort)
+* [debugbreak](https://github.com/scottt/debugbreak)
+* [dyncall](http://www.dyncall.org/)
+* [klib](http://attractivechaos.github.io/klib/)
+* [libcsptr](https://github.com/Snaipe/libcsptr)
+* [nanomsg](http://nanomsg.org/)
+* [nanopb](http://koti.kapsi.fi/jpa/nanopb/)
+
+Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
