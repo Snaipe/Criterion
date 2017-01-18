@@ -314,6 +314,8 @@ cleanup:
 
 static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 {
+    cri_report_init();
+
     report(PRE_ALL, set);
     log(pre_all, set);
 
@@ -344,6 +346,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
     log(post_all, stats);
 
     cri_alloc_term();
+    cri_report_term();
 
     cri_proto_close(g_client_socket);
     cri_proto_close(sock);

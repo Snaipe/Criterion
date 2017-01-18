@@ -52,4 +52,7 @@ static inline void nothing() {}
 #define log_(Log, ...) \
     (Log ? Log(__VA_ARGS__) : nothing())
 
+void cri_report_init(void);
+void cri_report_term(void);
+
 #endif /* !REPORT_H_ */

@@ -37,20 +37,41 @@
 #define CR_HSEC_STR_(S)      CR_HSEC_STR__(S)
 #define CR_HSEC_STR__(S)     #S
 
-#define IMPL_CALL_REPORT_HOOKS(Kind)                              \
-    void call_report_hooks_ ## Kind(void *data) {                 \
-        struct cri_section *sections;                             \
-        if (cri_sections_getaddr(CR_HSEC_STR(Kind), &sections))   \
-            return;                                               \
-        for (struct cri_section *s = sections; s->addr; ++s) {    \
-            void *start = s->addr;                                \
-            f_report_hook *end = (void *)                         \
-                    ((char *) s->addr + s->length);               \
-            for (f_report_hook *hook = start; hook < end; ++hook) \
-                (*hook ? *hook : nothing)(data);                  \
-        }                                                         \
-        free(sections);                                           \
+static struct cri_section *limits[POST_ALL + 1];
+
+#define IMPL_CALL_REPORT_HOOKS(Kind)                               \
+    void call_report_hooks_ ## Kind(void *data) {                  \
+        if (!limits[Kind])                                         \
+            return;                                                \
+        for (struct cri_section *s = limits[Kind]; s->addr; ++s) { \
+            void *start = s->addr;                                 \
+            f_report_hook *end = (void *)                          \
+                    ((char *) s->addr + s->length);                \
+            for (f_report_hook *hook = start; hook < end; ++hook)  \
+                (*hook ? *hook : nothing)(data);                   \
+        }                                                          \
     }
+
+void cri_report_init(void)
+{
+    cri_sections_getaddr(CR_HSEC_STR(PRE_ALL),      &limits[PRE_ALL]);
+    cri_sections_getaddr(CR_HSEC_STR(PRE_SUITE),    &limits[PRE_SUITE]);
+    cri_sections_getaddr(CR_HSEC_STR(PRE_INIT),     &limits[PRE_INIT]);
+    cri_sections_getaddr(CR_HSEC_STR(PRE_TEST),     &limits[PRE_TEST]);
+    cri_sections_getaddr(CR_HSEC_STR(ASSERT),       &limits[ASSERT]);
+    cri_sections_getaddr(CR_HSEC_STR(THEORY_FAIL),  &limits[THEORY_FAIL]);
+    cri_sections_getaddr(CR_HSEC_STR(TEST_CRASH),   &limits[TEST_CRASH]);
+    cri_sections_getaddr(CR_HSEC_STR(POST_TEST),    &limits[POST_TEST]);
+    cri_sections_getaddr(CR_HSEC_STR(POST_FINI),    &limits[POST_FINI]);
+    cri_sections_getaddr(CR_HSEC_STR(POST_SUITE),   &limits[POST_SUITE]);
+    cri_sections_getaddr(CR_HSEC_STR(POST_ALL),     &limits[POST_ALL]);
+}
+
+void cri_report_term(void)
+{
+    for (int i = PRE_ALL; i <= POST_ALL; ++i)
+        free(limits[i]);
+}
 
 IMPL_CALL_REPORT_HOOKS(PRE_ALL)
 IMPL_CALL_REPORT_HOOKS(PRE_SUITE)
