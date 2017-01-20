@@ -76,6 +76,9 @@
     "default. TYPE may be gdb, lldb, or wingbd.\n"          \
     "    --debug-transport=VAL: the transport to use by "   \
     "the debugging server. `tcp:1234` by default\n"         \
+    "    --full-stats: Tests must fully report statistics " \
+    "(causes massive slowdown for large number of "         \
+    "assertions but is more accurate)."                     \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
     "report to FILE using the specified provider\n"
 
@@ -215,6 +218,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         { "crash",           no_argument,       0, 'c' },
         { "debug",           optional_argument, 0, 'd' },
         { "debug-transport", required_argument, 0, 'D' },
+        { "full-stats",      no_argument,       0, 'U' },
         { 0,                 0,                 0, 0   }
     };
 
@@ -354,6 +358,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 fprintf(stderr, "--single has been removed. Use --debug instead.");
                 exit(3);
             case 'c': criterion_options.crash = true; break;
+            case 'U': criterion_options.full_stats = true; break;
             case '?':
             default: do_print_usage = handle_unknown_arg; break;
         }

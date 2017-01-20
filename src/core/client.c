@@ -66,13 +66,15 @@ bool handle_phase(struct server_ctx *, struct client_ctx *, const criterion_prot
 bool handle_death(struct server_ctx *, struct client_ctx *, const criterion_protocol_msg *);
 bool handle_assert(struct server_ctx *, struct client_ctx *, const criterion_protocol_msg *);
 bool handle_message(struct server_ctx *, struct client_ctx *, const criterion_protocol_msg *);
+bool handle_statistic(struct server_ctx *, struct client_ctx *, const criterion_protocol_msg *);
 
 static message_handler *message_handlers[] = {
-    [criterion_protocol_submessage_birth_tag]   = handle_birth,
-    [criterion_protocol_submessage_phase_tag]   = handle_phase,
-    [criterion_protocol_submessage_death_tag]   = handle_death,
-    [criterion_protocol_submessage_assert_tag]  = handle_assert,
-    [criterion_protocol_submessage_message_tag] = handle_message,
+    [criterion_protocol_submessage_birth_tag]       = handle_birth,
+    [criterion_protocol_submessage_phase_tag]       = handle_phase,
+    [criterion_protocol_submessage_death_tag]       = handle_death,
+    [criterion_protocol_submessage_assert_tag]      = handle_assert,
+    [criterion_protocol_submessage_message_tag]     = handle_message,
+    [criterion_protocol_submessage_statistic_tag]   = handle_statistic,
 };
 
 static void get_message_id(char *out, size_t n, const criterion_protocol_msg *msg)
@@ -519,6 +521,21 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
     push_event_noreport(ASSERT, .data = &asrt_stats);
     report(ASSERT, &asrt_stats);
     log(assert, &asrt_stats);
+    return false;
+}
+
+bool handle_statistic(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg)
+{
+    (void) sctx;
+    const criterion_protocol_statistic *stat = &msg->data.value.statistic;
+    /* TODO: handle this better with new statistics API */
+    if (!strcmp(stat->key, ".asserts_passed") && stat->which_value == criterion_protocol_statistic_num_tag) {
+        ctx->tstats->passed_asserts += stat->value.num;
+        ctx->sstats->asserts_passed += stat->value.num;
+        ctx->sstats->nb_asserts     += stat->value.num;
+        ctx->gstats->asserts_passed += stat->value.num;
+        ctx->gstats->nb_asserts     += stat->value.num;
+    }
     return false;
 }
 

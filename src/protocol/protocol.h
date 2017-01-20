@@ -49,7 +49,14 @@ extern volatile bool is_extern_worker;
 
 /* *INDENT-OFF* - remove when https://github.com/uncrustify/uncrustify/issues/667
    gets fixed */
-# define criterion_message(Kind, ...)                                       \
+# define criterion_message(Kind, ...)               \
+    criterion_message_nots(Kind,                    \
+            .timestamp = cri_timestamp_monotonic(), \
+            .has_timestamp = true,                  \
+            __VA_ARGS__                             \
+        )
+
+# define criterion_message_nots(Kind, ...)                                  \
     (criterion_protocol_msg) {                                              \
         .version = PROTOCOL_V1,                                             \
         .which_id = is_extern_worker                                        \
@@ -59,8 +66,6 @@ extern volatile bool is_extern_worker;
             .which_value = criterion_protocol_submessage_ ## Kind ## _tag,  \
             .value = {                                                      \
                 .Kind = {                                                   \
-                    .timestamp = cri_timestamp_monotonic(),                 \
-                    .has_timestamp = true,                                  \
                     __VA_ARGS__                                             \
                 },                                                          \
             }                                                               \

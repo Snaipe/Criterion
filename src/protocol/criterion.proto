@@ -35,6 +35,14 @@ message death {
     optional int64 timestamp = 3;
 }
 
+message statistic {
+    required string key = 1;
+
+    oneof value {
+        uint64 num = 3;
+        string str = 4;
+    }
+}
 
 message assert {
     required string message = 1;
@@ -75,6 +83,7 @@ message submessage {
 
         criterion.protocol.log          message         = 4;
         criterion.protocol.assert       assert          = 5;
+        criterion.protocol.statistic    statistic       = 6;
     }
 
 }

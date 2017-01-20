@@ -44,6 +44,7 @@
 #include "../hooks.h"
 #include "../event.h"
 #include "../abort.h"
+#include "../options.h"
 
 struct criterion_assert_args {
     const char *msg;
@@ -75,6 +76,7 @@ enum criterion_assert_messages {
 CR_BEGIN_C_API
 
 CR_API char *cr_translate_assert_msg(int msg_index, ...);
+CR_API void cri_asserts_passed_incr(void);
 
 CR_END_C_API
 
@@ -110,25 +112,28 @@ CR_END_C_API
 #define CR_FAIL_ABORT_        criterion_abort_test
 #define CR_FAIL_CONTINUES_    criterion_continue_test
 
-#define cr_assert_impl(Fail, Condition, ...)             \
-    do {                                                 \
-        bool cr_passed__ = !!(Condition);                \
-        char *cr_msg__ = NULL;                           \
-        int cr_shifted__ = 0;                            \
-                                                         \
-        CR_EXPAND(CR_INIT_STATS_(cr_msg__, cr_shifted__, \
-                CR_VA_TAIL(__VA_ARGS__)));               \
-        struct criterion_assert_stats cr_stat__;         \
-        cr_stat__.passed = cr_passed__;                  \
-        cr_stat__.file = __FILE__;                       \
-        cr_stat__.line = __LINE__;                       \
-        cr_stat__.message = cr_msg__;                    \
-        criterion_send_assert(&cr_stat__);               \
-                                                         \
-        cr_asprintf_free(cr_msg__ - cr_shifted__);       \
-                                                         \
-        if (!cr_passed__)                                \
-            Fail();                                      \
+#define cr_assert_impl(Fail, Condition, ...)                 \
+    do {                                                     \
+        bool cr_passed__ = !!(Condition);                    \
+        char *cr_msg__ = NULL;                               \
+        int cr_shifted__ = 0;                                \
+                                                             \
+        if (!cr_passed__ || criterion_options.full_stats) {  \
+            CR_EXPAND(CR_INIT_STATS_(cr_msg__, cr_shifted__, \
+                    CR_VA_TAIL(__VA_ARGS__)));               \
+            struct criterion_assert_stats cr_stat__;         \
+            cr_stat__.passed = cr_passed__;                  \
+            cr_stat__.file = __FILE__;                       \
+            cr_stat__.line = __LINE__;                       \
+            cr_stat__.message = cr_msg__;                    \
+            criterion_send_assert(&cr_stat__);               \
+                                                             \
+            cr_asprintf_free(cr_msg__ - cr_shifted__);       \
+        }                                                    \
+        if (!cr_passed__)                                    \
+            Fail();                                          \
+        else                                                 \
+            cri_asserts_passed_incr();                       \
     } while (0)
 
 #define cr_fail(Fail, ...)                 \

@@ -31,9 +31,17 @@
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
 #include "io/event.h"
+#include "atomic.h"
 
 extern const struct criterion_test *criterion_current_test;
 extern const struct criterion_suite *criterion_current_suite;
+
+static size_t passed_asserts;
+
+void cri_asserts_passed_incr(void)
+{
+    cri_atomic_add(passed_asserts, 1);
+}
 
 static void send_event(int phase)
 {
@@ -84,6 +92,16 @@ void criterion_internal_test_main(void (*fn)(void))
             void (*param_test_func)(void *) = (void (*)(void *))fn;
             param_test_func(getparam());
         }
+    }
+
+    if (!criterion_options.full_stats) {
+        criterion_protocol_msg msg = criterion_message_nots(statistic,
+                        .key = ".asserts_passed",
+                        .which_value = criterion_protocol_statistic_num_tag,
+                        .value.num = passed_asserts);
+
+        criterion_message_set_id(msg);
+        cr_send_to_runner(&msg);
     }
 
     send_event(criterion_protocol_phase_kind_TEARDOWN);

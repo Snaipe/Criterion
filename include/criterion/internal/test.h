@@ -68,6 +68,7 @@ CR_BEGIN_C_API
 CR_API void criterion_internal_test_setup(void);
 CR_API void criterion_internal_test_main(void (*fn)(void));
 CR_API void criterion_internal_test_teardown(void);
+CR_API void cri_asserts_passed_incr(void);
 
 CR_END_C_API
 
@@ -169,8 +170,8 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
     struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {           \
         #Name,                                                               \
         #Category,                                                           \
-        CR_IDENTIFIER_(Category,  Name, jmp),                                \
-        &CR_IDENTIFIER_(Category, Name, extra)                               \
+        CR_IDENTIFIER_(Category,  Name,  jmp),                               \
+        &CR_IDENTIFIER_(Category, Name,  extra)                              \
     };                                                                       \
     CR_SECTION_("cr_tst")                                                    \
     struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)               \

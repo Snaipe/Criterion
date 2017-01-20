@@ -32,6 +32,7 @@
 #include "debugbreak.h"
 
 jmp_buf g_pre_test;
+size_t cri_nb_asserts;
 
 void criterion_abort_test(void)
 {
