@@ -31,6 +31,10 @@
 #else
 # define cri_atomic_add(Val, Add)    cri_atomic_add_impl((uintptr_t *) &(Val), (Add))
 
+# if defined (_WIN32)
+#  include <windows.h>
+# endif
+
 static inline uintptr_t cri_atomic_add_impl(uintptr_t *val, uintptr_t add)
 {
 # if defined (_WIN64)
