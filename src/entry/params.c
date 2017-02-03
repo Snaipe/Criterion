@@ -148,21 +148,27 @@ int atou(const char *str)
 
 static int parse_dbg_transport(const char *arg)
 {
+    int ok = 1;
     char *dup = strdup(arg);
 
     char *sptr;
     char *transport = strtok_r(dup, ":", &sptr);
-    char *val = dup + strlen(transport) + 1;
 
-    int ok = 1;
+    if (!transport) {
+        fprintf(stderr, "Invalid --debug parameter '%s'\n", arg);
+        goto err;
+    }
+    char *val = dup + strlen(transport) + 1;
 
     if (!strcmp(transport, "tcp")) {
         criterion_options.debug_port = atou(val);
     } else {
         fprintf(stderr, "Unknown transport '%s'\n", transport);
-        ok = 0;
+        goto err;
     }
 
+    ok = 1;
+err:
     free(dup);
     return ok;
 }
