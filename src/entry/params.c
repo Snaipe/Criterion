@@ -78,7 +78,7 @@
     "the debugging server. `tcp:1234` by default\n"         \
     "    --full-stats: Tests must fully report statistics " \
     "(causes massive slowdown for large number of "         \
-    "assertions but is more accurate)."                     \
+    "assertions but is more accurate).\n"                   \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
     "report to FILE using the specified provider\n"
 
