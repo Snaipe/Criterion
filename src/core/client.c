@@ -286,6 +286,7 @@ bool handle_pre_test(struct server_ctx *sctx, struct client_ctx *ctx, const crit
     (void) msg;
 
     if (ctx->state < CS_MAX_CLIENT_STATES) {
+        ctx->start_time = msg->timestamp;
         push_event_noreport(PRE_TEST);
         report(PRE_TEST, ctx->test);
         log(pre_test, ctx->suite, ctx->test);
@@ -299,7 +300,7 @@ bool handle_post_test(struct server_ctx *sctx, struct client_ctx *ctx, const cri
     (void) msg;
 
     if (ctx->state < CS_MAX_CLIENT_STATES) {
-        double elapsed_time = 0; /* TODO: restore elapsed time handling */
+        double elapsed_time = (msg->timestamp - ctx->start_time) / 1e9;
         push_event_noreport(POST_TEST, .data = &elapsed_time);
         report(POST_TEST, ctx->tstats);
         log(post_test, ctx->tstats);

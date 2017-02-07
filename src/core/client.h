@@ -62,6 +62,7 @@ struct client_ctx {
     struct criterion_test_stats *tstats;
     struct criterion_test *test;
     struct criterion_suite *suite;
+    uint64_t start_time;
 };
 
 struct kh_ht_client_s;
