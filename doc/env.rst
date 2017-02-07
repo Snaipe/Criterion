@@ -37,6 +37,11 @@ Command line arguments
   equivalent to ``--output=tap:FILE``.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
   sets the verbosity level to that integer.
+* ``--full-stats``: Forces tests to fully report statistics. By default,
+  tests do not report details for passing assertions, so this option forces
+  them to do so.
+  Activating this causes massive slowdowns for large number of assertions, but
+  provides more accurate reports.
 * ``-OPROVIDER:FILE or --output=PROVIDER:FILE``: Write a test report to FILE
   using the output provider named by PROVIDER.
   If FILE is ``"-"``, it implies ``--quiet``, and the report shall be written

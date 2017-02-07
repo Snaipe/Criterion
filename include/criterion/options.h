@@ -180,6 +180,17 @@ struct criterion_options {
      *  default: 0
      */
     double timeout;
+
+    /**
+     * Fully report statistics from test workers, including those that are
+     * not reported by default (like passing assertions).
+     *
+     * Reporting everything leads to more accurate reports at the cost of
+     * execution speed.
+     *
+     * default: false
+     */
+    bool full_stats;
 };
 
 CR_BEGIN_C_API

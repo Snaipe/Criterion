@@ -2,7 +2,7 @@
 <img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
-[![Unix Build Status](https://img.shields.io/travis/Snaipe/Criterion/master.svg?label=linux)](https://travis-ci.org/Snaipe/Criterion) 
+[![Unix Build Status](https://img.shields.io/travis/Snaipe/Criterion/bleeding.svg?label=linux)](https://travis-ci.org/Snaipe/Criterion) 
 [![Windows Build Status](https://img.shields.io/appveyor/ci/Snaipe/Criterion/bleeding.svg?label=windows)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
@@ -83,7 +83,17 @@ Sample tests can be found in the [sample directory][samples].
 
 ## Credits
 
-Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue)
+Criterion is built with the following projects:
+
+* [boxfort](https://github.com/diacritic/BoxFort)
+* [debugbreak](https://github.com/scottt/debugbreak)
+* [dyncall](http://www.dyncall.org/)
+* [klib](http://attractivechaos.github.io/klib/)
+* [libcsptr](https://github.com/Snaipe/libcsptr)
+* [nanomsg](http://nanomsg.org/)
+* [nanopb](http://koti.kapsi.fi/jpa/nanopb/)
+
+Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/

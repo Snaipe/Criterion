@@ -21,38 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef REPORT_H_
-#define REPORT_H_
+#ifndef ATOMIC_H_
+#define ATOMIC_H_
 
-#include "criterion/hooks.h"
-#include "criterion/options.h"
+#include <stdint.h>
 
-#define report(Kind, Data)     report_(Kind, Data)
-#define report_(Kind, Data)    call_report_hooks_ ## Kind(Data)
+#ifdef __GNUC__
+# define cri_atomic_add(Val, Add)    __sync_fetch_and_add(&(Val), (Add))
+#else
+# define cri_atomic_add(Val, Add)    cri_atomic_add_impl((uintptr_t *) &(Val), (Add))
 
-#define DECL_CALL_REPORT_HOOKS(Kind) \
-    void call_report_hooks_ ## Kind(void *data)
+# if defined (_WIN32)
+#  include <windows.h>
+# endif
 
-DECL_CALL_REPORT_HOOKS(PRE_ALL);
-DECL_CALL_REPORT_HOOKS(PRE_SUITE);
-DECL_CALL_REPORT_HOOKS(PRE_INIT);
-DECL_CALL_REPORT_HOOKS(PRE_TEST);
-DECL_CALL_REPORT_HOOKS(ASSERT);
-DECL_CALL_REPORT_HOOKS(THEORY_FAIL);
-DECL_CALL_REPORT_HOOKS(TEST_CRASH);
-DECL_CALL_REPORT_HOOKS(POST_TEST);
-DECL_CALL_REPORT_HOOKS(POST_FINI);
-DECL_CALL_REPORT_HOOKS(POST_SUITE);
-DECL_CALL_REPORT_HOOKS(POST_ALL);
+static inline uintptr_t cri_atomic_add_impl(uintptr_t *val, uintptr_t add)
+{
+# if defined (_WIN64)
+    return InterlockedExchangeAdd64(val, add);
+# elif defined (_WIN32)
+    return InterlockedExchangeAdd(val, add);
+# else
+#  error Atomics are not supported on your system
+# endif
+}
+#endif
 
-static inline void nothing() {}
-
-#define log(Type, ...) \
-    log_(criterion_options.logger->log_ ## Type, __VA_ARGS__)
-#define log_(Log, ...) \
-    (Log ? Log(__VA_ARGS__) : nothing())
-
-void cri_report_init(void);
-void cri_report_term(void);
-
-#endif /* !REPORT_H_ */
+#endif /* !ATOMIC_H_ */

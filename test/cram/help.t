@@ -1,7 +1,7 @@
 Display the help message
 
   $ simple.c.bin --help
-  Tests compiled with Criterion v2.3.0-rc2
+  Tests compiled with Criterion v2.3.1
   
   usage: .*simple\.c\.bin(\.exe)? OPTIONS (re)
   options: 
@@ -22,10 +22,11 @@ Display the help message
       --crash: crash failing assertions rather than aborting (for debugging purposes)
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
+      --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
   $ simple.cc.bin --help
-  Tests compiled with Criterion v2.3.0-rc2
+  Tests compiled with Criterion v2.3.1
   
   usage: .*simple\.cc\.bin(\.exe)? OPTIONS (re)
   options: 
@@ -46,6 +47,7 @@ Display the help message
       --crash: crash failing assertions rather than aborting (for debugging purposes)
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
+      --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
 
@@ -53,7 +55,7 @@ Display usage on invalid CLI flags
 
   $ simple.c.bin --an-invalid-option
   .*simple\.c\.bin(\.exe)?: (unknown|unrecognized) option [`'"]?-- ?an-invalid-option['"]? (re)
-  Tests compiled with Criterion v2.3.0-rc2
+  Tests compiled with Criterion v2.3.1
   
   usage: .*simple\.c\.bin(\.exe)? OPTIONS (re)
   options: 
@@ -74,4 +76,5 @@ Display usage on invalid CLI flags
       --crash: crash failing assertions rather than aborting (for debugging purposes)
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
+      --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider

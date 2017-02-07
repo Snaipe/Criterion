@@ -7,6 +7,7 @@ set(CPACK_DEBIAN_BUILD_DEPENDS
   debhelper
   cmake
   gettext
+  git
 )
 
 set(CPACK_DEBIAN_PACKAGE_DEPENDS)

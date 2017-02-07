@@ -76,6 +76,9 @@
     "default. TYPE may be gdb, lldb, or wingbd.\n"          \
     "    --debug-transport=VAL: the transport to use by "   \
     "the debugging server. `tcp:1234` by default\n"         \
+    "    --full-stats: Tests must fully report statistics " \
+    "(causes massive slowdown for large number of "         \
+    "assertions but is more accurate).\n"                   \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
     "report to FILE using the specified provider\n"
 
@@ -145,21 +148,27 @@ int atou(const char *str)
 
 static int parse_dbg_transport(const char *arg)
 {
+    int ok = 1;
     char *dup = strdup(arg);
 
     char *sptr;
     char *transport = strtok_r(dup, ":", &sptr);
-    char *val = dup + strlen(transport) + 1;
 
-    int ok = 1;
+    if (!transport) {
+        fprintf(stderr, "Invalid --debug parameter '%s'\n", arg);
+        goto err;
+    }
+    char *val = dup + strlen(transport) + 1;
 
     if (!strcmp(transport, "tcp")) {
         criterion_options.debug_port = atou(val);
     } else {
         fprintf(stderr, "Unknown transport '%s'\n", transport);
-        ok = 0;
+        goto err;
     }
 
+    ok = 1;
+err:
     free(dup);
     return ok;
 }
@@ -215,6 +224,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         { "crash",           no_argument,       0, 'c' },
         { "debug",           optional_argument, 0, 'd' },
         { "debug-transport", required_argument, 0, 'D' },
+        { "full-stats",      no_argument,       0, 'U' },
         { 0,                 0,                 0, 0   }
     };
 
@@ -354,6 +364,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 fprintf(stderr, "--single has been removed. Use --debug instead.");
                 exit(3);
             case 'c': criterion_options.crash = true; break;
+            case 'U': criterion_options.full_stats = true; break;
             case '?':
             default: do_print_usage = handle_unknown_arg; break;
         }
