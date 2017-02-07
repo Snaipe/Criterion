@@ -42,7 +42,7 @@ the user would have with other frameworks:
 ### Packages
 
 * Mac OS X: `brew install snaipe/soft/criterion`
-* [AUR](https://aur.archlinux.org/packages/criterion/): `yaourt -S criterion`
+* [AUR](https://aur.archlinux.org/packages/criterion/): `pacaur -S criterion`
 * Ubuntu/Debian:
 
     ```bash
