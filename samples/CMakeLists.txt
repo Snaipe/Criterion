@@ -8,6 +8,8 @@ if (NOT MSVC)
   endif ()
 endif ()
 
+remove_definitions(-DCRITERION_BUILDING_DLL=1)
+
 include_directories(../include)
 
 set(SAMPLES
