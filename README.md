@@ -43,6 +43,13 @@ the user would have with other frameworks:
 
 * Mac OS X: `brew install snaipe/soft/criterion`
 * [AUR](https://aur.archlinux.org/packages/criterion/): `yaourt -S criterion`
+* Ubuntu/Debian:
+
+    ```bash
+    $ sudo add-apt-repository ppa:snaipewastaken/ppa
+    $ sudo apt-get update
+    $ sudo apt-get install criterion-dev
+    ```
 
 ### Binary archives
 
