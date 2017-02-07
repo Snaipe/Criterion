@@ -1,3 +1,14 @@
+2017-02-07  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.3.1
+    * Fix: correctly handle malformed --debug parameter
+    * Fix: replaced the cryptic message when the debugger is not present with a more explicit one.
+    * Fix: cache section limits on report hooks for significantly better performance.
+    * Fix: don't report passing assertions by default for significantly better performance.
+    * Addition: added --full-stats CLI switch to report passing assertions for compatibility purposes.
+
+    The full git changelog may be accessed with `git log v2.3.0-1..v2.3.1`.
+
 2016-12-07  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.3.0-1
