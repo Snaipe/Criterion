@@ -121,7 +121,7 @@ endif ()
 
 # Project
 
-include_directories(include src)
+include_directories(include src ${CMAKE_CURRENT_BINARY_DIR}/src)
 add_subdirectory (src)
 
 cr_add_library(criterion SHARED
