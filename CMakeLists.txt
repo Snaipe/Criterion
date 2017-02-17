@@ -37,7 +37,7 @@ find_package(Nanomsg)
 find_package(BoxFort)
 
 cr_add_subproject (csptr
-  GIT "git://github.com/Snaipe/libcsptr#0d52904"
+  GIT "https://github.com/Snaipe/libcsptr#0d52904"
   PATH dependencies/libcsptr
   OPTS
     -DLIBCSPTR_TESTS=OFF
@@ -47,7 +47,7 @@ cr_add_subproject (csptr
 )
 
 cr_add_subproject (dyncall_s
-  GIT "git://github.com/Snaipe/dyncall#51e79a8"
+  GIT "https://github.com/Snaipe/dyncall#51e79a8"
   PATH dependencies/dyncall
   OPTS
     -DLANG_CXX=${LANG_CXX}
@@ -57,7 +57,7 @@ cr_add_subproject (dyncall_s
 )
 
 cr_add_subproject (nanomsg
-  GIT "git://github.com/nanomsg/nanomsg.git#7e12a20"
+  GIT "https://github.com/nanomsg/nanomsg.git#7e12a20"
   PATH dependencies/nanomsg
   OPTS
     -DNN_TESTS=OFF
@@ -70,7 +70,7 @@ cr_add_subproject (nanomsg
 )
 
 cr_add_subproject (boxfort PATH dependencies/boxfort
-  GIT "git://github.com/diacritic/BoxFort.git#7ed0cf2"
+  GIT "https://github.com/diacritic/BoxFort.git#7ed0cf2"
   PATH dependencies/boxfort
   OPTS
     -DBXF_TESTS=OFF
