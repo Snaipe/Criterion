@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef CRITERION_INTERNAL_PARAMETERIZED_H_
-# define CRITERION_INTERNAL_PARAMETERIZED_H_
+#define CRITERION_INTERNAL_PARAMETERIZED_H_
 
-# include "test.h"
-# include "../types.h"
+#include "test.h"
+#include "../types.h"
 
 struct criterion_test_params {
     size_t size;
@@ -33,83 +33,93 @@ struct criterion_test_params {
     size_t length;
     void (*cleanup)(struct criterion_test_params *);
 
-# ifdef __cplusplus
+#ifdef __cplusplus
     constexpr criterion_test_params(size_t size, void *params, size_t length)
-        : size(size)
-        , params(params)
-        , length(length)
-        , cleanup(nullptr)
+        : size(size),
+        params(params),
+        length(length),
+        cleanup(nullptr)
     {}
 
     constexpr criterion_test_params(size_t size, void *params, size_t length,
-            void (*cleanup)(struct criterion_test_params *))
-        : size(size)
-        , params(params)
-        , length(length)
-        , cleanup(cleanup)
+            void(*cleanup)(struct criterion_test_params *))
+        : size(size),
+        params(params),
+        length(length),
+        cleanup(cleanup)
     {}
 
     template <typename T>
-    constexpr criterion_test_params(std::vector<T, criterion::allocator<T>>& vec,
-            void (*cleanup)(criterion_test_params *) = nullptr)
-        : size(sizeof (T))
-        , params(&vec[0])
-        , length(vec.size())
-        , cleanup(cleanup)
+    constexpr criterion_test_params(std::vector<T, criterion::allocator<T> > &vec,
+            void(*cleanup)(criterion_test_params *) = nullptr)
+        : size(sizeof (T)),
+        params(&vec[0]),
+        length(vec.size()),
+        cleanup(cleanup)
     {}
 
     template <typename T, unsigned int N>
     constexpr criterion_test_params(T (&arr)[N],
-            void (*cleanup)(criterion_test_params *) = nullptr)
-        : size(sizeof (arr[0]))
-        , params(static_cast<void*>(&arr))
-        , length(N)
-        , cleanup(cleanup)
+            void(*cleanup)(criterion_test_params *) = nullptr)
+        : size(sizeof (arr[0])),
+        params(static_cast<void *>(&arr)),
+        length(N),
+        cleanup(cleanup)
     {}
-# endif
+#endif
 };
 
-# ifdef __cplusplus
-#  define CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name) \
+#ifdef __cplusplus
+# define CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name) \
     extern "C" void CR_IDENTIFIER_(Category, Name, impl)(Param)
-# else
-#  define CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name) \
+#else
+# define CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name) \
     void CR_IDENTIFIER_(Category, Name, impl)(Param)
-# endif
+#endif
 
-# define CR_PARAM_TEST_BASE(Param, Category, Name, ...)                        \
-    CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name);                           \
-    CR_TEST_TRAMPOLINE_(Category, Name)                                        \
-    struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) =   \
-        CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,             \
-            .lang_ = CR_LANG,                                                  \
-            .kind_ = CR_TEST_PARAMETERIZED,                                    \
-            .param_ = CR_IDENTIFIER_(Category, Name, param),                   \
-            .identifier_ = #Category "/" #Name,                                \
-            .file_    = __FILE__,                                              \
-            .line_    = __LINE__,                                              \
-            __VA_ARGS__                                                        \
-        ));                                                                    \
-    struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {             \
-        #Name,                                                                 \
-        #Category,                                                             \
-        CR_IDENTIFIER_(Category, Name, jmp),                                   \
-        &CR_IDENTIFIER_(Category, Name, extra)                                 \
-    };                                                                         \
-    CR_SECTION_("cr_tst")                                                      \
-    struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)                 \
-            = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;        \
+#define CR_PARAM_TEST_BASE(Param, Category, Name, ...)                       \
+    CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name);                         \
+    CR_TEST_TRAMPOLINE_(Category, Name)                                      \
+    struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) = \
+            CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,       \
+                    .compiler_ = CR_COMPILER_,                               \
+                    .lang_ = CR_LANG,                                        \
+                    .kind_ = CR_TEST_PARAMETERIZED,                          \
+                    .param_ = CR_IDENTIFIER_(Category, Name, param),         \
+                    .identifier_ = #Category "/" #Name,                      \
+                    .file_    = __FILE__,                                    \
+                    .line_    = __LINE__,                                    \
+                    __VA_ARGS__                                              \
+                    ));                                                      \
+    struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {           \
+        #Name,                                                               \
+        #Category,                                                           \
+        CR_IDENTIFIER_(Category,  Name, jmp),                                \
+        &CR_IDENTIFIER_(Category, Name, extra)                               \
+    };                                                                       \
+    CR_SECTION_("cr_tst")                                                    \
+    struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)               \
+        = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;          \
     CR_PARAM_TEST_PROTOTYPE_(Param, Category, Name)
 
-# define CR_PARAM_TEST_PARAMS(Category, Name) \
+#define CR_PARAM_TEST_PARAMS(Category, Name) \
     static struct criterion_test_params CR_IDENTIFIER_(Category, Name, param)(void)
 
-# ifdef __cplusplus
-#  define cr_make_param_array_(Type, Array, ...) \
+#ifdef __cplusplus
+# define cr_make_param_array_(Type, Array, ...) \
     criterion_test_params(sizeof (Type), (Array), __VA_ARGS__)
-# else
-#  define cr_make_param_array_(Type, Array, ...) \
-    (struct criterion_test_params) { .size = sizeof (Type), (void*)(Array), __VA_ARGS__ }
-# endif
+#else
+# define cr_make_param_array_(Type, Array, ...) \
+    (struct criterion_test_params) { .size = sizeof (Type), (void *) (Array), __VA_ARGS__ }
+#endif
+
+#undef ParameterizedTest
+#define ParameterizedTest(...)    CR_EXPAND(CR_PARAM_TEST_BASE(__VA_ARGS__, .sentinel_ = 0))
+
+#undef ParameterizedTestParameters
+#define ParameterizedTestParameters(Suite, Name)    CR_PARAM_TEST_PARAMS(Suite, Name)
+
+#undef cr_make_param_array
+#define cr_make_param_array(...)    CR_EXPAND(cr_make_param_array_(__VA_ARGS__))
 
 #endif /* !CRITERION_INTERNAL_PARAMETERIZED_H_ */

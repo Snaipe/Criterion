@@ -1,0 +1,18 @@
+--- _test.py.orig	2016-09-03 00:50:27.505527300 +0200
++++ "/c/Program Files/Python35/lib/site-packages/cram/_test.py"	2016-09-03 00:48:48.708932100 +0200
+@@ -143,11 +143,15 @@
+             after.setdefault(pos, []).append(line)
+     stdin.append(b('echo %s %s $?\n' % (usalt, i + 1)))
+ 
++    env = {k: v.decode('utf-8') if isinstance(v, bytes) else v for k, v in env.items()}
++
+     output, retcode = execute(shell + ['-'], stdin=b('').join(stdin),
+                               stdout=PIPE, stderr=STDOUT, env=env)
+     if retcode == 80:
+         return (refout, None, [])
+ 
++    output = output.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
++
+     pos = -1
+     ret = 0
+     for i, line in enumerate(output[:-1].splitlines(True)):

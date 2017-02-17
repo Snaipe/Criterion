@@ -1,0 +1,39 @@
+diff --git a/cram.py b/cram.py
+index 20c4681..3b9f144 100755
+--- a/cram.py
++++ b/cram.py
+@@ -168,14 +168,14 @@ def test(path, shell, indent=2):
+     cmdline = '%s$ ' % indent
+     conline = '%s> ' % indent
+ 
+-    f = open(path)
++    f = open(path, 'r', encoding='utf-8')
+     abspath = os.path.abspath(path)
+     env = os.environ.copy()
+     env['TESTDIR'] = os.path.dirname(abspath)
+     env['TESTFILE'] = os.path.basename(abspath)
+     p = subprocess.Popen([shell, '-'], bufsize=-1, stdin=subprocess.PIPE,
+                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+-                         universal_newlines=True, env=env,
++                         universal_newlines=False, env=env,
+                          preexec_fn=makeresetsigpipe(),
+                          close_fds=os.name == 'posix')
+     salt = 'CRAM%s' % time.time()
+@@ -199,7 +199,7 @@ def test(path, shell, indent=2):
+             after.setdefault(pos, []).append(line)
+     stdin.append('echo "\n%s %s $?"\n' % (salt, i + 1))
+ 
+-    output = p.communicate(input=''.join(stdin))[0]
++    output = p.communicate(input=''.join(stdin).encode('utf-8'))[0].decode('utf-8')
+     if p.returncode == 80:
+         return (refout, None, [])
+ 
+@@ -336,7 +336,7 @@ def run(paths, tmpdir, shell, quiet=False, verbose=False, patchcmd=None,
+                 log('!', 'failed\n', verbose)
+                 if not quiet:
+                     log('\n', None, verbose)
+-                errfile = open(errpath, 'w')
++                errfile = open(errpath, 'w', encoding='utf-8')
+                 try:
+                     for line in postout:
+                         errfile.write(line)

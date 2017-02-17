@@ -13,7 +13,8 @@ Test(exit, unexpected_exit) {
     exit(127);
 }
 
-void do_exit (void) {
+void do_exit(void)
+{
     exit(127);
 }
 

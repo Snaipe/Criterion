@@ -3,13 +3,17 @@
 #include "criterion/criterion.h"
 #include "criterion/internal/ordered-set.h"
 
-int compare_gt(void *a, void *b) {
+int compare_gt(void *a, void *b)
+{
     int *ia = a, *ib = b;
+
     return *ia == *ib ? 0 : (*ia > *ib ? -1 : 1);
 }
 
-int compare_lt(void *a, void *b) {
+int compare_lt(void *a, void *b)
+{
     int *ia = a, *ib = b;
+
     return *ia == *ib ? 0 : (*ia < *ib ? -1 : 1);
 }
 

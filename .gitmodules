@@ -1,12 +1,9 @@
-[submodule "dependencies/libcsptr"]
-	path = dependencies/libcsptr
-	url = https://github.com/Snaipe/libcsptr.git
-[submodule "dependencies/dyncall"]
-	path = dependencies/dyncall
-	url = https://github.com/Snaipe/dyncall.git
-[submodule "dependencies/wingetopt"]
-	path = dependencies/wingetopt
-	url = https://github.com/alex85k/wingetopt.git
 [submodule "dependencies/klib"]
 	path = dependencies/klib
 	url = https://github.com/attractivechaos/klib.git
+[submodule "dependencies/nanopb"]
+	path = dependencies/nanopb
+	url = https://github.com/nanopb/nanopb.git
+[submodule "dependencies/debugbreak"]
+	path = dependencies/debugbreak
+	url = https://github.com/scottt/debugbreak

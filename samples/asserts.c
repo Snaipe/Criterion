@@ -15,7 +15,7 @@ Test(asserts, base) {
 
 Test(asserts, old_school) {
     cr_expect_fail("You can fail an assertion with a message from anywhere");
-    cr_assert_fail(); // or without a message
+    cr_assert_fail(); /* or without a message */
 }
 
 Test(asserts, string) {
@@ -32,6 +32,22 @@ Test(asserts, string) {
     cr_assert_str_lt("hell", "hello");
     cr_assert_str_leq("hell", "hello");
     cr_assert_str_leq("hello", "hello");
+}
+
+Test(asserts, wstring) {
+    cr_assert_wcs_empty(L"");
+    cr_assert_wcs_not_empty(L"foo");
+
+    cr_assert_wcs_eq(L"hello", L"hello");
+    cr_assert_wcs_neq(L"hello", L"olleh");
+
+    cr_assert_wcs_gt(L"hello", L"hell");
+    cr_assert_wcs_geq(L"hello", L"hell");
+    cr_assert_wcs_geq(L"hello", L"hello");
+
+    cr_assert_wcs_lt(L"hell", L"hello");
+    cr_assert_wcs_leq(L"hell", L"hello");
+    cr_assert_wcs_leq(L"hello", L"hello");
 }
 
 Test(asserts, native) {
@@ -57,27 +73,30 @@ struct dummy_struct {
     size_t b;
 };
 
-int eq_dummy(struct dummy_struct *a, struct dummy_struct *b) {
+int eq_dummy(struct dummy_struct *a, struct dummy_struct *b)
+{
     return a->a != b->a || a->b != b->b;
 }
 
 Test(asserts, array) {
-    int arr1[] = {1, 2, 3, 4};
-    int arr2[] = {4, 3, 2, 1};
+    int arr1[] = { 1, 2, 3, 4 };
+    int arr2[] = { 4, 3, 2, 1 };
 
-    cr_assert_arr_eq(arr1, arr1, 4);
-    cr_assert_arr_neq(arr1, arr2, 4);
+    cr_assert_arr_eq(arr1, arr1, 4 * sizeof (int));
+    cr_assert_arr_neq(arr1, arr2, 4 * sizeof (int));
 
 #ifdef __GNUC__
-    struct dummy_struct s1[] = {{4, 2}, {2, 4}};
+    struct dummy_struct s1[] = { { 4, 2 }, { 2, 4 } };
     struct dummy_struct s2[2];
-    memset(s2, 0xFF, sizeof(s2));
+    memset(s2, 0xFF, sizeof (s2));
     s2[0].a = 4;
     s2[0].b = 2;
     s2[1].a = 2;
     s2[1].b = 4;
 
-    // cr_assert_arr_eq(s1, s2, 2); not guaranteed to work on structs.
+    /* cr_assert_arr_eq(s1, s2, 2); not guaranteed to work on structs. */
     cr_assert_arr_eq_cmp(s1, s2, 2, eq_dummy);
+#else
+    cr_assert(1); /* This is here for the test suite */
 #endif
 }

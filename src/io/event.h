@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,28 +22,20 @@
  * THE SOFTWARE.
  */
 #ifndef EVENT_H_
-# define EVENT_H_
+#define EVENT_H_
 
-# include "criterion/event.h"
-# include "core/worker.h"
-# include <stdio.h>
+#include "criterion/event.h"
+#include <stdio.h>
+#include <pb.h>
 
-extern s_pipe_file_handle *g_event_pipe;
+extern int g_client_socket;
 
 struct event {
     unsigned long long pid;
     int kind;
     void *data;
-
-    struct worker *worker;
-    size_t worker_index;
 };
 
-enum other_event_kinds {
-    WORKER_TERMINATED = 1 << 30,
-    TEST_ABORT,
-};
-
-struct event *read_event(s_pipe_file_handle *f);
+void criterion_send_assert(struct criterion_assert_stats *stats);
 
 #endif /* !EVENT_H_ */

@@ -30,8 +30,6 @@ logging_threshold   enum criterion_logging_level       The logging level
 ------------------- ---------------------------------- --------------------------------------------------------------
 logger              struct criterion_logger *          The logger (see below)
 ------------------- ---------------------------------- --------------------------------------------------------------
-no_early_exit       bool                               True iff the test worker should exit early
-------------------- ---------------------------------- --------------------------------------------------------------
 always_succeed      bool                               True iff criterion_run_all_tests should always returns 1
 ------------------- ---------------------------------- --------------------------------------------------------------
 use_ascii           bool                               True iff the outputs should use the ASCII charset
@@ -68,9 +66,9 @@ Example main
 
         int result = 0;
         if (criterion_handle_args(argc, argv, true))
-            result = !criterion_run_all_tests(set);
+            result = !criterion_run_all_tests(tests);
 
-        criterion_finalize(set);
+        criterion_finalize(tests);
         return result;
     }
 

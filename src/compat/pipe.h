@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 #ifndef PIPE_H_
-# define PIPE_H_
+#define PIPE_H_
 
-# include <stdio.h>
-# include <stdlib.h>
-# include "common.h"
-# include "criterion/logging.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "common.h"
+#include "log/logging.h"
 
 struct pipe_handle;
 typedef struct pipe_handle s_pipe_handle;
@@ -48,7 +48,7 @@ enum criterion_std_fd {
 
 enum pipe_opt {
     PIPE_NOOPT = 0,
-    PIPE_DUP   = 1 << 0,
+    PIPE_DUP = 1 << 0,
     PIPE_CLOSE = 1 << 1,
 };
 
@@ -65,7 +65,8 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
 int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe);
 int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe);
 
-INLINE FILE* get_std_file(enum criterion_std_fd fd_kind) {
+CR_INLINE FILE *get_std_file(enum criterion_std_fd fd_kind)
+{
     switch (fd_kind) {
         case CR_STDIN:  return stdin;
         case CR_STDOUT: return stdout;

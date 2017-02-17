@@ -2,13 +2,11 @@
 <img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
 =========
 
-[![Unix Build Status](https://travis-ci.org/Snaipe/Criterion.svg?branch=bleeding)](https://travis-ci.org/Snaipe/Criterion) 
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/Snaipe/Criterion?svg=true&branch=bleeding)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
+[![Unix Build Status](https://img.shields.io/travis/Snaipe/Criterion/bleeding.svg?label=linux)](https://travis-ci.org/Snaipe/Criterion) 
+[![Windows Build Status](https://img.shields.io/appveyor/ci/Snaipe/Criterion/bleeding.svg?label=windows)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding) 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
-[![Version](https://img.shields.io/github/tag/Snaipe/Criterion.svg?label=version&style=flat)](https://github.com/Snaipe/Criterion/releases) 
-
-![Analytics](https://ga-beacon.appspot.com/UA-68371536-1/Criterion/README.md?pixel)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Snaipe/Criterion/blob/master/LICENSE) 
+[![Version](https://img.shields.io/github/release/Snaipe/Criterion.svg?label=version)](https://github.com/Snaipe/Criterion/releases/latest) 
 
 A dead-simple, yet extensible, C and C++ unit testing framework.
 
@@ -48,10 +46,7 @@ the user would have with other frameworks:
 
 ### Binary archives
 
-* [Linux (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-linux-x64.tar.bz2)
-* [OS X (x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-osx-x64.tar.bz2)
-* [Windows (MSVC - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-windows-msvc-x64.tar.bz2)
-* [Windows (MinGW - x86_64)](https://github.com/Snaipe/Criterion/releases/download/v2.2.2/criterion-v2.2.2-windows-mingw-x64.tar.bz2)
+Binary releases are available [on the release page](https://github.com/Snaipe/Criterion/releases)
 
 If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
 
@@ -75,16 +70,30 @@ Sample tests can be found in the [sample directory][samples].
 
 ### Getting help
 
-Gitter.im chat room: [![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
-IRC channel: [#criterion][irc-chan] on irc.freenode.net  
+| Channel | Description |
+| --- | --- |
+[![Subscribe to the mailing list](https://img.shields.io/badge/ml-criterion@freelists.org-46BC99.svg)][mailing-list] | Criterion mailing list on freelists.org
+[![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)][gitter-chan] | `Snaipe/Criterion` on gitter.im
+[![Join #criterion on freenode](https://img.shields.io/badge/irc-%23criterion-46BC99.svg)][irc-chan] | `#criterion` on irc.freenode.net
 
 ### Misc
 
+* [autotools skeleton for projects with criterion tests][autotools]
 * [CMake find module for Criterion][find-module]
 
 ## Credits
 
-Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
+Criterion is built with the following projects:
+
+* [boxfort](https://github.com/diacritic/BoxFort)
+* [debugbreak](https://github.com/scottt/debugbreak)
+* [dyncall](http://www.dyncall.org/)
+* [klib](http://attractivechaos.github.io/klib/)
+* [libcsptr](https://github.com/Snaipe/libcsptr)
+* [nanomsg](http://nanomsg.org/)
+* [nanopb](http://koti.kapsi.fi/jpa/nanopb/)
+
+Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 
 [online-docs]: http://criterion.readthedocs.org/
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
@@ -99,6 +108,9 @@ Logo done by [Greehm](http://www.cargocollective.com/pbouigue)
 [sample-signal]: ./samples/signal.c
 [sample-report]: ./samples/report.c
 
+[autotools]: ./dev/autotools
 [find-module]: ./dev/FindCriterion.cmake
 
 [irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e
+[gitter-chan]: https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[mailing-list]: http://www.freelists.org/list/criterion

@@ -1,0 +1,101 @@
+package criterion.protocol;
+
+message birth {
+    required string name = 1;
+    optional int64 timestamp = 2;
+}
+
+message phase {
+
+    enum kind {
+        SETUP       = 1;
+        MAIN        = 2;
+        TEARDOWN    = 3;
+        END         = 4;
+
+        ABORT       = 5;
+        TIMEOUT     = 6;
+        SKIP        = 7;
+    }
+
+    required kind phase = 1;
+    optional string name = 2;
+    optional int64 timestamp = 3;
+    optional string message = 4;
+}
+
+message death {
+    enum result_type {
+        NORMAL = 1;
+        CRASH = 2;
+    }
+
+    required result_type result = 1;
+    optional int64 status = 2;
+    optional int64 timestamp = 3;
+}
+
+message statistic {
+    required string key = 1;
+
+    oneof value {
+        uint64 num = 3;
+        string str = 4;
+    }
+}
+
+message assert {
+    required string message = 1;
+    required bool passed = 2;
+    optional string file = 3;
+    optional int64 line = 4;
+    optional int64 timestamp = 5;
+}
+
+message log {
+    enum level {
+        INFO    = 0;
+        WARNING = 1;
+        ERROR   = 2;
+    }
+
+    required level severity = 1;
+    required string message = 2;
+    optional int64 timestamp = 3;
+}
+
+message ack {
+    enum status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    required status status_code = 1;
+    optional string message = 2;
+}
+
+message submessage {
+
+    oneof value {
+        criterion.protocol.birth        birth           = 1;
+        criterion.protocol.phase        phase           = 2;
+        criterion.protocol.death        death           = 3;
+
+        criterion.protocol.log          message         = 4;
+        criterion.protocol.assert       assert          = 5;
+        criterion.protocol.statistic    statistic       = 6;
+    }
+
+}
+
+message msg {
+
+    required int32 version = 1 [default = 1];
+
+    oneof id {
+        int64 pid = 2;
+        string uid = 3;
+    }
+
+    required submessage data = 16;
+}

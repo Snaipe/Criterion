@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <ctype.h>
 
-// Testing stdout/stderr
+/* Testing stdout/stderr */
 
-void redirect_all_std(void) {
+void redirect_all_std(void)
+{
     cr_redirect_stdout();
     cr_redirect_stderr();
 }
@@ -23,16 +24,19 @@ Test(redirect, test_outputs, .init = redirect_all_std) {
     cr_assert_stderr_eq_str("bar");
 }
 
-// Testing general I/O with sample command-line rot13
+/* Testing general I/O with sample command-line rot13 */
 
-char rot13_char(char c) {
+char rot13_char(char c)
+{
     return isalpha(c) ? (c - 'a' + 13) % 26 + 'a' : c;
 }
 
-void rot13_io(void) {
+void rot13_io(void)
+{
     char buf[512];
 
     size_t read;
+
     while ((read = fread(buf, 1, sizeof (buf), stdin)) > 0) {
         for (size_t i = 0; i < read; ++i)
             buf[i] = rot13_char(buf[i]);
@@ -42,7 +46,8 @@ void rot13_io(void) {
 }
 
 Test(redirect, rot13, .init = cr_redirect_stdout) {
-    FILE* f_stdin = cr_get_redirected_stdin();
+    FILE *f_stdin = cr_get_redirected_stdin();
+
     fprintf(f_stdin, "the quick brown fox jumps over the lazy dog");
     fclose(f_stdin);
 

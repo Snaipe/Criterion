@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,25 @@
  * THE SOFTWARE.
  */
 #ifndef COMPAT_STRTOK_H_
-# define COMPAT_STRTOK_H_
+#define COMPAT_STRTOK_H_
 
-# include "config.h"
+#include "config.h"
 
-# ifdef VANILLA_WIN32
+#ifdef VANILLA_WIN32
+# if !HAVE_STRTOK_R
 #  if HAVE_STRTOK_S
-#   define strtok_r strtok_s
+#   define strtok_r    strtok_s
 #  else
-static CR_INLINE char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr) {
-  return strtok(str, delim);
+static CR_INLINE char *strtok_r(char *str, const char *delim, CR_UNUSED char **saveptr)
+{
+    return strtok(str, delim);
 }
 #  endif
-
-#  ifdef _MSC_VER
-#   define strdup _strdup
-#  endif
 # endif
+
+# ifdef _MSC_VER
+#  define strdup    _strdup
+# endif
+#endif
 
 #endif /* !COMPAT_STRTOK_H_ */

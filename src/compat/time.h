@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,10 @@
  * THE SOFTWARE.
  */
 #ifndef TIMER_H_
-# define TIMER_H_
+#define TIMER_H_
 
-# include <signal.h>
-# include <time.h>
-# include <inttypes.h>
-# include <stdbool.h>
+#include <stdint.h>
 
-struct timespec_compat {
-    int64_t tv_sec;
-    int64_t tv_nsec;
-};
-
-bool can_measure_time(void);
-int timer_start(struct timespec_compat *state);
-int timer_end(double *time, struct timespec_compat *state);
-int setup_timeout(uint64_t nanos);
+uint64_t cri_timestamp_monotonic(void);
 
 #endif /* !TIMER_H_ */

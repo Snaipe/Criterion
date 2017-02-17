@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,15 @@
  * THE SOFTWARE.
  */
 #ifndef RUNNER_COROUTINE_H_
-# define RUNNER_COROUTINE_H_
+#define RUNNER_COROUTINE_H_
 
-# include "coroutine.h"
+#include <boxfort.h>
+#include "coroutine.h"
 
-struct worker *run_next_test(struct criterion_test_set *p_set,
-                             struct criterion_global_stats *p_stats,
-                             ccrContParam);
+bxf_instance *cri_run_next_test(struct criterion_test_set *p_set,
+        struct criterion_global_stats *p_stats,
+        const char *url,
+        struct client_ctx *client,
+        ccrContParam);
 
 #endif /* !RUNNER_COROUTINE_H_ */
