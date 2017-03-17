@@ -3,8 +3,6 @@
 
 #include "foo.h"
 
-TestSuite(strlen);
-
 Test(strlen, empty)
 {
     cr_assert_eq(foo_strlen(""), 0);
@@ -19,8 +17,6 @@ Test(strlen, longer)
 {
     cr_assert_eq(foo_strlen("foo\0bar"), 3);
 }
-
-TestSuite(strcpy);
 
 Test(strcpy, empty)
 {
@@ -47,8 +43,6 @@ Test(strcpy, larger_dest)
     cr_assert_str_eq(dst, "bar");
     cr_assert_str_eq(&dst[4], "baz");
 }
-
-TestSuite(strdup);
 
 Test(strdup, null)
 {
