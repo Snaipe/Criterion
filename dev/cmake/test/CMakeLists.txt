@@ -13,4 +13,4 @@ if (MSVC)
   target_compile_options (foo_test PRIVATE /W4)
 endif (MSVC)
 
-add_test (foo_test test)
+add_test (foo_test foo_test)
