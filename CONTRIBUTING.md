@@ -69,3 +69,16 @@ stylistic choices that cannot pass the style check.
         |- outputs/: Expected output files for the current samples
         `- tests/: Internal regression tests
             `- outputs/: Expected output files for the regression tests
+
+## Release Checklist
+
+* [ ] Make sure `bleeding` builds on all platforms and all tests passes.
+* [ ] `git checkout master`
+* [ ] `git merge bleeding --no-commit --no-ff`
+* [ ] Bump version
+* [ ] Update cram tests
+* [ ] Update changelog
+* [ ] `git commit -m "vX.Y.Z: merging bleeding back to master"`
+* [ ] `git tag -s vX.Y.Z`
+* [ ] `git branch -f bleeding`
+* [ ] `git push origin master bleeding vX.Y.Z`
