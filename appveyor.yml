@@ -21,6 +21,8 @@ environment:
     CXXFLAGS: /MP
     BUILD_FLAGS: /verbosity:m
 
+platform: x86_64
+
 init:
   - git config --global core.autocrlf input
   - set MSYSTEM=MINGW64
@@ -96,6 +98,7 @@ deploy:
   artifact: 'criterion-$(RELEASE_NAME)-windows-$(COMPILER)-$(PLATFORM).tar.bz2'
   draft: false
   prerelease: false
+  force_update: true
   on:
     appveyor_repo_tag: true
     configuration: RelWithDebInfo
