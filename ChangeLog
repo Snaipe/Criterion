@@ -1,3 +1,10 @@
+2017-04-08  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.3.2
+    * Fix: timings were always reporting `0`; they are now working as expected.
+
+    The full git changelog may be accessed with `git log v2.3.1..v2.3.2`.
+
 2017-02-07  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.3.1

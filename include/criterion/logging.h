@@ -155,9 +155,9 @@ namespace criterion
       streambuf buf;
   };
 
-  stream info { CR_LOG_INFO };
-  stream warn { CR_LOG_WARNING };
-  stream error { CR_LOG_ERROR };
+  static stream info { CR_LOG_INFO };
+  static stream warn { CR_LOG_WARNING };
+  static stream error { CR_LOG_ERROR };
   } }
 #endif
 

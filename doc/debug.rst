@@ -6,7 +6,7 @@ Debugging and Coverage information
 .. note::
 
     The following section assumes you have the relevant debugging server
-    installed on your server. For instance, if you're debugging with gdb,
+    installed on your machine. For instance, if you're debugging with gdb,
     you'll need to have ``gdbserver`` installed and available in your PATH.
 
 Debugging with GDB
@@ -58,7 +58,7 @@ And a new process is created for the next test:
     Process /path/to/test created; pid = 26414
     Listening on port 1234
 
-Connect your remote debugger to this test with ``remote target localhost:1234``
+Connect your remote debugger to this test with ``target remote localhost:1234``
 and run the test with ``continue``
 
 To use a different port use ``--debug --debug-transport=<protocol>:<port>``

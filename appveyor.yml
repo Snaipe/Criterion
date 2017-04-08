@@ -1,4 +1,4 @@
-version: 2.3.1_b{build}-{branch}
+version: 2.3.2_b{build}-{branch}
 
 os: Visual Studio 2015
 
@@ -20,6 +20,8 @@ environment:
     CFLAGS: /MP
     CXXFLAGS: /MP
     BUILD_FLAGS: /verbosity:m
+
+platform: x86_64
 
 init:
   - git config --global core.autocrlf input
@@ -96,6 +98,7 @@ deploy:
   artifact: 'criterion-$(RELEASE_NAME)-windows-$(COMPILER)-$(PLATFORM).tar.bz2'
   draft: false
   prerelease: false
+  force_update: true
   on:
     appveyor_repo_tag: true
     configuration: RelWithDebInfo
