@@ -40,6 +40,10 @@ check_function_exists(funopen HAVE_FUNOPEN)
 check_function_exists(fopencookie HAVE_FOPENCOOKIE)
 check_function_exists(open_memstream HAVE_OPEN_MEMSTREAM)
 
+check_function_exists(getcwd HAVE_GETCWD)
+check_function_exists(GetCurrentDirectory HAVE_GETCURRENTDIRECTORY)
+check_function_exists(PathIsRelative HAVE_PATHISRELATIVE)
+
 check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME_RT)
 if (HAVE_CLOCK_GETTIME_RT AND NOT HAVE_LIBRT)
   set (HAVE_LIBRT 1)

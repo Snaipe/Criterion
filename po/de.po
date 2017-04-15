@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Criterion \n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2017-04-07 21:04+0100\n"
+"POT-Creation-Date: 2017-04-15 11:13+0100\n"
 "PO-Revision-Date: 2016-02-12 11:12+0100\n"
 "Last-Translator:  <a1lu@arcor.de>\n"
 "Language-Team: German\n"
@@ -51,22 +51,22 @@ msgstr "%1$s::%2$s: Test ist deaktiviert\n"
 #: src/log/normal.c:55
 #, fuzzy, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n"
-msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Fehlerhafte Behauptung: %7$s\n"
+msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n"
 
 #: src/log/normal.c:56
 #, fuzzy, c-format
 msgid "  %1$s: %2$s\n"
-msgstr "%1$s::%2$s\n"
+msgstr "  %1$s: %2$s\n"
 
 #: src/log/normal.c:57
 #, fuzzy, c-format
 msgid "    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n"
-msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Fehlerhafte Behauptung: %7$s\n"
+msgstr "    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n"
 
 #: src/log/normal.c:58
 #, fuzzy, c-format
-msgid "    %1$s: %2$s\n"
-msgstr "%1$s::%2$s\n"
+msgid "    %1$s: %2$s%3$s%4$s\n"
+msgstr "    %1$s: %2$s%3$s%4$s\n"
 
 #: src/log/normal.c:59
 #, c-format
@@ -133,6 +133,10 @@ msgstr ""
 #, fuzzy, c-format
 msgid "%2$*1$s%3$s%4$s%5$s\n"
 msgstr "%2$*1$s%3$s%4$s%5$s\n"
+
+#: src/log/normal.c:189
+msgid "Assertion Failed"
+msgstr "Fehlerhafte Behauptung"
 
 #: src/string/i18n.c:15
 msgid "The conditions for this assertion were not met."

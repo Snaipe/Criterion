@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2017-04-07 21:04+0100\n"
+"POT-Creation-Date: 2017-04-15 11:13+0100\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -51,22 +51,22 @@ msgstr "%1$s::%2$s: Le test est désactivé\n"
 #: src/log/normal.c:55
 #, fuzzy, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n"
-msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Échec d'assertion: %7$s\n"
+msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n"
 
 #: src/log/normal.c:56
 #, fuzzy, c-format
 msgid "  %1$s: %2$s\n"
-msgstr "%1$s::%2$s\n"
+msgstr "  %1$s::%2$s\n"
 
 #: src/log/normal.c:57
 #, fuzzy, c-format
 msgid "    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n"
-msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: Échec d'assertion: %7$s\n"
+msgstr "    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n"
 
 #: src/log/normal.c:58
 #, fuzzy, c-format
-msgid "    %1$s: %2$s\n"
-msgstr "%1$s::%2$s\n"
+msgid "    %1$s: %2$s%3$s%4$s\n"
+msgstr "    %1$s: %2$s%3$s%4$s\n"
 
 #: src/log/normal.c:59
 #, fuzzy, c-format
@@ -94,7 +94,7 @@ msgstr "%1$s::%2$s: PLANTAGE!\n"
 #: src/log/normal.c:63
 #, fuzzy, c-format
 msgid "%1$s::%2$s: %3$s\n"
-msgstr "%1$s::%2$s: (%3$3.2fs)\n"
+msgstr "%1$s::%2$s: %3$s\n"
 
 #: src/log/normal.c:64
 #, fuzzy, c-format
@@ -133,6 +133,10 @@ msgstr ""
 #, fuzzy, c-format
 msgid "%2$*1$s%3$s%4$s%5$s\n"
 msgstr "%2$*1$s%3$s%4$s%5$s\n"
+
+#: src/log/normal.c:189
+msgid "Assertion Failed"
+msgstr "Échec d'assertion"
 
 #: src/string/i18n.c:15
 msgid "The conditions for this assertion were not met."

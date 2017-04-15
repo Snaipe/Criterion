@@ -79,12 +79,10 @@ static size_t leaf_count(struct cri_assert_node *tree)
 
     for (size_t i = 0; i < tree->nchild; ++i) {
         struct cri_assert_node *node = &tree->children[i];
-        if (node->nchild > 0) {
-            count += leaf_count(&tree->children[i]);
-            continue;
-        }
         if (!node->pass)
             ++count;
+        if (node->nchild > 0)
+            count += leaf_count(&tree->children[i]);
     }
     return count;
 }
@@ -110,48 +108,42 @@ static inline void make_obj(criterion_protocol_param_entry *obj,
 static criterion_protocol_result *collect_leaves(
     criterion_protocol_result *res, struct cri_assert_node *tree)
 {
-    for (size_t i = 0; i < tree->nchild; ++i) {
-        struct cri_assert_node *node = &tree->children[i];
-        if (node->nchild > 0) {
-            res = collect_leaves(res, node);
-            continue;
-        }
-        if (node->pass)
-            continue;
+    size_t nbparams = 0;
+    for (struct cri_assert_param *p = tree->params; p->name; ++p)
+        ++nbparams;
 
-        res->repr = (char *) node->repr;
-        res->message = (char *) node->message;
-
-        size_t nbparams = 0;
-        for (struct cri_assert_param *p = &node->params[0]; p->name; ++p)
-            ++nbparams;
+    /* If there are any parameters, it means that the children have
+       already been digested. No need to recurse down */
+    if (nbparams > 0) {
+        res->repr = (char *) tree->repr;
+        res->message = (char *) tree->message;
 
         const size_t display_threshold = 30;
 
         if (nbparams == 2) {
-            if (strcmp(node->params[0].name, "actual")
-                    || strcmp(node->params[1].name, "expected")) {
+            if (strcmp(tree->params[0].name, "actual")
+                    || strcmp(tree->params[1].name, "expected")) {
                 goto process_params;
             }
 
-            size_t expected_len = strlen(node->params[0].data);
-            size_t actual_len = strlen(node->params[1].data);
+            size_t expected_len = strlen(tree->params[0].data);
+            size_t actual_len = strlen(tree->params[1].data);
 
             if (actual_len <= display_threshold
                     && expected_len <= display_threshold
-                    && !strchr(node->params[0].data, '\n')
-                    && !strchr(node->params[1].data, '\n')) {
+                    && !strchr(tree->params[0].data, '\n')
+                    && !strchr(tree->params[1].data, '\n')) {
                 goto process_params;
             }
 
             res->which_value = criterion_protocol_result_formatted_tag;
 
             struct cri_diff_buffer expected = {
-                .ptr  = node->params[0].data,
+                .ptr  = tree->params[0].data,
                 .size = expected_len + 1,
             };
             struct cri_diff_buffer actual = {
-                .ptr  = node->params[1].data,
+                .ptr  = tree->params[1].data,
                 .size = actual_len + 1,
             };
             struct cri_diff_buffer diff;
@@ -178,10 +170,17 @@ static criterion_protocol_result *collect_leaves(
             res->value.params->list = malloc(sizeof (*res->value.params->list) * nbparams);
 
             size_t j = 0;
-            for (struct cri_assert_param *p = &node->params[0]; p->name; ++p, ++j)
+            for (struct cri_assert_param *p = tree->params; p->name; ++p, ++j)
                 make_obj(&res->value.params->list[j], p);
         }
-        ++res;
+        return res + 1;
+    }
+
+    for (size_t i = 0; i < tree->nchild; ++i) {
+        struct cri_assert_node *node = &tree->children[i];
+        if (node->pass)
+            continue;
+        res = collect_leaves(res, node);
     }
     return res;
 }
@@ -207,8 +206,8 @@ CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_asser
 #else
     criterion_protocol_result results[nb_results];
 #endif
-
-    collect_leaves(results, tree);
+    criterion_protocol_result *last = collect_leaves(results, tree);
+    nb_results = last - results;
 
     criterion_protocol_msg msg = criterion_message(assert,
                     .message = (char *) tree->message,
@@ -229,7 +228,7 @@ CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_asser
 CR_API char *cri_assert_message(const char *fmt, ...)
 {
     if (strlen(fmt) == 1)
-        return strdup("Assertion failed.");
+        return strdup("");
 
     char *out = NULL;
     va_list vl;

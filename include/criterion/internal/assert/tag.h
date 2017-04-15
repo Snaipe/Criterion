@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2017 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -89,6 +89,11 @@
 #define CRI_ASSERT_TEST_TAGC_u64()      ,
 #define CRI_ASSERT_TYPE_TAG_u64         uint64_t,
 #define CRI_ASSERT_TYPE_TAG_ID_u64      u64,
+
+#define CRI_ASSERT_TEST_TAG_chr         ,
+#define CRI_ASSERT_TEST_TAGC_chr()      ,
+#define CRI_ASSERT_TYPE_TAG_chr         char,
+#define CRI_ASSERT_TYPE_TAG_ID_chr      chr,
 
 #define CRI_ASSERT_TEST_TAG_int         ,
 #define CRI_ASSERT_TEST_TAGC_int()      ,
@@ -185,5 +190,154 @@
 #define CRI_ASSERT_TEST_TAGC_type_()    ,
 #define CRI_ASSERT_TYPE_TAG_type(T)     T,
 #define CRI_ASSERT_TYPE_TAG_ID_type(T)  CRI_ASSERT_SWALLOW_KEYWORD(T),
+
+#define CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)     \
+    static inline int CRI_USER_TAG_ID(le, Tag)(   \
+        CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
+        CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
+    {                                             \
+        return *actual < *expected;               \
+    }                                             \
+    static inline int CRI_USER_TAG_ID(eq, Tag)(   \
+        CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
+        CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
+    {                                             \
+        return *actual == *expected;              \
+    }                                             \
+    static inline int CRI_USER_TAG_ID(zero, Tag)( \
+        CRI_ASSERT_TYPE_TAG(Tag) *val)            \
+    {                                             \
+        return !*val;                             \
+    }
+
+#define CRI_ASSERT_DECLARE_NATIVE_FN(Tag, Fmt)       \
+    CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)            \
+    static inline char *CRI_USER_TAG_ID(tostr, Tag)( \
+        CRI_ASSERT_TYPE_TAG(Tag) *e)                 \
+    {                                                \
+        char *str = NULL;                            \
+        cr_asprintf(&str, "%" Fmt, *e);              \
+        return str;                                  \
+    }
+
+#define CRI_ASSERT_DECLARE_STR_FN(Tag, Prefix, Fmt)                         \
+    CR_API int CRI_USER_TAG_ID(le, Tag)(                                    \
+        CRI_ASSERT_TYPE_TAG(Tag) *actual,                                   \
+        CRI_ASSERT_TYPE_TAG(Tag) *expected);                                \
+    CR_API int CRI_USER_TAG_ID(eq, Tag)(                                    \
+        CRI_ASSERT_TYPE_TAG(Tag) *actual,                                   \
+        CRI_ASSERT_TYPE_TAG(Tag) *expected);                                \
+    CR_API int CRI_USER_TAG_ID(zero, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *val);   \
+    CR_API char *CRI_USER_TAG_ID(tostr, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *e);  \
+
+#ifndef __cplusplus
+# include <string.h>
+# include <wchar.h>
+# include <float.h>
+
+CRI_ASSERT_DECLARE_NATIVE_FN(i8, PRId8)
+CRI_ASSERT_DECLARE_NATIVE_FN(i16, PRId16)
+CRI_ASSERT_DECLARE_NATIVE_FN(i32, PRId32)
+CRI_ASSERT_DECLARE_NATIVE_FN(i64, PRId64)
+CRI_ASSERT_DECLARE_NATIVE_FN(u8, PRIu8)
+CRI_ASSERT_DECLARE_NATIVE_FN(u16, PRIu16)
+CRI_ASSERT_DECLARE_NATIVE_FN(u32, PRIu32)
+CRI_ASSERT_DECLARE_NATIVE_FN(u64, PRIu64)
+CRI_ASSERT_DECLARE_NATIVE_FN(int, "d")
+CRI_ASSERT_DECLARE_NATIVE_FN(uint, "u")
+CRI_ASSERT_DECLARE_NATIVE_FN(long, "ld")
+CRI_ASSERT_DECLARE_NATIVE_FN(ulong, "lu")
+CRI_ASSERT_DECLARE_NATIVE_FN(llong, "lld")
+CRI_ASSERT_DECLARE_NATIVE_FN(ullong, "llu")
+CRI_ASSERT_DECLARE_STR_FN(str, "", "s")
+CRI_ASSERT_DECLARE_STR_FN(wcs, "L", "ls")
+
+CRI_ASSERT_DECLARE_NATIVE_CMP_FN(iptr)
+CRI_ASSERT_DECLARE_NATIVE_CMP_FN(uptr)
+CRI_ASSERT_DECLARE_NATIVE_CMP_FN(ptr)
+
+static inline char *CRI_USER_TAG_ID(tostr, iptr)(intptr_t *e)
+{
+    uintptr_t absptr = *e;
+    if (absptr > (uintptr_t)INTPTR_MAX)
+        absptr = -absptr;
+
+    char *str = NULL;
+    cr_asprintf(&str, "%s0x%" PRIxPTR, *e < 0 ? "-" : "", absptr);
+    return str;
+}
+
+static inline char *CRI_USER_TAG_ID(tostr, uptr)(uintptr_t *e)
+{
+    char *str = NULL;
+    cr_asprintf(&str, "0x%" PRIxPTR, *e);
+    return str;
+}
+
+static inline char *CRI_USER_TAG_ID(tostr, ptr)(void **e)
+{
+    char *str = NULL;
+    cr_asprintf(&str, "0x%" PRIxPTR, (uintptr_t) *e);
+    return str;
+}
+
+#if defined (FLT_DECIMAL_DIG)
+# define CRI_FLT_DIG CR_STR(FLT_DECIMAL_DIG)
+#elif defined (__FLT_DECIMAL_DIG__)
+# define CRI_FLT_DIG CR_STR(__FLT_DECIMAL_DIG__)
+#elif defined (DECIMAL_DIG)
+# define CRI_FLT_DIG CR_STR(DECIMAL_DIG)
+#else
+# define CRI_FLT_DIG "9"
+#endif
+
+#if defined (DBL_DECIMAL_DIG)
+# define CRI_DBL_DIG CR_STR(DBL_DECIMAL_DIG)
+#elif defined (__DBL_DECIMAL_DIG__)
+# define CRI_DBL_DIG CR_STR(__DBL_DECIMAL_DIG__)
+#elif defined (DECIMAL_DIG)
+# define CRI_DBL_DIG CR_STR(DECIMAL_DIG)
+#else
+# define CRI_DBL_DIG "17"
+#endif
+
+#if defined (LDBL_DECIMAL_DIG)
+# define CRI_LDBL_DIG CR_STR(LDBL_DECIMAL_DIG)
+#elif defined (__LDBL_DECIMAL_DIG__)
+# define CRI_LDBL_DIG CR_STR(__LDBL_DECIMAL_DIG__)
+#elif defined (DECIMAL_DIG)
+# define CRI_LDBL_DIG CR_STR(DECIMAL_DIG)
+#else
+# define CRI_LDBL_DIG "21"
+#endif
+
+CRI_ASSERT_DECLARE_NATIVE_FN(flt, "." CRI_FLT_DIG "g")
+CRI_ASSERT_DECLARE_NATIVE_FN(dbl, "." CRI_DBL_DIG "g")
+
+#if defined (CRI_CAPS_LDBL)
+CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_LDBL_DIG "Lg")
+#endif
+
+# ifdef _WIN32
+CRI_ASSERT_DECLARE_NATIVE_FN(sz, "Iu")
+# else
+CRI_ASSERT_DECLARE_NATIVE_FN(sz, "zu")
+# endif
+#endif
+
+#if defined (_WIN32)
+# include <tchar.h>
+# if defined (_UNICODE)
+CRI_ASSERT_DECLARE_NATIVE_FN(tcs, "ls")
+# else
+CRI_ASSERT_DECLARE_NATIVE_FN(tcs, "s")
+# endif
+#endif
+
+#include "memory.h"
+
+#ifdef CRI_CAPS_COMPLEX
+# include "complex.h"
+#endif
 
 #endif /* !CRITERION_INTERNAL_ASSERT_TAG_H_ */

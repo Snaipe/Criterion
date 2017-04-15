@@ -55,7 +55,7 @@ static msg_t msg_test_disabled = N_("%1$s::%2$s: Test is disabled\n");
 static msg_t msg_assert_fail = N_("%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n");
 static msg_t msg_assert_repr = N_("  %1$s: %2$s\n");
 static msg_t msg_assert_eq_short = N_("    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n");
-static msg_t msg_assert_param = N_("    %1$s: %2$s\n");
+static msg_t msg_assert_param = N_("    %1$s: %2$s%3$s%4$s\n");
 static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
 static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
@@ -79,7 +79,7 @@ static msg_t msg_test_disabled = "%s::%s: Test is disabled\n";
 static msg_t msg_assert_fail = "%s%s%s:%s%d%s: %s\n";
 static msg_t msg_assert_repr = "  %s: %s\n";
 static msg_t msg_assert_eq_short = "    %s: %s[-%s-]%s%s{+%s+}%s\n";
-static msg_t msg_assert_param = "    %s: %s\n";
+static msg_t msg_assert_param = "    %s: %s%s%s\n";
 static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
 static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
@@ -167,20 +167,44 @@ void normal_log_post_all(struct criterion_global_stats *stats)
 void normal_log_assert(struct criterion_assert_stats *stats)
 {
     if (!stats->passed) {
-        char *dup       = strdup(*stats->message ? stats->message : "");
-        char *saveptr   = NULL;
-        char *line      = strtok_r(dup, "\n", &saveptr);
+        int dynpath = 0;
+        const char *path = NULL;
+        if (criterion_options.short_filename) {
+            path = basename_compat(stats->file);
+        } else if (cri_path_isrelative(stats->file)) {
+            path = stats->file;
+        } else {
+            path = cri_path_relativeof(stats->file);
+            if (!path) {
+                path = stats->file;
+            } else {
+                dynpath = 1;
+            }
+        }
 
-        bool sf = criterion_options.short_filename;
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_fail),
-                CR_FG_BOLD, sf ? basename_compat(stats->file) : stats->file, CR_RESET,
+                CR_FG_BOLD, path, CR_RESET,
                 CR_FG_RED, stats->line, CR_RESET,
-                line);
+                _(N_("Assertion Failed")));
 
-        while ((line = strtok_r(NULL, "\n", &saveptr)))
-            criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
-        free(dup);
+        if (dynpath)
+            free((char *) path);
+
+        if (stats->message && *stats->message) {
+            criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), "");
+
+            char *dup       = strdup(stats->message);
+            char *saveptr   = NULL;
+            char *line      = strtok_r(dup, "\n", &saveptr);
+
+            do {
+                criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), line);
+            } while ((line = strtok_r(NULL, "\n", &saveptr)));
+            free(dup);
+
+            criterion_pimportant(CRITERION_PREFIX_DASHES, _(msg_desc), "");
+        }
     }
 }
 
@@ -292,11 +316,24 @@ void normal_log_assert_param(struct criterion_assert_stats *stats,
         if (!*(char *) param->data)
             return;
 
-        criterion_pimportant(CRITERION_PREFIX_DASHES,
-                _(msg_assert_param), param->name, (char *) param->data);
+        const char *color = !strcmp(param->name, "expected") ? CR_FG_GREEN
+                : !strcmp(param->name, "reference") ? CR_FG_GREEN
+                : !strcmp(param->name, "actual") ? CR_FG_RED
+                : !strcmp(param->name, "value") ? CR_FG_RED
+                : "";
+
+        char *line = cri_strtokc((char *) param->data, '\n');
+
+        if (line) {
+            criterion_pimportant(CRITERION_PREFIX_DASHES,
+                    _(msg_assert_param), param->name, color, line, CR_RESET);
+
+            while ((line = cri_strtokc(NULL, '\n')))
+                criterion_pimportant(CRITERION_PREFIX_DASHES, "      %s%s%s\n", color, line, CR_RESET);
+        }
     } else if (param->kind == CR_LOG_PARAM_RAW) {
         criterion_pimportant(CRITERION_PREFIX_DASHES,
-                _(msg_assert_param), param->name, "");
+                _(msg_assert_param), param->name, "", "", "");
 
         char *raw = cri_string_xxd(param->data, param->size);
         for (char *c = raw, *start = raw; *c; ++c) {

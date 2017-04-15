@@ -24,6 +24,7 @@
 #ifndef COMPAT_STRTOK_H_
 #define COMPAT_STRTOK_H_
 
+#include <wchar.h>
 #include "config.h"
 
 #ifdef VANILLA_WIN32
@@ -42,5 +43,8 @@ static CR_INLINE char *strtok_r(char *str, const char *delim, CR_UNUSED char **s
 #  define strdup    _strdup
 # endif
 #endif
+
+char *cri_strtokc(char *str, const char delim);
+wchar_t *cri_wcstokc(wchar_t *str, const wchar_t delim);
 
 #endif /* !COMPAT_STRTOK_H_ */

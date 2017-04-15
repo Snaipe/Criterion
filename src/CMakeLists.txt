@@ -5,6 +5,7 @@
 # List sources and headers
 
 set(SOURCE_FILES
+  src/capi/specifiers.c
   src/core/abort.c
   src/core/abort.h
   src/core/assert.c
@@ -27,6 +28,8 @@ set(SOURCE_FILES
   src/compat/pipe-internal.h
   src/compat/section.c
   src/compat/section.h
+  src/compat/strtok.c
+  src/compat/strtok.h
   src/compat/process.c
   src/compat/process.h
   src/compat/basename.c
