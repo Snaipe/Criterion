@@ -33,7 +33,7 @@ struct cri_diff_buffer {
     size_t size;
 };
 
-CR_API int cri_diff_buffer_to_buffer(const struct cri_diff_buffer *b1,
+int cri_diff_buffer_to_buffer(const struct cri_diff_buffer *b1,
         const struct cri_diff_buffer *b2, struct cri_diff_buffer *out);
 
 #endif /* !CRI_DIFF_H_ */

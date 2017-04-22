@@ -76,17 +76,17 @@ std::ostream &operator<<(std::ostream &s, const struct cr_mem &m)
 #else
 # include <string.h>
 
-static inline int cr_user_eq_mem(struct cr_mem *m1, struct cr_mem *m2)
+static inline int cr_user_mem_eq(struct cr_mem *m1, struct cr_mem *m2)
 {
     return m1->size == m2->size ? !memcmp(m1->data, m2->data, m1->size) : 0;
 }
 
-static inline int cr_user_cmp_mem(struct cr_mem *m1, struct cr_mem *m2)
+static inline int cr_user_mem_cmp(struct cr_mem *m1, struct cr_mem *m2)
 {
     return m1->size == m2->size ? memcmp(m1->data, m2->data, m1->size) : (m1->size > m2->size ? 1 : -1);
 }
 
-static inline char *cr_user_tostr_mem(struct cr_mem *m)
+static inline char *cr_user_mem_tostr(struct cr_mem *m)
 {
     return cri_string_xxd(m->data, m->size);
 }
