@@ -1677,6 +1677,5 @@
 /** @endcond */
 
 #include "internal/assert.h"
-#include "internal/new_asserts.h"
 
 #endif /* !CRITERION_ASSERT_H_ */

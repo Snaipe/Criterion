@@ -1,5 +1,7 @@
 #include <criterion/criterion.h>
 
+#include <criterion/new/assert.h>
+
 struct dummy_struct {
     char a;
     size_t b;

@@ -75,39 +75,44 @@
         cri_assert_node_init(&cri_root);                                        \
         int cri_cond, cri_cond_un, *cri_pass = &cri_cond_un;                    \
         int cri_cond_def = 1;                                                   \
+        int cri_cond_expect = 1;                                                \
         (void) cri_cond_def;                                                    \
         (void) cri_pass;                                                        \
         cri_cond_un = CRI_ASSERT_SPECIFIER(Condition);                          \
         cri_cond = cri_cond_un;                                                 \
-        if (!cri_cond) {                                                        \
+        if (cri_cond != cri_cond_expect) {                                      \
             cri_root.message = cri_assert_message("x" CR_VA_TAIL(__VA_ARGS__)); \
             cri_assert_node_send(File, Line, &cri_root);                        \
-        }                                                                       \
-        cri_assert_node_term(&cri_root);                                        \
-        if (!cri_cond)                                                          \
+            cri_assert_node_term(&cri_root);                                    \
             Fail();                                                             \
+        }                                                                       \
     } while (0))
 
-#define CRI_ASSERT_SPECIFIER_VALUE(Val)                          \
-    1; do {                                                      \
-        cri_cond_un = (Val);                                     \
-        cri_assert_node_init(&cri_tmpn);                         \
-        cri_tmpn.repr = CR_STR(Val);                             \
-        cri_tmpn.pass = cri_cond_un;                             \
-        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn); \
+#define CRI_ASSERT_SPECIFIER_VALUE(Val)                                 \
+    1; do {                                                             \
+        cri_cond_un = (Val);                                            \
+        if (cri_cond_un != cri_cond_expect) {                           \
+            cri_assert_node_init(&cri_tmpn);                            \
+            cri_tmpn.repr = CR_STR(Val);                                \
+            cri_tmpn.pass = cri_cond_un;                                \
+            cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
+        }                                                               \
     } while (0)
 
 /* Logical specifiers */
 
 #define CRI_ASSERT_TEST_SPECIFIER_not(...)    ,
 #define CRI_ASSERT_SPECIFIER_not(E)              \
+    cri_cond_expect = !cri_cond_expect;          \
     CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); \
+    cri_cond_expect = !cri_cond_expect;          \
     cri_cond_un = !cri_cond_un;                  \
-    cri_assert_node_negate(cri_prevnode)
+    if (cri_cond_un != cri_cond_expect)          \
+        cri_assert_node_negate(cri_prevnode)
 
-#define CRI_ASSERT_SPECIFIER_ALL_INDIRECT(Cond, E)              \
-    ; cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E) \
-    ; Cond = Cond && cri_cond_un
+#define CRI_ASSERT_SPECIFIER_ALL_INDIRECT(Cond, E);             \
+    cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E);  \
+    Cond = Cond && cri_cond_un
 
 #define CRI_ASSERT_TEST_SPECIFIER_all(...)            ,
 #define CRI_ASSERT_SPECIFIER_all(...)                                                   \
@@ -123,10 +128,13 @@
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 
-#define CRI_ASSERT_SPECIFIER_NONE_INDIRECT(Cond, E)             \
-    ; cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E) \
-    ; cri_assert_node_negate(cri_prevnode)                      \
-    ; Cond = Cond && !(cri_cond_un)
+#define CRI_ASSERT_SPECIFIER_NONE_INDIRECT(Cond, E);            \
+    cri_cond_expect = !cri_cond_expect;                         \
+    cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E);  \
+    if (cri_cond_un != cri_cond_expect)                         \
+      cri_assert_node_negate(cri_prevnode);                     \
+    cri_cond_expect = !cri_cond_expect;                         \
+    Cond = Cond && !(cri_cond_un)
 
 #define CRI_ASSERT_TEST_SPECIFIER_none(...)            ,
 #define CRI_ASSERT_SPECIFIER_none(...)                                                  \

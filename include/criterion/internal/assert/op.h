@@ -309,14 +309,16 @@
         cri_cond_un = CRI_ASSERT_OP_APPLY CR_EXPAND(                        \
                 (Op CRITERION_APPLY(CRI_ASSERT_IT_UNPACK, , __VA_ARGS__))   \
             );                                                              \
-        cri_assert_node_init(&cri_tmpn);                                    \
-        cri_tmpn.repr = #Name "(" CR_STR CR_EXPAND(                         \
-                (CRITERION_APPLY(CRI_ASSERT_IT_VUNPACK, , __VA_ARGS__))     \
-            ) ")";                                                          \
-        size_t cri_paramidx = 0;                                            \
-        CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_AUTO, , __VA_ARGS__)           \
-        cri_tmpn.pass = cri_cond_un;                                        \
-        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);            \
+        if (cri_cond_un != cri_cond_expect) {                               \
+            cri_assert_node_init(&cri_tmpn);                                \
+            cri_tmpn.repr = #Name "(" CR_STR CR_EXPAND(                     \
+                    (CRITERION_APPLY(CRI_ASSERT_IT_VUNPACK, , __VA_ARGS__)) \
+                ) ")";                                                      \
+            size_t cri_paramidx = 0;                                        \
+            CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_AUTO, , __VA_ARGS__)       \
+            cri_tmpn.pass = cri_cond_un;                                    \
+            cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
+        }                                                                   \
     } while (0)
 #else
 # define CRI_ASSERT_SPECIFIER_OPTAGLESS(Op, Name, ...) \
@@ -333,20 +335,22 @@
         CRI_ASSERT_SPECIFIER_OPTAG_ARRAY,                               \
     )(Op, Name, Tag, __VA_ARGS__)
 
-#define CRI_ASSERT_SPECIFIER_OPTAG_SCALAR(Op, Name, Tag, ...)           \
-    1; do {                                                             \
-        CRI_ASSERT_NAMESPACES;                                          \
-        CRITERION_APPLY(CRI_ASSERT_IT_VAR, TYPE, __VA_ARGS__)           \
-        cri_cond_un = CRI_ASSERT_OP_APPLY(Op, Tag                       \
-                CRITERION_APPLY(CRI_ASSERT_IT_UNPACK,, __VA_ARGS__));   \
-        cri_assert_node_init(&cri_tmpn);                                \
-        cri_tmpn.repr = #Name "(" #Tag CR_STR CR_EXPAND(                \
-                (CRITERION_APPLY(CRI_ASSERT_IT_VUNPACK,, __VA_ARGS__))  \
-            ) ")";                                                      \
-        size_t cri_paramidx = 0;                                        \
-        CRITERION_APPLY(CRI_ASSERT_IT_MKNODE, Tag, __VA_ARGS__)         \
-        cri_tmpn.pass = cri_cond_un;                                    \
-        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
+#define CRI_ASSERT_SPECIFIER_OPTAG_SCALAR(Op, Name, Tag, ...)               \
+    1; do {                                                                 \
+        CRI_ASSERT_NAMESPACES;                                              \
+        CRITERION_APPLY(CRI_ASSERT_IT_VAR, TYPE, __VA_ARGS__)               \
+        cri_cond_un = CRI_ASSERT_OP_APPLY(Op, Tag                           \
+                CRITERION_APPLY(CRI_ASSERT_IT_UNPACK,, __VA_ARGS__));       \
+        if (cri_cond_un != cri_cond_expect) {                               \
+            cri_assert_node_init(&cri_tmpn);                                \
+            cri_tmpn.repr = #Name "(" #Tag CR_STR CR_EXPAND(                \
+                    (CRITERION_APPLY(CRI_ASSERT_IT_VUNPACK,, __VA_ARGS__))  \
+                ) ")";                                                      \
+            size_t cri_paramidx = 0;                                        \
+            CRITERION_APPLY(CRI_ASSERT_IT_MKNODE, Tag, __VA_ARGS__)         \
+            cri_tmpn.pass = cri_cond_un;                                    \
+            cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
+        }                                                                   \
     } while (0)
 
 #define CRI_SIZE_T_FMT %zu

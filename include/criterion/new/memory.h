@@ -21,33 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CRITERION_INTERNAL_MEMORY_H_
-#define CRITERION_INTERNAL_MEMORY_H_
+#ifndef CRITERION_NEW_MEMORY_H_
+#define CRITERION_NEW_MEMORY_H_
 
-#define CRI_ASSERT_TEST_TAG_mem       ,
-#define CRI_ASSERT_TEST_TAGC_mem()    ,
-#define CRI_ASSERT_TYPE_TAG_mem       struct cr_mem,
-#define CRI_ASSERT_TYPE_TAG_ID_mem    mem,
+struct cr_mem {
+    const void *data;
+    size_t size;
 
 #ifdef __cplusplus
-inline bool operator==(const struct cr_mem &m1, const struct cr_mem &m2)
-{
-    return cr_user_mem_eq(&m1, &m2);
+    template <typename T, size_t N>
+    constexpr cr_mem(const T (&arr)[N])
+        : data(static_cast<const void *>(&arr)), size(N)
+    {}
+
+    template <typename T>
+    constexpr cr_mem(const T *arr, size_t n)
+        : data(static_cast<const void *>(arr)), size(n)
+    {}
+#endif /* !__cplusplus */
+};
+
+#ifdef __cplusplus
+namespace criterion {
+    using memory = cr_mem;
 }
 
-inline bool operator<(const struct cr_mem &m1, const struct cr_mem &m2)
-{
-    return cr_user_mem_cmp(&m1, &m2) < 0;
-}
-
-inline std::ostream &operator<<(std::ostream &s, const struct cr_mem &m)
-{
-    char *str = cr_user_mem_tostr(&m);
-
-    s << std::string(str);
-    free(str);
-    return s;
-}
+inline bool operator==(const criterion::memory &m1, const criterion::memory &m2);
+inline bool operator<(const criterion::memory &m1, const criterion::memory &m2);
+inline std::ostream &operator<<(std::ostream &s, const criterion::memory &m);
 #endif /* !__cplusplus */
 
-#endif /* !CRITERION_INTERNAL_MEMORY_H_ */
+CR_BEGIN_C_API
+
+CR_API int cr_user_mem_eq(struct cr_mem *m1, struct cr_mem *m2);
+CR_API int cr_user_mem_cmp(struct cr_mem *m1, struct cr_mem *m2);
+CR_API char *cr_user_mem_tostr(struct cr_mem *m);
+
+CR_END_C_API
+
+#include "../internal/assert/memory.h"
+
+#endif /* !CRITERION_NEW_MEMORY_H_ */

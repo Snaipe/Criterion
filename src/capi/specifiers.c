@@ -26,7 +26,9 @@
 #include <wchar.h>
 
 #include "criterion/internal/new_asserts.h"
+#include "criterion/new/memory.h"
 #include "compat/strtok.h"
+#include "string/xxd.h"
 
 /* *INDENT-OFF* */
 #define CRI_ASSERT_DEFINE_STR_FN(Tag, Prefix, Fmt)                              \
@@ -73,3 +75,22 @@
 CRI_ASSERT_DEFINE_STR_FN(str, , "s")
 CRI_ASSERT_DEFINE_STR_FN(wcs, L, "ls")
 /* *INDENT-ON* */
+
+int cr_user_mem_eq(struct cr_mem *m1, struct cr_mem *m2)
+{
+    if (m1->size != m2->size)
+        return 0;
+    return !memcmp(m1->data, m2->data, m1->size);
+}
+
+int cr_user_mem_cmp(struct cr_mem *m1, struct cr_mem *m2)
+{
+    if (m1->size != m2->size)
+        return m1->size > m2->size ? 1 : -1;
+    return memcmp(m1->data, m2->data, m1->size);
+}
+
+char *cr_user_mem_tostr(struct cr_mem *m)
+{
+    return cri_string_xxd(m->data, m->size);
+}
