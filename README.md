@@ -1,6 +1,4 @@
-
-<img src="doc/criterion-title.png" height="96" alt="Criterion Logo" />
-=========
+<h1><img src="doc/criterion-title.png" height="96" alt="Criterion Logo" /></h1>
 
 [![Unix Build Status](https://img.shields.io/travis/Snaipe/Criterion/bleeding.svg?label=linux)](https://travis-ci.org/Snaipe/Criterion) 
 [![Windows Build Status](https://img.shields.io/appveyor/ci/Snaipe/Criterion/bleeding.svg?label=windows)](https://ci.appveyor.com/project/Snaipe/Criterion/branch/bleeding)
