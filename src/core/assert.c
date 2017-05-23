@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2017 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -238,13 +238,4 @@ CR_API char *cri_assert_message(const char *fmt, ...)
     va_end(vl);
 
     return out;
-}
-
-CR_API void *cri_assert_mkbytes(size_t size, const void *bytes)
-{
-    pb_bytes_array_t *data = malloc(PB_BYTES_ARRAY_T_ALLOCSIZE(size));
-
-    data->size = size;
-    memcpy(data->bytes, bytes, size);
-    return data;
 }

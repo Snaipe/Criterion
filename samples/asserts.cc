@@ -1,4 +1,5 @@
 #include <criterion/criterion.h>
+#include <criterion/new/assert.h>
 #include <exception>
 #include <new>
 #include <array>
@@ -93,8 +94,8 @@ Test(asserts, array) {
     int arr2[] = { 4, 3, 2, 1 };
 
     /* For primitive types we can compare their byte-to-byte representation */
-    struct cr_mem mem_arr1 { arr1 };
-    struct cr_mem mem_arr2 { arr2 };
+    criterion::memory mem_arr1 { arr1 };
+    criterion::memory mem_arr2 { arr2 };
 
     cr_assert(eq(mem, mem_arr1, mem_arr1));
     cr_assert(ne(mem, mem_arr1, mem_arr2));
@@ -117,6 +118,6 @@ Test(asserts, array) {
 }
 
 Test(asserts, exception) {
-    cr_assert(throw (std::invalid_argument, throw std::invalid_argument("")));
-    cr_assert(throw (std::bad_alloc, throw std::invalid_argument("")));
+    cr_assert(throw (std::invalid_argument, throw std::invalid_argument("some message")));
+    cr_assert(throw (std::bad_alloc, throw std::invalid_argument("some other message")));
 }

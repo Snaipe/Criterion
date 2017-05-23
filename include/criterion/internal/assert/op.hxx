@@ -24,8 +24,6 @@
 #ifndef CRITERION_INTERNAL_ASSERT_OP_HXX_
 #define CRITERION_INTERNAL_ASSERT_OP_HXX_
 
-#include <locale>
-#include <clocale>
 #include <cwchar>
 
 /* *INDENT-OFF* */
@@ -61,27 +59,6 @@ bool zero(const T &t) { return t.empty(); }
 
 template <> inline bool zero<>(const char *t) { return !*t; }
 template <> inline bool zero<>(const wchar_t *t) { return !*t; }
-
-std::ostream &operator<<(std::ostream &s, const std::wstring &ws)
-{
-    std::mbstate_t state = std::mbstate_t();
-    char *curloc = std::setlocale(LC_ALL, NULL);
-    const wchar_t *wc = ws.c_str();
-
-    std::setlocale(LC_ALL, "en_US.utf8");
-    size_t sz = std::wcsrtombs(NULL, &wc, 0, &state);
-    if (sz == (size_t) -1) {
-        s << "<invalid multibyte string>";
-    } else {
-        std::string ns(sz + 1, 0);
-        std::wcsrtombs(&ns[0], &wc, ns.size(), &state);
-        ns.pop_back();
-        s << ns;
-    }
-
-    std::setlocale(LC_ALL, curloc);
-    return s;
-}
 
 /* *INDENT-OFF* */
 }}}

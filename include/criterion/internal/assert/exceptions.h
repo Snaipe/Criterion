@@ -37,10 +37,17 @@
             cri_cond_un = 1;                                        \
         } catch (std::exception &cri_ex) {                          \
             cri_cond_un = 0;                                        \
-            /* TODO: Add std::exception message */                  \
+            char *cri_str = cr_user_str_tostr(cri_ex.what());       \
+            cri_tmpn.params[0].name = "message";                    \
+            cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
+            cri_tmpn.params[0].data = cri_str;                      \
         } catch (...) {                                             \
             cri_cond_un = 0;                                        \
-            /* TODO: Add generic exception message */               \
+            char *cri_str;                                          \
+            cr_asprintf(&cri_str, "<unprintable>");                 \
+            cri_tmpn.params[0].name = "message";                    \
+            cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
+            cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
         cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
     } while (0)
@@ -49,16 +56,22 @@
 #define CRI_ASSERT_SPECIFIER_nothrow(Stmt)                          \
     cri_cond_def; do {                                              \
         cri_assert_node_init(&cri_tmpn);                            \
-        cri_tmpn.repr = "throw(" #Stmt ")";                         \
+        cri_tmpn.repr = "nothrow(" #Stmt ")";                       \
         try {                                                       \
             Stmt;                                                   \
             cri_cond_un = 1;                                        \
         } catch (std::exception &cri_ex) {                          \
             cri_cond_un = 0;                                        \
-            /* TODO: Add std::exception message */                  \
+            char *cri_str = cr_user_str_tostr(cri_ex.what());       \
+            cri_tmpn.params[0].name = "message";                    \
+            cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
+            cri_tmpn.params[0].data = cri_str;                      \
         } catch (...) {                                             \
             cri_cond_un = 0;                                        \
-            /* TODO: Add generic exception message */               \
+            cr_asprintf(&cri_str, "<unprintable>");                 \
+            cri_tmpn.params[0].name = "message";                    \
+            cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
+            cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
         cri_prenode = cri_assert_node_add(cri_node, &cri_tmpn);     \
     } while (0)
@@ -73,7 +86,10 @@
             cri_cond_un = 0;                                        \
         } catch (...) {                                             \
             cri_cond_un = 1;                                        \
-            /* TODO: Add generic exception message */               \
+            cr_asprintf(&cri_str, "<unprintable>");                 \
+            cri_tmpn.params[0].name = "message";                    \
+            cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
+            cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
         cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
     } while (0)

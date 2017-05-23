@@ -42,6 +42,7 @@
 #include "assert/tag.h"
 #include "assert/tostr.h"
 #include "assert/types.h"
+#include "assert/ieee.h"
 
 #ifdef __cplusplus
 # include "assert/exceptions.h"

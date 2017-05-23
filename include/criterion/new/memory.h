@@ -53,9 +53,9 @@ inline std::ostream &operator<<(std::ostream &s, const criterion::memory &m);
 
 CR_BEGIN_C_API
 
-CR_API int cr_user_mem_eq(struct cr_mem *m1, struct cr_mem *m2);
-CR_API int cr_user_mem_cmp(struct cr_mem *m1, struct cr_mem *m2);
-CR_API char *cr_user_mem_tostr(struct cr_mem *m);
+CR_API int cr_user_mem_eq(const struct cr_mem *m1, const struct cr_mem *m2);
+CR_API int cr_user_mem_cmp(const struct cr_mem *m1, const struct cr_mem *m2);
+CR_API char *cr_user_mem_tostr(const struct cr_mem *m);
 
 CR_END_C_API
 

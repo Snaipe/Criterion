@@ -31,26 +31,29 @@
 # include <type_traits>
 # include <utility>
 
-/* These overloads are necessary as int8_t and uint8_t are outputted as
-   characters by default. why. */
+extern "C" char *cr_user_str_tostr(const char *);
+extern "C" char *cr_user_wcs_tostr(const wchar_t *);
 
 namespace criterion { namespace internal { namespace stream_char_conv {
 
-std::ostream &operator<<(std::ostream &s, std::string &str)
+std::ostream &operator<<(std::ostream &s, const std::string &str)
 {
-    s << "\"";
-    std::operator<<(s, str);
-    s << "\"";
+    char *fmt = cr_user_str_tostr(str.c_str());
+    std::operator<<(s, fmt);
+    free(fmt);
     return s;
 }
 
-std::ostream &operator<<(std::ostream &s, std::wstring &str)
+std::ostream &operator<<(std::ostream &s, const std::wstring &str)
 {
-    s << "L\"";
-    std::operator<<(s, str);
-    s << "\"";
+    char *fmt = cr_user_wcs_tostr(str.c_str());
+    std::operator<<(s, fmt);
+    free(fmt);
     return s;
 }
+
+/* These overloads are necessary as int8_t and uint8_t are outputted as
+   characters by default. why. */
 
 std::ostream &operator<<(std::ostream &s, int8_t i)
 {
@@ -144,8 +147,8 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
              << CRI_ASSERT_TYPE_TAG_ARRLEN(Tag)                                     \
              << "]) {\n";                                                           \
                                                                                     \
-        for (size_t cri_i = 0; cri_i < size; ++cri_i) {                             \
-            char *cri_repr      = CRI_USER_TOSTR(Tag, *arr[cri_i]);                 \
+        for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                         \
+            char *cri_repr      = CRI_USER_TOSTR(Tag, &(Arr)[cri_i]);               \
             char *cri_saveptr   = NULL;                                             \
             char *cri_line      = cri_strtok_r(cri_repr, "\n", &cri_saveptr);       \
                                                                                     \

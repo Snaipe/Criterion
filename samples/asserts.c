@@ -1,4 +1,5 @@
 #include <criterion/criterion.h>
+#include <criterion/new/assert.h>
 
 Test(asserts, base) {
     cr_assert(true);
@@ -65,7 +66,7 @@ Test(asserts, native) {
 
 Test(asserts, float) {
     cr_assert(ieee_ulp_eq(flt, 0.1 * 0.1, 0.01, 3));
-    cr_assert(epsilon_eq(flt, 0.1 * 0.1, 0.01, 3));
+    cr_assert(epsilon_eq(flt, 0.1 * 0.1, 0.01, 0.01));
 }
 
 struct dummy_struct {
@@ -74,12 +75,12 @@ struct dummy_struct {
 };
 
 /* We need to provide basic functions for our dummy struct */
-int cr_user_eq_dummy_struct(struct dummy_struct *a, struct dummy_struct *b)
+int cr_user_dummy_struct_eq(struct dummy_struct *a, struct dummy_struct *b)
 {
     return a->a == b->a && a->b == b->b;
 }
 
-char *cr_user_tostr_dummy_struct(struct dummy_struct *d)
+char *cr_user_dummy_struct_tostr(struct dummy_struct *d)
 {
     char *out;
 
