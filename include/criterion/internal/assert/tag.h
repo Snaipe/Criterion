@@ -192,7 +192,7 @@
 #define CRI_ASSERT_TYPE_TAG_ID_type(T)  CRI_ASSERT_SWALLOW_KEYWORD(T),
 
 #define CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)     \
-    static inline int CRI_USER_TAG_ID(le, Tag)(   \
+    static inline int CRI_USER_TAG_ID(lt, Tag)(   \
         CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
         CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
     {                                             \
@@ -221,7 +221,7 @@
     }
 
 #define CRI_ASSERT_DECLARE_STR_FN(Tag, Prefix, Fmt)                         \
-    CR_API int CRI_USER_TAG_ID(le, Tag)(                                    \
+    CR_API int CRI_USER_TAG_ID(lt, Tag)(                                    \
         CRI_ASSERT_TYPE_TAG(Tag) *actual,                                   \
         CRI_ASSERT_TYPE_TAG(Tag) *expected);                                \
     CR_API int CRI_USER_TAG_ID(eq, Tag)(                                    \

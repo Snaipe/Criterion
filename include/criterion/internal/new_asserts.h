@@ -181,11 +181,11 @@
 #undef cr_expect
 #define cr_expect(...)    cr_assert_user(__FILE__, __LINE__, criterion_continue_test, __VA_ARGS__)
 
-#undef cr_assert_fail
-#define cr_assert_fail(...)    cr_assert_fail_user(__FILE__, __LINE__, criterion_abort_test, __VA_ARGS__)
+#undef cr_fatal
+#define cr_fatal(...)    cr_assert_fail_user(__FILE__, __LINE__, criterion_abort_test, __VA_ARGS__)
 
-#undef cr_expect_fail
-#define cr_expect_fail(...)    cr_assert_fail_user(__FILE__, __LINE__, criterion_continue_test, __VA_ARGS__)
+#undef cr_fail
+#define cr_fail(...)    cr_assert_fail_user(__FILE__, __LINE__, criterion_continue_test, __VA_ARGS__)
 
 #undef cr_skip
 #define cr_skip(...)    criterion_skip_test("" __VA_ARGS__)

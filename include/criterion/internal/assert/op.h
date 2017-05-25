@@ -152,14 +152,14 @@
 #else /* !__cplusplus */
 
 # define CRI_BINOP_EQ_TAG(Tag, Op, Actual, Ref) (Op (CRI_USER_TAG_ID(eq, Tag)(&(Actual), &(Ref))))
-# define CRI_BINOP_LE_TAG(Tag, Op, Actual, Ref) (Op (CRI_USER_TAG_ID(le, Tag)(&(Actual), &(Ref))))
+# define CRI_BINOP_LT_TAG(Tag, Op, Actual, Ref) (Op (CRI_USER_TAG_ID(lt, Tag)(&(Actual), &(Ref))))
 
 # define CRI_BINOP_T_EQ(Tag, Actual, Ref) (CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
 # define CRI_BINOP_T_NE(Tag, Actual, Ref) (CRI_BINOP_EQ_TAG(Tag, !, Actual, Ref))
-# define CRI_BINOP_T_LE(Tag, Actual, Ref) (CRI_BINOP_LE_TAG(Tag, , Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_LT(Tag, Actual, Ref) (CRI_BINOP_LE_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_GE(Tag, Actual, Ref) (CRI_BINOP_LE_TAG(Tag, !, Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_GT(Tag, Actual, Ref) (CRI_BINOP_LE_TAG(Tag, !, Actual, Ref))
+# define CRI_BINOP_T_LE(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, , Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
+# define CRI_BINOP_T_LT(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, , Actual, Ref))
+# define CRI_BINOP_T_GE(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, !, Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
+# define CRI_BINOP_T_GT(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, !, Actual, Ref))
 
 # define CRI_UNOP_ZERO(X)        !(X)
 # define CRI_UNOP_T_ZERO(Tag, X) CRI_USER_TAG_ID(zero, Tag)(&(X))
