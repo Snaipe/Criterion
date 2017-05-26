@@ -89,12 +89,12 @@ Testing multiple samples with --json
         "tests": [
           {
             "name": "wstring",
-            "assertions": 10,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
             "name": "string",
-            "assertions": 10,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
@@ -102,32 +102,32 @@ Testing multiple samples with --json
             "assertions": 2,
             "status": "FAILED",
             "messages": [
-              "asserts.c:18: The conditions for this assertion were not met.",
-              "asserts.c:17: You can fail an assertion with a message from anywhere"
+              "asserts.c:19: (null)",
+              "asserts.c:18: You can fail an assertion with a message from anywhere"
             ]
           },
           {
             "name": "native",
-            "assertions": 8,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
             "name": "float",
-            "assertions": 2,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
             "name": "base",
-            "assertions": 6,
+            "assertions": 2,
             "status": "FAILED",
             "messages": [
-              "asserts.c:12: This assert runs",
-              "asserts.c:11: assert is fatal, expect isn't"
+              "asserts.c:13: This assert runs",
+              "asserts.c:12: assert is fatal, expect isn't"
             ]
           },
           {
             "name": "array",
-            "assertions": 3,
+            "assertions": 0,
             "status": "PASSED"
           }
         ]

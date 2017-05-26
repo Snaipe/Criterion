@@ -48,7 +48,6 @@ Display the help message
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
-
 Display usage on invalid CLI flags
 
   $ simple.c.bin --an-invalid-option

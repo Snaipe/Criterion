@@ -33,21 +33,21 @@ Testing multiple samples with --xml
   <!-- Tests compiled with Criterion v2.3.0-rc2 -->
   <testsuites name="Criterion Tests" tests="7" failures="2" errors="0" disabled="0">
     <testsuite name="asserts" tests="7" failures="2" errors="0" disabled="0" skipped="0" time="0.000">
-      <testcase name="wstring" assertions="10" status="PASSED" time="0.000">
+      <testcase name="wstring" assertions="0" status="PASSED" time="0.000">
       </testcase>
-      <testcase name="string" assertions="10" status="PASSED" time="0.000">
+      <testcase name="string" assertions="0" status="PASSED" time="0.000">
       </testcase>
       <testcase name="old_school" assertions="2" status="FAILED" time="0.000">
-        <failure type="assert" message="2 assertion(s) failed.">asserts.c:18: The conditions for this assertion were not met.&#10;asserts.c:17: You can fail an assertion with a message from anywhere&#10;</failure>
+        <failure type="assert" message="2 assertion(s) failed.">asserts.c:19: (null)&#10;asserts.c:18: You can fail an assertion with a message from anywhere&#10;</failure>
       </testcase>
-      <testcase name="native" assertions="8" status="PASSED" time="0.000">
+      <testcase name="native" assertions="0" status="PASSED" time="0.000">
       </testcase>
-      <testcase name="float" assertions="2" status="PASSED" time="0.000">
+      <testcase name="float" assertions="0" status="PASSED" time="0.000">
       </testcase>
-      <testcase name="base" assertions="6" status="FAILED" time="0.000">
-        <failure type="assert" message="2 assertion(s) failed.">asserts.c:12: This assert runs&#10;asserts.c:11: assert is fatal, expect isn't&#10;</failure>
+      <testcase name="base" assertions="2" status="FAILED" time="0.000">
+        <failure type="assert" message="2 assertion(s) failed.">asserts.c:13: This assert runs&#10;asserts.c:12: assert is fatal, expect isn't&#10;</failure>
       </testcase>
-      <testcase name="array" assertions="3" status="PASSED" time="0.000">
+      <testcase name="array" assertions="0" status="PASSED" time="0.000">
       </testcase>
     </testsuite>
   </testsuites>
@@ -125,8 +125,6 @@ Testing CRITERION_OUTPUTS
       </testcase>
     </testsuite>
   </testsuites>
-
-
 
   $ skip.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
