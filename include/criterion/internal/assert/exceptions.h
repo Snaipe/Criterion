@@ -37,7 +37,8 @@
             cri_cond_un = 1;                                        \
         } catch (std::exception &cri_ex) {                          \
             cri_cond_un = 0;                                        \
-            char *cri_str = cr_user_str_tostr(cri_ex.what());       \
+            const char *cri_what = cri_ex.what();                   \
+            char *cri_str = cr_user_str_tostr(&cri_what);           \
             cri_tmpn.params[0].name = "message";                    \
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
             cri_tmpn.params[0].data = cri_str;                      \
@@ -62,7 +63,8 @@
             cri_cond_un = 1;                                        \
         } catch (std::exception &cri_ex) {                          \
             cri_cond_un = 0;                                        \
-            char *cri_str = cr_user_str_tostr(cri_ex.what());       \
+            const char *cri_what = cri_ex.what();                   \
+            char *cri_str = cr_user_str_tostr(&cri_what);           \
             cri_tmpn.params[0].name = "message";                    \
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
             cri_tmpn.params[0].data = cri_str;                      \

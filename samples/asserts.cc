@@ -18,8 +18,8 @@ Test(asserts, base) {
 }
 
 Test(asserts, old_school) {
-    cr_expect_fail("You can fail an assertion with a message from anywhere");
-    cr_assert_fail(); /* or without a message */
+    cr_fail("You can fail an assertion with a message from anywhere");
+    cr_fatal(); /* or without a message */
 }
 
 Test(asserts, string) {
@@ -94,8 +94,8 @@ Test(asserts, array) {
     int arr2[] = { 4, 3, 2, 1 };
 
     /* For primitive types we can compare their byte-to-byte representation */
-    criterion::memory mem_arr1 { arr1 };
-    criterion::memory mem_arr2 { arr2 };
+    auto mem_arr1 = criterion::memory { arr1 };
+    auto mem_arr2 = criterion::memory { arr2 };
 
     cr_assert(eq(mem, mem_arr1, mem_arr1));
     cr_assert(ne(mem, mem_arr1, mem_arr2));

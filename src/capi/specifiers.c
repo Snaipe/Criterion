@@ -32,7 +32,7 @@
 
 /* *INDENT-OFF* */
 #define CRI_ASSERT_DEFINE_STR_FN(Tag, Prefix, Fmt)                              \
-    int CRI_USER_TAG_ID(le, Tag)(                                               \
+    int CRI_USER_TAG_ID(lt, Tag)(                                               \
         CRI_ASSERT_TYPE_TAG(Tag) *actual,                                       \
         CRI_ASSERT_TYPE_TAG(Tag) *expected)                                     \
     {                                                                           \

@@ -31,14 +31,15 @@
 # include <type_traits>
 # include <utility>
 
-extern "C" char *cr_user_str_tostr(const char *);
-extern "C" char *cr_user_wcs_tostr(const wchar_t *);
+extern "C" char *cr_user_str_tostr(const char **);
+extern "C" char *cr_user_wcs_tostr(const wchar_t **);
 
 namespace criterion { namespace internal { namespace stream_char_conv {
 
 std::ostream &operator<<(std::ostream &s, const std::string &str)
 {
-    char *fmt = cr_user_str_tostr(str.c_str());
+    const char *cstr = str.c_str();
+    char *fmt = cr_user_str_tostr(&cstr);
     std::operator<<(s, fmt);
     free(fmt);
     return s;
@@ -46,7 +47,8 @@ std::ostream &operator<<(std::ostream &s, const std::string &str)
 
 std::ostream &operator<<(std::ostream &s, const std::wstring &str)
 {
-    char *fmt = cr_user_wcs_tostr(str.c_str());
+    const wchar_t *cstr = str.c_str();
+    char *fmt = cr_user_wcs_tostr(&cstr);
     std::operator<<(s, fmt);
     free(fmt);
     return s;

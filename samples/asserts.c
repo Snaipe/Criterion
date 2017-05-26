@@ -15,8 +15,8 @@ Test(asserts, base) {
 }
 
 Test(asserts, old_school) {
-    cr_expect_fail("You can fail an assertion with a message from anywhere");
-    cr_assert_fail(); /* or without a message */
+    cr_fail("You can fail an assertion with a message from anywhere");
+    cr_fatal(); /* or without a message */
 }
 
 Test(asserts, string) {
