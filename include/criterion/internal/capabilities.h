@@ -67,15 +67,9 @@
 # define CRI_AUTOTYPE
 #endif
 
-/* Does the compiler properly support long doubles? */
-#if defined (__cplusplus)
-# define CRI_CAPS_LDBL
-#elif !defined (__MINGW32__) || defined (__USE_MINGW_ANSI_STDIO)
-/* The "L" printf size modifier for floating point specifiers
-   is unimplemented on MSVC */
-# if !defined (_MSC_VER)
-#  define CRI_CAPS_LDBL
-# endif
+/* Does the compiler represent long doubles as regular doubles? */
+#if defined (_MSC_VER) || (defined (__MINGW32__) && !defined (__USE_MINGW_ANSI_STDIO))
+# define CRI_CAPS_LDBL_IS_DBL
 #endif
 
 #endif /* !CRITERION_INTERNAL_DETECT_H_ */

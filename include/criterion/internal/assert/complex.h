@@ -55,12 +55,14 @@
 # define CRI_ASSERT_TYPE_TAG_cx_dbl         _Complex double
 # define CRI_ASSERT_TEST_TAG_ID_cx_dbl      cx_dbl,
 
-# if defined (CRI_CAPS_LDBL)
-#  define CRI_ASSERT_TEST_TAG_cx_ldbl       ,
-#  define CRI_ASSERT_TEST_TAGC_cx_ldbl()    ,
+# define CRI_ASSERT_TEST_TAG_cx_ldbl        ,
+# define CRI_ASSERT_TEST_TAGC_cx_ldbl()     ,
+# if defined (CRI_CAPS_LDBL_IS_DBL)
+#  define CRI_ASSERT_TYPE_TAG_cx_ldbl       _Complex double
+# else
 #  define CRI_ASSERT_TYPE_TAG_cx_ldbl       _Complex long double
-#  define CRI_ASSERT_TEST_TAG_ID_cx_ldbl    cx_ldbl,
 # endif
+# define CRI_ASSERT_TEST_TAG_ID_cx_ldbl     cx_ldbl,
 
 # define CRI_ASSERT_DECLARE_COMPLEX_FN(Tag, Fmt, S)                             \
     static inline int CRI_USER_TAG_ID(eq, Tag)(                                 \
@@ -80,7 +82,9 @@
 CRI_ASSERT_DECLARE_COMPLEX_FN(cx_flt, "." CRI_FLT_DIG "g", f)
 CRI_ASSERT_DECLARE_COMPLEX_FN(cx_dbl, "." CRI_DBL_DIG "g", )
 
-# if defined (CRI_CAPS_LDBL)
+# if defined (CRI_CAPS_LDBL_IS_DBL)
+CRI_ASSERT_DECLARE_COMPLEX_FN(cx_ldbl, "." CRI_DBL_DIG "g", )
+# else
 CRI_ASSERT_DECLARE_COMPLEX_FN(cx_ldbl, "." CRI_LDBL_DIG "Lg", l)
 # endif
 

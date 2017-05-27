@@ -81,7 +81,9 @@ bool ieee_eq(Float &a, Float &b, size_t ulp)
 CRI_DEFINE_IEEE_ULP_EQ(flt, f)
 CRI_DEFINE_IEEE_ULP_EQ(dbl, )
 
-# if defined (CRI_CAPS_LDBL)
+# if defined (CRI_CAPS_LDBL_IS_DBL)
+CRI_DEFINE_IEEE_ULP_EQ(ldbl, )
+# else
 CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 # endif
 #endif
@@ -117,12 +119,12 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 
 # define CRI_MKNODE_EPSS (CRI_MKNODE_EPS, CRI_MKNODE_EPS)
 
-#if defined (CRI_CAPS_LDBL)
-# define CRI_MKNODE_EPS(_, Var, Name) CRI_MKNODE_STR(ldbl, Var, Name)
-# define CRI_EPS_TYPE long double
-#else
+#if defined (CRI_CAPS_LDBL_IS_DBL)
 # define CRI_MKNODE_EPS(_, Var, Name) CRI_MKNODE_STR(dbl, Var, Name)
 # define CRI_EPS_TYPE double
+#else
+# define CRI_MKNODE_EPS(_, Var, Name) CRI_MKNODE_STR(ldbl, Var, Name)
+# define CRI_EPS_TYPE long double
 #endif
 
 #define CRI_ASSERT_TEST_SPECIFIER_epsilon_eq(...) ,

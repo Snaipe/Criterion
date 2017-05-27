@@ -163,12 +163,14 @@
 #define CRI_ASSERT_TYPE_TAG_dbl         double,
 #define CRI_ASSERT_TYPE_TAG_ID_dbl      dbl,
 
-#if defined (CRI_CAPS_LDBL)
-# define CRI_ASSERT_TEST_TAG_ldbl       ,
-# define CRI_ASSERT_TEST_TAGC_ldbl()    ,
+#define CRI_ASSERT_TEST_TAG_ldbl        ,
+#define CRI_ASSERT_TEST_TAGC_ldbl()     ,
+#if defined (CRI_CAPS_LDBL_IS_DBL)
+# define CRI_ASSERT_TYPE_TAG_ldbl       double,
+#else
 # define CRI_ASSERT_TYPE_TAG_ldbl       long double,
-# define CRI_ASSERT_TYPE_TAG_ID_ldbl    ldbl,
 #endif
+#define CRI_ASSERT_TYPE_TAG_ID_ldbl     ldbl,
 
 #define CRI_ASSERT_TEST_TAG_sz          ,
 #define CRI_ASSERT_TEST_TAGC_sz()       ,
@@ -301,7 +303,9 @@ static inline char *CRI_USER_TAG_ID(tostr, ptr)(void **e)
 # define CRI_DBL_DIG "17"
 #endif
 
-#if defined (LDBL_DECIMAL_DIG)
+#if defined (CRI_CAPS_LDBL_IS_DBL)
+# define CRI_LDBL_DIG CRI_DBL_DIG
+#elif defined (LDBL_DECIMAL_DIG)
 # define CRI_LDBL_DIG CR_STR(LDBL_DECIMAL_DIG)
 #elif defined (__LDBL_DECIMAL_DIG__)
 # define CRI_LDBL_DIG CR_STR(__LDBL_DECIMAL_DIG__)
@@ -314,7 +318,9 @@ static inline char *CRI_USER_TAG_ID(tostr, ptr)(void **e)
 CRI_ASSERT_DECLARE_NATIVE_FN(flt, "." CRI_FLT_DIG "g")
 CRI_ASSERT_DECLARE_NATIVE_FN(dbl, "." CRI_DBL_DIG "g")
 
-#if defined (CRI_CAPS_LDBL)
+#if defined (CRI_CAPS_LDBL_IS_DBL)
+CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_DBL_DIG "g")
+#else
 CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_LDBL_DIG "Lg")
 #endif
 
