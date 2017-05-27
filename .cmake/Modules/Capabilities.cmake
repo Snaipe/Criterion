@@ -31,18 +31,18 @@ endif ()
 
 # Check for functions
 
-check_function_exists(strtok_s HAVE_STRTOK_S)
-check_function_exists(strtok_r HAVE_STRTOK_R)
+check_symbol_exists(strtok_s "string.h" HAVE_STRTOK_S)
+check_symbol_exists(strtok_r "string.h" HAVE_STRTOK_R)
 
 check_library_exists (anl getaddrinfo_a "" HAVE_GETADDRINFO_A)
 
-check_function_exists(funopen HAVE_FUNOPEN)
-check_function_exists(fopencookie HAVE_FOPENCOOKIE)
-check_function_exists(open_memstream HAVE_OPEN_MEMSTREAM)
+check_symbol_exists(funopen "stdio.h" HAVE_FUNOPEN)
+check_symbol_exists(fopencookie "stdio.h" HAVE_FOPENCOOKIE)
+check_symbol_exists(open_memstream "stdio.h" HAVE_OPEN_MEMSTREAM)
 
-check_function_exists(getcwd HAVE_GETCWD)
-check_function_exists(GetCurrentDirectory HAVE_GETCURRENTDIRECTORY)
-check_function_exists(PathIsRelative HAVE_PATHISRELATIVE)
+check_symbol_exists(getcwd "unistd.h" HAVE_GETCWD)
+check_symbol_exists(GetCurrentDirectory "windows.h" HAVE_GETCURRENTDIRECTORY)
+check_symbol_exists(PathIsRelative "windows.h" HAVE_PATHISRELATIVE)
 
 check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME_RT)
 if (HAVE_CLOCK_GETTIME_RT AND NOT HAVE_LIBRT)
