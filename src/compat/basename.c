@@ -65,8 +65,10 @@ char *cri_path_cwd(void)
 
 bool cri_path_isrelative(const char *path)
 {
-#ifdef HAVE_PATHISRELATIVE
-    return PathIsRelativeA(path);
+#ifdef _WIN32
+    bool absolute = *path == '\\'
+            || (strlen(path) > 3 && path[1] == ':' && path[2] == '\\');
+    return !absolute;
 #else
     return *path != '/';
 #endif

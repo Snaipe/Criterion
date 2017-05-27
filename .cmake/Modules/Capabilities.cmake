@@ -42,7 +42,6 @@ check_symbol_exists(open_memstream "stdio.h" HAVE_OPEN_MEMSTREAM)
 
 check_symbol_exists(getcwd "unistd.h" HAVE_GETCWD)
 check_symbol_exists(GetCurrentDirectory "windows.h" HAVE_GETCURRENTDIRECTORY)
-check_symbol_exists(PathIsRelative "windows.h" HAVE_PATHISRELATIVE)
 
 check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME_RT)
 if (HAVE_CLOCK_GETTIME_RT AND NOT HAVE_LIBRT)
