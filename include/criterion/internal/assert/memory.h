@@ -30,6 +30,9 @@
 #define CRI_ASSERT_TYPE_TAG_ID_mem    mem,
 
 #ifdef __cplusplus
+# include <string>
+# include <ostream>
+
 inline bool operator==(const struct cr_mem &m1, const struct cr_mem &m2)
 {
     return cr_user_mem_eq(&m1, &m2);
