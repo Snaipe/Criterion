@@ -29,6 +29,12 @@ if (I18N AND GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
   set (ENABLE_NLS 1)
 endif ()
 
+list (APPEND CMAKE_REQUIRED_DEFINITIONS
+  -D_GNU_SOURCE
+  -D_CRT_RAND_S
+  -DVC_EXTRALEAN
+  -DWIN32_LEAN_AND_MEAN)
+
 # Check for functions
 
 check_symbol_exists(strtok_s "string.h" HAVE_STRTOK_S)
