@@ -36,20 +36,10 @@ Test(messages, eq) {
     cr_expect(eq(uptr, 0, 1));
     cr_expect(eq(flt, 0, 1 / 3.f));
     cr_expect(eq(dbl, 0, 1 / 3.));
-#if defined (CRI_CAPS_LDBL)
     cr_expect(eq(ldbl, 0, 1 / 3.l));
-#endif
-
-#if defined (CRI_CAPS_COMPLEX)
-    cr_expect(eq(cx_flt, 0, 1));
-    cr_expect(eq(cx_dbl, 0, 1));
-# if defined (CRI_CAPS_LDBL)
-    cr_expect(eq(cx_ldbl, 0, 1));
-# endif
-#endif
 
     /* Strings & pointers */
-    cr_expect(eq(ptr, (void *) 1, NULL));
+    cr_expect(eq(ptr, (void *) 1, (void *) 0));
 
     cr_expect(eq(str, "", "foo"));
     cr_expect(eq(str,
@@ -115,12 +105,10 @@ Test(messages, cmp) {
     cr_expect(cmptest(uptr, 0, 1));
     cr_expect(cmptest(flt, 0, 1 / 3.f));
     cr_expect(cmptest(dbl, 0, 1 / 3.));
-#if defined (CRI_CAPS_LDBL)
     cr_expect(cmptest(ldbl, 0, 1 / 3.l));
-#endif
 
     /* Strings & pointers */
-    cr_expect(cmptest(ptr, NULL, (void *) 1));
+    cr_expect(cmptest(ptr, (void *) 0, (void *) 1));
 
     cr_expect(cmptest(str, "abc", "cba"));
     cr_expect(cmptest(str, "abc\nabc", "cba\ncba"));
