@@ -24,11 +24,16 @@ include (Subprojects)
 include (PackageUtils)
 include (CheckCCompilerFlag)
 
-check_c_compiler_flag("-Wl,--exclude-libs=ALL" CC_HAVE_EXCLUDE_LIBS)
 check_c_compiler_flag("-fPIC" CC_HAVE_FPIC)
 check_c_compiler_flag("-fvisibility=hidden" CC_HAVE_VISIBILITY)
 
-if (CC_HAVE_EXCLUDE_LIBS)
+# Linker flags are ignored by check_c_compiler_flag, so we have
+# to use this workaround
+set (CMAKE_REQUIRED_FLAGS "-Wl,--exclude-libs=ALL")
+check_c_compiler_flag("" LINKER_HAS_EXCLUDE_LIBS)
+unset (CMAKE_REQUIRED_FLAGS)
+
+if (LINKER_HAS_EXCLUDE_LIBS)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--exclude-libs=ALL")
 endif ()
 
