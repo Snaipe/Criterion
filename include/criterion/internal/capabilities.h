@@ -25,26 +25,35 @@
 #define CRITERION_INTERNAL_DETECT_H_
 
 /* Standard version checks */
-#if defined (__cplusplus)
+#if !defined (CR_NO_COMPILER_CHECK)
+# if defined (__cplusplus)
 /* Is the compiler a >C++11 compiler ?*/
-# if __cplusplus < 201103L || (defined (_MSC_VER) && _MSC_VER < 1800)
-#  error The Criterion C++ API needs a C++11 compiler or later.
-# endif
-#elif defined (__STDC__) || defined (_MSC_VER)
-/* Is the compiler a supported c99 compiler? */
-# if defined (_MSC_VER)
-#  if _MSC_VER < 1900
-#   error                                                               \
-    Your version of MSVC is too old, please compile your tests using    \
-    a c99 compiler, like MinGW or MSVC 14.0+ (Included in visual studio \
-    2015)
+#  if defined (_MSC_VER)
+#   if _MSC_VER < 1800
+#    error                                                                  \
+     Your version of MSVC is too old, please compile your tests using       \
+     a c++11 compiler, like MinGW or MSVC 14.0+ (Included in visual studio  \
+     2015)
+#   endif
+#  elif __cplusplus < 201103L
+#   error The Criterion C++ API needs a C++11 compiler or later.
 #  endif
-# elif __STDC_VERSION__ < 199901L
-#  error The Criterion C API needs a C99 compiler or later.
+# elif defined (__STDC__) || defined (_MSC_VER)
+/* Is the compiler a supported c99 compiler? */
+#  if defined (_MSC_VER)
+#   if _MSC_VER < 1900
+#    error                                                                  \
+     Your version of MSVC is too old, please compile your tests using       \
+     a c99 compiler, like MinGW or MSVC 14.0+ (Included in visual studio    \
+     2015)
+#   endif
+#  elif __STDC_VERSION__ < 199901L
+#   error The Criterion C API needs a C99 compiler or later.
+#  endif
+# else
+#  error The Criterion C/C++ API needs a C or C++ compiler.
 # endif
-#else
-# error The Criterion C/C++ API needs a C or C++ compiler.
-#endif
+#endif /* !CR_NO_COMPILER_CHECK */
 
 /* Does the compiler support section attributes? */
 #if !defined (__clang__) && !defined (__GNUC__) && !defined (_MSC_VER)
