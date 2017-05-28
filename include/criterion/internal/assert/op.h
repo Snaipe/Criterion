@@ -226,7 +226,7 @@
  * implementation */
 #ifdef _MSC_VER
 # define CRI_ASSERT_IT_MKNODE(Tag, Var)                                     \
-    CRI_ASSERT_OPGET(MK  NODE, Var)(                                        \
+    CRI_ASSERT_OPGET(MKNODE, Var)(                                          \
         Tag, CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(NAME, Var)        \
     );
 # define CRI_ASSERT_IT_MKNODE_ARR(Tag, Var)                                 \
