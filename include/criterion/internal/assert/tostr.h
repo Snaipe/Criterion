@@ -84,16 +84,34 @@ std::ostream &operator<<(std::ostream &s, char c)
 
 /* Generic implementation of cri_val_escape */
 
-template <typename T>
-constexpr T && cri_val_escape(T && t)
+namespace criterion { namespace internal {
+
+template <class T>
+struct is_trivial : std::integral_constant<bool,
+    std::is_fundamental<T>::value || std::is_pointer<T>::value> {};
+
+}} /* criterion::internal */
+
+template <typename T,
+    typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
+constexpr T&& cri_val_escape(T&& v)
 {
-    return std::move(t);
+    return std::forward<T>(v);
 }
 
-template <typename T>
-constexpr T &cri_val_escape(T &t)
+template <typename T,
+    typename = typename std::enable_if<!std::is_pointer<T>::value>::type>
+constexpr T& cri_val_escape(T& v)
 {
-    return t;
+    return v;
+}
+
+/* force an array decay */
+template <typename T,
+    typename = typename std::enable_if<std::is_pointer<T>::value>::type>
+constexpr T cri_val_escape(T v)
+{
+    return v;
 }
 
 /* We need these specializations to convert seemingly between string literals
