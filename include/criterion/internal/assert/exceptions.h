@@ -70,12 +70,13 @@
             cri_tmpn.params[0].data = cri_str;                      \
         } catch (...) {                                             \
             cri_cond_un = 0;                                        \
+            char *cri_str;                                          \
             cr_asprintf(&cri_str, "<unprintable>");                 \
             cri_tmpn.params[0].name = "message";                    \
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
             cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
-        cri_prenode = cri_assert_node_add(cri_node, &cri_tmpn);     \
+        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
     } while (0)
 
 #define CRI_ASSERT_TEST_SPECIFIER_anythrow(...) ,
@@ -88,6 +89,7 @@
             cri_cond_un = 0;                                        \
         } catch (...) {                                             \
             cri_cond_un = 1;                                        \
+            char *cri_str;                                          \
             cr_asprintf(&cri_str, "<unprintable>");                 \
             cri_tmpn.params[0].name = "message";                    \
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
