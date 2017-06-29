@@ -109,6 +109,7 @@ do
     case "$file" in
         src/protocol/*.pb.*) continue;;
         include/*) continue;;
+        samples/*) continue;;
     esac
 
     # escape special characters in the source filename:
