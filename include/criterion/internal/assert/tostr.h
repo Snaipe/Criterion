@@ -168,7 +168,7 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
              << "]) {\n";                                                           \
                                                                                     \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                         \
-            char *cri_repr      = CRI_USER_TOSTR(Tag, &(Arr)[cri_i]);               \
+            char *cri_repr      = CRI_USER_TOSTR(Tag, (Arr)[cri_i]);                \
             char *cri_saveptr   = NULL;                                             \
             char *cri_line      = cri_strtok_r(cri_repr, "\n", &cri_saveptr);       \
                                                                                     \
@@ -176,12 +176,13 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
                 cri_sstr << "[" << cri_i << "] = " << cri_line;                     \
                                                                                     \
                 while ((cri_line = cri_strtok_r(NULL, "\n", &cri_saveptr))) {       \
-                    cri_sstr << "\n  " << cri_line;                                 \
+                    cri_sstr << "\n\t" << cri_line;                                 \
                 }                                                                   \
                 cri_sstr << ",\n";                                                  \
             }                                                                       \
             cr_asprintf_free(cri_repr);                                             \
         }                                                                           \
+        cri_sstr << "}";                                                            \
                                                                                     \
         const std::string cri_ccstr = cri_sstr.str();                               \
         Str = static_cast<char *>(std::malloc(cri_ccstr.size() + 1));               \
