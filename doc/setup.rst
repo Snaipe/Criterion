@@ -15,6 +15,14 @@ The following compilers are supported to compile both the library and the tests:
 Building from source
 --------------------
 
+First, clone this repository:
+
+.. code-block:: bash
+
+    $ git clone --recursive https://github.com/Snaipe/Criterion
+
+Then, run the following commands to build Criterion:
+
 .. code-block:: bash
 
     $ mkdir build

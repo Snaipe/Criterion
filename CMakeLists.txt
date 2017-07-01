@@ -18,7 +18,6 @@ endif ()
 # Initialization
 
 include (Options)
-include (Submodules)
 include (Capabilities)
 include (Subprojects)
 include (PackageUtils)

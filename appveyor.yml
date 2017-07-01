@@ -24,6 +24,12 @@ environment:
 
 platform: x86_64
 
+clone_script:
+  - git clone -q --recursive --depth=5 --single-branch --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
+  - git checkout -qf %APPVEYOR_REPO_COMMIT%
+  # Hack to make git think it is on the tip of the repo branch
+  - git checkout -B %APPVEYOR_REPO_BRANCH%
+
 init:
   - git config --global core.autocrlf input
   - set MSYSTEM=MINGW64
@@ -42,16 +48,12 @@ init:
   # Remove Xamarin msbuild warnings
   - del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
 
-clone_depth: 5
-
 configuration:
   - Debug
   - RelWithDebInfo
 
 install:
   - ps: $env:RELEASE_NAME = $env:APPVEYOR_REPO_BRANCH -replace "/", "-"
-  # Hack to make git think it is on the tip of the repo branch
-  - 'git checkout -B %APPVEYOR_REPO_BRANCH%'
 
   # Patch buggy cram
   - sh -c "patch /c/Python35/lib/site-packages/cram/_test.py .cmake/cram-env.patch"
