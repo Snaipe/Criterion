@@ -34,48 +34,98 @@
 extern "C" char *cr_user_str_tostr(const char **);
 extern "C" char *cr_user_wcs_tostr(const wchar_t **);
 
-namespace criterion { namespace internal { namespace stream_char_conv {
+namespace criterion { namespace internal { namespace stream_override {
 
-std::ostream &operator<<(std::ostream &s, const std::string &str)
+struct ostream {
+    constexpr ostream(std::ostream &s)
+        : base(s)
+    {}
+
+    template <typename T>
+    friend ostream &operator<<(ostream &, const T &);
+    friend ostream &operator<<(ostream &, std::ostream &(*)(std::ostream &));
+
+private:
+    std::ostream &base;
+};
+
+inline ostream& operator<<(ostream& s, std::ostream& (*func)(std::ostream&))
+{
+    s.base << func;
+    return s;
+}
+
+template <typename T>
+inline ostream &operator<<(ostream &s, const T &value)
+{
+    s.base << value;
+    return s;
+}
+
+template <>
+inline ostream &operator<<(ostream &s, const std::string &str)
 {
     const char *cstr = str.c_str();
     char *fmt = cr_user_str_tostr(&cstr);
-    std::operator<<(s, fmt);
+    s.base << fmt;
     free(fmt);
     return s;
 }
 
-std::ostream &operator<<(std::ostream &s, const std::wstring &str)
+template <>
+inline ostream &operator<<(ostream &s, const std::wstring &str)
 {
     const wchar_t *cstr = str.c_str();
     char *fmt = cr_user_wcs_tostr(&cstr);
-    std::operator<<(s, fmt);
+    s.base << fmt;
     free(fmt);
+    return s;
+}
+
+template <>
+inline ostream &operator<<(ostream &s, const std::nullptr_t &ptr)
+{
+    s.base << "nullptr";
+    return s;
+}
+
+template <>
+inline ostream &operator<<(ostream &s, void *const &ptr)
+{
+    if (!ptr)
+        return ::criterion::internal::stream_override::operator<<(s, nullptr);
+
+    auto flags = s.base.flags();
+    s.base << "@" << std::hex << (uintptr_t)ptr;
+    s.base.flags(flags);
     return s;
 }
 
 /* These overloads are necessary as int8_t and uint8_t are outputted as
    characters by default. why. */
 
-std::ostream &operator<<(std::ostream &s, int8_t i)
+template <>
+inline ostream &operator<<(ostream &s, const int8_t &i)
 {
-    s << signed (i);
+    s.base << signed (i);
     return s;
 }
 
-std::ostream &operator<<(std::ostream &s, uint8_t i)
+template <>
+inline ostream &operator<<(ostream &s, const uint8_t &i)
 {
-    s << unsigned (i);
+    s.base << unsigned (i);
     return s;
 }
 
-std::ostream &operator<<(std::ostream &s, char c)
+template <>
+inline ostream &operator<<(ostream &s, const char &c)
 {
-    std::operator<<(s, c);
+    s.base << c;
     return s;
 }
 
-}}} /* criterion::internal::stream_char_conv */
+}}} /* criterion::internal::stream_override */
 
 /* The value escape is only necessary for C++ where some type conversion
    is needed between literals and more complex types of incompatible types. */
@@ -145,9 +195,9 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
 
 # define CRI_USER_TOSTR(Tag, Var)                                     \
     ([&]() -> char * {                                                \
-        using namespace criterion::internal::stream_char_conv;        \
         std::stringstream sstr;                                       \
-        sstr << (Var);                                                \
+        criterion::internal::stream_override::ostream cri_os { sstr };\
+        cri_os << (Var);                                              \
                                                                       \
         const std::string str = sstr.str();                           \
         char *out = static_cast<char *>(std::malloc(str.size() + 1)); \
@@ -173,7 +223,7 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
             char *cri_line      = cri_strtok_r(cri_repr, "\n", &cri_saveptr);       \
                                                                                     \
             if (cri_line) {                                                         \
-                cri_sstr << "[" << cri_i << "] = " << cri_line;                     \
+                cri_sstr << "\t[" << cri_i << "] = " << cri_line;                   \
                                                                                     \
                 while ((cri_line = cri_strtok_r(NULL, "\n", &cri_saveptr))) {       \
                     cri_sstr << "\n\t" << cri_line;                                 \
