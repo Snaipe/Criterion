@@ -1,16 +1,17 @@
 #include "criterion/criterion.h"
 #include "criterion/theories.h"
 #include "criterion/internal/asprintf-compat.h"
+#include "criterion/new/assert.h"
 
 #include <stdio.h>
 
 union anyval {
-    int c;
-    int hd;
+    char c;
+    short hd;
     int d;
     long ld;
     long long lld;
-    unsigned int hu;
+    unsigned short hu;
     unsigned int u;
     unsigned long lu;
     unsigned long long llu;
@@ -44,14 +45,14 @@ TheoryDataPoints(asprintf, valid) = {
 };
 
 Theory((struct format_test *fmt), asprintf, valid) {
+    char *actual;
     char expected[32];
 
-    snprintf(expected, sizeof (expected), fmt->format, *fmt->val);
+    int rc_expected = snprintf(expected, sizeof (expected), fmt->format, *fmt->val);
+    int rc_actual = cr_asprintf(&actual, fmt->format, *fmt->val);
 
-    char *actual;
-    cr_asprintf(&actual, fmt->format, *fmt->val);
-
-    cr_expect_str_eq(actual, expected);
+    cr_expect(eq(int, rc_actual, rc_expected));
+    cr_expect(eq(str, actual, expected));
 
     free(actual);
 }
