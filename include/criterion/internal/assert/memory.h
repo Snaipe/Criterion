@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2017 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,51 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#ifndef CRITERION_INTERNAL_MEMORY_H_
+#define CRITERION_INTERNAL_MEMORY_H_
 
-#include <limits.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "criterion/internal/asprintf-compat.h"
+#define CRI_ASSERT_TEST_TAG_mem       ,
+#define CRI_ASSERT_TEST_TAGC_mem()    ,
+#define CRI_ASSERT_TYPE_TAG_mem       struct cr_mem,
+#define CRI_ASSERT_TYPE_TAG_ID_mem    mem,
 
-int cr_asprintf(char **strp, const char *fmt, ...)
+#ifdef __cplusplus
+# include <string>
+# include <ostream>
+
+inline bool operator==(const struct cr_mem &m1, const struct cr_mem &m2)
 {
-    va_list ap;
-
-    va_start(ap, fmt);
-    int res = cr_vasprintf(strp, fmt, ap);
-    va_end(ap);
-    return res;
+    return cr_user_mem_eq(&m1, &m2);
 }
 
-int cr_vasprintf(char **strp, const char *fmt, va_list ap)
+inline bool operator<(const struct cr_mem &m1, const struct cr_mem &m2)
 {
-    va_list vl;
-
-    va_copy(vl, ap);
-
-    int size = vsnprintf(0, 0, fmt, vl);
-    int res = -1;
-
-    if (size < 0 || size >= INT_MAX)
-        goto cleanup;
-
-    char *str = malloc(size + 1);
-    if (str) {
-        int res2 = vsnprintf(str, size + 1, fmt, ap);
-        if (res2 < 0 || res2 > size) {
-            free(str);
-            goto cleanup;
-        }
-        *strp = str;
-        res = res2;
-    }
-
-cleanup:
-    va_end(vl);
-    return res;
+    return cr_user_mem_cmp(&m1, &m2) < 0;
 }
 
-void cr_asprintf_free(char *buf)
+inline std::ostream &operator<<(std::ostream &s, const struct cr_mem &m)
 {
-    free(buf);
+    char *str = cr_user_mem_tostr(&m);
+
+    s << std::string(str);
+    free(str);
+    return s;
 }
+#endif /* !__cplusplus */
+
+#endif /* !CRITERION_INTERNAL_MEMORY_H_ */

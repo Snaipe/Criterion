@@ -50,7 +50,6 @@ Display the help message
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
-
 Display usage on invalid CLI flags
 
   $ simple.c.bin --an-invalid-option

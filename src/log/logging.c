@@ -29,9 +29,9 @@
 #include "criterion/options.h"
 #include "compat/process.h"
 #include "log/logging.h"
-#include "io/asprintf.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
+#include "string/fmt.h"
 #include "string/i18n.h"
 
 #ifdef ENABLE_NLS

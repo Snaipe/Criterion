@@ -12,40 +12,18 @@ macros to this list. Hence only ``assert`` macros are represented here.
 All ``assert`` macros may take an optional ``printf`` format string and
 parameters.
 
-Base Assertions
------------------
+Assertion API
+-------------
 
-.. doxygengroup:: BaseAsserts
+.. doxygengroup:: AssertAPI
 
-Common Assertions
------------------
+Assertion Criteria
+------------------
 
-.. doxygengroup:: CommonBinAsserts
-.. doxygengroup:: CommonUnaryAsserts
-.. doxygengroup:: FloatAsserts
+.. doxygengroup:: Criteria
+.. doxygengroup:: TaggedCriteria
 
-String Assertions
------------------
+Tags
+----
 
-.. doxygengroup:: StringAsserts
-
-Wide String Assertions
-----------------------
-
-.. doxygengroup:: WideStringAsserts
-
-Array Assertions
------------------
-
-.. doxygengroup:: ArrayAsserts
-.. doxygengroup:: SafeArrCmpAsserts
-
-Exception Assertions
---------------------
-
-.. doxygengroup:: ExceptionAsserts
-
-File Assertions
----------------
-
-.. doxygengroup:: FileAsserts
+.. doxygengroup:: Tags

@@ -29,13 +29,13 @@ Testing multiple samples with --tap
   ok - asserts::wstring  \(\d\.\d\ds\) (re)
   ok - asserts::string  \(\d\.\d\ds\) (re)
   not ok - asserts::old_school  \(\d\.\d\ds\) (re)
-    asserts.c:18: Assertion failed: The conditions for this assertion were not met.
-    asserts.c:17: Assertion failed: You can fail an assertion with a message from anywhere
+    asserts.c:19: Assertion failed: (null)
+    asserts.c:18: Assertion failed: You can fail an assertion with a message from anywhere
   ok - asserts::native  \(\d\.\d\ds\) (re)
   ok - asserts::float  \(\d\.\d\ds\) (re)
   not ok - asserts::base  \(\d\.\d\ds\) (re)
-    asserts.c:12: Assertion failed: This assert runs
-    asserts.c:11: Assertion failed: assert is fatal, expect isn't
+    asserts.c:13: Assertion failed: This assert runs
+    asserts.c:12: Assertion failed: assert is fatal, expect isn't
   ok - asserts::array  \(\d\.\d\ds\) (re)
 
   $ more-suites.c.bin --tap
@@ -97,8 +97,6 @@ Testing CRITERION_OUTPUTS
   ok - misc::passing  \(\d\.\d\ds\) (re)
   not ok - misc::failing  \(\d\.\d\ds\) (re)
     simple.c:4: Assertion failed: The expression 0 is false.
-
-
 
   $ skip.c.bin --tap
   TAP version 13

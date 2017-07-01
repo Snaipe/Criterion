@@ -12,18 +12,18 @@ set(GIT_SUBMODULES libcsptr dyncall)
 ### (leave empty if you want master)
 
 ### First, get all submodules in
-if(${GIT_SUBMODULES_CHECKOUT_QUIET})
-    execute_process(
-        COMMAND             git submodule update --init --recursive
-        WORKING_DIRECTORY   ${PROJECT_SOURCE_DIR}
-        OUTPUT_QUIET
-        ERROR_QUIET
-    )
-else()
-    execute_process(
-        COMMAND             git submodule update --init --recursive
-        WORKING_DIRECTORY   ${PROJECT_SOURCE_DIR}
-    )
-endif()
+#if(${GIT_SUBMODULES_CHECKOUT_QUIET})
+#    execute_process(
+#        COMMAND             git submodule update --init --recursive
+#        WORKING_DIRECTORY   ${PROJECT_SOURCE_DIR}
+#        OUTPUT_QUIET
+#        ERROR_QUIET
+#    )
+#else()
+#    execute_process(
+#        COMMAND             git submodule update --init --recursive
+#        WORKING_DIRECTORY   ${PROJECT_SOURCE_DIR}
+#    )
+#endif()
 
 endif()

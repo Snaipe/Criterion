@@ -26,6 +26,16 @@
 
 #include "config.h"
 
+#if __STDC_VERSION__ >= 201112 && !defined __STDC_NO_THREADS__
+# define tls    _Thread_local
+#elif defined (_MSC_VER)
+# define tls    __declspec(thread)
+#elif defined (__GNUC__)
+# define tls    __thread
+#else
+# error No compiler support for thread local storage variables
+#endif
+
 #ifdef HAVE_WIN32_THREADS
 # include <windows.h>
 

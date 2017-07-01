@@ -23,3 +23,32 @@
 .container > dl {
     margin-bottom: 0 !important; /* Dirty hack */
 }
+
+/* Don't indent group contents */
+.group dd {
+    margin-left: 0;
+}
+
+/* Hide ugly group title block & group rubrics */
+.group > dt,
+p.breathe-sectiondef-title {
+    display: none;
+}
+
+/* Slightly indent content for doxygen entries */
+dl.macro > dd {
+    margin-left: 30px;
+}
+
+/* Format parameters better */
+.breatheparameterlist {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.breatheparameterlist > li > code,
+.breatheparameterlist > li > code > .pre {
+    background: transparent;
+    font-family: inherit;
+    font-weight: bold;
+}

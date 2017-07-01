@@ -22,19 +22,34 @@ include (Submodules)
 include (Capabilities)
 include (Subprojects)
 include (PackageUtils)
+include (CheckCCompilerFlag)
 
-if (NOT WIN32)
+check_c_compiler_flag("-fPIC" CC_HAVE_FPIC)
+check_c_compiler_flag("-fvisibility=hidden" CC_HAVE_VISIBILITY)
+
+# Linker flags are ignored by check_c_compiler_flag, so we have
+# to use this workaround
+set (CMAKE_REQUIRED_FLAGS "-Wl,--exclude-libs=ALL")
+check_c_compiler_flag("" LINKER_HAS_EXCLUDE_LIBS)
+unset (CMAKE_REQUIRED_FLAGS)
+
+if (LINKER_HAS_EXCLUDE_LIBS)
+  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--exclude-libs=ALL")
+endif ()
+
+if (CC_HAVE_FPIC)
   set (PIC_C_FLAGS "-fPIC")
+endif ()
+
+if (CC_HAVE_VISIBILITY)
   set (VISI_C_FLAGS "-fvisibility=hidden")
-else ()
-  set (PIC_C_FLAGS "")
-  set (VISI_C_FLAGS "")
 endif ()
 
 find_package(Libcsptr)
 find_package(Dyncall)
 find_package(Nanomsg)
 find_package(BoxFort)
+find_package(Libgit2)
 
 cr_add_subproject (csptr
   GIT "https://github.com/Snaipe/libcsptr#0d52904"
@@ -81,6 +96,26 @@ cr_add_subproject (boxfort PATH dependencies/boxfort
     "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
   CMAKE
   IF NOT BOXFORT_FOUND)
+
+cr_add_subproject (git2
+  GIT "git://github.com/libgit2/libgit2#v0.25.1"
+  OPTS
+    -DBUILD_SHARED_LIBS=OFF
+    -DBUILD_CLAR=OFF
+    -DUSE_ICONV=OFF
+    -DUSE_SSH=OFF
+    -DUSE_GSSAPI=OFF
+    -DUSE_OPENSSL=OFF
+    -DVALGRIND=OFF
+    -DCURL=OFF
+    -DWINHTTP=OFF
+    -DCMAKE_DISABLE_FIND_PACKAGE_HTTP_Parser=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_Iconv=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_Security=TRUE
+    "-DCMAKE_C_FLAGS=${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+  CMAKE
+  IF NOT LIBGIT2_FOUND)
 
 add_definitions(-DBXF_STATIC_LIB -DNN_STATIC_LIB)
 
@@ -137,23 +172,28 @@ cr_link_subproject(criterion csptr STATIC IF NOT CSPTR_FOUND)
 cr_link_subproject(criterion nanomsg STATIC IF NOT NANOMSG_FOUND)
 cr_link_subproject(criterion dyncall_s STATIC IF NOT DYNCALL_FOUND)
 cr_link_subproject(criterion boxfort STATIC IF NOT BOXFORT_FOUND)
+cr_link_subproject(criterion git2 STATIC IF NOT LIBGIT2_FOUND)
 cr_link_subproject(criterion wingetopt STATIC)
 
 if (CSPTR_FOUND)
-  include_directories("${CSPTR_INCLUDE_DIRS}")
-  cr_link_libraries(criterion "${CSPTR_LIBRARIES}")
+  include_directories(${CSPTR_INCLUDE_DIRS})
+  cr_link_libraries(criterion ${CSPTR_LIBRARIES})
 endif ()
 if (NANOMSG_FOUND)
-  include_directories("${NANOMSG_INCLUDE_DIRS}")
-  cr_link_libraries(criterion "${NANOMSG_LIBRARIES}" IF NANOMSG_FOUND)
+  include_directories(${NANOMSG_INCLUDE_DIRS})
+  cr_link_libraries(criterion ${NANOMSG_LIBRARIES})
 endif ()
 if (DYNCALL_FOUND)
-  include_directories("${DYNCALL_INCLUDE_DIRS}")
-  cr_link_libraries(criterion "${DYNCALL_LIBRARIES}" IF DYNCALL_FOUND)
+  include_directories(${DYNCALL_INCLUDE_DIRS})
+  cr_link_libraries(criterion ${DYNCALL_LIBRARIES})
 endif ()
 if (BOXFORT_FOUND)
-  include_directories("${BOXFORT_INCLUDE_DIRS}")
-  cr_link_libraries(criterion "${BOXFORT_LIBRARIES}" IF BOXFORT_FOUND)
+  include_directories(${BOXFORT_INCLUDE_DIRS})
+  cr_link_libraries(criterion ${BOXFORT_LIBRARIES})
+endif ()
+if (LIBGIT2_FOUND)
+  include_directories(${LIBGIT2_INCLUDE_DIRS})
+  cr_link_libraries(criterion ${LIBGIT2_LIBRARIES})
 endif ()
 
 cr_link_libraries(criterion pthread IF NOT WIN32)

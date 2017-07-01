@@ -1,53 +1,129 @@
 #include <criterion/criterion.h>
 
-/* Define NULL consistenly for the regression tests */
-#undef NULL
-#define NULL    ((void *) 0)
+#include <criterion/new/assert.h>
+
+struct dummy_struct {
+    char a;
+    size_t b;
+};
+
+/* We need to provide basic functions for our dummy struct */
+int cr_user_dummy_struct_eq(struct dummy_struct *a, struct dummy_struct *b)
+{
+    return a->a == b->a && a->b == b->b;
+}
+
+char *cr_user_dummy_struct_tostr(struct dummy_struct *d)
+{
+    char *out;
+
+    cr_asprintf(&out, "(struct dummy_struct) {\n\t.a = %u,\n\t.b = %llu\n}",
+            d->a, (unsigned long long) d->b);
+    return out;
+}
+
+Test(messages, eq) {
+    /* Primitive */
+    cr_expect(eq(i8, 0, 1));
+    cr_expect(eq(i16, 0, 1));
+    cr_expect(eq(i32, 0, 1));
+    cr_expect(eq(i64, 0, 1));
+    cr_expect(eq(u8, 0, 1));
+    cr_expect(eq(u16, 0, 1));
+    cr_expect(eq(u32, 0, 1));
+    cr_expect(eq(u64, 0, 1));
+    cr_expect(eq(iptr, 0, 1));
+    cr_expect(eq(uptr, 0, 1));
+    cr_expect(eq(flt, 0, 1 / 3.f));
+    cr_expect(eq(dbl, 0, 1 / 3.));
+    cr_expect(eq(ldbl, 0, 1 / 3.l));
+
+    /* Strings & pointers */
+    cr_expect(eq(ptr, (void *) 1, (void *) 0));
+
+    cr_expect(eq(str, "", "foo"));
+    cr_expect(eq(str,
+            "reallyreallylongstringindeedmygoodsirormadam",
+            "yetanotherreallyreallylongstring"));
+    cr_expect(eq(str, "foo\nbar", "foo\nbaz"));
+
+    cr_expect(eq(wcs, L"", L"foo"));
+    cr_expect(eq(wcs,
+            L"reallyreallylongstringindeedmygoodsirormadam",
+            L"yetanotherreallyreallylongstring"));
+    cr_expect(eq(wcs, L"foo\nbar", L"foo\nbaz"));
+
+    int a = 0;
+    int b = 1;
+
+    struct cr_mem ma = { &a, sizeof (a) };
+    struct cr_mem mb = { &b, sizeof (b) };
+
+    cr_expect(eq(mem, ma, mb));
+    cr_expect(eq(int[1], &a, &b));
+
+    int arra[5];
+    int arrb[5];
+
+    for (size_t i = 0; i < 5; ++i) {
+        arra[i] = i;
+        arrb[4 - i] = i;
+    }
+
+    struct cr_mem marra = { &arra, sizeof (arra) };
+    struct cr_mem marrb = { &arrb, sizeof (arrb) };
+
+    cr_expect(eq(mem, marra, marrb));
+    cr_expect(eq(int[sizeof (arra) / sizeof (int)], arra, arrb));
+
+    struct dummy_struct dummy1 = { .a = 42, .b = 24 };
+    struct dummy_struct dummy2 = { .a = 42, .b = 42 };
+
+    cr_expect(eq(type(struct dummy_struct), dummy1, dummy2));
+    cr_expect(eq(type(struct dummy_struct)[1], &dummy1, &dummy2));
+}
+
+#define cmptest(Tag, Lo, Hi) \
+    all(                     \
+        lt(Tag, Hi, Lo),     \
+        le(Tag, Hi, Lo),     \
+        gt(Tag, Lo, Hi),     \
+        ge(Tag, Lo, Hi)      \
+        )
+
+Test(messages, cmp) {
+    /* Primitive */
+    cr_expect(cmptest(i8, 0, 1));
+    cr_expect(cmptest(i16, 0, 1));
+    cr_expect(cmptest(i32, 0, 1));
+    cr_expect(cmptest(i64, 0, 1));
+    cr_expect(cmptest(u8, 0, 1));
+    cr_expect(cmptest(u16, 0, 1));
+    cr_expect(cmptest(u32, 0, 1));
+    cr_expect(cmptest(u64, 0, 1));
+    cr_expect(cmptest(iptr, 0, 1));
+    cr_expect(cmptest(uptr, 0, 1));
+    cr_expect(cmptest(flt, 0, 1 / 3.f));
+    cr_expect(cmptest(dbl, 0, 1 / 3.));
+    cr_expect(cmptest(ldbl, 0, 1 / 3.l));
+
+    /* Strings & pointers */
+    cr_expect(cmptest(ptr, (void *) 0, (void *) 1));
+
+    cr_expect(cmptest(str, "abc", "cba"));
+    cr_expect(cmptest(str, "abc\nabc", "cba\ncba"));
+
+    cr_expect(cmptest(wcs, L"abc", L"cba"));
+    cr_expect(cmptest(wcs, L"abc\nabc", L"cba\ncba"));
+}
+
+Test(message, compo) {
+    cr_expect(all(eq(i32, 1, 1), eq(i32, 1, 1), eq(i32, 1, 0)));
+    cr_expect(any(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 0)));
+    cr_expect(none(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 1)));
+}
 
 Test(messages, default) {
     cr_expect(0);
-    cr_expect_eq(0, 1);
-    cr_expect_neq(1, 1);
-    cr_expect_lt(2, 1);
-    cr_expect_leq(2, 1);
-    cr_expect_gt(1, 2);
-    cr_expect_geq(1, 2);
-    cr_expect_null("");
-    cr_expect_not_null(NULL);
-
-    cr_expect_float_eq(1, 2, 0.1);
-    cr_expect_float_neq(2, 2, 0.1);
-
-    cr_expect_str_empty("foo");
-    cr_expect_str_not_empty("");
-    cr_expect_str_eq("abc", "abd");
-    cr_expect_str_neq("abc", "abc");
-    cr_expect_str_lt("abc", "aba");
-    cr_expect_str_leq("abc", "aba");
-    cr_expect_str_gt("abc", "abd");
-    cr_expect_str_geq("abc", "abd");
-}
-
-Test(messages, user) {
     cr_expect(0, "foo %s", "bar");
-    cr_expect_eq(0, 1, "foo %s", "bar");
-    cr_expect_neq(1, 1, "foo %s", "bar");
-    cr_expect_lt(2, 1, "foo %s", "bar");
-    cr_expect_leq(2, 1, "foo %s", "bar");
-    cr_expect_gt(1, 2, "foo %s", "bar");
-    cr_expect_geq(1, 2, "foo %s", "bar");
-    cr_expect_null("", "foo %s", "bar");
-    cr_expect_not_null(NULL, "foo %s", "bar");
-
-    cr_expect_float_eq(1, 2, 0.1, "foo %s", "bar");
-    cr_expect_float_neq(2, 2, 0.1, "foo %s", "bar");
-
-    cr_expect_str_empty("foo", "foo %s", "bar");
-    cr_expect_str_not_empty("", "foo %s", "bar");
-    cr_expect_str_eq("abc", "abd", "foo %s", "bar");
-    cr_expect_str_neq("abc", "abc", "foo %s", "bar");
-    cr_expect_str_lt("abc", "aba", "foo %s", "bar");
-    cr_expect_str_leq("abc", "aba", "foo %s", "bar");
-    cr_expect_str_gt("abc", "abd", "foo %s", "bar");
-    cr_expect_str_geq("abc", "abd", "foo %s", "bar");
 }

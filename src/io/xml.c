@@ -153,7 +153,7 @@ static void print_test(FILE *f, struct criterion_test_stats *ts)
                     fprintf(f, XML_FAILURE_MSG_ENTRY,
                             sf ? basename_compat(asrt->file) : asrt->file,
                             asrt->line,
-                            line
+                            line ? line : ""
                             );
 
                     while ((line = strtok_r(NULL, "\n", &saveptr)))

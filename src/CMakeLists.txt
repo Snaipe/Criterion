@@ -1,12 +1,14 @@
-# Copyright (C) 2015-2016 Franklin "Snaipe" Mathieu.
+# Copyright (C) 2015-2017 Franklin "Snaipe" Mathieu.
 # Redistribution and use of this file is allowed according to the terms of the MIT license.
 # For details see the LICENSE file distributed with Criterion.
 
 # List sources and headers
 
 set(SOURCE_FILES
+  src/capi/specifiers.c
   src/core/abort.c
   src/core/abort.h
+  src/core/assert.c
   src/core/report.c
   src/core/report.h
   src/core/runner.c
@@ -26,6 +28,8 @@ set(SOURCE_FILES
   src/compat/pipe-internal.h
   src/compat/section.c
   src/compat/section.h
+  src/compat/strtok.c
+  src/compat/strtok.h
   src/compat/process.c
   src/compat/process.h
   src/compat/basename.c
@@ -43,7 +47,6 @@ set(SOURCE_FILES
   src/io/redirect.c
   src/io/event.c
   src/io/event.h
-  src/io/asprintf.c
   src/io/file.c
   src/io/output.c
   src/io/output.h
@@ -53,6 +56,9 @@ set(SOURCE_FILES
   src/log/logging.c
   src/log/logging.h
   src/log/normal.c
+  src/string/diff.c
+  src/string/fmt.c
+  src/string/fmt.h
   src/string/i18n.c
   src/string/i18n.h
   src/entry/options.c
@@ -75,6 +81,7 @@ set(SOURCE_FILES
   src/string/extglobmatch.h
   src/string/brz.c
   src/string/brz.h
+  src/string/xxd.c
 
   dependencies/nanopb/pb_common.c
   dependencies/nanopb/pb_common.h

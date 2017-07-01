@@ -21,7 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdlib.h>
+#include <string.h>
+
 #include "basename.h"
+#include "config.h"
+#include "string/fmt.h"
+
+#if defined (HAVE_GETCWD)
+# include <unistd.h>
+# include <limits.h>
+#elif defined (HAVE_GETCURRENTDIRECTORY)
+# include <windows.h>
+#endif
 
 const char *basename_compat(const char *str)
 {
@@ -31,4 +43,98 @@ const char *basename_compat(const char *str)
         if ((*c == '/' || *c == '\\') && c[1])
             start = c + 1;
     return start;
+}
+
+char *cri_path_cwd(void)
+{
+#if defined (HAVE_GETCWD)
+    char *cwd = malloc(PATH_MAX);
+    if (!cwd || !getcwd(cwd, PATH_MAX))
+        return NULL;
+#elif defined (HAVE_GETCURRENTDIRECTORY)
+    DWORD buflen = GetCurrentDirectoryA(0, NULL);
+    if (!buflen)
+        return NULL;
+
+    char *cwd = malloc(buflen + 1);
+    if (!cwd || !GetCurrentDirectoryA(buflen + 1, cwd))
+        return NULL;
+#endif
+    return cwd;
+}
+
+bool cri_path_isrelative(const char *path)
+{
+#ifdef _WIN32
+    bool absolute = *path == '\\'
+            || (strlen(path) > 3 && path[1] == ':' && path[2] == '\\');
+    return !absolute;
+#else
+    return *path != '/';
+#endif
+}
+
+char *cri_path_relativeof(const char *cstpath)
+{
+    char *path = strdup(cstpath);
+    if (!path)
+        return NULL;
+    char *cwd = cri_path_cwd();
+    if (!cwd)
+        return NULL;
+
+    if (!strcmp(cwd, "/"))
+        return path;
+
+    char *rel = NULL;
+    size_t off = 0;
+    size_t size = 0;
+
+    char *lastdir = cwd + 1;
+    char *firstdiff = NULL;
+    char *ccwd = cwd;
+    char *cpath = path;
+
+    for (; *ccwd && *cpath; ++ccwd, ++cpath) {
+        if (*ccwd != *cpath) {
+            cri_fmt_bprintf(&rel, &off, &size, "../");
+
+            while (*ccwd && *ccwd != '/' && *ccwd != '\\')
+                ++ccwd;
+            while (*cpath && *cpath != '/' && *cpath != '\\')
+                ++cpath;
+
+            if (!firstdiff)
+                firstdiff = lastdir;
+            if (!*cpath || !*ccwd)
+                break;
+        }
+        if (*cpath == '/' || *cpath == '\\') {
+            lastdir = cpath + 1;
+        }
+    }
+    if (!firstdiff) {
+        if (*cpath == '/' || *cpath == '\\') {
+            cri_fmt_bprintf(&rel, &off, &size, "./");
+        } else {
+            while (*cpath != '/' && *cpath != '\\')
+                --cpath;
+            cri_fmt_bprintf(&rel, &off, &size, "../");
+        }
+        firstdiff = cpath;
+    }
+
+    char *saveptr;
+    char *component = cri_strtok_r(firstdiff, "/\\", &saveptr);
+    if (component) {
+        cri_fmt_bprintf(&rel, &off, &size, "%s", component);
+        while ((component = cri_strtok_r(NULL, "/\\", &saveptr))) {
+            cri_fmt_bprintf(&rel, &off, &size, "/%s", component);
+        }
+    }
+
+    free(cwd);
+    free(path);
+
+    return rel;
 }

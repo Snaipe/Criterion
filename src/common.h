@@ -29,6 +29,8 @@
 
 #include "criterion/internal/common.h"
 
-#define DEF(X, Y)    ((X) ? (X) : (Y))
+#define DEF(X, Y)          ((X) ? (X) : (Y))
+
+#define align2_up(v, d)    ((((v) - 1) & ~((d) - 1)) + (d))
 
 #endif /* !COMMON_H_ */

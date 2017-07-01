@@ -29,16 +29,25 @@ if (I18N AND GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
   set (ENABLE_NLS 1)
 endif ()
 
+list (APPEND CMAKE_REQUIRED_DEFINITIONS
+  -D_GNU_SOURCE
+  -D_CRT_RAND_S
+  -DVC_EXTRALEAN
+  -DWIN32_LEAN_AND_MEAN)
+
 # Check for functions
 
-check_function_exists(strtok_s HAVE_STRTOK_S)
-check_function_exists(strtok_r HAVE_STRTOK_R)
+check_symbol_exists(strtok_s "string.h" HAVE_STRTOK_S)
+check_symbol_exists(strtok_r "string.h" HAVE_STRTOK_R)
 
 check_library_exists (anl getaddrinfo_a "" HAVE_GETADDRINFO_A)
 
-check_function_exists(funopen HAVE_FUNOPEN)
-check_function_exists(fopencookie HAVE_FOPENCOOKIE)
-check_function_exists(open_memstream HAVE_OPEN_MEMSTREAM)
+check_symbol_exists(funopen "stdio.h" HAVE_FUNOPEN)
+check_symbol_exists(fopencookie "stdio.h" HAVE_FOPENCOOKIE)
+check_symbol_exists(open_memstream "stdio.h" HAVE_OPEN_MEMSTREAM)
+
+check_symbol_exists(getcwd "unistd.h" HAVE_GETCWD)
+check_symbol_exists(GetCurrentDirectory "windows.h" HAVE_GETCURRENTDIRECTORY)
 
 check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME_RT)
 if (HAVE_CLOCK_GETTIME_RT AND NOT HAVE_LIBRT)

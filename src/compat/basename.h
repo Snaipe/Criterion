@@ -24,6 +24,12 @@
 #ifndef BASENAME_H_
 #define BASENAME_H_
 
+#include <stddef.h>
+#include <stdbool.h>
+
 const char *basename_compat(const char *str);
+char *cri_path_cwd(void);
+bool cri_path_isrelative(const char *path);
+char *cri_path_relativeof(const char *path);
 
 #endif /* !BASENAME_H_ */
