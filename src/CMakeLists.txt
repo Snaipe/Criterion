@@ -99,33 +99,48 @@ endif ()
 
 
 set(INTERFACE_FILES
-  include/criterion/assert.h
   include/criterion/abort.h
+  include/criterion/alloc.h
+  include/criterion/assert.h
   include/criterion/criterion.h
+  include/criterion/embedded.h
   include/criterion/event.h
   include/criterion/hooks.h
-  include/criterion/logging.h
-  include/criterion/types.h
-  include/criterion/options.h
-  include/criterion/stats.h
-  include/criterion/alloc.h
-  include/criterion/parameterized.h
-  include/criterion/redirect.h
-  include/criterion/output.h
-  include/criterion/internal/assert.h
-  include/criterion/internal/test.h
-  include/criterion/internal/common.h
-  include/criterion/internal/ordered-set.h
   include/criterion/internal/asprintf-compat.h
+  include/criterion/internal/assert.h
+  include/criterion/internal/assert/complex.h
+  include/criterion/internal/assert/exceptions.h
+  include/criterion/internal/assert/ieee.h
+  include/criterion/internal/assert/memory.h
+  include/criterion/internal/assert/op.h
+  include/criterion/internal/assert/op.hxx
+  include/criterion/internal/assert/tag.h
+  include/criterion/internal/assert/tostr.h
+  include/criterion/internal/assert/types.h
+  include/criterion/internal/capabilities.h
+  include/criterion/internal/common.h
+  include/criterion/internal/deprecation.h
   include/criterion/internal/designated-initializer-compat.h
-  include/criterion/internal/preprocess.h
-  include/criterion/internal/parameterized.h
-  include/criterion/internal/stdio_filebuf.hxx
-  include/criterion/internal/stream.hxx
   include/criterion/internal/hooks.h
+  include/criterion/internal/new_asserts.h
+  include/criterion/internal/ordered-set.h
+  include/criterion/internal/parameterized.h
+  include/criterion/internal/preprocess.h
   include/criterion/internal/redirect.h
   include/criterion/internal/stdio_filebuf.hxx
-  include/criterion/internal/deprecation.h
+  include/criterion/internal/stream.hxx
+  include/criterion/internal/test.h
+  include/criterion/internal/theories.h
+  include/criterion/logging.h
+  include/criterion/new/assert.h
+  include/criterion/new/memory.h
+  include/criterion/options.h
+  include/criterion/output.h
+  include/criterion/parameterized.h
+  include/criterion/redirect.h
+  include/criterion/stats.h
+  include/criterion/theories.h
+  include/criterion/types.h
 )
 
 if (THEORIES)
