@@ -85,6 +85,7 @@ inline ostream &operator<<(ostream &s, const std::wstring &str)
 template <>
 inline ostream &operator<<(ostream &s, const std::nullptr_t &ptr)
 {
+    (void) ptr;
     s.base << "nullptr";
     return s;
 }
