@@ -1,5 +1,6 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
+#include <criterion/new/assert.h>
 #include <iostream>
 #include <string>
 
@@ -16,7 +17,7 @@ Test(redirect, mock) {
     std::string contents;
     fmock >> contents;
 
-    cr_assert_eq(contents, "Hello");
+    cr_assert(eq(str, contents, "Hello"));
 }
 #endif
 
@@ -30,7 +31,7 @@ Test(redirect, mock_c) {
     char contents[sizeof ("Hello")] = { 0 };
     fgets(contents, sizeof (contents), fmock);
 
-    cr_assert_str_eq(contents, "Hello");
+    cr_assert(eq(str, contents, "Hello"));
 }
 
 Test(redirect, assertions) {

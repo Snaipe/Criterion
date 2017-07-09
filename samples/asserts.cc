@@ -23,8 +23,8 @@ Test(asserts, old_school) {
 }
 
 Test(asserts, string) {
-    /* cr_assert(zero(str, ""));
-       cr_assert(not(zero(str, "foo"))); */
+    cr_assert(zero(str, ""));
+    cr_assert(not(zero(str, "foo")));
 
     cr_assert(eq(str, "hello", "hello"));
     cr_assert(ne(str, "hello", "olleh"));
@@ -40,7 +40,7 @@ Test(asserts, string) {
 
 Test(asserts, wstring) {
     cr_assert(zero(wcs, L""));
-    cr_assert(not (zero(wcs, L"foo")));
+    cr_assert(not(zero(wcs, L"foo")));
 
     cr_assert(eq(wcs, L"hello", L"hello"));
     cr_assert(ne(wcs, L"hello", L"olleh"));
@@ -68,8 +68,8 @@ Test(asserts, native) {
 }
 
 Test(asserts, float) {
-    cr_assert_neq(0.1 * 0.1, 0.01);
-    cr_assert_float_eq(0.1 * 0.1, 0.01, 0.001);
+    cr_assert(not(eq(dbl, 0.1 * 0.1, 0.01)));
+    cr_assert(ieee_ulp_eq(dbl, 0.1 * 0.1, 0.01, 4));
 }
 
 struct dummy_struct {
