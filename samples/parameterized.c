@@ -1,4 +1,5 @@
 #include <criterion/parameterized.h>
+#include <criterion/new/assert.h>
 #include <stdio.h>
 
 /* Basic usage */
@@ -10,7 +11,7 @@ ParameterizedTestParameters(params, simple) {
 }
 
 ParameterizedTest(int *val, params, simple) {
-    cr_assert_fail("Parameter: %d", *val);
+    cr_fatal("Parameter: %d", *val);
 }
 
 /* Multiple parameters must be coalesced in a single parameter */
@@ -31,7 +32,7 @@ ParameterizedTestParameters(params, multiple) {
 }
 
 ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
-    cr_assert_fail("Parameters: (%d, %f)", tup->i, tup->d);
+    cr_fatal("Parameters: (%d, %f)", tup->i, tup->d);
 }
 
 /* Cleaning up dynamically generated parameters */
@@ -75,5 +76,39 @@ ParameterizedTestParameters(params, cleanup) {
 }
 
 ParameterizedTest(struct parameter_tuple_dyn *tup, params, cleanup) {
-    cr_assert_fail("Parameters: (%d, %f)", tup->i, *tup->d);
+    cr_fatal("Parameters: (%d, %f)", tup->i, *tup->d);
+}
+
+/* Using strings in parameterized tests */
+
+/* you **MUST** use cr_malloc, cr_free, cr_realloc, and cr_calloc instead of their
+   unprefixed counterparts to allocate dynamic memory in parameters, otherwise
+   this will crash. */
+
+void free_strings(struct criterion_test_params *crp)
+{
+    char **strings = (char **) crp->params;
+    for (size_t i = 0; i < crp->length; ++i) {
+        cr_free(strings[i]);
+    }
+    cr_free(strings);
+}
+
+char *cr_strdup(const char *str)
+{
+    char *ptr = cr_malloc(strlen(str) + 1);
+    if (ptr)
+        strcpy(ptr, str);
+    return ptr;
+}
+
+ParameterizedTestParameters(params, string) {
+    char **strings = cr_malloc(sizeof (*strings) * 2);
+    strings[0] = cr_strdup("Hello");
+    strings[1] = cr_strdup("World");
+    return cr_make_param_array(const char *, strings, 2, free_strings);
+}
+
+ParameterizedTest(char **str, params, string) {
+    cr_fatal("string: %s", *str);
 }

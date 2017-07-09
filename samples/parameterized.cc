@@ -1,4 +1,5 @@
 #include <criterion/parameterized.h>
+#include <criterion/new/assert.h>
 
 /* Basic usage */
 
@@ -9,7 +10,7 @@ ParameterizedTestParameters(params, simple) {
 }
 
 ParameterizedTest(int *val, params, simple) {
-    cr_assert_fail("Parameter: %d", *val);
+    cr_fatal("Parameter: %d", *val);
 }
 
 /* Multiple parameters must be coalesced in a single parameter */
@@ -30,7 +31,7 @@ ParameterizedTestParameters(params, multiple) {
 }
 
 ParameterizedTest(struct parameter_tuple *tup, params, multiple) {
-    cr_assert_fail("Parameters: (%d, %f)", tup->i, tup->d);
+    cr_fatal("Parameters: (%d, %f)", tup->i, tup->d);
 }
 
 /* Using dynamically generated parameters */
@@ -68,5 +69,25 @@ ParameterizedTestParameters(params, cleanup) {
 }
 
 ParameterizedTest(parameter_tuple_dyn * tup, params, cleanup) {
-    cr_assert_fail("Parameters: (%d, %f)", tup->i, *tup->d);
+    cr_fatal("Parameters: (%d, %f)", tup->i, *tup->d);
+}
+
+/* Using strings in parameterized tests */
+
+/* you **MUST** use cr_malloc, cr_free, cr_realloc, and cr_calloc instead of their
+   unprefixed counterparts to allocate dynamic memory in parameters, otherwise
+   this will crash. */
+
+using string = std::basic_string<char, std::char_traits<char>, criterion::allocator<char>>;
+
+ParameterizedTestParameters(params, string) {
+    static criterion::parameters<string> params;
+
+    params.push_back(string("Hello"));
+    params.push_back(string("World"));
+    return params;
+}
+
+ParameterizedTest(string *str, params, string) {
+    cr_fatal("string: %s", (*str).c_str());
 }
