@@ -248,7 +248,7 @@ struct allocator {
     inline ~allocator() {}
     inline explicit allocator(allocator const &) {}
     template <typename U>
-    inline explicit allocator(allocator<U> const &) {}
+    inline allocator(allocator<U> const &) {}
 
     inline pointer address(reference r) { return &r; }
     inline const_pointer address(const_reference r) { return &r; }
@@ -272,6 +272,18 @@ struct allocator {
     inline bool operator==(allocator const &) { return true; }
     inline bool operator!=(allocator const &a) { return !operator==(a); }
 };
+
+template<typename T, typename U>
+bool operator==(allocator<T> const& lhs, allocator<U> const& rhs)
+{
+   return false;
+}
+
+template<typename T, typename U>
+bool operator!=(allocator<T> const& lhs, allocator<U> const& rhs)
+{
+   return !(lhs == rhs);
+}
 }
 #endif
 
