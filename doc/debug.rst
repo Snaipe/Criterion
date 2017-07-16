@@ -101,3 +101,14 @@ Coverage of Criterion tests
 
 To use gcov, you have to compile your tests with the two GCC Options
 ``-fprofile-arcs`` and ``–ftest-coverage``.
+
+Using Valgrind with Criterion
+-----------------------------
+
+Valgrind works out of the box. However, note that for all valgrind tools, you
+must pass ``--trace-children=yes``, as criterion fork/execs test workers.
+
+If you're using callgrind and ``--callgrind-out-file``, make sure you specify
+``%p`` in the filename, as it will get substituted by the worker PID. If you
+don't, all the test workers will overwrite the same file over and over, and
+you will only get the results for the last running test.
