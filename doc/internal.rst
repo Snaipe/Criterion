@@ -61,7 +61,21 @@ Example main
 
     #include <criterion/criterion.h>
 
-    int main(int argc, char *argv[]) {
+    /* This is necessary on windows, as BoxFort needs the main to be exported
+       in order to find it. */
+    #if defined (_WIN32) || defined (__CYGWIN__)
+    # if defined (_MSC_VER)
+    #  define DLLEXPORT __declspec(dllexport)
+    # elif defined (__GNUC__)
+    #  define DLLEXPORT __attribute__((dllexport))
+    # else
+    #  error No dllexport attribute
+    # endif
+    #else
+    # define DLLEXPORT
+    #endif
+
+    DLLEXPORT int main(int argc, char *argv[]) {
         struct criterion_test_set *tests = criterion_initialize();
 
         int result = 0;
