@@ -49,6 +49,7 @@ static msg_t msg_desc = N_("  %s\n");
 
 #ifdef ENABLE_NLS
 static msg_t msg_pre_init = N_("%1$s::%2$s\n");
+static msg_t msg_post_test = N_("%1$s::%2$s\n");
 static msg_t msg_post_test_timed = N_("%1$s::%2$s: (%3$3.2fs)\n");
 static msg_t msg_post_test_skip = N_("%1$s::%2$s: Test was skipped\n");
 static msg_t msg_test_disabled = N_("%1$s::%2$s: Test is disabled\n");
@@ -73,6 +74,7 @@ static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
 static msg_t msg_line = N_("%2$*1$s%3$s%4$s%5$s\n");
 #else
 static msg_t msg_pre_init = "%s::%s\n";
+static msg_t msg_post_test = "%s::%s\n";
 static msg_t msg_post_test_timed = "%s::%s: (%3.2fs)\n";
 static msg_t msg_post_test_skip = "%s::%s: Test was skipped\n";
 static msg_t msg_test_disabled = "%s::%s: Test is disabled\n";
@@ -121,7 +123,8 @@ void normal_log_pre_init(struct criterion_suite *suite, struct criterion_test *t
 
 void normal_log_post_test(struct criterion_test_stats *stats)
 {
-    const char *format = msg_post_test_timed;
+    const char *format = criterion_options.measure_time ?
+        msg_post_test_timed : msg_post_test;
 
     const enum criterion_logging_level level =
             stats->test_status == CR_STATUS_FAILED ? CRITERION_IMPORTANT : CRITERION_INFO;
