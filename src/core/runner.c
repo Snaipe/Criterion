@@ -344,6 +344,9 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
     run_tests_async(set, stats, url, sock);
 
     report(POST_ALL, stats);
+    if (criterion_options.logging_threshold == CRITERION_LOG_LEVEL_QUIET) {
+        cri_restore_outputs();
+    }
     process_all_output(stats);
     log(post_all, stats);
 
@@ -374,6 +377,10 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
         criterion_options.jobs = 1;
         criterion_options.crash = true;
         criterion_options.logging_threshold = 1;
+    }
+
+    if (criterion_options.logging_threshold == CRITERION_LOG_LEVEL_QUIET) {
+        cri_silence_outputs();
     }
 
     int res = criterion_run_all_tests_impl(set);
