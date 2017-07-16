@@ -62,6 +62,8 @@
 # define RUNNING_ON_VALGRIND    0
 #endif
 
+int cri_is_runner;
+
 typedef const char *const msg_t;
 
 #ifdef ENABLE_NLS
@@ -316,9 +318,6 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 {
     cri_report_init();
 
-    report(PRE_ALL, set);
-    log(pre_all, set);
-
     if (RUNNING_ON_VALGRIND) {
         if (criterion_options.jobs != 1)
             criterion_pimportant(CRITERION_PREFIX_DASHES,
@@ -337,6 +336,9 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
         cr_panic("Could not initialize the message client: %s.", strerror(errno));
 
     cri_alloc_init();
+
+    report(PRE_ALL, set);
+    log(pre_all, set);
 
     struct criterion_global_stats *stats = stats_init();
     run_tests_async(set, stats, url, sock);
@@ -362,6 +364,8 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
+
+    cri_is_runner = 1;
 
     if (criterion_options.pattern)
         disable_unmatching(set);
