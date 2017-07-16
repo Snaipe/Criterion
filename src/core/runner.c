@@ -350,7 +350,9 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 
     cri_proto_close(g_client_socket);
     cri_proto_close(sock);
-    int ok = stats->tests_failed == 0;
+    int ok = stats->tests_failed == 0 && stats->errors == 0;
+    if (!criterion_options.ignore_warnings)
+        ok = ok && stats->warnings == 0;
     sfree(stats);
     return ok;
 }

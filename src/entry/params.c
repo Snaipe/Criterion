@@ -90,6 +90,8 @@
     "    --full-stats: Tests must fully report statistics " \
     "(causes massive slowdown for large number of "         \
     "assertions but is more accurate).\n"                   \
+    "    --ignore_warnings: Ignore warnings, do not exit "  \
+    "with a non-zero exit status.\n"                        \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
     "report to FILE using the specified provider\n"
 
@@ -267,6 +269,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         { "full-stats",      no_argument,       0, 'U' },
         { "color",           optional_argument, 0, 'C' },
         { "encoding",        required_argument, 0, 'e' },
+        { "ignore-warnings", no_argument,       0, 'N' },
         { 0,                 0,                 0, 0   }
     };
 
@@ -425,6 +428,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'U': criterion_options.full_stats = true; break;
             case 'C': criterion_options.color = deduce_color(optarg); break;
             case 'e': set_encoding(optarg); break;
+            case 'N': criterion_options.ignore_warnings = true; break;
             case '?':
             default: do_print_usage = handle_unknown_arg; break;
         }

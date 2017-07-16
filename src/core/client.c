@@ -460,6 +460,7 @@ bool handle_death(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
         case criterion_protocol_death_result_type_CRASH: {
             if (curstate != CS_MAIN) {
                 log(other_crash, ctx->tstats);
+                ++ctx->gstats->warnings;
 
                 if (ctx->state < CS_MAIN) {
                     stat_push_event(ctx->gstats,
@@ -596,7 +597,12 @@ bool handle_message(struct server_ctx *sctx, struct client_ctx *ctx, const crite
     (void) sctx;
     (void) ctx;
     const criterion_protocol_log *lg = &msg->data.value.message;
+    enum criterion_severity severity = (enum criterion_severity) lg->severity;
 
-    log(message, (enum criterion_severity) lg->severity, lg->message);
+    log(message, severity, lg->message);
+    if (severity == CR_LOG_WARNING)
+        ++ctx->gstats->warnings;
+    if (severity == CR_LOG_ERROR)
+        ++ctx->gstats->errors;
     return false;
 }

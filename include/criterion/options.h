@@ -210,6 +210,14 @@ struct criterion_options {
      * default: terminal-deduced.
      */
     bool color;
+
+    /**
+     * When false, warnings will make criterion exit with a nonzero
+     * exit status (e.g. when a test crashes during its teardown).
+     *
+     * default: false
+     */
+    bool ignore_warnings;
 };
 
 CR_BEGIN_C_API
