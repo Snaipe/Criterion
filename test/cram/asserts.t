@@ -219,17 +219,17 @@ Testing all assert messages
   [----]     reference: 0.33333333333333331
   [----] failmessages.c:108: Assertion Failed
   [----]   lt(ldbl, 1 / 3.l, 0): 
-  [----]     actual: 0.333333333333333333342
+  \[----\]     actual: 0\.3333333333333333(33342|1) (re)
   [----]     reference: 0
   [----]   le(ldbl, 1 / 3.l, 0): 
-  [----]     actual: 0.333333333333333333342
+  \[----\]     actual: 0\.3333333333333333(33342|1) (re)
   [----]     reference: 0
   [----]   gt(ldbl, 0, 1 / 3.l): 
   [----]     actual: 0
-  [----]     reference: 0.333333333333333333342
+  \[----\]     reference: 0\.3333333333333333(33342|1) (re)
   [----]   ge(ldbl, 0, 1 / 3.l): 
   [----]     actual: 0
-  [----]     reference: 0.333333333333333333342
+  \[----\]     reference: 0\.3333333333333333(33342|1) (re)
   [----] failmessages.c:111: Assertion Failed
   [----]   lt(ptr, (void *) 1, (void *) 0): 
   [----]     actual: 0x1
@@ -356,7 +356,7 @@ Testing all assert messages
   [----]     diff: [-0-]{+0.33333333333333331+}
   [----] failmessages.c:39: Assertion Failed
   [----]   eq(ldbl, 0, 1 / 3.l): 
-  [----]     diff: [-0-]{+0.333333333333333333342+}
+  \[----\]     diff: \[-0-\]\{\+0\.3333333333333333(1|33342)\+\} (re)
   [----] failmessages.c:42: Assertion Failed
   [----]   eq(ptr, (void *) 1, (void *) 0): 
   [----]     diff: [-0x1-]{+0x0+}
