@@ -1,876 +1,876 @@
 Test C assertions:
 
   $ asserts.c.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.c\x1b[0m:\x1b[0;31m12\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   assert is fatal, expect isn't (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.c\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   This assert runs (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::base: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.c\x1b[0m:\x1b[0;31m18\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   You can fail an assertion with a message from anywhere (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.c\x1b[0m:\x1b[0;31m19\x1b[0m: Assertion Failed (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::old_school: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m7\x1b[0;1m | Passing: \x1b[0;32m5\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] asserts.c:12: Assertion Failed
+  [----]   
+  [----]   assert is fatal, expect isn't
+  [----]   
+  [----] asserts.c:13: Assertion Failed
+  [----]   
+  [----]   This assert runs
+  [----]   
+  [FAIL] asserts::base
+  [----] asserts.c:18: Assertion Failed
+  [----]   
+  [----]   You can fail an assertion with a message from anywhere
+  [----]   
+  [----] asserts.c:19: Assertion Failed
+  [FAIL] asserts::old_school
+  [====] Synthesis: Tested: 7 | Passing: 5 | Failing: 2 | Crashing: 0 
 
 Test C++ assertions:
 
   $ asserts.cc.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m15\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   assert is fatal, expect isn't (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m16\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   This assert runs (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::base: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m122\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   throw(std::bad_alloc, throw std::invalid_argument("some other message")):  (esc)
-  [\x1b[0;34m----\x1b[0m]     message: "some other message"\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::exception: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m21\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   You can fail an assertion with a message from anywhere (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1masserts.cc\x1b[0m:\x1b[0;31m22\x1b[0m: Assertion Failed (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] asserts::old_school: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m8\x1b[0;1m | Passing: \x1b[0;32m5\x1b[0;1m | Failing: \x1b[0;31m3\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] asserts.cc:15: Assertion Failed
+  [----]   
+  [----]   assert is fatal, expect isn't
+  [----]   
+  [----] asserts.cc:16: Assertion Failed
+  [----]   
+  [----]   This assert runs
+  [----]   
+  [FAIL] asserts::base
+  [----] asserts.cc:122: Assertion Failed
+  [----]   throw(std::bad_alloc, throw std::invalid_argument("some other message")): 
+  [----]     message: "some other message"
+  [FAIL] asserts::exception
+  [----] asserts.cc:21: Assertion Failed
+  [----]   
+  [----]   You can fail an assertion with a message from anywhere
+  [----]   
+  [----] asserts.cc:22: Assertion Failed
+  [FAIL] asserts::old_school
+  [====] Synthesis: Tested: 8 | Passing: 5 | Failing: 3 | Crashing: 0 
 
 Using redirections
 
   $ redirect.c.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
 
   $ redirect.cc.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
 
 Testing all assert messages
 
   $ failmessages.c.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m121\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-1-]\x1b[0m\x1b[0;32m{+0+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m122\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m123\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i32, 1, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-1-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] message::compo: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m96\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m97\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m98\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m99\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m100\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m101\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m102\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m103\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m104\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(iptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(iptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(iptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(iptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m105\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(uptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(uptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(uptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(uptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m106\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(flt, 1 / 3.f, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333343\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(flt, 1 / 3.f, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333343\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(flt, 0, 1 / 3.f):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333343\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(flt, 0, 1 / 3.f):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333343\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m107\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(dbl, 1 / 3., 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.33333333333333331\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(dbl, 1 / 3., 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.33333333333333331\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(dbl, 0, 1 / 3.):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.33333333333333331\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(dbl, 0, 1 / 3.):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.33333333333333331\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m108\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(ldbl, 1 / 3.l, 0):  (esc)
-  \[\\x1b\[0;34m----\\x1b\[0m\]     actual: \\x1b\[0;31m0\.3333333333333333(33342|1)\\x1b\[0m \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(ldbl, 1 / 3.l, 0):  (esc)
-  \[\\x1b\[0;34m----\\x1b\[0m\]     actual: \\x1b\[0;31m0\.3333333333333333(33342|1)\\x1b\[0m \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(ldbl, 0, 1 / 3.l):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  \[\\x1b\[0;34m----\\x1b\[0m\]     reference: \\x1b\[0;32m0\.3333333333333333(33342|1)\\x1b\[0m \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m]   ge(ldbl, 0, 1 / 3.l):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  \[\\x1b\[0;34m----\\x1b\[0m\]     reference: \\x1b\[0;32m0\.3333333333333333(33342|1)\\x1b\[0m \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m111\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(ptr, (void *) 1, (void *) 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(ptr, (void *) 1, (void *) 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(ptr, (void *) 0, (void *) 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(ptr, (void *) 0, (void *) 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0x0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0x1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(str, "cba", "abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(str, "cba", "abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(str, "abc", "cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(str, "abc", "cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m114\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(str, "cba\\ncba", "abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(str, "cba\\ncba", "abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(str, "abc\\nabc", "cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(str, "abc\\nabc", "cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m116\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(wcs, L"cba", L"abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(wcs, L"cba", L"abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(wcs, L"abc", L"cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(wcs, L"abc", L"cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m117\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(wcs, L"cba\\ncba", L"abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(wcs, L"cba\\ncba", L"abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(wcs, L"abc\\nabc", L"cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(wcs, L"abc\\nabc", L"cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"cba"\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] messages::cmp: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m127\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m128\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   foo bar (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] messages::default: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m27\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m28\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m29\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m30\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m31\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m32\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m33\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(iptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0x0-]\x1b[0m\x1b[0;32m{+0x1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m36\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(uptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0x0-]\x1b[0m\x1b[0;32m{+0x1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m37\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(flt, 0, 1 / 3.f):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+0.333333343+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m38\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(dbl, 0, 1 / 3.):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+0.33333333333333331+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m39\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(ldbl, 0, 1 / 3.l):  (esc)
-  \[\\x1b\[0;34m----\\x1b\[0m\]     diff: \\x1b\[0;31m\[-0-\]\\x1b\[0m\\x1b\[0;32m\{\+0\.3333333333333333(33342|1)\+\}\\x1b\[0m \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m42\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(ptr, (void *) 1, (void *) 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0x1-]\x1b[0m\x1b[0;32m{+0x0+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m44\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(str, "", "foo"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-""-]\x1b[0m\x1b[0;32m{+"foo"+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m47\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,1 +1,1 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-"reallyreallylongstringindeedmygoodsirormadam"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+"yetanotherreallyreallylongstring"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m48\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(str, "foo\\nbar", "foo\\nbaz"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      "foo\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-"bar"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+"baz"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m50\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(wcs, L"", L"foo"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-L""-]\x1b[0m\x1b[0;32m{+L"foo"+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m53\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,1 +1,1 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-L"reallyreallylongstringindeedmygoodsirormadam"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+L"yetanotherreallyreallylongstring"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m54\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(wcs, L"foo\\nbar", L"foo\\nbaz"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      L"foo\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-L"bar"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+L"baz"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m62\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(mem, ma, mb):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-00: 00000000                             ....            \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+00: 01000000                             ....            \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m63\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(int[1], &a, &b):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,3 +1,3 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (int[1]) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[0] = 0,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[0] = 1,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m76\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(mem, marra, marrb):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,3 +1,3 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-00: 00000000 01000000 02000000 03000000  ................\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-10: 04000000                             ....            \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+00: 04000000 03000000 02000000 01000000  ................\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+10: 00000000                             ....            \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m77\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(int[sizeof (arra) / sizeof (int)], arra, arrb):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,7 +1,7 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (int[5]) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[0] = 0,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[1] = 1,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[0] = 4,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[1] = 3,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t[2] = 2,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[3] = 3,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[4] = 4,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[3] = 1,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[4] = 0,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m82\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(type(struct dummy_struct), dummy1, dummy2):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,4 +1,4 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (struct dummy_struct) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t.a = 42,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t.b = 24\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t.b = 42\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.c\x1b[0m:\x1b[0;31m83\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(type(struct dummy_struct)[1], &dummy1, &dummy2):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,6 +1,6 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (struct dummy_struct[1]) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t[0] = (struct dummy_struct) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t\t.a = 42,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t\t.b = 24\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t\t.b = 42\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t},\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] messages::eq: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m4\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m4\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] failmessages.c:121: Assertion Failed
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----] failmessages.c:122: Assertion Failed
+  [----] failmessages.c:123: Assertion Failed
+  [----]   eq(i32, 1, 1): 
+  [----]     diff: [-1-]{+1+}
+  [FAIL] message::compo
+  [----] failmessages.c:96: Assertion Failed
+  [----]   lt(i8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:97: Assertion Failed
+  [----]   lt(i16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:98: Assertion Failed
+  [----]   lt(i32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:99: Assertion Failed
+  [----]   lt(i64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:100: Assertion Failed
+  [----]   lt(u8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:101: Assertion Failed
+  [----]   lt(u16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:102: Assertion Failed
+  [----]   lt(u32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:103: Assertion Failed
+  [----]   lt(u64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.c:104: Assertion Failed
+  [----]   lt(iptr, 1, 0): 
+  [----]     actual: 0x1
+  [----]     reference: 0x0
+  [----]   le(iptr, 1, 0): 
+  [----]     actual: 0x1
+  [----]     reference: 0x0
+  [----]   gt(iptr, 0, 1): 
+  [----]     actual: 0x0
+  [----]     reference: 0x1
+  [----]   ge(iptr, 0, 1): 
+  [----]     actual: 0x0
+  [----]     reference: 0x1
+  [----] failmessages.c:105: Assertion Failed
+  [----]   lt(uptr, 1, 0): 
+  [----]     actual: 0x1
+  [----]     reference: 0x0
+  [----]   le(uptr, 1, 0): 
+  [----]     actual: 0x1
+  [----]     reference: 0x0
+  [----]   gt(uptr, 0, 1): 
+  [----]     actual: 0x0
+  [----]     reference: 0x1
+  [----]   ge(uptr, 0, 1): 
+  [----]     actual: 0x0
+  [----]     reference: 0x1
+  [----] failmessages.c:106: Assertion Failed
+  [----]   lt(flt, 1 / 3.f, 0): 
+  [----]     actual: 0.333333343
+  [----]     reference: 0
+  [----]   le(flt, 1 / 3.f, 0): 
+  [----]     actual: 0.333333343
+  [----]     reference: 0
+  [----]   gt(flt, 0, 1 / 3.f): 
+  [----]     actual: 0
+  [----]     reference: 0.333333343
+  [----]   ge(flt, 0, 1 / 3.f): 
+  [----]     actual: 0
+  [----]     reference: 0.333333343
+  [----] failmessages.c:107: Assertion Failed
+  [----]   lt(dbl, 1 / 3., 0): 
+  [----]     actual: 0.33333333333333331
+  [----]     reference: 0
+  [----]   le(dbl, 1 / 3., 0): 
+  [----]     actual: 0.33333333333333331
+  [----]     reference: 0
+  [----]   gt(dbl, 0, 1 / 3.): 
+  [----]     actual: 0
+  [----]     reference: 0.33333333333333331
+  [----]   ge(dbl, 0, 1 / 3.): 
+  [----]     actual: 0
+  [----]     reference: 0.33333333333333331
+  [----] failmessages.c:108: Assertion Failed
+  [----]   lt(ldbl, 1 / 3.l, 0): 
+  [----]     actual: 0.333333333333333333342
+  [----]     reference: 0
+  [----]   le(ldbl, 1 / 3.l, 0): 
+  [----]     actual: 0.333333333333333333342
+  [----]     reference: 0
+  [----]   gt(ldbl, 0, 1 / 3.l): 
+  [----]     actual: 0
+  [----]     reference: 0.333333333333333333342
+  [----]   ge(ldbl, 0, 1 / 3.l): 
+  [----]     actual: 0
+  [----]     reference: 0.333333333333333333342
+  [----] failmessages.c:111: Assertion Failed
+  [----]   lt(ptr, (void *) 1, (void *) 0): 
+  [----]     actual: 0x1
+  [----]     reference: 0x0
+  [----]   le(ptr, (void *) 1, (void *) 0): 
+  [----]     actual: 0x1
+  [----]     reference: 0x0
+  [----]   gt(ptr, (void *) 0, (void *) 1): 
+  [----]     actual: 0x0
+  [----]     reference: 0x1
+  [----]   ge(ptr, (void *) 0, (void *) 1): 
+  [----]     actual: 0x0
+  [----]     reference: 0x1
+  [----] failmessages.c:113: Assertion Failed
+  [----]   lt(str, "cba", "abc"): 
+  [----]     actual: "cba"
+  [----]     reference: "abc"
+  [----]   le(str, "cba", "abc"): 
+  [----]     actual: "cba"
+  [----]     reference: "abc"
+  [----]   gt(str, "abc", "cba"): 
+  [----]     actual: "abc"
+  [----]     reference: "cba"
+  [----]   ge(str, "abc", "cba"): 
+  [----]     actual: "abc"
+  [----]     reference: "cba"
+  [----] failmessages.c:114: Assertion Failed
+  [----]   lt(str, "cba\ncba", "abc\nabc"): 
+  [----]     actual: "cba\n"
+  [----]       "cba"
+  [----]     reference: "abc\n"
+  [----]       "abc"
+  [----]   le(str, "cba\ncba", "abc\nabc"): 
+  [----]     actual: "cba\n"
+  [----]       "cba"
+  [----]     reference: "abc\n"
+  [----]       "abc"
+  [----]   gt(str, "abc\nabc", "cba\ncba"): 
+  [----]     actual: "abc\n"
+  [----]       "abc"
+  [----]     reference: "cba\n"
+  [----]       "cba"
+  [----]   ge(str, "abc\nabc", "cba\ncba"): 
+  [----]     actual: "abc\n"
+  [----]       "abc"
+  [----]     reference: "cba\n"
+  [----]       "cba"
+  [----] failmessages.c:116: Assertion Failed
+  [----]   lt(wcs, L"cba", L"abc"): 
+  [----]     actual: L"cba"
+  [----]     reference: L"abc"
+  [----]   le(wcs, L"cba", L"abc"): 
+  [----]     actual: L"cba"
+  [----]     reference: L"abc"
+  [----]   gt(wcs, L"abc", L"cba"): 
+  [----]     actual: L"abc"
+  [----]     reference: L"cba"
+  [----]   ge(wcs, L"abc", L"cba"): 
+  [----]     actual: L"abc"
+  [----]     reference: L"cba"
+  [----] failmessages.c:117: Assertion Failed
+  [----]   lt(wcs, L"cba\ncba", L"abc\nabc"): 
+  [----]     actual: L"cba\n"
+  [----]       L"cba"
+  [----]     reference: L"abc\n"
+  [----]       L"abc"
+  [----]   le(wcs, L"cba\ncba", L"abc\nabc"): 
+  [----]     actual: L"cba\n"
+  [----]       L"cba"
+  [----]     reference: L"abc\n"
+  [----]       L"abc"
+  [----]   gt(wcs, L"abc\nabc", L"cba\ncba"): 
+  [----]     actual: L"abc\n"
+  [----]       L"abc"
+  [----]     reference: L"cba\n"
+  [----]       L"cba"
+  [----]   ge(wcs, L"abc\nabc", L"cba\ncba"): 
+  [----]     actual: L"abc\n"
+  [----]       L"abc"
+  [----]     reference: L"cba\n"
+  [----]       L"cba"
+  [FAIL] messages::cmp
+  [----] failmessages.c:127: Assertion Failed
+  [----] failmessages.c:128: Assertion Failed
+  [----]   
+  [----]   foo bar
+  [----]   
+  [FAIL] messages::default
+  [----] failmessages.c:27: Assertion Failed
+  [----]   eq(i8, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:28: Assertion Failed
+  [----]   eq(i16, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:29: Assertion Failed
+  [----]   eq(i32, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:30: Assertion Failed
+  [----]   eq(i64, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:31: Assertion Failed
+  [----]   eq(u8, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:32: Assertion Failed
+  [----]   eq(u16, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:33: Assertion Failed
+  [----]   eq(u32, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:34: Assertion Failed
+  [----]   eq(u64, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.c:35: Assertion Failed
+  [----]   eq(iptr, 0, 1): 
+  [----]     diff: [-0x0-]{+0x1+}
+  [----] failmessages.c:36: Assertion Failed
+  [----]   eq(uptr, 0, 1): 
+  [----]     diff: [-0x0-]{+0x1+}
+  [----] failmessages.c:37: Assertion Failed
+  [----]   eq(flt, 0, 1 / 3.f): 
+  [----]     diff: [-0-]{+0.333333343+}
+  [----] failmessages.c:38: Assertion Failed
+  [----]   eq(dbl, 0, 1 / 3.): 
+  [----]     diff: [-0-]{+0.33333333333333331+}
+  [----] failmessages.c:39: Assertion Failed
+  [----]   eq(ldbl, 0, 1 / 3.l): 
+  [----]     diff: [-0-]{+0.333333333333333333342+}
+  [----] failmessages.c:42: Assertion Failed
+  [----]   eq(ptr, (void *) 1, (void *) 0): 
+  [----]     diff: [-0x1-]{+0x0+}
+  [----] failmessages.c:44: Assertion Failed
+  [----]   eq(str, "", "foo"): 
+  [----]     diff: [-""-]{+"foo"+}
+  [----] failmessages.c:47: Assertion Failed
+  [----]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"): 
+  [----]     @@ -1,1 +1,1 @@
+  [----]     -"reallyreallylongstringindeedmygoodsirormadam"
+  [----]     +"yetanotherreallyreallylongstring"
+  [----] failmessages.c:48: Assertion Failed
+  [----]   eq(str, "foo\nbar", "foo\nbaz"): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]      "foo\n"
+  [----]     -"bar"
+  [----]     +"baz"
+  [----] failmessages.c:50: Assertion Failed
+  [----]   eq(wcs, L"", L"foo"): 
+  [----]     diff: [-L""-]{+L"foo"+}
+  [----] failmessages.c:53: Assertion Failed
+  [----]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"): 
+  [----]     @@ -1,1 +1,1 @@
+  [----]     -L"reallyreallylongstringindeedmygoodsirormadam"
+  [----]     +L"yetanotherreallyreallylongstring"
+  [----] failmessages.c:54: Assertion Failed
+  [----]   eq(wcs, L"foo\nbar", L"foo\nbaz"): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]      L"foo\n"
+  [----]     -L"bar"
+  [----]     +L"baz"
+  [----] failmessages.c:62: Assertion Failed
+  [----]   eq(mem, ma, mb): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]     -00: 00000000                             ....            
+  [----]     +00: 01000000                             ....            
+  [----]      
+  [----] failmessages.c:63: Assertion Failed
+  [----]   eq(int[1], &a, &b): 
+  [----]     @@ -1,3 +1,3 @@
+  [----]      (int[1]) {
+  [----]     -\t[0] = 0, (esc)
+  [----]     +\t[0] = 1, (esc)
+  [----]      }
+  [----] failmessages.c:76: Assertion Failed
+  [----]   eq(mem, marra, marrb): 
+  [----]     @@ -1,3 +1,3 @@
+  [----]     -00: 00000000 01000000 02000000 03000000  ................
+  [----]     -10: 04000000                             ....            
+  [----]     +00: 04000000 03000000 02000000 01000000  ................
+  [----]     +10: 00000000                             ....            
+  [----]      
+  [----] failmessages.c:77: Assertion Failed
+  [----]   eq(int[sizeof (arra) / sizeof (int)], arra, arrb): 
+  [----]     @@ -1,7 +1,7 @@
+  [----]      (int[5]) {
+  [----]     -\t[0] = 0, (esc)
+  [----]     -\t[1] = 1, (esc)
+  [----]     +\t[0] = 4, (esc)
+  [----]     +\t[1] = 3, (esc)
+  [----]      \t[2] = 2, (esc)
+  [----]     -\t[3] = 3, (esc)
+  [----]     -\t[4] = 4, (esc)
+  [----]     +\t[3] = 1, (esc)
+  [----]     +\t[4] = 0, (esc)
+  [----]      }
+  [----] failmessages.c:82: Assertion Failed
+  [----]   eq(type(struct dummy_struct), dummy1, dummy2): 
+  [----]     @@ -1,4 +1,4 @@
+  [----]      (struct dummy_struct) {
+  [----]      \t.a = 42, (esc)
+  [----]     -\t.b = 24 (esc)
+  [----]     +\t.b = 42 (esc)
+  [----]      }
+  [----] failmessages.c:83: Assertion Failed
+  [----]   eq(type(struct dummy_struct)[1], &dummy1, &dummy2): 
+  [----]     @@ -1,6 +1,6 @@
+  [----]      (struct dummy_struct[1]) {
+  [----]      \t[0] = (struct dummy_struct) { (esc)
+  [----]      \t\t.a = 42, (esc)
+  [----]     -\t\t.b = 24 (esc)
+  [----]     +\t\t.b = 42 (esc)
+  [----]      \t}, (esc)
+  [----]      }
+  [FAIL] messages::eq
+  [====] Synthesis: Tested: 4 | Passing: 0 | Failing: 4 | Crashing: 0 
 
   $ failmessages.cc.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m118\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-1-]\x1b[0m\x1b[0;32m{+0+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m119\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m120\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i32, 1, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-1-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] message::compo: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m124\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   throw(std::bad_alloc, throw std::invalid_argument("exception message")):  (esc)
-  [\x1b[0;34m----\x1b[0m]     message: "exception message"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m125\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m126\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   nothrow(throw std::invalid_argument("exception message")):  (esc)
-  [\x1b[0;34m----\x1b[0m]     message: "exception message"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m127\x1b[0m: Assertion Failed (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] message::exception: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m93\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m94\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m95\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m96\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(i64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(i64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(i64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(i64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m97\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u8, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m98\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u16, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m99\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u32, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m100\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(u64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(u64, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(u64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(u64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m101\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(iptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(iptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(iptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(iptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m102\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(uptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(uptr, 1, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(uptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(uptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m103\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(flt, 1 / 3.f, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(flt, 1 / 3.f, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(flt, 0, 1 / 3.f):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(flt, 0, 1 / 3.f):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m104\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(dbl, 1 / 3., 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(dbl, 1 / 3., 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(dbl, 0, 1 / 3.):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(dbl, 0, 1 / 3.):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m105\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(ldbl, 1 / 3.l, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(ldbl, 1 / 3.l, 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(ldbl, 0, 1 / 3.l):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(ldbl, 0, 1 / 3.l):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m0\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m0.333333\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m108\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(ptr, (void *) 1, (void *) 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m@1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mnullptr\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(ptr, (void *) 1, (void *) 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m@1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mnullptr\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(ptr, (void *) 0, (void *) 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mnullptr\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m@1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(ptr, (void *) 0, (void *) 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mnullptr\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m@1\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m110\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(str, "cba", "abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(str, "cba", "abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(str, "abc", "cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(str, "abc", "cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m111\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(str, "cba\\ncba", "abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(str, "cba\\ncba", "abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(str, "abc\\nabc", "cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(str, "abc\\nabc", "cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31m"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31m"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32m"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32m"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(wcs, L"cba", L"abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(wcs, L"cba", L"abc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(wcs, L"abc", L"cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(wcs, L"abc", L"cba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m114\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   lt(wcs, L"cba\\ncba", L"abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   le(wcs, L"cba\\ncba", L"abc\\nabc"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   gt(wcs, L"abc\\nabc", L"cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"cba"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]   ge(wcs, L"abc\\nabc", L"cba\\ncba"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     actual: \x1b[0;31mL"abc\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;31mL"abc"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     reference: \x1b[0;32mL"cba\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]       \x1b[0;32mL"cba"\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] messages::cmp: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m131\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m132\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   foo bar (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] messages::default: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m24\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m25\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m26\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m27\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(i64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m28\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u8, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m29\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u16, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m30\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u32, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m31\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(u64, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m32\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(iptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m33\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(uptr, 0, 1):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+1+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(flt, 0, 1 / 3.f):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+0.333333+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(dbl, 0, 1 / 3.):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+0.333333+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m36\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(ldbl, 0, 1 / 3.l):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-0-]\x1b[0m\x1b[0;32m{+0.333333+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m39\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(ptr, (void *) 1, (void *) 0):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-@1-]\x1b[0m\x1b[0;32m{+nullptr+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m41\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(str, "", "foo"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-""-]\x1b[0m\x1b[0;32m{+"foo"+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m44\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,1 +1,1 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-"reallyreallylongstringindeedmygoodsirormadam"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+"yetanotherreallyreallylongstring"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m45\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(str, "foo\\nbar", "foo\\nbaz"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      "foo\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-"bar"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+"baz"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m47\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(wcs, L"", L"foo"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     diff: \x1b[0;31m[-L""-]\x1b[0m\x1b[0;32m{+L"foo"+}\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m50\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,1 +1,1 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-L"reallyreallylongstringindeedmygoodsirormadam"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+L"yetanotherreallyreallylongstring"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m51\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(wcs, L"foo\\nbar", L"foo\\nbaz"):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      L"foo\\n"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-L"bar"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+L"baz"\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m59\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(mem, ma, mb):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-00: 00                                   .               \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+00: 01                                   .               \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m60\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(int[1], &a, &b):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,3 +1,3 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (int[1]) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[0] = 0,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[0] = 1,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m73\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(mem, marra, marrb):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,2 +1,2 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-00: 00000000 01                          .....           \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+00: 04000000 03                          .....           \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m74\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(int[sizeof (arra) / sizeof (int)], arra, arrb):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,7 +1,7 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (int[5]) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[0] = 0,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[1] = 1,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[0] = 4,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[1] = 3,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t[2] = 2,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[3] = 3,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t[4] = 4,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[3] = 1,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t[4] = 0,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(type(struct dummy_struct), dummy1, dummy2):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,4 +1,4 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (struct dummy_struct) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t.a = *,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t.b = 24\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t.b = 42\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mfailmessages.cc\x1b[0m:\x1b[0;31m80\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]   eq(type(struct dummy_struct)[1], &dummy1, &dummy2):  (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;34m@@ -1,6 +1,6 @@\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      (struct dummy_struct[1]) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t[0] = (struct dummy_struct) {\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t\t.a = *,\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;31m-\t\t.b = 24\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]     \x1b[0;32m+\t\t.b = 42\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      \t},\x1b[0m (esc)
-  [\x1b[0;34m----\x1b[0m]      }\x1b[0m (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] messages::eq: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m5\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m5\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] failmessages.cc:118: Assertion Failed
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----] failmessages.cc:119: Assertion Failed
+  [----] failmessages.cc:120: Assertion Failed
+  [----]   eq(i32, 1, 1): 
+  [----]     diff: [-1-]{+1+}
+  [FAIL] message::compo
+  [----] failmessages.cc:124: Assertion Failed
+  [----]   throw(std::bad_alloc, throw std::invalid_argument("exception message")): 
+  [----]     message: "exception message"
+  [----] failmessages.cc:125: Assertion Failed
+  [----] failmessages.cc:126: Assertion Failed
+  [----]   nothrow(throw std::invalid_argument("exception message")): 
+  [----]     message: "exception message"
+  [----] failmessages.cc:127: Assertion Failed
+  [FAIL] message::exception
+  [----] failmessages.cc:93: Assertion Failed
+  [----]   lt(i8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:94: Assertion Failed
+  [----]   lt(i16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:95: Assertion Failed
+  [----]   lt(i32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:96: Assertion Failed
+  [----]   lt(i64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(i64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(i64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(i64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:97: Assertion Failed
+  [----]   lt(u8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u8, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u8, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:98: Assertion Failed
+  [----]   lt(u16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u16, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u16, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:99: Assertion Failed
+  [----]   lt(u32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u32, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u32, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:100: Assertion Failed
+  [----]   lt(u64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(u64, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(u64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(u64, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:101: Assertion Failed
+  [----]   lt(iptr, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(iptr, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(iptr, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(iptr, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:102: Assertion Failed
+  [----]   lt(uptr, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   le(uptr, 1, 0): 
+  [----]     actual: 1
+  [----]     reference: 0
+  [----]   gt(uptr, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----]   ge(uptr, 0, 1): 
+  [----]     actual: 0
+  [----]     reference: 1
+  [----] failmessages.cc:103: Assertion Failed
+  [----]   lt(flt, 1 / 3.f, 0): 
+  [----]     actual: 0.333333
+  [----]     reference: 0
+  [----]   le(flt, 1 / 3.f, 0): 
+  [----]     actual: 0.333333
+  [----]     reference: 0
+  [----]   gt(flt, 0, 1 / 3.f): 
+  [----]     actual: 0
+  [----]     reference: 0.333333
+  [----]   ge(flt, 0, 1 / 3.f): 
+  [----]     actual: 0
+  [----]     reference: 0.333333
+  [----] failmessages.cc:104: Assertion Failed
+  [----]   lt(dbl, 1 / 3., 0): 
+  [----]     actual: 0.333333
+  [----]     reference: 0
+  [----]   le(dbl, 1 / 3., 0): 
+  [----]     actual: 0.333333
+  [----]     reference: 0
+  [----]   gt(dbl, 0, 1 / 3.): 
+  [----]     actual: 0
+  [----]     reference: 0.333333
+  [----]   ge(dbl, 0, 1 / 3.): 
+  [----]     actual: 0
+  [----]     reference: 0.333333
+  [----] failmessages.cc:105: Assertion Failed
+  [----]   lt(ldbl, 1 / 3.l, 0): 
+  [----]     actual: 0.333333
+  [----]     reference: 0
+  [----]   le(ldbl, 1 / 3.l, 0): 
+  [----]     actual: 0.333333
+  [----]     reference: 0
+  [----]   gt(ldbl, 0, 1 / 3.l): 
+  [----]     actual: 0
+  [----]     reference: 0.333333
+  [----]   ge(ldbl, 0, 1 / 3.l): 
+  [----]     actual: 0
+  [----]     reference: 0.333333
+  [----] failmessages.cc:108: Assertion Failed
+  [----]   lt(ptr, (void *) 1, (void *) 0): 
+  [----]     actual: @1
+  [----]     reference: nullptr
+  [----]   le(ptr, (void *) 1, (void *) 0): 
+  [----]     actual: @1
+  [----]     reference: nullptr
+  [----]   gt(ptr, (void *) 0, (void *) 1): 
+  [----]     actual: nullptr
+  [----]     reference: @1
+  [----]   ge(ptr, (void *) 0, (void *) 1): 
+  [----]     actual: nullptr
+  [----]     reference: @1
+  [----] failmessages.cc:110: Assertion Failed
+  [----]   lt(str, "cba", "abc"): 
+  [----]     actual: "cba"
+  [----]     reference: "abc"
+  [----]   le(str, "cba", "abc"): 
+  [----]     actual: "cba"
+  [----]     reference: "abc"
+  [----]   gt(str, "abc", "cba"): 
+  [----]     actual: "abc"
+  [----]     reference: "cba"
+  [----]   ge(str, "abc", "cba"): 
+  [----]     actual: "abc"
+  [----]     reference: "cba"
+  [----] failmessages.cc:111: Assertion Failed
+  [----]   lt(str, "cba\ncba", "abc\nabc"): 
+  [----]     actual: "cba\n"
+  [----]       "cba"
+  [----]     reference: "abc\n"
+  [----]       "abc"
+  [----]   le(str, "cba\ncba", "abc\nabc"): 
+  [----]     actual: "cba\n"
+  [----]       "cba"
+  [----]     reference: "abc\n"
+  [----]       "abc"
+  [----]   gt(str, "abc\nabc", "cba\ncba"): 
+  [----]     actual: "abc\n"
+  [----]       "abc"
+  [----]     reference: "cba\n"
+  [----]       "cba"
+  [----]   ge(str, "abc\nabc", "cba\ncba"): 
+  [----]     actual: "abc\n"
+  [----]       "abc"
+  [----]     reference: "cba\n"
+  [----]       "cba"
+  [----] failmessages.cc:113: Assertion Failed
+  [----]   lt(wcs, L"cba", L"abc"): 
+  [----]     actual: L"cba"
+  [----]     reference: L"abc"
+  [----]   le(wcs, L"cba", L"abc"): 
+  [----]     actual: L"cba"
+  [----]     reference: L"abc"
+  [----]   gt(wcs, L"abc", L"cba"): 
+  [----]     actual: L"abc"
+  [----]     reference: L"cba"
+  [----]   ge(wcs, L"abc", L"cba"): 
+  [----]     actual: L"abc"
+  [----]     reference: L"cba"
+  [----] failmessages.cc:114: Assertion Failed
+  [----]   lt(wcs, L"cba\ncba", L"abc\nabc"): 
+  [----]     actual: L"cba\n"
+  [----]       L"cba"
+  [----]     reference: L"abc\n"
+  [----]       L"abc"
+  [----]   le(wcs, L"cba\ncba", L"abc\nabc"): 
+  [----]     actual: L"cba\n"
+  [----]       L"cba"
+  [----]     reference: L"abc\n"
+  [----]       L"abc"
+  [----]   gt(wcs, L"abc\nabc", L"cba\ncba"): 
+  [----]     actual: L"abc\n"
+  [----]       L"abc"
+  [----]     reference: L"cba\n"
+  [----]       L"cba"
+  [----]   ge(wcs, L"abc\nabc", L"cba\ncba"): 
+  [----]     actual: L"abc\n"
+  [----]       L"abc"
+  [----]     reference: L"cba\n"
+  [----]       L"cba"
+  [FAIL] messages::cmp
+  [----] failmessages.cc:131: Assertion Failed
+  [----] failmessages.cc:132: Assertion Failed
+  [----]   
+  [----]   foo bar
+  [----]   
+  [FAIL] messages::default
+  [----] failmessages.cc:24: Assertion Failed
+  [----]   eq(i8, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:25: Assertion Failed
+  [----]   eq(i16, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:26: Assertion Failed
+  [----]   eq(i32, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:27: Assertion Failed
+  [----]   eq(i64, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:28: Assertion Failed
+  [----]   eq(u8, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:29: Assertion Failed
+  [----]   eq(u16, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:30: Assertion Failed
+  [----]   eq(u32, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:31: Assertion Failed
+  [----]   eq(u64, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:32: Assertion Failed
+  [----]   eq(iptr, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:33: Assertion Failed
+  [----]   eq(uptr, 0, 1): 
+  [----]     diff: [-0-]{+1+}
+  [----] failmessages.cc:34: Assertion Failed
+  [----]   eq(flt, 0, 1 / 3.f): 
+  [----]     diff: [-0-]{+0.333333+}
+  [----] failmessages.cc:35: Assertion Failed
+  [----]   eq(dbl, 0, 1 / 3.): 
+  [----]     diff: [-0-]{+0.333333+}
+  [----] failmessages.cc:36: Assertion Failed
+  [----]   eq(ldbl, 0, 1 / 3.l): 
+  [----]     diff: [-0-]{+0.333333+}
+  [----] failmessages.cc:39: Assertion Failed
+  [----]   eq(ptr, (void *) 1, (void *) 0): 
+  [----]     diff: [-@1-]{+nullptr+}
+  [----] failmessages.cc:41: Assertion Failed
+  [----]   eq(str, "", "foo"): 
+  [----]     diff: [-""-]{+"foo"+}
+  [----] failmessages.cc:44: Assertion Failed
+  [----]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"): 
+  [----]     @@ -1,1 +1,1 @@
+  [----]     -"reallyreallylongstringindeedmygoodsirormadam"
+  [----]     +"yetanotherreallyreallylongstring"
+  [----] failmessages.cc:45: Assertion Failed
+  [----]   eq(str, "foo\nbar", "foo\nbaz"): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]      "foo\n"
+  [----]     -"bar"
+  [----]     +"baz"
+  [----] failmessages.cc:47: Assertion Failed
+  [----]   eq(wcs, L"", L"foo"): 
+  [----]     diff: [-L""-]{+L"foo"+}
+  [----] failmessages.cc:50: Assertion Failed
+  [----]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"): 
+  [----]     @@ -1,1 +1,1 @@
+  [----]     -L"reallyreallylongstringindeedmygoodsirormadam"
+  [----]     +L"yetanotherreallyreallylongstring"
+  [----] failmessages.cc:51: Assertion Failed
+  [----]   eq(wcs, L"foo\nbar", L"foo\nbaz"): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]      L"foo\n"
+  [----]     -L"bar"
+  [----]     +L"baz"
+  [----] failmessages.cc:59: Assertion Failed
+  [----]   eq(mem, ma, mb): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]     -00: 00                                   .               
+  [----]     +00: 01                                   .               
+  [----]      
+  [----] failmessages.cc:60: Assertion Failed
+  [----]   eq(int[1], &a, &b): 
+  [----]     @@ -1,3 +1,3 @@
+  [----]      (int[1]) {
+  [----]     -\t[0] = 0, (esc)
+  [----]     +\t[0] = 1, (esc)
+  [----]      }
+  [----] failmessages.cc:73: Assertion Failed
+  [----]   eq(mem, marra, marrb): 
+  [----]     @@ -1,2 +1,2 @@
+  [----]     -00: 00000000 01                          .....           
+  [----]     +00: 04000000 03                          .....           
+  [----]      
+  [----] failmessages.cc:74: Assertion Failed
+  [----]   eq(int[sizeof (arra) / sizeof (int)], arra, arrb): 
+  [----]     @@ -1,7 +1,7 @@
+  [----]      (int[5]) {
+  [----]     -\t[0] = 0, (esc)
+  [----]     -\t[1] = 1, (esc)
+  [----]     +\t[0] = 4, (esc)
+  [----]     +\t[1] = 3, (esc)
+  [----]      \t[2] = 2, (esc)
+  [----]     -\t[3] = 3, (esc)
+  [----]     -\t[4] = 4, (esc)
+  [----]     +\t[3] = 1, (esc)
+  [----]     +\t[4] = 0, (esc)
+  [----]      }
+  [----] failmessages.cc:79: Assertion Failed
+  [----]   eq(type(struct dummy_struct), dummy1, dummy2): 
+  [----]     @@ -1,4 +1,4 @@
+  [----]      (struct dummy_struct) {
+  [----]      \t.a = *, (esc)
+  [----]     -\t.b = 24 (esc)
+  [----]     +\t.b = 42 (esc)
+  [----]      }
+  [----] failmessages.cc:80: Assertion Failed
+  [----]   eq(type(struct dummy_struct)[1], &dummy1, &dummy2): 
+  [----]     @@ -1,6 +1,6 @@
+  [----]      (struct dummy_struct[1]) {
+  [----]      \t[0] = (struct dummy_struct) { (esc)
+  [----]      \t\t.a = *, (esc)
+  [----]     -\t\t.b = 24 (esc)
+  [----]     +\t\t.b = 42 (esc)
+  [----]      \t}, (esc)
+  [----]      }
+  [FAIL] messages::eq
+  [====] Synthesis: Tested: 5 | Passing: 0 | Failing: 5 | Crashing: 0 
 
 Long assert messages should wrap
 
   $ long-messages.c.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mlong-messages.c\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   This is (esc)
-  [\x1b[0;34m----\x1b[0m]   A long message (esc)
-  [\x1b[0;34m----\x1b[0m]   Spawning multiple lines. (esc)
-  [\x1b[0;34m----\x1b[0m]   Formatting is respected. (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] sample::long_msg: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] long-messages.c:4: Assertion Failed
+  [----]   
+  [----]   This is
+  [----]   A long message
+  [----]   Spawning multiple lines.
+  [----]   Formatting is respected.
+  [----]   
+  [FAIL] sample::long_msg
+  [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
   $ long-messages.cc.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mlong-messages.cc\x1b[0m:\x1b[0;31m4\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   This is (esc)
-  [\x1b[0;34m----\x1b[0m]   A long message (esc)
-  [\x1b[0;34m----\x1b[0m]   Spawning multiple lines. (esc)
-  [\x1b[0;34m----\x1b[0m]   Formatting is respected. (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] sample::long_msg: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m1\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m1\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] long-messages.cc:4: Assertion Failed
+  [----]   
+  [----]   This is
+  [----]   A long message
+  [----]   Spawning multiple lines.
+  [----]   Formatting is respected.
+  [----]   
+  [FAIL] sample::long_msg
+  [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
 Using redirections
 
   $ redirect.c.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
 
   $ redirect.cc.bin
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m2\x1b[0;1m | Passing: \x1b[0;32m2\x1b[0;1m | Failing: \x1b[0m0\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 

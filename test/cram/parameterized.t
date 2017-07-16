@@ -1,270 +1,270 @@
 Using parameterized tests
 
   $ parameterized.c.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 1 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 2 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 3 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: Hello (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::string: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: World (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::string: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m11\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m11\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] parameterized.c:79: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.c:79: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.c:79: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.c:35: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.c:35: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.c:35: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.c:14: Assertion Failed
+  [----]   
+  [----]   Parameter: 1
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.c:14: Assertion Failed
+  [----]   
+  [----]   Parameter: 2
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.c:14: Assertion Failed
+  [----]   
+  [----]   Parameter: 3
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.c:113: Assertion Failed
+  [----]   
+  [----]   string: Hello
+  [----]   
+  [FAIL] params::string
+  [----] parameterized.c:113: Assertion Failed
+  [----]   
+  [----]   string: World
+  [----]   
+  [FAIL] params::string
+  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
   $ parameterized.cc.bin
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m72\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m72\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m72\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 1 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 2 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 3 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m92\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: Hello (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::string: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m92\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: World (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::string: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m11\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m11\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 1
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 2
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 3
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.cc:92: Assertion Failed
+  [----]   
+  [----]   string: Hello
+  [----]   
+  [FAIL] params::string
+  [----] parameterized.cc:92: Assertion Failed
+  [----]   
+  [----]   string: World
+  [----]   
+  [FAIL] params::string
+  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
 Using parameterized tests (verbose)
 
   $ parameterized.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.2 (esc)
-  [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m4\x1b[0m tests from \x1b[0;33mparams\x1b[0m: (esc)
-  [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m79\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::multiple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::multiple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::multiple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m35\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::simple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 1 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::simple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 2 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::simple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m14\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 3 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::string (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: Hello (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;31mFAIL\x1b[0m] params::string: (0.00s) (esc)
-  [\x1b[0;34mRUN \x1b[0m] params::string (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.c\x1b[0m:\x1b[0;31m113\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: World (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;31mFAIL\x1b[0m] params::string: (0.00s) (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m11\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m11\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] Criterion v2.3.2
+  [====] Running 4 tests from params:
+  [RUN ] params::cleanup
+  [----] parameterized.c:79: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [RUN ] params::cleanup
+  [----] parameterized.c:79: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [RUN ] params::cleanup
+  [----] parameterized.c:79: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [RUN ] params::multiple
+  [----] parameterized.c:35: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::multiple
+  [RUN ] params::multiple
+  [----] parameterized.c:35: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::multiple
+  [RUN ] params::multiple
+  [----] parameterized.c:35: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::multiple
+  [RUN ] params::simple
+  [----] parameterized.c:14: Assertion Failed
+  [----]   
+  [----]   Parameter: 1
+  [----]   
+  [FAIL] params::simple
+  [RUN ] params::simple
+  [----] parameterized.c:14: Assertion Failed
+  [----]   
+  [----]   Parameter: 2
+  [----]   
+  [FAIL] params::simple
+  [RUN ] params::simple
+  [----] parameterized.c:14: Assertion Failed
+  [----]   
+  [----]   Parameter: 3
+  [----]   
+  [FAIL] params::simple
+  [RUN ] params::string
+  [----] parameterized.c:113: Assertion Failed
+  [----]   
+  [----]   string: Hello
+  [----]   
+  [FAIL] params::string
+  [RUN ] params::string
+  [----] parameterized.c:113: Assertion Failed
+  [----]   
+  [----]   string: World
+  [----]   
+  [FAIL] params::string
+  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
   $ parameterized.cc.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.2 (esc)
-  [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m4\x1b[0m tests from \x1b[0;33mparams\x1b[0m: (esc)
-  [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m72\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m72\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::cleanup (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m72\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::cleanup: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::multiple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (1, 2.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::multiple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (3, 4.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::multiple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m34\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameters: (5, 6.000000) (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::multiple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::simple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 1 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::simple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 2 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::simple (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m13\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   Parameter: 3 (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] params::simple: \(\d.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] params::string (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m92\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: Hello (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;31mFAIL\x1b[0m] params::string: (0.00s) (esc)
-  [\x1b[0;34mRUN \x1b[0m] params::string (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mparameterized.cc\x1b[0m:\x1b[0;31m92\x1b[0m: Assertion Failed (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;34m----\x1b[0m]   string: World (esc)
-  [\x1b[0;34m----\x1b[0m]    (esc)
-  [\x1b[0;31mFAIL\x1b[0m] params::string: (0.00s) (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m11\x1b[0;1m | Passing: \x1b[0;32m0\x1b[0;1m | Failing: \x1b[0;31m11\x1b[0;1m | Crashing: \x1b[0m0\x1b[0;1m \x1b[0m (esc)
+  [----] Criterion v2.3.2
+  [====] Running 4 tests from params:
+  [RUN ] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [RUN ] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [RUN ] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [RUN ] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::multiple
+  [RUN ] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::multiple
+  [RUN ] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::multiple
+  [RUN ] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 1
+  [----]   
+  [FAIL] params::simple
+  [RUN ] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 2
+  [----]   
+  [FAIL] params::simple
+  [RUN ] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 3
+  [----]   
+  [FAIL] params::simple
+  [RUN ] params::string
+  [----] parameterized.cc:92: Assertion Failed
+  [----]   
+  [----]   string: Hello
+  [----]   
+  [FAIL] params::string
+  [RUN ] params::string
+  [----] parameterized.cc:92: Assertion Failed
+  [----]   
+  [----]   string: World
+  [----]   
+  [FAIL] params::string
+  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
 Parameterized tests should be listed as one test
 
   $ parameterized.c.bin --list
   params: 4 tests
-  ├── cleanup
-  ├── multiple
-  ├── simple
-  └── string
+  |-- cleanup
+  |-- multiple
+  |-- simple
+  `-- string
