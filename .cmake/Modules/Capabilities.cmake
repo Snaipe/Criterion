@@ -61,6 +61,8 @@ else ()
 endif ()
 
 check_symbol_exists(CLOCK_MONOTONIC_RAW "time.h" HAVE_CLOCK_MONOTONIC_RAW)
+check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
+check_symbol_exists(nl_langinfo "langinfo.h" HAVE_NL_LANGINFO)
 
 # Check thread API
 
