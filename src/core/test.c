@@ -60,9 +60,13 @@ void criterion_internal_test_setup(void)
     const struct criterion_test *test = criterion_current_test;
 
     send_event(criterion_protocol_phase_kind_SETUP);
-    if (suite->data)
-        (suite->data->init ? suite->data->init : nothing)();
-    (test->data->init ? test->data->init : nothing)();
+    if (!cri_setjmp(g_pre_test)) {
+        if (suite->data)
+            (suite->data->init ? suite->data->init : nothing)();
+        (test->data->init ? test->data->init : nothing)();
+        return;
+    }
+    abort();
 }
 
 static void *getparam(void)
@@ -112,9 +116,11 @@ void criterion_internal_test_teardown(void)
     const struct criterion_suite *suite = criterion_current_suite;
     const struct criterion_test *test = criterion_current_test;
 
-    (test->data->fini ? test->data->fini : nothing)();
-    if (suite->data)
-        (suite->data->fini ? suite->data->fini : nothing)();
+    if (!cri_setjmp(g_pre_test)) {
+        (test->data->fini ? test->data->fini : nothing)();
+        if (suite->data)
+            (suite->data->fini ? suite->data->fini : nothing)();
+    }
 
     send_event(criterion_protocol_phase_kind_END);
 }
