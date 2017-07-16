@@ -119,10 +119,13 @@ void process_all_output(struct criterion_global_stats *stats)
             const char *path = kv_A(*vec, i);
 
             FILE *f;
-            if (path[0] == '-' && !path[1])
+            if (!strcmp(path, "-")) {
+                f = stdout;
+            } else if (!strcmp(path, "/dev/stderr")) {
                 f = stderr;
-            else
+            } else {
                 f = fopen(path, "w");
+            }
 
             if (!f) {
                 int errno2 = errno;
