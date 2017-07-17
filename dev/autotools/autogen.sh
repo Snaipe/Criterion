@@ -10,7 +10,7 @@ cp -f /usr/share/automake-$automake_ver/tap-driver.sh build-aux
 # this is necessary to print TAP (and only TAP) on the standard output,
 # and always exit with 0 to let the TAP driver handle errors itself.
 echo >build-aux/criterion-tap-test """#!/bin/sh
-\$1 -Otap:- --always-succeed 2>&1 >/dev/null
+\$1 -Otap:- --always-succeed
 """
 chmod +x build-aux/criterion-tap-test
 
