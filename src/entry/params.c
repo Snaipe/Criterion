@@ -239,6 +239,12 @@ static bool deduce_color(char *arg)
     return color;
 }
 
+static bool must_be_quiet(const char *output_path)
+{
+    return !strcmp(output_path, "-")
+        || !strcmp(output_path, "/dev/stderr");
+}
+
 CR_API int criterion_handle_args(int argc, char *argv[],
         bool handle_unknown_arg)
 {
@@ -351,7 +357,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 goto end;
             }
 
-            quiet = true;
+            quiet = must_be_quiet(path);
             criterion_add_output(provider, path);
         }
         free(out);
@@ -398,7 +404,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
             provider_def: {}
                 const char *path = DEF(optarg, "-");
-                quiet = !strcmp(path, "-");
+                quiet = must_be_quiet(path);
                 criterion_add_output(provider, path);
             } break;
                 /* *INDENT-ON* */
@@ -417,7 +423,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                     break;
                 }
 
-                quiet = !strcmp(path, "-");
+                quiet = must_be_quiet(path);
                 criterion_add_output(arg, path);
             } break;
             case 'w': criterion_options.wait_for_clients = true; break;
