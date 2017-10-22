@@ -86,7 +86,7 @@ run before and after the test function:
 
 If a setup crashes, you will get a warning message, and the test will be aborted
 and marked as a failure.
-Is a teardown crashes, you will get a warning message, and the test will keep
+If a teardown crashes, you will get a warning message, and the test will keep
 its result.
 
 Testing signals
