@@ -32,7 +32,7 @@ void rot13_io(void)
 {
     std::string s;
 
-    std::cin >> s;
+    std::getline(std::cin, s);
     for (size_t i = 0; i < s.length(); ++i)
         s[i] = rot13_char(s[i]);
     std::cout << s << std::flush;

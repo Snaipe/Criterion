@@ -22,6 +22,11 @@ int cr_file_match_str(FILE *f, const char *str)
     /* consume the rest of what's available */
     while (fread(buf, 1, sizeof (buf), f) > 0) ;
 
+    /* there are more bytes in str than in f */
+    if (len) {
+        return 0;
+    }
+
     return matches;
 }
 
