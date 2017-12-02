@@ -58,13 +58,16 @@ function (cr_add_subproject _NAME)
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif ()
     set (build_cmds
-      CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
-        -DCMAKE_INSTALL_PREFIX=${install_prefix}
+      CONFIGURE_COMMAND DESTDIR= ${CMAKE_COMMAND} <SOURCE_DIR>
+      -DCMAKE_INSTALL_PREFIX=${install_prefix}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -G "${ARGS_GENERATOR}"
         ${ARGS_OPTS}
       BUILD_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}"
-      INSTALL_COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
+      INSTALL_COMMAND cmake -E echo "Skipping install step."
+    )
+    set (install_cmds
+      DESTDIR= ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
     )
   elseif (ARGS_AUTOTOOLS)
     set (make_opts "")
@@ -73,9 +76,12 @@ function (cr_add_subproject _NAME)
     endif ()
     set (build_cmds
       UPDATE_COMMAND <SOURCE_DIR>/autogen.sh
-      CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${install_prefix} ${ARGS_OPTS}
+      CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=/ ${ARGS_OPTS}
       BUILD_COMMAND make ${make_opts}
-      INSTALL_COMMAND make install
+      INSTALL_COMMAND cmake -E echo "Skipping install step."
+    )
+    set (install_cmds
+      make DESTDIR= install
     )
   endif ()
 
@@ -87,6 +93,24 @@ function (cr_add_subproject _NAME)
     BINARY_DIR "${CMAKE_BINARY_DIR}/${_NAME}"
 
     ${build_cmds}
+  )
+
+  externalproject_add_step(${_NAME} bootstrap
+    COMMAND ${install_cmds}
+    DEPENDEES build
+  )
+  externalproject_add_steptargets(${_NAME} bootstrap)
+
+  set_target_properties(${_NAME} PROPERTIES EXCLUDE_FROM_ALL 1)
+
+  add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/${_NAME}-dep
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${_NAME}-bootstrap
+    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/${_NAME}-dep
+  )
+
+  add_custom_target(${_NAME}-dependency
+    DEPENDS ${CMAKE_BINARY_DIR}/${_NAME}-dep
   )
 
   if (WIN32)
@@ -116,7 +140,7 @@ function (cr_link_subproject _TARGET _SUBPROJECT)
   set (options STATIC SHARED)
   cmake_parse_arguments (ARGS "${options}" "" "" ${ARGN})
 
-  add_dependencies("${_TARGET}" "${_SUBPROJECT}")
+  add_dependencies("${_TARGET}" "${_SUBPROJECT}-dependency")
   if (ARGS_SHARED)
     target_link_libraries("${_TARGET}" "${${_SUBPROJECT}_SHARED_LIB}")
   endif ()
