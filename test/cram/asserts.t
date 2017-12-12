@@ -30,7 +30,10 @@ Test C++ assertions:
   [----]   This assert runs
   [----]   
   [FAIL] asserts::base
-  [----] asserts.cc:122: Assertion Failed
+  [----] asserts.cc:121: Assertion Failed
+  [----]   throw(std::runtime_error, {}): 
+  [----]     message: <nothing was thrown>
+  [----] asserts.cc:123: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("some other message")): 
   [----]     message: "some other message"
   [FAIL] asserts::exception

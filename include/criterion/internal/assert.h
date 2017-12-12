@@ -431,7 +431,13 @@ CR_END_C_API
 #define cr_assert_throw_(Fail, Statement, Exception, ...)   \
     try {                                                   \
         Statement;                                          \
+        CR_EXPAND(cr_assert_throw_abort_(                   \
+                    Fail,                                   \
+                    CRITERION_ASSERT_MSG_NO_THROW,          \
+                    (CR_STR(Statement), CR_STR(Exception)), \
+                    __VA_ARGS__));                          \
     } catch (Exception const &) {                           \
+        /* pass -- the exception was thrown */              \
     } catch (...) {                                         \
         CR_EXPAND(cr_assert_throw_abort_(                   \
                     Fail,                                   \

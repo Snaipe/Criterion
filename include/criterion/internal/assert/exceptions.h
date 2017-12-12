@@ -33,6 +33,12 @@
         cri_tmpn.repr = "throw(" #Ex ", " #Stmt ")";                \
         try {                                                       \
             Stmt;                                                   \
+            cri_cond_un = 0;                                        \
+            char *cri_str;                                          \
+            cr_asprintf(&cri_str, "<nothing was thrown>");          \
+            cri_tmpn.params[0].name = "message";                    \
+            cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
+            cri_tmpn.params[0].data = cri_str;                      \
         } catch (Ex &cri_ex) {                                      \
             cri_cond_un = 1;                                        \
         } catch (std::exception &cri_ex) {                          \

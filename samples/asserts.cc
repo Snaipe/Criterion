@@ -118,6 +118,7 @@ Test(asserts, array) {
 }
 
 Test(asserts, exception) {
+    cr_expect(throw (std::runtime_error, {}));
     cr_assert(throw (std::invalid_argument, throw std::invalid_argument("some message")));
     cr_assert(throw (std::bad_alloc, throw std::invalid_argument("some other message")));
 }
