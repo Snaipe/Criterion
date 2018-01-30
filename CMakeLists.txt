@@ -149,6 +149,7 @@ endif()
 # I18N
 
 if (I18N AND GETTEXT_FOUND AND LIBINTL_LIB_FOUND)
+  include_directories(SYSTEM ${LIBINTL_INCLUDE_DIR})
   include(GettextTranslate)
   add_subdirectory(po)
 endif ()
