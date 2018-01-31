@@ -78,6 +78,7 @@ matrix:
 
     # OSX Debug, GCC 4.9
     - os: osx
+      osx_image: xcode8
       compiler: gcc-4.9
       env:
         - CONFIGURATION=Debug
@@ -86,6 +87,7 @@ matrix:
 
     # OSX RelWithDebInfo, GCC 4.9
     - os: osx
+      osx_image: xcode8
       compiler: gcc-4.9
       env: CONFIGURATION=RelWithDebInfo
 
