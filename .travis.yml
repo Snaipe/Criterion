@@ -108,9 +108,9 @@ before_install:
   - |
       if [ "${TESTS:-ON}" = "ON" ]; then
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-          export PATH="$(python -m site --user-base)/bin:$PATH"
+          export PATH="$(python2 -m site --user-base)/bin:$PATH"
         fi
-        travis_retry pip install --user cram==0.7
+        travis_retry pip2 install --user cram==0.7
       fi
   - export CXX=${CC/gcc/g++}; export CXX=${CXX/clang/clang++}
   - $CC --version
