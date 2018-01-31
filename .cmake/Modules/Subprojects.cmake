@@ -58,7 +58,7 @@ function (cr_add_subproject _NAME)
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif ()
     set (build_cmds
-      CONFIGURE_COMMAND DESTDIR= ${CMAKE_COMMAND} <SOURCE_DIR>
+      CONFIGURE_COMMAND ${CMAKE_COMMAND} <SOURCE_DIR>
       -DCMAKE_INSTALL_PREFIX=${install_prefix}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -G "${ARGS_GENERATOR}"
@@ -67,7 +67,7 @@ function (cr_add_subproject _NAME)
       INSTALL_COMMAND cmake -E echo "Skipping install step."
     )
     set (install_cmds
-      DESTDIR= ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
+      ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}/${_NAME}" --target install
     )
   elseif (ARGS_AUTOTOOLS)
     set (make_opts "")
@@ -81,7 +81,7 @@ function (cr_add_subproject _NAME)
       INSTALL_COMMAND cmake -E echo "Skipping install step."
     )
     set (install_cmds
-      make DESTDIR= install
+      make install
     )
   endif ()
 
