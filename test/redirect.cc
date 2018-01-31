@@ -87,3 +87,8 @@ Test(redirect, stdin_) {
 
     cr_expect_eq(read, "Foo");
 }
+
+Test(redirect, stdout_empty) {
+    cr_redirect_stdout();
+    cr_expect_stdout_eq_str("");
+}
