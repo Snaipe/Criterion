@@ -397,7 +397,7 @@
  *      (C only) char *cr_mem_<type>_tostr(const <type> *val);
  *      (C++ only) std::ostream &operator<<(std::ostream &os, const <type> &val);
  *
- *  Additionally, he user must implement the following functions to use
+ *  Additionally, the user must implement the following functions to use
  *  various general-purpose criteria:
  *
  *  [eq](@ref eq), [ne](@ref ne), [le](@ref le), [ge](@ref ge):
