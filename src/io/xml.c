@@ -115,13 +115,15 @@ static int fprintf_locale(FILE *stream,
 {
     va_list args;
     int result;
-    const char *locale = setlocale(LC_NUMERIC, NULL);
+    const char *locale = strdup(setlocale(LC_NUMERIC, NULL));
 
     setlocale(LC_NUMERIC, "C");
     va_start(args, format);
     result = vfprintf(stream, format, args);
     va_end(args);
     setlocale(LC_NUMERIC, locale);
+
+    free((void *)locale);
     return result;
 }
 
