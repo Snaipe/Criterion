@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2016-2018 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2018 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef XXD_H_
-#define XXD_H_
+#ifndef CRITERION_INTERNAL_STREAM_H_
+#define CRITERION_INTERNAL_STREAM_H_
 
-#include <stddef.h>
+#define CRI_ASSERT_TEST_TAG_stream       ,
+#define CRI_ASSERT_TEST_TAGC_stream()    ,
+#define CRI_ASSERT_TYPE_TAG_stream       struct cr_stream,
+#define CRI_ASSERT_TYPE_TAG_ID_stream    stream,
 
-char *cri_string_xxd(const void *data, size_t start, size_t size);
+#ifdef __cplusplus
+# include <string>
+# include <ostream>
 
-#endif /* !XXD_H_ */
+inline bool operator==(criterion::stream &s1, criterion::stream &s2)
+{
+    return cr_user_stream_eq(&s1, &s2);
+}
+
+inline bool operator<(criterion::stream &s1, criterion::stream &s2)
+{
+    return cr_user_stream_lt(&s1, &s2);
+}
+
+inline std::ostream &operator<<(std::ostream &os, const criterion::stream &s)
+{
+    char *str = cr_user_stream_tostr(&s);
+
+    os << std::string(str);
+    free(str);
+    return os;
+}
+#endif /* !__cplusplus */
+
+#endif /* !CRITERION_INTERNAL_STREAM_H_ */

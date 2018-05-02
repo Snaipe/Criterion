@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2016-2018 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ static inline int ulog2(uint64_t n)
 #undef S
 }
 
-CR_API char *cri_string_xxd(const void *data, size_t size)
+CR_API char *cri_string_xxd(const void *data, size_t start, size_t size)
 {
     const size_t maxsz = align2_up(size, BYTES_PER_LINE);
     const size_t nb_lines = maxsz / BYTES_PER_LINE;
@@ -53,7 +53,7 @@ CR_API char *cri_string_xxd(const void *data, size_t size)
     offwidth += offwidth % 2;
 
     for (size_t i = 0; i < size;) {
-        written += sprintf(&out[written], "%0*" PRIx64 ":", offwidth, (uint64_t) i);
+        written += sprintf(&out[written], "%0*" PRIx64 ":", offwidth, (uint64_t) (i + start));
 
         size_t j = 0;
         for (; j < BYTES_PER_LINE && i + j < size; ++j) {

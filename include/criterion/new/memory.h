@@ -24,6 +24,8 @@
 #ifndef CRITERION_NEW_MEMORY_H_
 #define CRITERION_NEW_MEMORY_H_
 
+#include "../internal/common.h"
+
 struct cr_mem {
     const void *data;
     size_t size;

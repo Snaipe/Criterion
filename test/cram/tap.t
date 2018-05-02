@@ -22,13 +22,14 @@ Testing multiple samples with --tap
 
   $ asserts.c.bin --tap
   TAP version 13
-  1..7
+  1..8
   # Criterion v2.3.2
   
-  # Running 7 tests from asserts
+  # Running 8 tests from asserts
   ok - asserts::wstring  \(\d\.\d\ds\) (re)
   ok - asserts::string  \(\d\.\d\ds\) (re)
-  not ok - asserts::old_school  \(\d\.\d\ds\) (re)
+  ok - asserts::stream  (0.00s)
+  not ok - asserts::old_school  (0.00s)
     asserts.c:19: Assertion failed: (null)
     asserts.c:18: Assertion failed: You can fail an assertion with a message from anywhere
   ok - asserts::native  \(\d\.\d\ds\) (re)

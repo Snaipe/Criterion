@@ -92,5 +92,5 @@ int cr_user_mem_cmp(const struct cr_mem *m1, const struct cr_mem *m2)
 
 char *cr_user_mem_tostr(const struct cr_mem *m)
 {
-    return cri_string_xxd(m->data, m->size);
+    return cri_string_xxd(m->data, 0, m->size);
 }

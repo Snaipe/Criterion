@@ -19,6 +19,27 @@ std::ostream &operator<<(std::ostream &s, const struct dummy_struct &val)
     return s;
 }
 
+struct array_cursor {
+    size_t off;
+    size_t size;
+    const void *buf;
+};
+
+static int read_array(void *cookie, void *buffer, size_t *size)
+{
+    array_cursor *arr = static_cast<array_cursor*>(cookie);
+    size_t rem = *size;
+    if (rem > arr->size - arr->off) {
+        rem = arr->size - arr->off;
+    }
+
+    std::memcpy(buffer, (char *) arr->buf + arr->off, rem);
+    arr->off += rem;
+    *size = rem;
+
+    return 0;
+}
+
 Test(messages, eq) {
     /* Primitive */
     cr_expect(eq(i8, 0, 1));
@@ -78,6 +99,23 @@ Test(messages, eq) {
 
     cr_expect(eq(type(struct dummy_struct), dummy1, dummy2));
     cr_expect(eq(type(struct dummy_struct)[1], &dummy1, &dummy2));
+
+    struct array_cursor arr1 = {
+        0,
+        sizeof ("hello world"),
+        "hello world",
+    };
+
+    struct array_cursor arr2 = {
+        0,
+        sizeof ("dlrow olleh"),
+        "dlrow olleh",
+    };
+
+    criterion::stream s1 = { &arr1, read_array };
+    criterion::stream s2 = { &arr2, read_array };
+
+    cr_expect(eq(stream, s1, s2));
 }
 
 #define cmptest(Tag, Lo, Hi) \
@@ -112,6 +150,23 @@ Test(messages, cmp) {
 
     cr_expect(cmptest(wcs, L"abc", L"cba"));
     cr_expect(cmptest(wcs, L"abc\nabc", L"cba\ncba"));
+
+    struct array_cursor ahi = {
+        0,
+        sizeof ("hello world"),
+        "hello world",
+    };
+
+    struct array_cursor alo = {
+        0,
+        sizeof ("dlrow olleh"),
+        "dlrow olleh",
+    };
+
+    criterion::stream shi = { &ahi, read_array };
+    criterion::stream slo = { &alo, read_array };
+
+    cr_expect(cmptest(stream, slo, shi));
 }
 
 Test(message, compo) {

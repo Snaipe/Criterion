@@ -60,6 +60,19 @@ bool zero(const T &t) { return t.empty(); }
 template <> inline bool zero<>(const char *t) { return !*t; }
 template <> inline bool zero<>(const wchar_t *t) { return !*t; }
 
+/* relops without const */
+template <typename T, typename U>
+inline bool operator!= (T& t, U& u) { return !(t == u); }
+
+template <typename T, typename U>
+inline bool operator<= (T& t, U& u) { return t < u || t == u; }
+
+template <typename T, typename U>
+inline bool operator> (T& t, U& u) { return !(t <= u); }
+
+template <typename T, typename U>
+inline bool operator>= (T& t, U& u) { return !(t < u); }
+
 /* *INDENT-OFF* */
 }}}
 /* *INDENT-ON* */

@@ -115,3 +115,59 @@ Test(asserts, array) {
     /* Here cr_assert(eq(mem, mem_s1, mem_s2)) would not have worked */
     cr_assert(eq(type(struct dummy_struct)[2], s1, s2));
 }
+
+struct array_cursor {
+    size_t off;
+    size_t size;
+    void *buf;
+};
+
+static int read_array(void *cookie, void *buffer, size_t *size)
+{
+    struct array_cursor *arr = cookie;
+    size_t rem = *size;
+    if (rem > arr->size - arr->off) {
+        rem = arr->size - arr->off;
+    }
+
+    memcpy(buffer, (char *) arr->buf + arr->off, rem);
+    arr->off += rem;
+    *size = rem;
+
+    return 0;
+}
+
+Test(asserts, stream) {
+    struct array_cursor arr1 = {
+        .size = 4 * sizeof (int),
+        .buf = &(int[4]) { 1, 2, 3, 4 },
+    };
+
+    struct array_cursor arr2 = {
+        .size = 4 * sizeof (int),
+        .buf = &(int[4]) { 4, 3, 2, 1 },
+    };
+
+    /* we can compare data with the general purpose stream API, by providing
+       a read function, and optionally a close function. */
+    struct cr_stream s1 = {
+        .cookie = &arr1,
+        .read = read_array,
+    };
+    struct cr_stream s2 = {
+        .cookie = &arr2,
+        .read = read_array,
+    };
+
+    cr_stream_init(&s1);
+    cr_stream_init(&s2);
+
+    /* Note that this consumes both streams. Criterion will do the right thing
+       if both streams are used in complex criteria by providing consistent
+       comparison results between s1 and s2, but you can't compare either
+       of them to any other stream without re-creating a fresh stream. */
+    cr_assert(ne(stream, s1, s2));
+
+    cr_stream_close(&s1);
+    cr_stream_close(&s2);
+}

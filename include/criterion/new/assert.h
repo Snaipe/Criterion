@@ -433,6 +433,7 @@
 #endif /* !CRITERION_DOCGEN */
 
 #include "memory.h"
+#include "stream.h"
 
 /* Internals */
 

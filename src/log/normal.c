@@ -277,12 +277,12 @@ void normal_log_assert_param_eq(struct criterion_assert_stats *stats,
     struct cri_diff_buffer diff;
 
     if (expected->kind != CR_LOG_PARAM_STR || actual->kind != CR_LOG_PARAM_STR) {
-        char *xxd = cri_string_xxd(expected->data, expected->size);
+        char *xxd = cri_string_xxd(expected->data, 0, expected->size);
         free(bexpected.ptr);
         bexpected.ptr = xxd;
         bexpected.size = strlen(bexpected.ptr) + 1;
 
-        xxd = cri_string_xxd(actual->data, actual->size);
+        xxd = cri_string_xxd(actual->data, 0, actual->size);
         free(bactual.ptr);
         bactual.ptr = xxd;
         bactual.size = strlen(bactual.ptr) + 1;
@@ -338,7 +338,7 @@ void normal_log_assert_param(struct criterion_assert_stats *stats,
         criterion_pimportant(CRITERION_PREFIX_DASHES,
                 _(msg_assert_param), param->name, "", "", "");
 
-        char *raw = cri_string_xxd(param->data, param->size);
+        char *raw = cri_string_xxd(param->data, 0, param->size);
         for (char *c = raw, *start = raw; *c; ++c) {
             if (*c == '\n') {
                 *c = '\0';

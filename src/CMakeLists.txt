@@ -6,6 +6,7 @@
 
 set(SOURCE_FILES
   src/capi/specifiers.c
+  src/capi/stream.c
   src/core/abort.c
   src/core/abort.h
   src/core/assert.c

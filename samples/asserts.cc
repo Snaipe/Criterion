@@ -117,6 +117,52 @@ Test(asserts, array) {
     cr_assert(eq(type(struct dummy_struct)[2], s1, s2));
 }
 
+struct array_cursor {
+    size_t off;
+    size_t size;
+    const void *buf;
+};
+
+static int read_array(void *cookie, void *buffer, size_t *size)
+{
+    array_cursor *arr = static_cast<array_cursor*>(cookie);
+    size_t rem = *size;
+    if (rem > arr->size - arr->off) {
+        rem = arr->size - arr->off;
+    }
+
+    std::memcpy(buffer, (char *) arr->buf + arr->off, rem);
+    arr->off += rem;
+    *size = rem;
+
+    return 0;
+}
+
+Test(asserts, stream) {
+    struct array_cursor arr1 = {
+        0,
+        sizeof ("hello world"),
+        "hello world",
+    };
+
+    struct array_cursor arr2 = {
+        0,
+        sizeof ("dlrow olleh"),
+        "dlrow olleh",
+    };
+
+    /* we can compare binary data with the general purpose stream API, by
+       a read function, and optionally a close function. */
+    criterion::stream s1 = { &arr1, read_array };
+    criterion::stream s2 = { &arr2, read_array };
+
+    /* Note that this consumes both streams. Criterion will do the right thing
+       if both streams are used in complex criteria by providing consistent
+       comparison results between s1 and s2, but you can't compare either
+       of them to any other stream without re-creating a fresh stream. */
+    cr_assert(ne(stream, s1, s2));
+}
+
 Test(asserts, exception) {
     cr_expect(throw (std::runtime_error, {}));
     cr_assert(throw (std::invalid_argument, throw std::invalid_argument("some message")));

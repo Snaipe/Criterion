@@ -208,7 +208,6 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
     } ())
 # define CRI_ASSERT_UNPRINTABLE(Var) CRI_USER_TOSTR(, Var)
 # define CRI_ASSERT_NAMESPACES                      \
-    using namespace std::rel_ops;                   \
     using namespace criterion::internal::operators
 
 # define CRI_USER_TOSTR_ARR(Str, Arr, Tag)                                          \

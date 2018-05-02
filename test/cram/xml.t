@@ -31,13 +31,15 @@ Testing multiple samples with --xml
   $ asserts.c.bin --xml
   <?xml version="1.0" encoding="UTF-8"?>
   <!-- Tests compiled with Criterion v2.3.2 -->
-  <testsuites name="Criterion Tests" tests="7" failures="2" errors="0" disabled="0">
-    <testsuite name="asserts" tests="7" failures="2" errors="0" disabled="0" skipped="0" time="\d\.\d\d\d"> (re)
+  <testsuites name="Criterion Tests" tests="8" failures="2" errors="0" disabled="0">
+    <testsuite name="asserts" tests="8" failures="2" errors="0" disabled="0" skipped="0" time="0.001">
       <testcase name="wstring" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="string" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
-      <testcase name="old_school" assertions="2" status="FAILED" time="\d\.\d\d\d"> (re)
+      <testcase name="stream" assertions="0" status="PASSED" time="0.000">
+      </testcase>
+      <testcase name="old_school" assertions="2" status="FAILED" time="0.000">
         <failure type="assert" message="2 assertion(s) failed.">asserts.c:19: &#10;asserts.c:18: You can fail an assertion with a message from anywhere&#10;</failure>
       </testcase>
       <testcase name="native" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
