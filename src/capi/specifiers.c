@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2017 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2017-2018 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -83,11 +83,11 @@ int cr_user_mem_eq(const struct cr_mem *m1, const struct cr_mem *m2)
     return !memcmp(m1->data, m2->data, m1->size);
 }
 
-int cr_user_mem_cmp(const struct cr_mem *m1, const struct cr_mem *m2)
+int cr_user_mem_lt(const struct cr_mem *m1, const struct cr_mem *m2)
 {
     if (m1->size != m2->size)
-        return m1->size > m2->size ? 1 : -1;
-    return memcmp(m1->data, m2->data, m1->size);
+        return m1->size < m2->size;
+    return memcmp(m1->data, m2->data, m1->size) < 0;
 }
 
 char *cr_user_mem_tostr(const struct cr_mem *m)

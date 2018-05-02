@@ -40,7 +40,7 @@ inline bool operator==(const struct cr_mem &m1, const struct cr_mem &m2)
 
 inline bool operator<(const struct cr_mem &m1, const struct cr_mem &m2)
 {
-    return cr_user_mem_cmp(&m1, &m2) < 0;
+    return cr_user_mem_lt(&m1, &m2);
 }
 
 inline std::ostream &operator<<(std::ostream &s, const struct cr_mem &m)
