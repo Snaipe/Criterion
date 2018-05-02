@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2018 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@
     "    --full-stats: Tests must fully report statistics " \
     "(causes massive slowdown for large number of "         \
     "assertions but is more accurate).\n"                   \
-    "    --ignore_warnings: Ignore warnings, do not exit "  \
+    "    --ignore-warnings: Ignore warnings, do not exit "  \
     "with a non-zero exit status.\n"                        \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
     "report to FILE using the specified provider\n"

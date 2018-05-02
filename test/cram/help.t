@@ -25,7 +25,7 @@ Display the help message
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
-      --ignore_warnings: Ignore warnings, do not exit with a non-zero exit status.
+      --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
   $ simple.cc.bin --help
@@ -53,7 +53,7 @@ Display the help message
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
-      --ignore_warnings: Ignore warnings, do not exit with a non-zero exit status.
+      --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
 
 Display usage on invalid CLI flags
@@ -84,5 +84,5 @@ Display usage on invalid CLI flags
       --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
-      --ignore_warnings: Ignore warnings, do not exit with a non-zero exit status.
+      --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
       -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
