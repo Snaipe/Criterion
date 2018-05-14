@@ -118,6 +118,7 @@ set(INTERFACE_FILES
   include/criterion/internal/assert/tag.h
   include/criterion/internal/assert/tostr.h
   include/criterion/internal/assert/types.h
+  include/criterion/internal/assert/stream.h
   include/criterion/internal/capabilities.h
   include/criterion/internal/common.h
   include/criterion/internal/deprecation.h
@@ -135,6 +136,7 @@ set(INTERFACE_FILES
   include/criterion/logging.h
   include/criterion/new/assert.h
   include/criterion/new/memory.h
+  include/criterion/new/stream.h
   include/criterion/options.h
   include/criterion/output.h
   include/criterion/parameterized.h
