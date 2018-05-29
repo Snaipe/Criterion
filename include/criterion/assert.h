@@ -1101,11 +1101,12 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
+ * @param[in] Size Number of bytes to check
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_eq(Actual, Expected, FormatString, ...)    internal
+#define cr_assert_arr_eq(Actual, Expected, Size, FormatString, ...)    internal
 
 /**
  * Passes if Actual is byte-to-byte equal to Expected
@@ -1120,11 +1121,12 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
+ * @param[in] Size Number of bytes to check
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_eq(Actual, Expected, FormatString, ...)    internal
+#define cr_expect_arr_eq(Actual, Expected, Size, FormatString, ...)    internal
 
 /**
  * Passes if Actual is not byte-to-byte equal to Expected
