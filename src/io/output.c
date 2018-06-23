@@ -135,6 +135,9 @@ void process_all_output(struct criterion_global_stats *stats)
 
             criterion_pinfo(CRITERION_PREFIX_DASHES, _(msg_ok), name, path);
             report(f, stats);
+
+            if (f != stdout && f != stderr)
+                fclose(f);
         }
     }
 }
