@@ -17,7 +17,9 @@ include_directories(../include ../src)
 set(TEST_SOURCES
     ordered-set.c
     path.c
-    ${PROJECT_SOURCE_DIR}/src/compat/path.c # TODO: static lib
+    # TODO: static lib from internals
+    ${PROJECT_SOURCE_DIR}/src/compat/path.c
+    ${PROJECT_SOURCE_DIR}/src/err.c
 )
 
 if (THEORIES)

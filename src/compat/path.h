@@ -28,8 +28,15 @@
 #include <stdbool.h>
 
 const char *basename_compat(const char *str);
+
 char *cri_path_cwd(void);
 bool cri_path_isrelative(const char *path);
+bool cri_path_isdirectory(const char *path);
+bool cri_path_exists(const char *path);
 char *cri_path_relativeof(const char *path);
+size_t cri_path_combine(char **output, size_t *size, const char *path, ...);
+char *cri_path_gen_unique_filename(const char *path, const char *filename, const char *extension);
+
+size_t cri_path_build(char separator, char **output, size_t *size, const char *path, ...);
 
 #endif /* !COMPAT_PATH_H_ */
