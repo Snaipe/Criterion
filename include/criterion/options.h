@@ -218,6 +218,8 @@ struct criterion_options {
      * default: false
      */
     bool ignore_warnings;
+
+    const char *executable_name;
 };
 
 CR_BEGIN_C_API

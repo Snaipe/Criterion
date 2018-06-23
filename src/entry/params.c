@@ -363,6 +363,8 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         free(out);
     }
 
+    criterion_options.executable_name = argv[0];
+
     for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:wt:", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
