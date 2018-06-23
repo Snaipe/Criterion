@@ -33,8 +33,8 @@ set(SOURCE_FILES
   src/compat/strtok.h
   src/compat/process.c
   src/compat/process.h
-  src/compat/basename.c
-  src/compat/basename.h
+  src/compat/path.c
+  src/compat/path.h
   src/compat/mockfile.c
   src/compat/time.c
   src/compat/time.h

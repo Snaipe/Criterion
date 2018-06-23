@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "basename.h"
+#include "path.h"
 #include "config.h"
 #include "string/fmt.h"
 

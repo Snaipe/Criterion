@@ -90,6 +90,6 @@
 #include "compat/pipe.h"
 #include "compat/section.h"
 #include "compat/process.h"
-#include "compat/basename.h"
+#include "compat/path.h"
 
 #endif /* !POSIX_COMPAT_H_ */

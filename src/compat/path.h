@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef BASENAME_H_
-#define BASENAME_H_
+#ifndef COMPAT_PATH_H_
+#define COMPAT_PATH_H_
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -32,4 +32,4 @@ char *cri_path_cwd(void);
 bool cri_path_isrelative(const char *path);
 char *cri_path_relativeof(const char *path);
 
-#endif /* !BASENAME_H_ */
+#endif /* !COMPAT_PATH_H_ */
