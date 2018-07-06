@@ -25,10 +25,16 @@ environment:
 platform: x86_64
 
 clone_script:
-  - git clone -q --recursive --depth=5 --single-branch --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
-  - git checkout -qf %APPVEYOR_REPO_COMMIT%
-  # Hack to make git think it is on the tip of the repo branch
-  - git checkout -B %APPVEYOR_REPO_BRANCH%
+  - ps: |
+        if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
+            git clone -q --recursive --depth=5 --single-branch --branch=$env:APPVEYOR_REPO_BRANCH https://github.com/$env:APPVEYOR_REPO_NAME.git $env:APPVEYOR_BUILD_FOLDER
+            git checkout -qf $env:APPVEYOR_REPO_COMMIT
+            git checkout -B $env:APPVEYOR_REPO_BRANCH
+        } else {
+            git clone -q --recursive https://github.com/$env:APPVEYOR_REPO_NAME.git $env:APPVEYOR_BUILD_FOLDER
+            git fetch -q origin +refs/pull/$env:APPVEYOR_PULL_REQUEST_NUMBER/merge:
+            git checkout -qf FETCH_HEAD
+        }
 
 init:
   - git config --global core.autocrlf input
