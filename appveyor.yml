@@ -29,7 +29,7 @@ clone_script:
         if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
             git clone -q --recursive --depth=5 --single-branch --branch=$env:APPVEYOR_REPO_BRANCH https://github.com/$env:APPVEYOR_REPO_NAME.git $env:APPVEYOR_BUILD_FOLDER
             git checkout -qf $env:APPVEYOR_REPO_COMMIT
-            git checkout -B $env:APPVEYOR_REPO_BRANCH
+            git checkout -qB $env:APPVEYOR_REPO_BRANCH
         } else {
             git clone -q --recursive https://github.com/$env:APPVEYOR_REPO_NAME.git $env:APPVEYOR_BUILD_FOLDER
             git fetch -q origin +refs/pull/$env:APPVEYOR_PULL_REQUEST_NUMBER/merge:
