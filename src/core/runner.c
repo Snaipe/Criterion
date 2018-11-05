@@ -206,6 +206,13 @@ void disable_unmatching(struct criterion_test_set *set)
 
 CR_API struct criterion_test_set *criterion_initialize(void)
 {
+    /* make sure we don't re-enter from a test worker. See #247. */
+    if (getenv("BXFI_MAP")) {
+        cr_panic("Re-entering criterion from a test worker. This is a "
+                 "catastrophic bug, please report it on the issue tracker.\n"
+                 "Bailing out to avoid fork-bombing the system.");
+    }
+
     init_i18n();
 
 #ifndef ENABLE_VALGRIND_ERRORS
@@ -364,6 +371,12 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 
 CR_API int criterion_run_all_tests(struct criterion_test_set *set)
 {
+    /* make sure we don't re-enter from a test worker. See #247. */
+    if (getenv("BXFI_MAP")) {
+        cr_panic("Re-entering criterion from a test worker. This is a "
+                 "catastrophic bug, please report it on the issue tracker.\n"
+                 "Bailing out to avoid fork-bombing the system.");
+    }
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif

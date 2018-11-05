@@ -1,7 +1,7 @@
 Testing tests that call exit()
 
   $ exit.c.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 3 tests from exit:
   [RUN ] exit::expected_exit
   [PASS] exit::expected_exit
@@ -18,7 +18,7 @@ Testing tests that call exit()
   [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 1 
 
   $ exit.cc.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 3 tests from exit:
   [RUN ] exit::expected_exit
   [PASS] exit::expected_exit

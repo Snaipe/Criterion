@@ -84,7 +84,7 @@ cr_add_subproject (nanomsg
 )
 
 cr_add_subproject (boxfort PATH dependencies/boxfort
-  GIT "https://github.com/diacritic/BoxFort.git#481cad1"
+  GIT "https://github.com/diacritic/BoxFort.git#926bd4c"
   PATH dependencies/boxfort
   OPTS
     -DBXF_TESTS=OFF

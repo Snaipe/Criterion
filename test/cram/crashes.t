@@ -15,7 +15,7 @@ Simple crashes & signal testing
 Simple crashes & signal testing (verbose)
 
   $ signal.c.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 3 tests from simple:
   [RUN ] simple::caught
   [PASS] simple::caught
@@ -27,7 +27,7 @@ Simple crashes & signal testing (verbose)
   [====] Synthesis: Tested: 3 | Passing: 1 | Failing: 2 | Crashing: 1 
 
   $ signal.cc.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 3 tests from simple:
   [RUN ] simple::caught
   [PASS] simple::caught
@@ -53,7 +53,7 @@ Crashes outside of the test
 Crashes outside of the test (verbose)
 
   $ other-crashes.c.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::setup_crash
   [----] Warning! The test `misc::setup_crash` crashed during its setup or teardown.
@@ -63,7 +63,7 @@ Crashes outside of the test (verbose)
   [====] Synthesis: Tested: 2 | Passing: 1 | Failing: 1 | Crashing: 1 
 
   $ other-crashes.cc.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::setup_crash
   [----] Warning! The test `misc::setup_crash` crashed during its setup or teardown.
@@ -90,7 +90,7 @@ C++ Exceptions should be handled
 C++ Exceptions should be handled (verbose)
 
   $ exception.cc.bin --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 6 tests from exception:
   [RUN ] exception::raise_any
   [----] exception::raise_any: Caught some unexpected exception during the test execution.

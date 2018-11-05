@@ -1,7 +1,7 @@
 Testing normal globs
 
   $ simple.c.bin --filter='*/passing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -9,7 +9,7 @@ Testing normal globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='*/pa?sing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -17,7 +17,7 @@ Testing normal globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/passing?' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -25,7 +25,7 @@ Testing normal globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/*' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -40,7 +40,7 @@ Testing normal globs
 Testing character classes
 
   $ simple.c.bin --filter='misc/[pf]assing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -48,7 +48,7 @@ Testing character classes
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/[p-s]assing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -56,14 +56,14 @@ Testing character classes
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/[!f]ailing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [SKIP] misc::passing: Test is disabled
   [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/[p-f]ailing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -75,7 +75,7 @@ Testing character classes
   [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/[!azerty]assing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -85,7 +85,7 @@ Testing character classes
 Testing extended globs
 
   $ simple.c.bin --filter='!(*/passing)' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -97,7 +97,7 @@ Testing extended globs
   [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
   $ simple.c.bin --filter='@(misc)/passing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -105,7 +105,7 @@ Testing extended globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='*(misc)/pa+(s)ing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -113,7 +113,7 @@ Testing extended globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/[pf]a@(ss|il)ing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -126,7 +126,7 @@ Testing extended globs
   [====] Synthesis: Tested: 2 | Passing: 1 | Failing: 1 | Crashing: 0 
 
   $ simple.c.bin --filter='!(*/failing|*/fail)' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -134,7 +134,7 @@ Testing extended globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/?(passing)' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -142,7 +142,7 @@ Testing extended globs
   [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/?(passing|failing)' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -155,7 +155,7 @@ Testing extended globs
   [====] Synthesis: Tested: 2 | Passing: 1 | Failing: 1 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/*!(passing)' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -170,21 +170,21 @@ Testing extended globs
 Testing nested extglob patterns
 
   $ simple.c.bin --filter='@(+(nest)ed)' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [SKIP] misc::passing: Test is disabled
   [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='?(*(a|b))' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [SKIP] misc::passing: Test is disabled
   [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
 
   $ simple.c.bin --filter='misc/pa@(s|*(s))ing' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [RUN ] misc::passing
@@ -224,7 +224,7 @@ Testing special char escaping
   [3]
 
   $ simple.c.bin --filter='\!escaped' --verbose
-  [----] Criterion v2.3.2
+  [----] Criterion v2.3.3
   [====] Running 2 tests from misc:
   [SKIP] misc::failing: Test is disabled
   [SKIP] misc::passing: Test is disabled

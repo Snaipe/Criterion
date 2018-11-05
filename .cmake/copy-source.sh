@@ -25,5 +25,5 @@ add_to_sources() {
   add_to_sources https://github.com/Snaipe/libcsptr     dependencies/libcsptr   0d52904
   add_to_sources https://github.com/Snaipe/dyncall      dependencies/dyncall    51e79a8
   add_to_sources https://github.com/nanomsg/nanomsg     dependencies/nanomsg    7e12a20
-  add_to_sources https://github.com/diacritic/BoxFort   dependencies/boxfort    7ed0cf2
+  add_to_sources https://github.com/diacritic/BoxFort   dependencies/boxfort    926bd4c
 )
