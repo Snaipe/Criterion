@@ -1,3 +1,13 @@
+2018-11-05  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.3.3
+    * Fix: Clang 5.0.x was producing test executables that caused Criterion to
+      fork-bomb the host system. The issue has been fixed, and Criterion
+      now pro-actively aborts itself if it detects a fork-bomb loop to avoid
+      similar issues in the future.
+
+    The full git changelog may be accessed with `git log v2.3.2..v2.3.3`.
+
 2017-04-08  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.3.2

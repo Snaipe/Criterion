@@ -297,7 +297,7 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     if (rc < 0)
         cr_panic("Could not initialize test context: %s", strerror(-rc));
 
-    struct bxf_spawn_params sp = {
+    struct bxf_spawn_params_s sp = {
         .fn              = run_test_child,
         .callback        = death_callback,
         .inherit.context = inst_ctx,
