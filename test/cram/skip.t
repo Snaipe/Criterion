@@ -1,7 +1,7 @@
 Testing skipping
 
   $ skip.c.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 2 tests from misc:
   [RUN ] misc::message
   [SKIP] misc::message: Skips may take printf-like messages

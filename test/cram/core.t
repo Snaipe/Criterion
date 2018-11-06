@@ -1,10 +1,10 @@
 Checking the version
 
   $ simple.c.bin --version
-  Tests compiled with Criterion v2.3.3
+  Tests compiled with Criterion v.* (re)
 
   $ simple.cc.bin --version
-  Tests compiled with Criterion v2.3.3
+  Tests compiled with Criterion v.* (re)
 
 Running the simplest test
 
@@ -27,7 +27,7 @@ Running the simplest test
 Running with verbose output
 
   $ simple.c.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.c:4: Assertion Failed
@@ -40,7 +40,7 @@ Running with verbose output
   [====] Synthesis: Tested: 2 | Passing: 1 | Failing: 1 | Crashing: 0 
 
   $ simple.cc.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----] simple.cc:4: Assertion Failed
@@ -79,7 +79,7 @@ Testing the fixtures
 Testing descriptions
 
   $ description.c.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----]   Just a failing test
@@ -93,7 +93,7 @@ Testing descriptions
   [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
   $ description.cc.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 2 tests from misc:
   [RUN ] misc::failing
   [----]   Just a failing test

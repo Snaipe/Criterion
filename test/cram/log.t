@@ -1,7 +1,7 @@
 Testing log messages
 
   $ log.c.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 2 tests from logging:
   [RUN ] logging::format
   [----] Log messages are printf-formatted strings.
@@ -14,7 +14,7 @@ Testing log messages
   [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
 
   $ log.cc.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 1 test from logging:
   [RUN ] logging::stream
   [----] This is an informational message. They are not displayed by default.

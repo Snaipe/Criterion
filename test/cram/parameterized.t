@@ -119,7 +119,7 @@ Using parameterized tests
 Using parameterized tests (verbose)
 
   $ parameterized.c.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 4 tests from params:
   [RUN ] params::cleanup
   [----] parameterized.c:79: Assertion Failed
@@ -190,7 +190,7 @@ Using parameterized tests (verbose)
   [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
   $ parameterized.cc.bin --verbose
-  [----] Criterion v2.3.3
+  \[----\] Criterion v.* (re)
   [====] Running 4 tests from params:
   [RUN ] params::cleanup
   [----] parameterized.cc:72: Assertion Failed

@@ -3,7 +3,7 @@ Testing multiple samples with --tap
   $ simple.c.bin --tap
   TAP version 13
   1..2
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 2 tests from misc
   ok - misc::passing  \(\d\.\d\ds\) (re)
@@ -13,7 +13,7 @@ Testing multiple samples with --tap
   $ signal.c.bin --tap
   TAP version 13
   1..3
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 3 tests from simple
   not ok - simple::wrong_signal  \(\d\.\d\ds\) (re)
@@ -23,7 +23,7 @@ Testing multiple samples with --tap
   $ asserts.c.bin --tap
   TAP version 13
   1..8
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 8 tests from asserts
   ok - asserts::wstring  \(\d\.\d\ds\) (re)
@@ -42,7 +42,7 @@ Testing multiple samples with --tap
   $ more-suites.c.bin --tap
   TAP version 13
   1..3
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 1 tests from suite2
   ok - suite2::test  \(\d\.\d\ds\) (re)
@@ -56,7 +56,7 @@ Testing multiple samples with --tap
   $ long-messages.c.bin --tap
   TAP version 13
   1..1
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 1 tests from sample
   not ok - sample::long_msg  \(\d\.\d\ds\) (re)
@@ -68,7 +68,7 @@ Testing multiple samples with --tap
   $ description.c.bin --tap
   TAP version 13
   1..2
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 2 tests from misc
   ok - misc::skipped This one is skipped # SKIP test was skipped
@@ -80,7 +80,7 @@ Testing --output=tap
   $ simple.c.bin --output=tap:-
   TAP version 13
   1..2
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 2 tests from misc
   ok - misc::passing  \(\d\.\d\ds\) (re)
@@ -92,7 +92,7 @@ Testing CRITERION_OUTPUTS
   $ CRITERION_OUTPUTS=tap:- simple.c.bin
   TAP version 13
   1..2
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 2 tests from misc
   ok - misc::passing  \(\d\.\d\ds\) (re)
@@ -102,7 +102,7 @@ Testing CRITERION_OUTPUTS
   $ skip.c.bin --tap
   TAP version 13
   1..2
-  # Criterion v2.3.3
+  # Criterion v.* (re)
   
   # Running 2 tests from misc
   ok - misc::skipping  # SKIP test was skipped
