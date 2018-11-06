@@ -45,7 +45,7 @@
 
 #define XML_BASE_TEMPLATE_BEGIN                             \
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"          \
-    "<!-- Tests compiled with Criterion v" VERSION " -->\n" \
+    "<!-- Tests compiled with Criterion " VERSION " -->\n"  \
     "<testsuites " TESTSUITES_PROPERTIES ">\n"              \
 
 #define XML_BASE_TEMPLATE_END \

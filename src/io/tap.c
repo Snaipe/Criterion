@@ -38,7 +38,7 @@ static void print_prelude(FILE *f, struct criterion_global_stats *stats)
     fprintf(f, "TAP version 13\n1.."
             CR_SIZE_T_FORMAT
             "\n", stats->nb_tests);
-    fprintf(f, "# Criterion v%s\n", VERSION);
+    fprintf(f, "# Criterion %s\n", VERSION);
 }
 
 static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats)

@@ -44,7 +44,7 @@
 
 typedef const char *const msg_t;
 
-static msg_t msg_pre_all = N_("Criterion v%s\n");
+static msg_t msg_pre_all = N_("Criterion %s\n");
 static msg_t msg_desc = N_("  %s\n");
 
 #ifdef ENABLE_NLS

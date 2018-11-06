@@ -1,0 +1,97 @@
+sources = files(
+	'err.c',
+	'mutex.c',
+
+	'capi/specifiers.c',
+	'capi/stream.c',
+
+	'compat/alloc.c',
+	'compat/kill.c',
+	'compat/mockfile.c',
+	'compat/path.c',
+	'compat/pipe.c',
+	'compat/process.c',
+	'compat/processor.c',
+	'compat/section.c',
+	'compat/strtok.c',
+	'compat/time.c',
+
+	'core/abort.c',
+	'core/assert.c',
+	'core/client.c',
+	'core/ordered-set.c',
+	'core/report.c',
+	'core/runner.c',
+	'core/runner_coroutine.c',
+	'core/stats.c',
+	'core/test.c',
+	'core/theories.c',
+
+	'entry/entry.c',
+	'entry/options.c',
+	'entry/params.c',
+
+	'io/event.c',
+	'io/file.c',
+	'io/json.c',
+	'io/output.c',
+	'io/redirect.c',
+	'io/tap.c',
+	'io/xml.c',
+
+	'log/logging.c',
+	'log/normal.c',
+
+	'protocol/connect.c',
+	'protocol/criterion.pb.c',
+	'protocol/messages.c',
+	'protocol/protocol.c',
+
+	'string/brz.c',
+	'string/diff.c',
+	'string/extglobmatch.c',
+	'string/fmt.c',
+	'string/i18n.c',
+	'string/xxd.c',
+
+	'../dependencies/nanopb/pb_common.c',
+	'../dependencies/nanopb/pb_encode.c',
+	'../dependencies/nanopb/pb_decode.c',
+)
+
+configure_file(input         : 'config.h.in',
+               output        : 'config.h',
+               configuration : config)
+
+deps = [
+	threads,
+	boxfort,
+	csptr,
+	dyncall,
+	libgit2,
+	nanomsg,
+	librt,
+	libm,
+]
+
+criterion = shared_library('criterion', sources,
+	include_directories: [criterion_includedir],
+	version: '3.1.0',
+	dependencies: deps,
+	install: true,
+	link_args: cc.get_supported_arguments([
+		'-Wl,--exclude-libs,ALL',
+	]),
+)
+
+pkgconfig = import('pkgconfig')
+pkgconfig.generate(
+	name: meson.project_name(),
+	description: 'A KISS, Cross platform unit testing framework for C and C++',
+	url: 'https://snai.pe/git/criterion',
+)
+
+testlib = static_library('criterion_testlib', sources,
+	include_directories: [criterion_includedir],
+	dependencies: deps,
+)

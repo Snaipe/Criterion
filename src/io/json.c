@@ -99,7 +99,7 @@
 
 #define JSON_BASE_TEMPLATE_BEGIN              \
     "{\n"                                     \
-    "  \"id\": \"Criterion v" VERSION "\",\n" \
+    "  \"id\": \"Criterion " VERSION "\",\n"  \
     "  \"passed\": " CR_SIZE_T_FORMAT ",\n"   \
     "  \"failed\": " CR_SIZE_T_FORMAT ",\n"   \
     "  \"errored\": " CR_SIZE_T_FORMAT ",\n"  \

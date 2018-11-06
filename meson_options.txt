@@ -1,0 +1,8 @@
+option('tests', type: 'boolean', value: true)
+option('dev',   type: 'boolean', value: false)
+
+option('i18n',        type: 'feature', value: 'auto')
+option('theories',    type: 'feature', value: 'enabled')
+
+# Platform-specific workarounds
+option('mingw-define-off_t', type: 'boolean', value: false)

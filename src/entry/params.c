@@ -37,7 +37,7 @@
 #include "common.h"
 #include "err.h"
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
 # include <libintl.h>
 #endif
 
@@ -49,7 +49,7 @@
 # include <langinfo.h>
 #endif
 
-#define VERSION_MSG    "Tests compiled with Criterion v" VERSION "\n"
+#define VERSION_MSG    "Tests compiled with Criterion " VERSION "\n"
 
 #define USAGE                                               \
     VERSION_MSG "\n"                                        \
@@ -282,7 +282,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
     };
 
     setlocale(LC_ALL, "");
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
     textdomain(PACKAGE "-test");
 #endif
 
