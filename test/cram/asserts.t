@@ -18,41 +18,6 @@ Test C assertions:
   [FAIL] asserts::old_school
   [====] Synthesis: Tested: 8 | Passing: 6 | Failing: 2 | Crashing: 0 
 
-Test C++ assertions:
-
-  $ asserts.cc.bin
-  [----] asserts.cc:15: Assertion Failed
-  [----]   
-  [----]   assert is fatal, expect isn't
-  [----]   
-  [----] asserts.cc:16: Assertion Failed
-  [----]   
-  [----]   This assert runs
-  [----]   
-  [FAIL] asserts::base
-  [----] asserts.cc:167: Assertion Failed
-  [----]   throw(std::runtime_error, {}): 
-  [----]     message: <nothing was thrown>
-  [----] asserts.cc:169: Assertion Failed
-  [----]   throw(std::bad_alloc, throw std::invalid_argument("some other message")): 
-  [----]     message: "some other message"
-  [FAIL] asserts::exception
-  [----] asserts.cc:21: Assertion Failed
-  [----]   
-  [----]   You can fail an assertion with a message from anywhere
-  [----]   
-  [----] asserts.cc:22: Assertion Failed
-  [FAIL] asserts::old_school
-  [====] Synthesis: Tested: 9 | Passing: 6 | Failing: 3 | Crashing: 0 
-
-Using redirections
-
-  $ redirect.c.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
-
-  $ redirect.cc.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
-
 Testing all assert messages
 
   $ failmessages.c.bin
@@ -473,6 +438,42 @@ Testing all assert messages
   [----]      
   [FAIL] messages::eq
   [====] Synthesis: Tested: 4 | Passing: 0 | Failing: 4 | Crashing: 0 
+
+Long assert messages should wrap
+
+  $ long-messages.c.bin
+  [----] long-messages.c:4: Assertion Failed
+  [----]   
+  [----]   This is
+  [----]   A long message
+  [----]   Spawning multiple lines.
+  [----]   Formatting is respected.
+  [----]   
+  [FAIL] sample::long_msg
+  [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
+
+Using redirections
+
+  $ redirect.c.bin
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+
+C++ equivalents
+
+  $ [ "$CXX_SUPPORT" = 1 ] || exit 80
+
+  $ redirect.cc.bin
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+
+  $ long-messages.cc.bin
+  [----] long-messages.cc:4: Assertion Failed
+  [----]   
+  [----]   This is
+  [----]   A long message
+  [----]   Spawning multiple lines.
+  [----]   Formatting is respected.
+  [----]   
+  [FAIL] sample::long_msg
+  [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
   $ failmessages.cc.bin
   [----] failmessages.cc:173: Assertion Failed
@@ -900,34 +901,30 @@ Testing all assert messages
   [FAIL] messages::eq
   [====] Synthesis: Tested: 5 | Passing: 0 | Failing: 5 | Crashing: 0 
 
-Long assert messages should wrap
+Test C++ assertions:
 
-  $ long-messages.c.bin
-  [----] long-messages.c:4: Assertion Failed
+  $ asserts.cc.bin
+  [----] asserts.cc:15: Assertion Failed
   [----]   
-  [----]   This is
-  [----]   A long message
-  [----]   Spawning multiple lines.
-  [----]   Formatting is respected.
+  [----]   assert is fatal, expect isn't
   [----]   
-  [FAIL] sample::long_msg
-  [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
-
-  $ long-messages.cc.bin
-  [----] long-messages.cc:4: Assertion Failed
+  [----] asserts.cc:16: Assertion Failed
   [----]   
-  [----]   This is
-  [----]   A long message
-  [----]   Spawning multiple lines.
-  [----]   Formatting is respected.
+  [----]   This assert runs
   [----]   
-  [FAIL] sample::long_msg
-  [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
+  [FAIL] asserts::base
+  [----] asserts.cc:167: Assertion Failed
+  [----]   throw(std::runtime_error, {}): 
+  [----]     message: <nothing was thrown>
+  [----] asserts.cc:169: Assertion Failed
+  [----]   throw(std::bad_alloc, throw std::invalid_argument("some other message")): 
+  [----]     message: "some other message"
+  [FAIL] asserts::exception
+  [----] asserts.cc:21: Assertion Failed
+  [----]   
+  [----]   You can fail an assertion with a message from anywhere
+  [----]   
+  [----] asserts.cc:22: Assertion Failed
+  [FAIL] asserts::old_school
+  [====] Synthesis: Tested: 9 | Passing: 6 | Failing: 3 | Crashing: 0 
 
-Using redirections
-
-  $ redirect.c.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
-
-  $ redirect.cc.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 

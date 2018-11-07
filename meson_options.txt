@@ -1,6 +1,7 @@
 option('tests', type: 'boolean', value: true)
 option('dev',   type: 'boolean', value: false)
 
+option('cxx-support', type: 'feature', value: 'auto')
 option('i18n',        type: 'feature', value: 'auto')
 option('theories',    type: 'feature', value: 'enabled')
 

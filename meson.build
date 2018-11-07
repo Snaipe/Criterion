@@ -29,7 +29,7 @@ if git.found() and is_git_repo
 	endif
 endif
 
-add_languages('cpp')
+has_cxx = add_languages('cpp', required: get_option('cxx-support'))
 
 cc = meson.get_compiler('c')
 

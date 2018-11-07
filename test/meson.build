@@ -23,6 +23,9 @@ if sh.found() and cram.found()
 	env.set('LC_ALL', 'en_US.utf8')
 	env.set('MSYS2_ARG_CONV_EXCL', '--filter=')
 	env.set('TERM', 'dumb')
+	if has_cxx
+		env.set('CXX_SUPPORT', '1')
+	endif
 
 	test('cram tests', cram,
 			args: [join_paths(meson.current_source_dir(), 'cram')],

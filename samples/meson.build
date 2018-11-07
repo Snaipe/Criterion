@@ -21,28 +21,32 @@ samples = [
 	'tests/other-crashes.c',
 	'tests/theories_regression.c',
 	'tests/with-time.c',
-
-	'asserts.cc',
-	'description.cc',
-	'fixtures.cc',
-	'log.cc',
-	'more-suites.cc',
-	'parameterized.cc',
-	'redirect.cc',
-	'report.cc',
-	'signal.cc',
-	'simple.cc',
-	'skip.cc',
-	'suites.cc',
-	'theories.cc',
-
-	'tests/exception.cc',
-	'tests/exit.cc',
-	'tests/failmessages.cc',
-	'tests/long-messages.cc',
-	'tests/other-crashes.cc',
-	'tests/theories_regression.cc',
 ]
+
+if has_cxx
+	samples += [
+		'asserts.cc',
+		'description.cc',
+		'fixtures.cc',
+		'log.cc',
+		'more-suites.cc',
+		'parameterized.cc',
+		'redirect.cc',
+		'report.cc',
+		'signal.cc',
+		'simple.cc',
+		'skip.cc',
+		'suites.cc',
+		'theories.cc',
+
+		'tests/exception.cc',
+		'tests/exit.cc',
+		'tests/failmessages.cc',
+		'tests/long-messages.cc',
+		'tests/other-crashes.cc',
+		'tests/theories_regression.cc',
+	]
+endif
 
 foreach sample : samples
 	e = executable(sample + '.bin', sample,

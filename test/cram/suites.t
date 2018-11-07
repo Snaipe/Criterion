@@ -3,13 +3,7 @@ Using test suites
   $ suites.c.bin
   [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
 
-  $ suites.cc.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
-
   $ more-suites.c.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
-
-  $ more-suites.cc.bin
   [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
 
 Listing tests in multiple suites
@@ -43,3 +37,14 @@ Running the tests with verbose output
   [RUN ] suite2::test
   [PASS] suite2::test
   [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+
+C++ equivalents
+
+  $ [ "$CXX_SUPPORT" = 1 ] || exit 80
+
+  $ suites.cc.bin
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+
+  $ more-suites.cc.bin
+  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+

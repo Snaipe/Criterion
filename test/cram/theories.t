@@ -9,6 +9,13 @@ Using theories
   [FAIL] theory::misc
   [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
+Theories should be listed as only one test
+
+  $ theories_regression.c.bin --list
+  theory: 1 test
+  `-- misc
+
+  $ [ "$CXX_SUPPORT" = 1 ] || exit 80
   $ theories_regression.cc.bin
   [----] theories_regression.cc:36: Assertion Failed
   [----]   
@@ -18,8 +25,3 @@ Using theories
   [FAIL] theory::misc
   [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
-Theories should be listed as only one test
-
-  $ theories_regression.c.bin --list
-  theory: 1 test
-  `-- misc

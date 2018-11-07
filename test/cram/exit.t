@@ -17,6 +17,8 @@ Testing tests that call exit()
   [----] Warning! The test `exit_with_fixtures::init_exits` exited during its setup or teardown.
   [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 1 
 
+  $ [ "$CXX_SUPPORT" = 1 ] || exit 80
+
   $ exit.cc.bin --verbose
   \[----\] Criterion v.* (re)
   [====] Running 3 tests from exit:

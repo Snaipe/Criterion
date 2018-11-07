@@ -58,64 +58,6 @@ Using parameterized tests
   [FAIL] params::string
   [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
-  $ parameterized.cc.bin
-  [----] parameterized.cc:72: Assertion Failed
-  [----]   
-  [----]   Parameters: (1, 2.000000)
-  [----]   
-  [FAIL] params::cleanup
-  [----] parameterized.cc:72: Assertion Failed
-  [----]   
-  [----]   Parameters: (3, 4.000000)
-  [----]   
-  [FAIL] params::cleanup
-  [----] parameterized.cc:72: Assertion Failed
-  [----]   
-  [----]   Parameters: (5, 6.000000)
-  [----]   
-  [FAIL] params::cleanup
-  [----] parameterized.cc:34: Assertion Failed
-  [----]   
-  [----]   Parameters: (1, 2.000000)
-  [----]   
-  [FAIL] params::multiple
-  [----] parameterized.cc:34: Assertion Failed
-  [----]   
-  [----]   Parameters: (3, 4.000000)
-  [----]   
-  [FAIL] params::multiple
-  [----] parameterized.cc:34: Assertion Failed
-  [----]   
-  [----]   Parameters: (5, 6.000000)
-  [----]   
-  [FAIL] params::multiple
-  [----] parameterized.cc:13: Assertion Failed
-  [----]   
-  [----]   Parameter: 1
-  [----]   
-  [FAIL] params::simple
-  [----] parameterized.cc:13: Assertion Failed
-  [----]   
-  [----]   Parameter: 2
-  [----]   
-  [FAIL] params::simple
-  [----] parameterized.cc:13: Assertion Failed
-  [----]   
-  [----]   Parameter: 3
-  [----]   
-  [FAIL] params::simple
-  [----] parameterized.cc:92: Assertion Failed
-  [----]   
-  [----]   string: Hello
-  [----]   
-  [FAIL] params::string
-  [----] parameterized.cc:92: Assertion Failed
-  [----]   
-  [----]   string: World
-  [----]   
-  [FAIL] params::string
-  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
-
 Using parameterized tests (verbose)
 
   $ parameterized.c.bin --verbose
@@ -183,6 +125,77 @@ Using parameterized tests (verbose)
   [FAIL] params::string
   [RUN ] params::string
   [----] parameterized.c:113: Assertion Failed
+  [----]   
+  [----]   string: World
+  [----]   
+  [FAIL] params::string
+  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
+
+Parameterized tests should be listed as one test
+
+  $ parameterized.c.bin --list
+  params: 4 tests
+  |-- cleanup
+  |-- multiple
+  |-- simple
+  `-- string
+
+C++ equivalents
+
+  $ [ "$CXX_SUPPORT" = 1 ] || exit 80
+
+  $ parameterized.cc.bin
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.cc:72: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::cleanup
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (1, 2.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (3, 4.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.cc:34: Assertion Failed
+  [----]   
+  [----]   Parameters: (5, 6.000000)
+  [----]   
+  [FAIL] params::multiple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 1
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 2
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.cc:13: Assertion Failed
+  [----]   
+  [----]   Parameter: 3
+  [----]   
+  [FAIL] params::simple
+  [----] parameterized.cc:92: Assertion Failed
+  [----]   
+  [----]   string: Hello
+  [----]   
+  [FAIL] params::string
+  [----] parameterized.cc:92: Assertion Failed
   [----]   
   [----]   string: World
   [----]   
@@ -260,11 +273,3 @@ Using parameterized tests (verbose)
   [FAIL] params::string
   [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
 
-Parameterized tests should be listed as one test
-
-  $ parameterized.c.bin --list
-  params: 4 tests
-  |-- cleanup
-  |-- multiple
-  |-- simple
-  `-- string
