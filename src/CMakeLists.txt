@@ -166,6 +166,42 @@ configure_file(
   @ONLY
 )
 
+if (UNIX)
+  find_program(SHELL sh)
+
+  if (SHELL)
+    add_custom_command (
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/signal_names.c
+      COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/signals/create_source.sh
+      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/signals/create_source.sh
+      )
+
+    set (SOURCE_FILES ${SOURCE_FILES}
+      ${CMAKE_CURRENT_BINARY_DIR}/signal_names.c
+      )
+
+    add_custom_target(
+      generate_signal_names
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/signal_names.c
+      )
+
+  endif (SHELL)
+endif (UNIX)
+
+if(NOT UNIX OR NOT SHELL)
+
+  set (SOURCE_FILES ${SOURCE_FILES}
+    src/signals/signal_names_default.c
+  )
+
+  add_custom_target( generate_signal_names )
+
+endif()
+
+set(INTERFACE_FILES ${INTERFACE_FILES}
+    src/signals/signal_names.h
+    )
+
 install (FILES "${CMAKE_CURRENT_BINARY_DIR}/criterion.pc" DESTINATION "share/pkgconfig")
 
 set (SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)

@@ -167,6 +167,12 @@ cr_add_library(criterion SHARED
        VERSION ${PROJECT_SONAME}
        SOVERSION ${PROJECT_SOVERSION}
 )
+set_source_files_properties(
+    ${CMAKE_CURRENT_BINARY_DIR}/src/signal_names.c
+    PROPERTIES GENERATED TRUE
+    )
+
+add_dependencies(criterion generate_signal_names)
 
 cr_link_subproject(criterion csptr STATIC IF NOT CSPTR_FOUND)
 cr_link_subproject(criterion nanomsg STATIC IF NOT NANOMSG_FOUND)
@@ -225,6 +231,7 @@ add_custom_target(uninstall
 if (CTESTS)
   enable_testing()
   add_custom_target(criterion_tests)
+  add_dependencies(criterion_tests generate_signal_names)
   add_subdirectory(samples)
   add_subdirectory(test)
 endif ()
