@@ -1,0 +1,52 @@
+freebsd_instance:
+  image: freebsd-11-2-release-amd64
+
+freebsd_build_task:
+
+  env:
+    matrix:
+      - configuration: Debug
+      - configuration: RelWithDebInfo
+
+  env:
+    matrix:
+      - arch: amd64
+      - arch: i386
+        jailName: j11i386
+        execPrefix: cbsd jexec jname=j11i386
+
+  prepare_script:
+    - sed -i '' 's/quarterly/latest/g' /etc/pkg/FreeBSD.conf
+    - |
+      if test "$arch" = "i386"; then
+        ./dev/configure_freebsd_ci_jail.sh $jailName $CIRRUS_WORKING_DIR;
+        $execPrefix sed -i -- '' 's/quarterly/latest/g' /etc/pkg/FreeBSD.conf;
+        $execPrefix pkg update -f;
+        changeDir="cd /etc/skel &&"
+      fi
+    - $execPrefix pkg install -y cmake python git > /dev/null
+    - echo "python -m ensurepip && python -m pip install --upgrade pip" | $execPrefix /bin/sh
+    - $execPrefix python -m pip install --user cram==0.7
+    - |
+      command="$changeDir git submodule update --init &&"
+      command="$command mkdir -p build"
+      echo $command | $execPrefix /bin/sh
+
+  build_script:
+    - |
+      if test "$arch" = "i386"; then
+        changeDir="cd /etc/skel &&"
+      fi
+      command="$changeDir cd build &&"
+      command="$command cmake -Wno-dev -DCTESTS=1 -DCMAKE_BUILD_TYPE=$configuration -DCMAKE_INSTALL_PREFIX=criterion-$CIRRUS_TAG .. &&"
+      command="$command cmake --build . --target criterion_tests -- -j4"
+      echo $command | $execPrefix /bin/sh
+
+  test_script:
+    - |
+      if test "$arch" = "i386"; then
+        changeDir="cd /etc/skel &&"
+      fi
+      command="$changeDir cd build &&"
+      command="$command ctest --output-on-failure -j4 --timeout=20"
+      echo $command | $execPrefix /bin/sh

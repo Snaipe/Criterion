@@ -55,7 +55,7 @@ cr_add_subproject (csptr
   PATH dependencies/libcsptr
   OPTS
     -DLIBCSPTR_TESTS=OFF
-    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}"
+    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS} -Wno-unused-command-line-argument"
   CMAKE
   IF NOT CSPTR_FOUND
 )
