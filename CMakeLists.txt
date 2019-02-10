@@ -50,12 +50,18 @@ find_package(Nanomsg)
 find_package(BoxFort)
 find_package(Libgit2)
 
+if (MSVC)
+  set (CSPTR_C_FLAGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS}")
+else ()
+  set (CSPTR_C_FLAGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS} -Wno-unused-command-line-argument")
+endif ()
+
 cr_add_subproject (csptr
   GIT "https://github.com/Snaipe/libcsptr#0d52904"
   PATH dependencies/libcsptr
   OPTS
     -DLIBCSPTR_TESTS=OFF
-    "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} ${PIC_C_FLAGS} ${VISI_C_FLAGS} -Wno-unused-command-line-argument"
+    ${CSPTR_C_FLAGS}
   CMAKE
   IF NOT CSPTR_FOUND
 )
