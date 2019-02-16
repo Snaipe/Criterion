@@ -70,7 +70,7 @@ easily use a struct to hold the context as a workaround:
     }
 
     ParameterizedTest(struct my_params *param, suite_name, test_name) {
-        // access param.param0, param.param1, ...
+        // access param->param0, param->param1, ...
     }
 
 C++ users can also use a simpler syntax before returning an array of parameters:
