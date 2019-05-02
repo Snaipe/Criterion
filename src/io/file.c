@@ -44,8 +44,9 @@ int cr_file_match_file(FILE *f, FILE *ref)
     rewind(ref);
 
     size_t read1 = 1, read2 = 1;
-    int matches = 0;
-    while ((read1 = fread(buf1, 1, sizeof (buf1), f)) > 0
+    int matches = 1;
+    while (matches
+            && (read1 = fread(buf1, 1, sizeof (buf1), f)) > 0
             && (read2 = fread(buf2, 1, sizeof (buf2), ref)) > 0) {
         if (read1 != read2) {
             matches = 0;
