@@ -19,6 +19,7 @@ Display the help message
       --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
+      --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
@@ -47,6 +48,7 @@ Display the help message
       --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
+      --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
@@ -78,6 +80,7 @@ Display usage on invalid CLI flags
       --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
+      --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)
       --always-succeed: always exit with 0
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
