@@ -77,6 +77,8 @@
     "(no file or \"-\" means stderr)\n"                     \
     "    --xml[=FILE]: writes XML report in FILE "          \
     "(no file or \"-\" means stderr)\n"                     \
+    "    --json[=FILE]: writes JSON report in FILE "        \
+    "(no file or \"-\" means stderr)\n"                     \
     "    --always-succeed: always exit with 0\n"            \
     "    --verbose[=level]: sets verbosity to level "       \
     "(1 by default)\n"                                      \
