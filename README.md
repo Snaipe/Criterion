@@ -48,6 +48,11 @@ the user would have with other frameworks:
     $ sudo apt-get update
     $ sudo apt-get install criterion-dev
     ```
+* Centos/Fedora:
+
+    ```bash
+    $ rpm -ivh https://github.com/samber/criterion-rpm-package/releases/download/2.3.2/libcriterion-devel-v2.3.2-0.x86_64.rpm
+    ```
 
 ### Binary archives
 
