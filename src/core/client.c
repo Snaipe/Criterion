@@ -494,6 +494,15 @@ bool handle_death(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
                 break;
             }
             ctx->tstats->exit_code = death->status;
+            if (ctx->tstats->test->data->exit_code != death->status &&
+                    ctx->tstats->test_status == CR_STATUS_PASSED) {
+                --ctx->gstats->tests_passed;
+                --ctx->sstats->tests_passed;
+                ++ctx->gstats->tests_failed;
+                ++ctx->sstats->tests_failed;
+
+                ctx->tstats->test_status = CR_STATUS_FAILED;
+            }
             if (ctx->state == CS_MAIN) {
                 double elapsed_time = 0;
                 push_event(POST_TEST, .data = &elapsed_time);
