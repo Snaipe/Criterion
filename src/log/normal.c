@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#define _GNU_SOURCE
 #define CRITERION_LOGGING_COLORS
 #include <stdio.h>
 #include <stdlib.h>
