@@ -39,6 +39,7 @@
 #include "string/diff.h"
 #include "config.h"
 #include "common.h"
+#include "signals/signal_names.h"
 
 #define LOG_DIFF_THRESHOLD    25
 
@@ -59,7 +60,7 @@ static msg_t msg_assert_eq_short = N_("    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$
 static msg_t msg_assert_param = N_("    %1$s: %2$s%3$s%4$s\n");
 static msg_t msg_theory_fail = N_("  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n");
 static msg_t msg_test_timeout = N_("%1$s::%2$s: Timed out. (%3$3.2fs)\n");
-static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n");
+static msg_t msg_test_crash_line = N_("%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal (%7$s) caught below this line!\n");
 static msg_t msg_test_crash = N_("%1$s::%2$s: CRASH!\n");
 static msg_t msg_test_generic = N_("%1$s::%2$s: %3$s\n");
 static msg_t msg_test_other_crash = N_("%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown.%4$s\n");
@@ -84,7 +85,7 @@ static msg_t msg_assert_eq_short = "    %s: %s[-%s-]%s%s{+%s+}%s\n";
 static msg_t msg_assert_param = "    %s: %s%s%s\n";
 static msg_t msg_theory_fail = "  Theory %s::%s failed with the following parameters: (%s)\n";
 static msg_t msg_test_timeout = "%s::%s: Timed out. (%3.2fs)\n";
-static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal caught below this line!\n";
+static msg_t msg_test_crash_line = "%s%s%s:%s%u%s: Unexpected signal (%s) caught below this line!\n";
 static msg_t msg_test_crash = "%s::%s: CRASH!\n";
 static msg_t msg_test_generic = "%s::%s: %s\n";
 static msg_t msg_test_other_crash = "%sWarning! The test `%s::%s` crashed during its setup or teardown.%s\n";
@@ -358,7 +359,8 @@ void normal_log_test_crash(struct criterion_test_stats *stats)
     criterion_pimportant(CRITERION_PREFIX_DASHES,
             _(msg_test_crash_line),
             CR_FG_BOLD, sf ? basename_compat(stats->file) : stats->file, CR_RESET,
-            CR_FG_RED, stats->progress, CR_RESET);
+            CR_FG_RED, stats->progress, CR_RESET,
+            get_signal_name(stats->signal));
     criterion_pimportant(CRITERION_PREFIX_FAIL, _(msg_test_crash),
             stats->test->category,
             stats->test->name);

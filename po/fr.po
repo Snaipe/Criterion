@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: criterion 2.0.0\n"
 "Report-Msgid-Bugs-To: franklinmathieu+criterion@gmail.com\n"
-"POT-Creation-Date: 2017-07-16 19:18+0100\n"
+"POT-Creation-Date: 2019-02-02 18:12+0100\n"
 "PO-Revision-Date: 2015-04-03 17:58+0200\n"
 "Last-Translator:  <franklinmathieu@gmail.com>\n"
 "Language-Team: French\n"
@@ -18,85 +18,86 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/log/normal.c:47
+#: src/log/normal.c:48
 #, c-format
 msgid "Criterion v%s\n"
 msgstr "Criterion v%s\n"
 
-#: src/log/normal.c:48
+#: src/log/normal.c:49
 #, c-format
 msgid "  %s\n"
 msgstr "  %s\n"
 
-#: src/log/normal.c:51 src/log/normal.c:52
+#: src/log/normal.c:52 src/log/normal.c:53
 #, c-format
 msgid "%1$s::%2$s\n"
 msgstr "%1$s::%2$s\n"
 
-#: src/log/normal.c:53
+#: src/log/normal.c:54
 #, c-format
 msgid "%1$s::%2$s: (%3$3.2fs)\n"
 msgstr "%1$s::%2$s: (%3$3.2fs)\n"
 
-#: src/log/normal.c:54
+#: src/log/normal.c:55
 #, c-format
 msgid "%1$s::%2$s: Test was skipped\n"
 msgstr "%1$s::%2$s: Le test a été sauté\n"
 
-#: src/log/normal.c:55
+#: src/log/normal.c:56
 #, c-format
 msgid "%1$s::%2$s: Test is disabled\n"
 msgstr "%1$s::%2$s: Le test est désactivé\n"
 
-#: src/log/normal.c:56
+#: src/log/normal.c:57
 #, fuzzy, c-format
 msgid "%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n"
 msgstr "%1$s%2$s%3$s:%4$s%5$d%6$s: %7$s\n"
 
-#: src/log/normal.c:57
+#: src/log/normal.c:58
 #, fuzzy, c-format
 msgid "  %1$s: %2$s\n"
 msgstr "  %1$s::%2$s\n"
 
-#: src/log/normal.c:58
+#: src/log/normal.c:59
 #, fuzzy, c-format
 msgid "    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n"
 msgstr "    %1$s: %2$s[-%3$s-]%4$s%5$s{+%6$s+}%7$s\n"
 
-#: src/log/normal.c:59
+#: src/log/normal.c:60
 #, fuzzy, c-format
 msgid "    %1$s: %2$s%3$s%4$s\n"
 msgstr "    %1$s: %2$s%3$s%4$s\n"
 
-#: src/log/normal.c:60
+#: src/log/normal.c:61
 #, fuzzy, c-format
 msgid "  Theory %1$s::%2$s failed with the following parameters: (%3$s)\n"
 msgstr ""
 "  La théorie %1$s::%2$s a échoué avec les paramètres suivants: (%3$s)\n"
 
-#: src/log/normal.c:61
+#: src/log/normal.c:62
 #, fuzzy, c-format
 msgid "%1$s::%2$s: Timed out. (%3$3.2fs)\n"
 msgstr "%1$s::%2$s: Délai expiré. (%3$3.2fs)\n"
 
-#: src/log/normal.c:62
-#, c-format
-msgid "%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal caught below this line!\n"
+#: src/log/normal.c:63
+#, fuzzy, c-format
+msgid ""
+"%1$s%2$s%3$s:%4$s%5$u%6$s: Unexpected signal (%7$s) caught below this line!\n"
 msgstr ""
-"%1$s%2$s%3$s:%4$s%5$u%6$s: Un signal inattendu a été reçu après cette "
+"%1$s%2$s%3$s:%4$s%5$u%6$s: Un signal inattendu (%7$s) a été reçu après cette "
 "ligne!\n"
 
-#: src/log/normal.c:63
+#: src/log/normal.c:64
 #, c-format
 msgid "%1$s::%2$s: CRASH!\n"
 msgstr "%1$s::%2$s: PLANTAGE!\n"
 
-#: src/log/normal.c:64
+#: src/log/normal.c:65
 #, fuzzy, c-format
 msgid "%1$s::%2$s: %3$s\n"
 msgstr "%1$s::%2$s: %3$s\n"
 
-#: src/log/normal.c:65
+#: src/log/normal.c:66
 #, fuzzy, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` crashed during its setup or teardown."
@@ -105,7 +106,7 @@ msgstr ""
 "%1$sAttention! Le test `%2$s::%3$s` a planté pendant son initialisation ou "
 "sa finalisation.%4$s\n"
 
-#: src/log/normal.c:66
+#: src/log/normal.c:67
 #, fuzzy, c-format
 msgid ""
 "%1$sWarning! The test `%2$s::%3$s` exited during its setup or teardown.%4$s\n"
@@ -113,14 +114,14 @@ msgstr ""
 "%1$sAttention! Le test `%2$s::%3$s` a quitté pendant son initialisation ou "
 "sa finalisation.%4$s\n"
 
-#: src/log/normal.c:67
+#: src/log/normal.c:68
 #, c-format
 msgid "Running %1$s%2$lu%3$s test from %4$s%5$s%6$s:\n"
 msgid_plural "Running %1$s%2$lu%3$s tests from %4$s%5$s%6$s:\n"
 msgstr[0] "Lancement de %1$s%2$lu%3$s test dans %4$s%5$s%6$s:\n"
 msgstr[1] "Lancement de %1$s%2$lu%3$s tests dans %4$s%5$s%6$s:\n"
 
-#: src/log/normal.c:69
+#: src/log/normal.c:70
 #, c-format
 msgid ""
 "%1$sSynthesis: Tested: %2$s%3$lu%4$s | Passing: %5$s%6$lu%7$s | Failing: %8$s"
@@ -129,12 +130,12 @@ msgstr ""
 "%1$sSynthèse: Testés: %2$s%3$lu%4$s | Validés: %5$s%6$lu%7$s | Échoués: %8$s"
 "%9$lu%10$s | Plantages: %11$s%12$lu%13$s %14$s\n"
 
-#: src/log/normal.c:74
+#: src/log/normal.c:75
 #, fuzzy, c-format
 msgid "%2$*1$s%3$s%4$s%5$s\n"
 msgstr "%2$*1$s%3$s%4$s%5$s\n"
 
-#: src/log/normal.c:192
+#: src/log/normal.c:193
 msgid "Assertion Failed"
 msgstr "Échec d'assertion"
 
@@ -207,7 +208,7 @@ msgstr "L'instruction `%1$s` a levé une instance de l'exception `%2$s`."
 msgid "The statement `%1$s` did not throw an instance of the `%2$s` exception."
 msgstr "L'instruction `%1$s` n'a pas levé d'instance de l'exception `%2$s`."
 
-#: src/core/runner.c:68
+#: src/core/runner.c:70
 #, c-format
 msgid ""
 "%1$sWarning! Criterion has detected that it is running under valgrind, but "
@@ -218,13 +219,13 @@ msgstr ""
 "nombre de tâches est explicitement défini. Les rapports d'erreur risquent "
 "d'être déroutants!%2$s\n"
 
-#: src/io/output.c:36
+#: src/io/output.c:38
 #, fuzzy, c-format
 msgid "Could not open the file @ `%1$s` for %2$s reporting: %3$s.\n"
 msgstr ""
 "Impossible d'ouvrir le fichier `%1$s` pour faire le rapport %2$s: %3$s.\n"
 
-#: src/io/output.c:37
+#: src/io/output.c:39
 #, c-format
 msgid "Writing %1$s report in `%2$s`.\n"
 msgstr "Écriture du rapport %1$s dans `%2$s`.\n"

@@ -1,13 +1,13 @@
 Simple crashes & signal testing
 
   $ signal.c.bin
-  [----] signal.c:14: Unexpected signal caught below this line!
+  [----] signal.c:14: Unexpected signal (SIGSEGV) caught below this line!
   [FAIL] simple::uncaught: CRASH!
   [FAIL] simple::wrong_signal
   [====] Synthesis: Tested: 3 | Passing: 1 | Failing: 2 | Crashing: 1 
 
   $ signal.cc.bin
-  [----] signal.cc:14: Unexpected signal caught below this line!
+  [----] signal.cc:14: Unexpected signal (SIGSEGV) caught below this line!
   [FAIL] simple::uncaught: CRASH!
   [FAIL] simple::wrong_signal
   [====] Synthesis: Tested: 3 | Passing: 1 | Failing: 2 | Crashing: 1 
@@ -20,7 +20,7 @@ Simple crashes & signal testing (verbose)
   [RUN ] simple::caught
   [PASS] simple::caught
   [RUN ] simple::uncaught
-  [----] signal.c:14: Unexpected signal caught below this line!
+  [----] signal.c:14: Unexpected signal (SIGSEGV) caught below this line!
   [FAIL] simple::uncaught: CRASH!
   [RUN ] simple::wrong_signal
   [FAIL] simple::wrong_signal
@@ -32,7 +32,7 @@ Simple crashes & signal testing (verbose)
   [RUN ] simple::caught
   [PASS] simple::caught
   [RUN ] simple::uncaught
-  [----] signal.cc:14: Unexpected signal caught below this line!
+  [----] signal.cc:14: Unexpected signal (SIGSEGV) caught below this line!
   [FAIL] simple::uncaught: CRASH!
   [RUN ] simple::wrong_signal
   [FAIL] simple::wrong_signal
