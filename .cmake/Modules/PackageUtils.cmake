@@ -50,9 +50,9 @@ function (cr_add_library _LIB)
   endforeach ()
 
   install(TARGETS ${_LIB}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib ${install_flags}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} ${install_flags}
   )
 endfunction ()
 
