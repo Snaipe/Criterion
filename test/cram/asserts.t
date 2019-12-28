@@ -352,7 +352,7 @@ Testing all assert messages
   [----] failmessages.c:65: Assertion Failed
   [----]   eq(str, "", "foo"): 
   [----]     diff: [-""-]{+"foo"+}
-  [----] failmessages.c:68: Assertion Failed
+  [----] failmessages.c:66: Assertion Failed
   [----]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -"reallyreallylongstringindeedmygoodsirormadam"
@@ -366,7 +366,7 @@ Testing all assert messages
   [----] failmessages.c:71: Assertion Failed
   [----]   eq(wcs, L"", L"foo"): 
   [----]     diff: [-L""-]{+L"foo"+}
-  [----] failmessages.c:74: Assertion Failed
+  [----] failmessages.c:72: Assertion Failed
   [----]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -L"reallyreallylongstringindeedmygoodsirormadam"
@@ -816,7 +816,7 @@ C++ equivalents
   [----] failmessages.cc:62: Assertion Failed
   [----]   eq(str, "", "foo"): 
   [----]     diff: [-""-]{+"foo"+}
-  [----] failmessages.cc:65: Assertion Failed
+  [----] failmessages.cc:63: Assertion Failed
   [----]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -"reallyreallylongstringindeedmygoodsirormadam"
@@ -830,7 +830,7 @@ C++ equivalents
   [----] failmessages.cc:68: Assertion Failed
   [----]   eq(wcs, L"", L"foo"): 
   [----]     diff: [-L""-]{+L"foo"+}
-  [----] failmessages.cc:71: Assertion Failed
+  [----] failmessages.cc:69: Assertion Failed
   [----]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -L"reallyreallylongstringindeedmygoodsirormadam"
