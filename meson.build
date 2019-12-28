@@ -129,11 +129,9 @@ threads = dependency('threads')
 nanomsg = dependency('nanomsg')
 libgit2 = dependency('libgit2')
 boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort_dep'])
+libffi = dependency('libffi', required: get_option('theories'))
 
-# These libraries are currently broken for not providing a pkg-config file
-dyncall = cc.find_library('dyncall_s', required: get_option('theories'))
-
-config.set('ENABLE_THEORIES', dyncall.found())
+config.set('ENABLE_THEORIES', libffi.found())
 
 # optional platform-dependent standard libs
 librt = cc.find_library('rt', required: false)

@@ -69,7 +69,7 @@ configure_file(input         : 'config.h.in',
 deps = [
 	threads,
 	boxfort,
-	dyncall,
+	libffi,
 	libgit2,
 	nanomsg,
 	librt,
