@@ -33,6 +33,8 @@ struct cri_diff_buffer {
     size_t size;
 };
 
+void cri_diff_init(void);
+
 int cri_diff_buffer_to_buffer(const struct cri_diff_buffer *b1,
         const struct cri_diff_buffer *b2, struct cri_diff_buffer *out);
 

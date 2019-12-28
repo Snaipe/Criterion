@@ -40,6 +40,7 @@
 #include "compat/posix.h"
 #include "compat/processor.h"
 #include "compat/kill.h"
+#include "string/diff.h"
 #include "string/extglobmatch.h"
 #include "string/i18n.h"
 #include "io/event.h"
@@ -214,6 +215,7 @@ CR_API struct criterion_test_set *criterion_initialize(void)
     }
 
     init_i18n();
+    cri_diff_init();
 
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;

@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #include <git2/diff.h>
+#include <git2/global.h>
 #include <string.h>
 
 #include "diff.h"
@@ -31,6 +32,13 @@ struct cri_diff_context {
     struct cri_diff_buffer *buf;
     size_t offset;
 };
+
+/* Needs to be called before cri_diff_buffer_to_buffer
+   to mitigate recent crash in libgit2. */
+void cri_diff_init(void)
+{
+    git_libgit2_init();
+}
 
 static int process_line(const git_diff_delta *delta, const git_diff_hunk *hunk,
         const git_diff_line *line, void *data)
