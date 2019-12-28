@@ -23,7 +23,6 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
-#include <csptr/smalloc.h>
 
 #include "criterion/internal/parameterized.h"
 #include "criterion/redirect.h"
@@ -32,6 +31,7 @@
 #include "compat/posix.h"
 #include "compat/processor.h"
 #include "compat/kill.h"
+#include "csptr/smalloc.h"
 #include "log/logging.h"
 #include "protocol/protocol.h"
 #include "protocol/connect.h"

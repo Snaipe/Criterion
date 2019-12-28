@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #include <stdio.h>
-#include <csptr/smalloc.h>
 
 #include "criterion/assert.h"
+#include "csptr/smalloc.h"
 #include "pipe-internal.h"
 
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)

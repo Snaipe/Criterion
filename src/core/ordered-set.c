@@ -24,7 +24,7 @@
 #include <string.h>
 #include <criterion/internal/common.h>
 #include <criterion/internal/ordered-set.h>
-#include <csptr/smalloc.h>
+#include "csptr/smalloc.h"
 #include "common.h"
 
 static void destroy_ordered_set(void *ptr, CR_UNUSED void *meta)

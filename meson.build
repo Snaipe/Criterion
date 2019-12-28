@@ -131,7 +131,6 @@ libgit2 = dependency('libgit2')
 
 # These libraries are currently broken for not providing a pkg-config file
 boxfort = cc.find_library('boxfort')
-csptr = cc.find_library('csptr')
 dyncall = cc.find_library('dyncall_s', required: get_option('theories'))
 
 config.set('ENABLE_THEORIES', dyncall.found())

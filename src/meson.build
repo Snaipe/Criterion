@@ -27,6 +27,9 @@ sources = files(
 	'core/test.c',
 	'core/theories.c',
 
+	'csptr/array.c',
+	'csptr/mman.c',
+
 	'entry/entry.c',
 	'entry/options.c',
 	'entry/params.c',
@@ -66,7 +69,6 @@ configure_file(input         : 'config.h.in',
 deps = [
 	threads,
 	boxfort,
-	csptr,
 	dyncall,
 	libgit2,
 	nanomsg,

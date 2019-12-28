@@ -24,13 +24,13 @@
 #include <stdio.h>
 #include <locale.h>
 #include <getopt.h>
-#include <csptr/smalloc.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
 #include "compat/posix.h"
 #include "compat/strtok.h"
 #include "core/runner.h"
+#include "csptr/smalloc.h"
 #include "io/output.h"
 #include "config.h"
 #include "common.h"

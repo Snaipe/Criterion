@@ -25,7 +25,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <csptr/smalloc.h>
 #include <nanomsg/nn.h>
 #include "criterion/internal/test.h"
 #include "criterion/options.h"
@@ -40,6 +39,7 @@
 #include "compat/posix.h"
 #include "compat/processor.h"
 #include "compat/kill.h"
+#include "csptr/smalloc.h"
 #include "string/diff.h"
 #include "string/extglobmatch.h"
 #include "string/i18n.h"

@@ -23,8 +23,8 @@
  */
 #include <stdio.h>
 #include <inttypes.h>
-#include <csptr/smalloc.h>
 #include "compat/strtok.h"
+#include "csptr/smalloc.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
 #include "criterion/options.h"
