@@ -21,9 +21,14 @@ is_git_repo = run_command([isdir, '.git']).returncode() == 0
 
 version = 'v' + meson.project_version()
 if git.found() and is_git_repo
-	version = run_command([git.path(), 'describe', '--dirty', '--tags']).stdout().strip()
-	branch  = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD']).stdout().strip()
-
+	git_version = run_command([git.path(), 'describe', '--dirty', '--tags']).stdout().strip()
+	branch = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD']).stdout().strip()
+	if branch == 'HEAD'
+		branch = run_command([git.path(), 'rev-parse', 'HEAD']).stdout().strip()
+	endif
+	if git_version != ''
+		version = git_version
+	endif
 	if branch != 'master'
 		version = '@0@ (@1@)'.format(version, branch)
 	endif
