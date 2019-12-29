@@ -114,6 +114,9 @@ foreach check : checks
 	config.set(name, result)
 endforeach
 
+i18n = import('i18n')
+do_i18n = get_option('i18n')
+
 subdir('po')
 
 if get_option('dev')
@@ -192,6 +195,14 @@ config.set('ENABLE_THEORIES', libffi.found())
 # optional platform-dependent standard libs
 librt = cc.find_library('rt', required: false)
 libm  = cc.find_library('m',  required: false)
+
+if not do_i18n.disabled()
+	libintl = cc.find_library('intl', required: false)
+	has_gettext_fn = cc.has_header_symbol('libintl.h', 'gettext', dependencies: [libintl], required: do_i18n)
+
+	deps += libintl
+	config.set('ENABLE_NLS', has_gettext_fn)
+endif
 
 if target_machine.system() == 'windows'
 	config.set10('HAVE_WIN32_THREADS', true)
