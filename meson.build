@@ -129,7 +129,7 @@ threads = dependency('threads')
 nanomsg = dependency('nanomsg')
 libgit2 = dependency('libgit2')
 boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort_dep'])
-libffi = dependency('libffi', required: get_option('theories'))
+libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'])
 
 config.set('ENABLE_THEORIES', libffi.found())
 
