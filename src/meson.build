@@ -66,16 +66,6 @@ configure_file(input         : 'config.h.in',
                output        : 'config.h',
                configuration : config)
 
-deps = [
-	threads,
-	boxfort,
-	libffi,
-	libgit2,
-	nanomsg,
-	librt,
-	libm,
-]
-
 criterion = shared_library('criterion', sources,
 	include_directories: [criterion_includedir],
 	version: '3.1.0',

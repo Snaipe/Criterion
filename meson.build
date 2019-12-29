@@ -1,5 +1,5 @@
 project('criterion', 'c',
-		meson_version   : '>= 0.48.0',
+		meson_version   : '>= 0.51.0',
 		license         : 'MIT',
 		version         : '2.3.3',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
@@ -125,8 +125,38 @@ criterion_includedir = include_directories(
 	'src',
 )
 
+deps = []
+
+cmake = import('cmake')
+
 threads = dependency('threads')
-nanomsg = dependency('nanomsg')
+
+nanomsg = dependency('nanomsg', required: false)
+if not nanomsg.found()
+	nanomsg_proj = cmake.subproject('nanomsg',
+		cmake_options: [
+			'-DNN_TESTS=OFF',
+			'-DNN_TOOLS=OFF',
+			'-DNN_STATIC_LIB=ON',
+			'-DBUILD_SHARED_LIBS=OFF',
+			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+		])
+	nanomsg = nanomsg_proj.dependency('nanomsg')
+	# nanomsg has a bad include file hierarchy when used from source
+	config.set('NN_H', '<src/nn.h>')
+	config.set('NN_REQREP_H', '<src/reqrep.h>')
+
+	# Required by nanomsg
+	deps += [
+		cc.find_library('anl', required: false),
+		cc.find_library('ws2_32', required: false),
+		cc.find_library('mswsock', required: false),
+	]
+else
+	config.set('NN_H', '<nanomsg/nn.h>')
+	config.set('NN_REQREP_H', '<nanomsg/reqrep.h>')
+endif
+
 libgit2 = dependency('libgit2')
 boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort_dep'])
 libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'])
@@ -142,6 +172,16 @@ if target_machine.system() == 'windows'
 else
 	config.set10('HAVE_PTHREADS', true)
 endif
+
+deps += [
+	threads,
+	boxfort,
+	libffi,
+	libgit2,
+	nanomsg,
+	librt,
+	libm,
+]
 
 subdir('include')
 subdir('src')

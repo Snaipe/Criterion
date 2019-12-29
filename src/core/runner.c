@@ -22,10 +22,11 @@
  * THE SOFTWARE.
  */
 #define CRITERION_LOGGING_COLORS
+#include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <nanomsg/nn.h>
+#include NN_H
 #include "criterion/internal/test.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
@@ -49,7 +50,6 @@
 #include "abort.h"
 #include "client.h"
 #include "common.h"
-#include "config.h"
 #include "err.h"
 #include "report.h"
 #include "runner.h"

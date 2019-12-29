@@ -21,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <nanomsg/nn.h>
+#include "config.h"
+#include NN_H
 #include <stdlib.h>
 #include "protocol/protocol.h"
 #include "log/logging.h"

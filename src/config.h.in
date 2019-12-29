@@ -21,6 +21,9 @@
 #mesondefine HAVE_WIN32_SYNCHAPI
 #mesondefine HAVE_WIN32_THREADS
 
+#mesondefine NN_H
+#mesondefine NN_REQREP_H
+
 #define LOCALEDIR "@localedir@"
 #define PACKAGE "@package@"
 #define VERSION "@version@"

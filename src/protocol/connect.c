@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
 #include <assert.h>
 #include <errno.h>
-#include <nanomsg/nn.h>
-#include <nanomsg/reqrep.h>
+#include NN_H
+#include NN_REQREP_H
 #include <string.h>
 
 #include "err.h"
