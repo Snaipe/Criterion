@@ -157,7 +157,28 @@ else
 	config.set('NN_REQREP_H', '<nanomsg/reqrep.h>')
 endif
 
-libgit2 = dependency('libgit2')
+libgit2 = dependency('libgit2', required: false)
+if not libgit2.found()
+	libgit2_proj = cmake.subproject('libgit2',
+		cmake_options: [
+			'-DBUILD_SHARED_LIBS=OFF',
+			'-DBUILD_CLAR=OFF',
+			'-DUSE_ICONV=OFF',
+			'-DUSE_SSH=OFF',
+			'-DUSE_GSSAPI=OFF',
+			'-DUSE_OPENSSL=OFF',
+			'-DVALGRIND=OFF',
+			'-DCURL=OFF',
+			'-DWINHTTP=OFF',
+			'-DCMAKE_DISABLE_FIND_PACKAGE_HTTP_Parser=TRUE',
+			'-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE',
+			'-DCMAKE_DISABLE_FIND_PACKAGE_Iconv=TRUE',
+			'-DCMAKE_DISABLE_FIND_PACKAGE_Security=TRUE',
+			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+		])
+	libgit2 = libgit2_proj.dependency('git2')
+endif
+
 boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort_dep'])
 libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'])
 
