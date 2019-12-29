@@ -63,15 +63,11 @@ Test(messages, eq) {
     cr_expect(eq(ptr, (void *) 1, (void *) 0));
 
     cr_expect(eq(str, "", "foo"));
-    cr_expect(eq(str,
-            "reallyreallylongstringindeedmygoodsirormadam",
-            "yetanotherreallyreallylongstring"));
+    cr_expect(eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"));
     cr_expect(eq(str, "foo\nbar", "foo\nbaz"));
 
     cr_expect(eq(wcs, L"", L"foo"));
-    cr_expect(eq(wcs,
-            L"reallyreallylongstringindeedmygoodsirormadam",
-            L"yetanotherreallyreallylongstring"));
+    cr_expect(eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"));
     cr_expect(eq(wcs, L"foo\nbar", L"foo\nbaz"));
 
     int a = 0;
