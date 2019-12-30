@@ -25,19 +25,17 @@ Then, run the following commands to build Criterion:
 
 .. code-block:: bash
 
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ cmake --build .
+    $ meson build
+    $ ninja -C build
 
 Installing the library and language files (Linux, OS X, FreeBSD)
 ----------------------------------------------------------------
 
-From the build directory created above, run with an elevated shell:
+Run with an elevated shell:
 
 .. code-block:: bash
 
-    $ make install
+    $ ninja -C build install
 
 Usage
 -----
