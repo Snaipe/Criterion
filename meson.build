@@ -160,6 +160,9 @@ if not nanomsg.found()
 		cc.find_library('ws2_32', required: false),
 		cc.find_library('mswsock', required: false),
 	]
+
+	# Required on windows to avoid symbols being dllimport-ed on a static lib
+	add_project_arguments('-DNN_STATIC_LIB', language: ['c', 'cpp'])
 else
 	config.set('NN_H', '<nanomsg/nn.h>')
 	config.set('NN_REQREP_H', '<nanomsg/reqrep.h>')
@@ -187,7 +190,7 @@ if not libgit2.found()
 	libgit2 = libgit2_proj.dependency('git2')
 endif
 
-boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort_dep'])
+boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort'])
 libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'])
 
 config.set('ENABLE_THEORIES', libffi.found())
