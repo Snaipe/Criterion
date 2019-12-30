@@ -32,6 +32,22 @@ Alpine (gcc,i386)_task:
   <<: *pipeline
   test_script: ninja -C build test
 
+Alpine (gcc,arm)_task:
+  container:
+    image: snaipe/ci-meson:alpine-armhf
+  env:
+    CIRRUS_SHELL: /sbin/qemu-sh
+  setup_script: *alpine-deps
+  <<: *pipeline
+
+Alpine (gcc,aarch64)_task:
+  container:
+    image: snaipe/ci-meson:alpine-aarch64
+  env:
+    CIRRUS_SHELL: /sbin/qemu-sh
+  setup_script: *alpine-deps
+  <<: *pipeline
+
 MacOS_task:
   macos_instance:
     image: monterey-xcode-13.1
