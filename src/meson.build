@@ -66,7 +66,7 @@ configure_file(input         : 'config.h.in',
                output        : 'config.h',
                configuration : config)
 
-criterion = shared_library('criterion', sources,
+libcriterion = both_libraries('criterion', sources,
 	include_directories: [criterion_includedir],
 	version: '3.1.0',
 	dependencies: deps,
@@ -76,14 +76,16 @@ criterion = shared_library('criterion', sources,
 	]),
 )
 
+criterion = declare_dependency(
+	include_directories: [criterion_api],
+	dependencies: deps,
+	link_with: [libcriterion])
+
 pkgconfig = import('pkgconfig')
 pkgconfig.generate(
 	name: meson.project_name(),
 	description: 'A KISS, Cross platform unit testing framework for C and C++',
 	url: 'https://snai.pe/git/criterion',
-)
-
-testlib = static_library('criterion_testlib', sources,
-	include_directories: [criterion_includedir],
 	dependencies: deps,
+	libraries: [criterion],
 )

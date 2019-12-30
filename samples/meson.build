@@ -52,6 +52,6 @@ foreach sample : samples
 	e = executable(sample + '.bin', sample,
 			include_directories: [criterion_api],
 			dependencies: [libm],
-			link_with: criterion)
+			link_with: libcriterion.get_shared_lib())
 	test(sample, e, args: '--always-succeed')
 endforeach

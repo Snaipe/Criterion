@@ -6,7 +6,7 @@ unit_test_sources = files(
 
 unit_tests = executable('unit_tests', unit_test_sources,
 		include_directories: [criterion_includedir],
-		link_with: testlib)
+		link_with: libcriterion.get_static_lib())
 test('unit tests', unit_tests)
 
 sh   = find_program('sh', required: false)
