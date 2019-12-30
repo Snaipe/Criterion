@@ -17,7 +17,7 @@ if sh.found() and cram.found()
 	endif
 
 	test('cram tests', cram,
-			timeout: 120,
+			timeout: 240,
 			args: [meson.current_source_dir()],
 			env: env)
 endif
