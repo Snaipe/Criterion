@@ -13,14 +13,6 @@ samples = [
 	'suites.c',
 	'theories.c',
 	'timeout.c',
-
-	'tests/exit.c',
-	'tests/failmessages.c',
-	'tests/flood.c',
-	'tests/long-messages.c',
-	'tests/other-crashes.c',
-	'tests/theories_regression.c',
-	'tests/with-time.c',
 ]
 
 if has_cxx
@@ -38,13 +30,6 @@ if has_cxx
 		'skip.cc',
 		'suites.cc',
 		'theories.cc',
-
-		'tests/exception.cc',
-		'tests/exit.cc',
-		'tests/failmessages.cc',
-		'tests/long-messages.cc',
-		'tests/other-crashes.cc',
-		'tests/theories_regression.cc',
 	]
 endif
 
@@ -53,5 +38,5 @@ foreach sample : samples
 			include_directories: [criterion_api],
 			dependencies: [libm],
 			link_with: libcriterion.get_shared_lib())
-	test(sample, e, args: '--always-succeed')
+	test('sample / ' + sample, e, args: '--always-succeed')
 endforeach
