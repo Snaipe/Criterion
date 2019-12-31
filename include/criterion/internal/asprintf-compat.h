@@ -34,9 +34,22 @@
 
 #include "common.h"
 
+/* MinGW makes the distinction between the printf and gnu_printf archetypes,
+   because they provide a C99-compliant implementation of printf when
+   the __USE_MINGW_ANSI_STDIO macro is defined. Since cr_asprintf calls
+   the vsnprintf function and is compiled in libcriterion, we need to make
+   the choice of which printf function to use.
+
+   Naturally, we use the C99-compliant implementation. */
+#ifdef __MINGW32__
+# define CRI_PRINTF_FORMAT gnu_printf
+#else
+# define CRI_PRINTF_FORMAT printf
+#endif
+
 CR_BEGIN_C_API
 
-CR_FORMAT(printf, 2, 3)
+CR_FORMAT(CRI_PRINTF_FORMAT, 2, 3)
 CR_API int cr_asprintf(char **strp, const char *fmt, ...);
 CR_API int cr_vasprintf(char **strp, const char *fmt, va_list ap);
 CR_API void cr_asprintf_free(char *buf);
