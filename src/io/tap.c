@@ -59,21 +59,31 @@ static void print_test_normal(FILE *f, struct criterion_test_stats *stats)
             stats->test->name,
             DEF(stats->test->data->description, ""),
             stats->elapsed_time);
-    for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
-        if (!asrt->passed) {
-            char *dup = strdup(*asrt->message ? asrt->message : "");
-            char *saveptr = NULL;
-            char *line = strtok_r(dup, "\n", &saveptr);
-            bool sf = criterion_options.short_filename;
-            fprintf(f, "  %s:%u: Assertion failed: %s\n",
-                    sf ? basename_compat(asrt->file) : asrt->file,
-                    asrt->line,
-                    line);
 
-            while ((line = strtok_r(NULL, "\n", &saveptr)))
-                fprintf(f, "    %s\n", line);
-            free(dup);
+    if (stats->test_status == CR_STATUS_FAILED) {
+        fprintf(f, "  ---\n");
+
+        fprintf(f, "  assertions: " CR_SIZE_T_FORMAT "\n",
+                (size_t) (stats->passed_asserts + stats->failed_asserts));
+        fprintf(f, "  failures:\n");
+        for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
+            if (!asrt->passed) {
+                char *dup = strdup(*asrt->message ? asrt->message : "");
+                char *saveptr = NULL;
+                char *line = strtok_r(dup, "\n", &saveptr);
+                bool sf = criterion_options.short_filename;
+                fprintf(f, "  - %s:%u: |+\n      Assertion failed: %s\n",
+                        sf ? basename_compat(asrt->file) : asrt->file,
+                        asrt->line,
+                        line);
+
+                while ((line = strtok_r(NULL, "\n", &saveptr)))
+                    fprintf(f, "      %s\n", line);
+                free(dup);
+            }
         }
+
+        fprintf(f, "  ...\n");
     }
 }
 

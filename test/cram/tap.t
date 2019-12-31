@@ -8,7 +8,12 @@ Testing multiple samples with --tap
   # Running 2 tests from misc
   ok - misc::passing  \(\d\.\d\ds\) (re)
   not ok - misc::failing  \(\d\.\d\ds\) (re)
-    simple.c:4: Assertion failed: The expression 0 is false.
+    ---
+    assertions: 1
+    failures:
+    - simple.c:4: |+
+        Assertion failed: The expression 0 is false.
+    ...
 
   $ signal.c.bin --tap
   TAP version 13
@@ -17,6 +22,10 @@ Testing multiple samples with --tap
   
   # Running 3 tests from simple
   not ok - simple::wrong_signal  \(\d\.\d\ds\) (re)
+    ---
+    assertions: 0
+    failures:
+    ...
   not ok - simple::uncaught unexpected signal after signal.c:14
   ok - simple::caught  \(\d\.\d\ds\) (re)
 
@@ -30,13 +39,25 @@ Testing multiple samples with --tap
   ok - asserts::string  \(\d\.\d\ds\) (re)
   ok - asserts::stream  (0.00s)
   not ok - asserts::old_school  (0.00s)
-    asserts.c:19: Assertion failed: (null)
-    asserts.c:18: Assertion failed: You can fail an assertion with a message from anywhere
+    ---
+    assertions: 2
+    failures:
+    - asserts.c:19: |+
+        Assertion failed: (null)
+    - asserts.c:18: |+
+        Assertion failed: You can fail an assertion with a message from anywhere
+    ...
   ok - asserts::native  \(\d\.\d\ds\) (re)
   ok - asserts::float  \(\d\.\d\ds\) (re)
   not ok - asserts::base  \(\d\.\d\ds\) (re)
-    asserts.c:13: Assertion failed: This assert runs
-    asserts.c:12: Assertion failed: assert is fatal, expect isn't
+    ---
+    assertions: 2
+    failures:
+    - asserts.c:13: |+
+        Assertion failed: This assert runs
+    - asserts.c:12: |+
+        Assertion failed: assert is fatal, expect isn't
+    ...
   ok - asserts::array  \(\d\.\d\ds\) (re)
 
   $ more-suites.c.bin --tap
@@ -60,10 +81,15 @@ Testing multiple samples with --tap
   
   # Running 1 tests from sample
   not ok - sample::long_msg  \(\d\.\d\ds\) (re)
-    long-messages.c:4: Assertion failed: This is
-      A long message
-      Spawning multiple lines.
-      Formatting is respected.
+    ---
+    assertions: 1
+    failures:
+    - long-messages.c:4: |+
+        Assertion failed: This is
+        A long message
+        Spawning multiple lines.
+        Formatting is respected.
+    ...
 
   $ description.c.bin --tap
   TAP version 13
@@ -73,7 +99,12 @@ Testing multiple samples with --tap
   # Running 2 tests from misc
   ok - misc::skipped This one is skipped # SKIP test was skipped
   not ok - misc::failing Just a failing test \(\d\.\d\ds\) (re)
-    description.c:4: Assertion failed: The expression 0 is false.
+    ---
+    assertions: 1
+    failures:
+    - description.c:4: |+
+        Assertion failed: The expression 0 is false.
+    ...
 
 Testing --output=tap
 
@@ -85,7 +116,12 @@ Testing --output=tap
   # Running 2 tests from misc
   ok - misc::passing  \(\d\.\d\ds\) (re)
   not ok - misc::failing  \(\d\.\d\ds\) (re)
-    simple.c:4: Assertion failed: The expression 0 is false.
+    ---
+    assertions: 1
+    failures:
+    - simple.c:4: |+
+        Assertion failed: The expression 0 is false.
+    ...
 
 Testing CRITERION_OUTPUTS
 
@@ -97,7 +133,12 @@ Testing CRITERION_OUTPUTS
   # Running 2 tests from misc
   ok - misc::passing  \(\d\.\d\ds\) (re)
   not ok - misc::failing  \(\d\.\d\ds\) (re)
-    simple.c:4: Assertion failed: The expression 0 is false.
+    ---
+    assertions: 1
+    failures:
+    - simple.c:4: |+
+        Assertion failed: The expression 0 is false.
+    ...
 
   $ skip.c.bin --tap
   TAP version 13
