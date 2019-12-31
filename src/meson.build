@@ -68,6 +68,10 @@ configure_file(input         : 'config.h.in',
 
 libcriterion = both_libraries('criterion', sources,
 	include_directories: [criterion_includedir],
+	# extra args that we don't want to pass to tests, samples, etc
+	c_args: [
+		'-D__USE_MINGW_ANSI_STDIO',
+	],
 	version: '3.1.0',
 	dependencies: deps,
 	install: true,

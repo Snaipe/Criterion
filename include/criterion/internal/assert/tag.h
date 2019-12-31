@@ -241,19 +241,47 @@ CRI_ASSERT_DECLARE_NATIVE_FN(chr, "c")
 CRI_ASSERT_DECLARE_NATIVE_FN(i8, PRId8)
 CRI_ASSERT_DECLARE_NATIVE_FN(i16, PRId16)
 CRI_ASSERT_DECLARE_NATIVE_FN(i32, PRId32)
-CRI_ASSERT_DECLARE_NATIVE_FN(i64, PRId64)
 CRI_ASSERT_DECLARE_NATIVE_FN(u8, PRIu8)
 CRI_ASSERT_DECLARE_NATIVE_FN(u16, PRIu16)
 CRI_ASSERT_DECLARE_NATIVE_FN(u32, PRIu32)
-CRI_ASSERT_DECLARE_NATIVE_FN(u64, PRIu64)
 CRI_ASSERT_DECLARE_NATIVE_FN(int, "d")
 CRI_ASSERT_DECLARE_NATIVE_FN(uint, "u")
 CRI_ASSERT_DECLARE_NATIVE_FN(long, "ld")
 CRI_ASSERT_DECLARE_NATIVE_FN(ulong, "lu")
-CRI_ASSERT_DECLARE_NATIVE_FN(llong, "lld")
-CRI_ASSERT_DECLARE_NATIVE_FN(ullong, "llu")
 CRI_ASSERT_DECLARE_STR_FN(str, "", "s")
 CRI_ASSERT_DECLARE_STR_FN(wcs, "L", "ls")
+
+#ifdef _MSC_VER
+CRI_ASSERT_DECLARE_NATIVE_FN(llong, "I64d")
+CRI_ASSERT_DECLARE_NATIVE_FN(ullong, "I64u")
+#else
+CRI_ASSERT_DECLARE_NATIVE_FN(llong, "lld")
+CRI_ASSERT_DECLARE_NATIVE_FN(ullong, "llu")
+#endif
+
+#ifdef _MSC_VER
+# ifdef _WIN64
+#  define CRI_PRIxPTR "I64x"
+# else
+#  define CRI_PRIxPTR "lx"
+# endif
+CRI_ASSERT_DECLARE_NATIVE_FN(i64, "I64d")
+CRI_ASSERT_DECLARE_NATIVE_FN(u64, "I64u")
+#elif defined(__MINGW32__)
+# if __WORDSIZE == 64
+#  define CRI_PRI64_PREFIX "l"
+#  define CRI_PRIxPTR "lx"
+# else
+#  define CRI_PRI64_PREFIX "ll"
+#  define CRI_PRIxPTR "llx"
+# endif
+CRI_ASSERT_DECLARE_NATIVE_FN(i64, CRI_PRI64_PREFIX "d")
+CRI_ASSERT_DECLARE_NATIVE_FN(u64, CRI_PRI64_PREFIX "u")
+#else
+# define CRI_PRIxPTR PRIxPTR
+CRI_ASSERT_DECLARE_NATIVE_FN(i64, PRId64)
+CRI_ASSERT_DECLARE_NATIVE_FN(u64, PRIu64)
+#endif
 
 CRI_ASSERT_DECLARE_NATIVE_CMP_FN(iptr)
 CRI_ASSERT_DECLARE_NATIVE_CMP_FN(uptr)
@@ -266,21 +294,21 @@ static inline char *CRI_USER_TAG_ID(tostr, iptr)(intptr_t *e)
         absptr = -absptr;
 
     char *str = NULL;
-    cr_asprintf(&str, "%s0x%" PRIxPTR, *e < 0 ? "-" : "", absptr);
+    cr_asprintf(&str, "%s0x%" CRI_PRIxPTR, *e < 0 ? "-" : "", absptr);
     return str;
 }
 
 static inline char *CRI_USER_TAG_ID(tostr, uptr)(uintptr_t *e)
 {
     char *str = NULL;
-    cr_asprintf(&str, "0x%" PRIxPTR, *e);
+    cr_asprintf(&str, "0x%" CRI_PRIxPTR, *e);
     return str;
 }
 
 static inline char *CRI_USER_TAG_ID(tostr, ptr)(void **e)
 {
     char *str = NULL;
-    cr_asprintf(&str, "0x%" PRIxPTR, (uintptr_t) *e);
+    cr_asprintf(&str, "0x%" CRI_PRIxPTR, (uintptr_t) *e);
     return str;
 }
 
@@ -325,11 +353,7 @@ CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_DBL_DIG "g")
 CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_LDBL_DIG "Lg")
 #endif
 
-# ifdef _WIN32
-CRI_ASSERT_DECLARE_NATIVE_FN(sz, "Iu")
-# else
-CRI_ASSERT_DECLARE_NATIVE_FN(sz, "zu")
-# endif
+CRI_ASSERT_DECLARE_NATIVE_FN(sz, CRI_PRIuSIZE)
 #endif
 
 #if defined (_WIN32)
