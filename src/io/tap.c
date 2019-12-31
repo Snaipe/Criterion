@@ -42,7 +42,7 @@ static void print_prelude(FILE *f, struct criterion_global_stats *stats)
 
 static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats)
 {
-    fprintf(f, "\n# Running "
+    fprintf(f, "#\n# Running "
             CR_SIZE_T_FORMAT
             " tests from %s\n",
             stats->nb_tests,

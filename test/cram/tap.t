@@ -4,7 +4,7 @@ Testing multiple samples with --tap
   TAP version 13
   1..2
   # Criterion v.* (re)
-  
+  #
   # Running 2 tests from misc
   ok - misc::passing 
   not ok - misc::failing 
@@ -19,7 +19,7 @@ Testing multiple samples with --tap
   TAP version 13
   1..3
   # Criterion v.* (re)
-  
+  #
   # Running 3 tests from simple
   not ok - simple::wrong_signal 
     ---
@@ -33,7 +33,7 @@ Testing multiple samples with --tap
   TAP version 13
   1..8
   # Criterion v.* (re)
-  
+  #
   # Running 8 tests from asserts
   ok - asserts::wstring 
   ok - asserts::string 
@@ -64,13 +64,13 @@ Testing multiple samples with --tap
   TAP version 13
   1..3
   # Criterion v.* (re)
-  
+  #
   # Running 1 tests from suite2
   ok - suite2::test 
-  
+  #
   # Running 1 tests from suite1
   ok - suite1::test 
-  
+  #
   # Running 1 tests from disabled
   ok - disabled::test  # SKIP test was skipped
 
@@ -78,7 +78,7 @@ Testing multiple samples with --tap
   TAP version 13
   1..1
   # Criterion v.* (re)
-  
+  #
   # Running 1 tests from sample
   not ok - sample::long_msg 
     ---
@@ -95,7 +95,7 @@ Testing multiple samples with --tap
   TAP version 13
   1..2
   # Criterion v.* (re)
-  
+  #
   # Running 2 tests from misc
   ok - misc::skipped This one is skipped # SKIP test was skipped
   not ok - misc::failing Just a failing test
@@ -112,7 +112,7 @@ Testing --output=tap
   TAP version 13
   1..2
   # Criterion v.* (re)
-  
+  #
   # Running 2 tests from misc
   ok - misc::passing 
   not ok - misc::failing 
@@ -129,7 +129,7 @@ Testing CRITERION_OUTPUTS
   TAP version 13
   1..2
   # Criterion v.* (re)
-  
+  #
   # Running 2 tests from misc
   ok - misc::passing 
   not ok - misc::failing 
@@ -144,7 +144,7 @@ Testing CRITERION_OUTPUTS
   TAP version 13
   1..2
   # Criterion v.* (re)
-  
+  #
   # Running 2 tests from misc
   ok - misc::skipping  # SKIP test was skipped
   ok - misc::message  # SKIP Skips may take printf-like messages
