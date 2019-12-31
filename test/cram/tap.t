@@ -6,8 +6,8 @@ Testing multiple samples with --tap
   # Criterion v.* (re)
   
   # Running 2 tests from misc
-  ok - misc::passing  \(\d\.\d\ds\) (re)
-  not ok - misc::failing  \(\d\.\d\ds\) (re)
+  ok - misc::passing 
+  not ok - misc::failing 
     ---
     assertions: 1
     failures:
@@ -21,13 +21,13 @@ Testing multiple samples with --tap
   # Criterion v.* (re)
   
   # Running 3 tests from simple
-  not ok - simple::wrong_signal  \(\d\.\d\ds\) (re)
+  not ok - simple::wrong_signal 
     ---
     assertions: 0
     failures:
     ...
   not ok - simple::uncaught unexpected signal after signal.c:14
-  ok - simple::caught  \(\d\.\d\ds\) (re)
+  ok - simple::caught 
 
   $ asserts.c.bin --tap
   TAP version 13
@@ -35,10 +35,10 @@ Testing multiple samples with --tap
   # Criterion v.* (re)
   
   # Running 8 tests from asserts
-  ok - asserts::wstring  \(\d\.\d\ds\) (re)
-  ok - asserts::string  \(\d\.\d\ds\) (re)
-  ok - asserts::stream  (0.00s)
-  not ok - asserts::old_school  (0.00s)
+  ok - asserts::wstring 
+  ok - asserts::string 
+  ok - asserts::stream 
+  not ok - asserts::old_school 
     ---
     assertions: 2
     failures:
@@ -47,9 +47,9 @@ Testing multiple samples with --tap
     - asserts.c:18: |+
         Assertion failed: You can fail an assertion with a message from anywhere
     ...
-  ok - asserts::native  \(\d\.\d\ds\) (re)
-  ok - asserts::float  \(\d\.\d\ds\) (re)
-  not ok - asserts::base  \(\d\.\d\ds\) (re)
+  ok - asserts::native 
+  ok - asserts::float 
+  not ok - asserts::base 
     ---
     assertions: 2
     failures:
@@ -58,7 +58,7 @@ Testing multiple samples with --tap
     - asserts.c:12: |+
         Assertion failed: assert is fatal, expect isn't
     ...
-  ok - asserts::array  \(\d\.\d\ds\) (re)
+  ok - asserts::array 
 
   $ more-suites.c.bin --tap
   TAP version 13
@@ -66,10 +66,10 @@ Testing multiple samples with --tap
   # Criterion v.* (re)
   
   # Running 1 tests from suite2
-  ok - suite2::test  \(\d\.\d\ds\) (re)
+  ok - suite2::test 
   
   # Running 1 tests from suite1
-  ok - suite1::test  \(\d\.\d\ds\) (re)
+  ok - suite1::test 
   
   # Running 1 tests from disabled
   ok - disabled::test  # SKIP test was skipped
@@ -80,7 +80,7 @@ Testing multiple samples with --tap
   # Criterion v.* (re)
   
   # Running 1 tests from sample
-  not ok - sample::long_msg  \(\d\.\d\ds\) (re)
+  not ok - sample::long_msg 
     ---
     assertions: 1
     failures:
@@ -98,7 +98,7 @@ Testing multiple samples with --tap
   
   # Running 2 tests from misc
   ok - misc::skipped This one is skipped # SKIP test was skipped
-  not ok - misc::failing Just a failing test \(\d\.\d\ds\) (re)
+  not ok - misc::failing Just a failing test
     ---
     assertions: 1
     failures:
@@ -114,8 +114,8 @@ Testing --output=tap
   # Criterion v.* (re)
   
   # Running 2 tests from misc
-  ok - misc::passing  \(\d\.\d\ds\) (re)
-  not ok - misc::failing  \(\d\.\d\ds\) (re)
+  ok - misc::passing 
+  not ok - misc::failing 
     ---
     assertions: 1
     failures:
@@ -131,8 +131,8 @@ Testing CRITERION_OUTPUTS
   # Criterion v.* (re)
   
   # Running 2 tests from misc
-  ok - misc::passing  \(\d\.\d\ds\) (re)
-  not ok - misc::failing  \(\d\.\d\ds\) (re)
+  ok - misc::passing 
+  not ok - misc::failing 
     ---
     assertions: 1
     failures:

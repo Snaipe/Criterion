@@ -52,6 +52,9 @@ static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats)
 static void print_test_normal(FILE *f, struct criterion_test_stats *stats)
 {
     const char *format = "%s - %s::%s %s (%3.2fs)\n";
+    if (!criterion_options.measure_time) {
+        format = "%s - %s::%s %s\n";
+    }
 
     fprintf(f, format,
             stats->test_status == CR_STATUS_FAILED ? "not ok" : "ok",
