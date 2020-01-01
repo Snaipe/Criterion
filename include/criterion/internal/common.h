@@ -93,10 +93,10 @@
 # define CR_INLINE    inline
 #endif
 
-#ifdef _WIN32
-# define CR_SIZE_T_FORMAT    "%Iu"
+#if defined(_MSC_VER) && _MSC_VER < 1900
+# define CRI_PRIuSIZE    "Iu"
 #else
-# define CR_SIZE_T_FORMAT    "%zu"
+# define CRI_PRIuSIZE    "zu"
 #endif
 
 #ifdef __GNUC__

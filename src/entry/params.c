@@ -136,7 +136,7 @@ int list_tests(void)
         if (!tests)
             continue;
 
-        printf("%s: " CR_SIZE_T_FORMAT " test%s\n",
+        printf("%s: %" CRI_PRIuSIZE " test%s\n",
                 s->suite.name,
                 tests,
                 tests == 1 ? "" : "s");

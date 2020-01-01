@@ -34,17 +34,13 @@
 
 static void print_prelude(FILE *f, struct criterion_global_stats *stats)
 {
-    fprintf(f, "TAP version 13\n1.."
-            CR_SIZE_T_FORMAT
-            "\n", stats->nb_tests);
+    fprintf(f, "TAP version 13\n1..%" CRI_PRIuSIZE "\n", stats->nb_tests);
     fprintf(f, "# Criterion %s\n", VERSION);
 }
 
 static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats)
 {
-    fprintf(f, "#\n# Running "
-            CR_SIZE_T_FORMAT
-            " tests from %s\n",
+    fprintf(f, "#\n# Running %" CRI_PRIuSIZE " tests from %s\n",
             stats->nb_tests,
             stats->suite->name);
 }
@@ -66,7 +62,7 @@ static void print_test_normal(FILE *f, struct criterion_test_stats *stats)
     if (stats->test_status == CR_STATUS_FAILED) {
         fprintf(f, "  ---\n");
 
-        fprintf(f, "  assertions: " CR_SIZE_T_FORMAT "\n",
+        fprintf(f, "  assertions: %" CRI_PRIuSIZE "\n",
                 (size_t) (stats->passed_asserts + stats->failed_asserts));
         fprintf(f, "  failures:\n");
         for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
