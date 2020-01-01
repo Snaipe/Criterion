@@ -37,10 +37,10 @@
 
 #define TESTSUITES_PROPERTIES            \
     "name=\"Criterion Tests\" "          \
-    "tests=\"" CR_SIZE_T_FORMAT "\" "    \
-    "failures=\"" CR_SIZE_T_FORMAT "\" " \
-    "errors=\"" CR_SIZE_T_FORMAT "\" "   \
-    "disabled=\"" CR_SIZE_T_FORMAT "\""
+    "tests=\"%" CRI_PRIuSIZE "\" "    \
+    "failures=\"%" CRI_PRIuSIZE "\" " \
+    "errors=\"%" CRI_PRIuSIZE "\" "   \
+    "disabled=\"%" CRI_PRIuSIZE "\""
 
 #define XML_BASE_TEMPLATE_BEGIN                             \
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"          \
@@ -52,11 +52,11 @@
 
 #define TESTSUITE_PROPERTIES             \
     "name=\"%s\" "                       \
-    "tests=\"" CR_SIZE_T_FORMAT "\" "    \
-    "failures=\"" CR_SIZE_T_FORMAT "\" " \
-    "errors=\"" CR_SIZE_T_FORMAT "\" "   \
-    "disabled=\"" CR_SIZE_T_FORMAT "\" " \
-    "skipped=\"" CR_SIZE_T_FORMAT "\" "  \
+    "tests=\"%" CRI_PRIuSIZE "\" "    \
+    "failures=\"%" CRI_PRIuSIZE "\" " \
+    "errors=\"%" CRI_PRIuSIZE "\" "   \
+    "disabled=\"%" CRI_PRIuSIZE "\" " \
+    "skipped=\"%" CRI_PRIuSIZE "\" "  \
     "time=\"%.3f\""
 
 #define XML_TESTSUITE_TEMPLATE_BEGIN \
@@ -67,7 +67,7 @@
 
 #define TEST_PROPERTIES                    \
     "name=\"%s\" "                         \
-    "assertions=\"" CR_SIZE_T_FORMAT "\" " \
+    "assertions=\"%" CRI_PRIuSIZE "\" " \
     "status=\"%s\" "                       \
     "time=\"%.3f\""
 

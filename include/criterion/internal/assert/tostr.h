@@ -252,8 +252,8 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
         size_t cri_off = 0;                                                             \
         size_t cri_sz = 0;                                                              \
         cri_fmt_bprintf(&(Str), &cri_off, &cri_sz, "("                                  \
-                CR_STR(CRI_ASSERT_TYPE_TAG(Tag)) "["                                    \
-                CR_SIZE_T_FORMAT "]) {\n", CRI_ASSERT_TYPE_TAG_ARRLEN(Tag));            \
+                CR_STR(CRI_ASSERT_TYPE_TAG(Tag)) "[%" CRI_PRIuSIZE "]) {\n",            \
+                    CRI_ASSERT_TYPE_TAG_ARRLEN(Tag));                                   \
                                                                                         \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                             \
             char *cri_repr      = CRI_USER_TAG_ID(tostr, Tag)(&(Arr)[cri_i]);           \
@@ -262,7 +262,7 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
                                                                                         \
             if (cri_line) {                                                             \
                 cri_fmt_bprintf(&(Str), &cri_off, &cri_sz,                              \
-                        "\t[" CR_SIZE_T_FORMAT "] = %s", cri_i, cri_line);              \
+                        "\t[%" CRI_PRIuSIZE "] = %s", cri_i, cri_line);                 \
                                                                                         \
                 while ((cri_line = cri_strtok_r(NULL, "\n", &cri_saveptr))) {           \
                     cri_fmt_bprintf(&(Str), &cri_off, &cri_sz, "\n\t%s", cri_line);     \

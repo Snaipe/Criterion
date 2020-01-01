@@ -353,8 +353,6 @@
         }                                                                   \
     } while (0)
 
-#define CRI_SIZE_T_FMT %zu
-
 #define CRI_ASSERT_SPECIFIER_OPTAG_ARRAY(Op, Name, Tag, ...)                        \
     1; do {                                                                         \
         CRI_ASSERT_NAMESPACES;                                                      \
@@ -372,8 +370,8 @@
         struct cri_assert_node *cri_node = cri_tmp;                                 \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                         \
             cri_assert_node_init(&cri_tmpn);                                        \
-            cr_asprintf((char **) &cri_tmpn.repr, "%s ["                            \
-                    CR_STR(CRI_SIZE_T_FMT) "]", cri_repr, cri_i);                   \
+            cr_asprintf((char **) &cri_tmpn.repr, "%s [%" CRI_PRIuSIZE "]",         \
+                    cri_repr, cri_i);                                               \
             cri_tmpn.dynrepr = 1;                                                   \
             cri_paramidx = 0;                                                       \
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_SUBSCRIPT, Tag, __VA_ARGS__)       \
