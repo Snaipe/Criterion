@@ -230,7 +230,7 @@
         CRI_ASSERT_TYPE_TAG(Tag) *actual,                                   \
         CRI_ASSERT_TYPE_TAG(Tag) *expected);                                \
     CR_API int CRI_USER_TAG_ID(zero, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *val);   \
-    CR_API char *CRI_USER_TAG_ID(tostr, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *e);  \
+    CR_API char *CRI_USER_TAG_ID(tostr, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *e);
 
 #ifndef __cplusplus
 # include <string.h>
