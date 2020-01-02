@@ -75,7 +75,7 @@ libcriterion = both_libraries('criterion', sources,
 	version: '3.1.0',
 	dependencies: deps,
 	install: true,
-	link_args: cc.get_supported_arguments([
+	link_args: cc.get_supported_link_arguments([
 		'-Wl,--exclude-libs,ALL',
 	]),
 )
@@ -90,6 +90,5 @@ pkgconfig.generate(
 	name: meson.project_name(),
 	description: 'A KISS, Cross platform unit testing framework for C and C++',
 	url: 'https://snai.pe/git/criterion',
-	dependencies: deps,
 	libraries: [criterion],
 )
