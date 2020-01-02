@@ -57,9 +57,9 @@ sources = files(
 	'string/i18n.c',
 	'string/xxd.c',
 
-	'../dependencies/nanopb/pb_common.c',
-	'../dependencies/nanopb/pb_encode.c',
-	'../dependencies/nanopb/pb_decode.c',
+	meson.current_source_dir() + '/../dependencies/nanopb/pb_common.c',
+	meson.current_source_dir() + '/../dependencies/nanopb/pb_encode.c',
+	meson.current_source_dir() + '/../dependencies/nanopb/pb_decode.c',
 )
 
 configure_file(input         : 'config.h.in',
