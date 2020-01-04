@@ -30,32 +30,11 @@
 namespace criterion { namespace internal { namespace operators {
 /* *INDENT-ON* */
 
-#define CRI_DEFINE_MEMBER_DETECTOR(Member)                                              \
-    template <class T>                                                                  \
-    class HasMember_ ## Member {                                                        \
-    private:                                                                            \
-        using yes = char[2];                                                            \
-        using no  = char[1];                                                            \
-        struct fallback { int Member; };                                                \
-        struct derived : T, fallback {};                                                \
-        template <class U> static no &test(decltype (U::Member) *);                     \
-        template <typename U> static yes &test(U *);                                    \
-    public:                                                                             \
-        static constexpr bool result = sizeof (test<derived>(nullptr)) == sizeof (yes); \
-    };                                                                                  \
-    template <class T>                                                                  \
-    struct has_member_ ## Member : public std::integral_constant<bool, HasMember_ ## Member<T>::result> {}
-
-CRI_DEFINE_MEMBER_DETECTOR(empty);
+template <typename T>
+bool zero(const T &t) { return t == T{}; }
 
 template <typename T>
 bool zero(const T *t) { return !t; }
-
-template <typename T>
-bool zero(const typename std::enable_if<!std::is_pointer<T>::value, T>::type &t) { return !t; }
-
-template <typename T, typename = typename has_member_empty<T>::type>
-bool zero(const T &t) { return t.empty(); }
 
 template <> inline bool zero<>(const char *t) { return !*t; }
 template <> inline bool zero<>(const wchar_t *t) { return !*t; }

@@ -15,7 +15,7 @@ int operator==(const dummy_struct &a, const dummy_struct &b)
 
 std::ostream &operator<<(std::ostream &s, const struct dummy_struct &val)
 {
-    s << "(struct dummy_struct) {\n\t.a = " << val.a << ",\n\t.b = " << val.b << "\n}";
+    s << "(struct dummy_struct) {\n\t.a = " << unsigned(val.a) << ",\n\t.b = " << val.b << "\n}";
     return s;
 }
 
@@ -38,6 +38,30 @@ static int read_array(void *cookie, void *buffer, size_t *size)
     *size = rem;
 
     return 0;
+}
+
+Test(messages, zero) {
+    /* Primitive */
+    cr_expect(not(zero(i8, 0)));
+    cr_expect(not(zero(i16, 0)));
+    cr_expect(not(zero(i32, 0)));
+    cr_expect(not(zero(i64, 0)));
+    cr_expect(not(zero(u8, 0)));
+    cr_expect(not(zero(u16, 0)));
+    cr_expect(not(zero(u32, 0)));
+    cr_expect(not(zero(u64, 0)));
+    cr_expect(not(zero(iptr, 0)));
+    cr_expect(not(zero(uptr, 0)));
+    cr_expect(not(zero(flt, 0)));
+    cr_expect(not(zero(dbl, 0)));
+    cr_expect(not(zero(ldbl, 0)));
+
+    /* Strings & pointers */
+    cr_expect(not(zero(ptr, 0)));
+    cr_expect(not(zero(str, "")));
+    cr_expect(not(zero(wcs, L"")));
+
+    cr_expect(not(zero(type(dummy_struct), dummy_struct{})));
 }
 
 Test(messages, eq) {

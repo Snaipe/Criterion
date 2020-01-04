@@ -13,6 +13,11 @@ int cr_user_dummy_struct_eq(struct dummy_struct *a, struct dummy_struct *b)
     return a->a == b->a && a->b == b->b;
 }
 
+int cr_user_dummy_struct_zero(struct dummy_struct *a)
+{
+    return !a->a && !a->b;
+}
+
 char *cr_user_dummy_struct_tostr(struct dummy_struct *d)
 {
     char *out;
@@ -41,6 +46,33 @@ static int read_array(void *cookie, void *buffer, size_t *size)
     *size = rem;
 
     return 0;
+}
+
+Test(messages, zero) {
+    /* Primitive */
+    cr_expect(not(zero(i8, 0)));
+    cr_expect(not(zero(i16, 0)));
+    cr_expect(not(zero(i32, 0)));
+    cr_expect(not(zero(i64, 0)));
+    cr_expect(not(zero(u8, 0)));
+    cr_expect(not(zero(u16, 0)));
+    cr_expect(not(zero(u32, 0)));
+    cr_expect(not(zero(u64, 0)));
+    cr_expect(not(zero(iptr, 0)));
+    cr_expect(not(zero(uptr, 0)));
+    cr_expect(not(zero(flt, 0)));
+    cr_expect(not(zero(dbl, 0)));
+    cr_expect(not(zero(ldbl, 0)));
+
+    /* Strings & pointers */
+    cr_expect(not(zero(ptr, 0)));
+    cr_expect(not(zero(str, "")));
+    cr_expect(not(zero(wcs, L"")));
+
+    struct dummy_struct dummy1;
+    memset(&dummy1, 0, sizeof (dummy1));
+
+    cr_expect(not(zero(type(struct dummy_struct), dummy1)));
 }
 
 Test(messages, eq) {
