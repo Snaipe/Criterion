@@ -21,15 +21,15 @@ Test C assertions:
 Testing all assert messages
 
   $ failmessages.c.bin
-  [----] failmessages.c:181: Assertion Failed
+  [----] failmessages.c:213: Assertion Failed
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
-  [----] failmessages.c:182: Assertion Failed
-  [----] failmessages.c:183: Assertion Failed
+  [----] failmessages.c:214: Assertion Failed
+  [----] failmessages.c:215: Assertion Failed
   [----]   eq(i32, 1, 1): 
   [----]     diff: [-1-]{+1+}
   [FAIL] message::compo
-  [----] failmessages.c:133: Assertion Failed
+  [----] failmessages.c:165: Assertion Failed
   [----]   lt(i8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -42,7 +42,7 @@ Testing all assert messages
   [----]   ge(i8, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:134: Assertion Failed
+  [----] failmessages.c:166: Assertion Failed
   [----]   lt(i16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -55,7 +55,7 @@ Testing all assert messages
   [----]   ge(i16, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:135: Assertion Failed
+  [----] failmessages.c:167: Assertion Failed
   [----]   lt(i32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -68,7 +68,7 @@ Testing all assert messages
   [----]   ge(i32, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:136: Assertion Failed
+  [----] failmessages.c:168: Assertion Failed
   [----]   lt(i64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -81,7 +81,7 @@ Testing all assert messages
   [----]   ge(i64, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:137: Assertion Failed
+  [----] failmessages.c:169: Assertion Failed
   [----]   lt(u8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -94,7 +94,7 @@ Testing all assert messages
   [----]   ge(u8, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:138: Assertion Failed
+  [----] failmessages.c:170: Assertion Failed
   [----]   lt(u16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -107,7 +107,7 @@ Testing all assert messages
   [----]   ge(u16, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:139: Assertion Failed
+  [----] failmessages.c:171: Assertion Failed
   [----]   lt(u32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -120,7 +120,7 @@ Testing all assert messages
   [----]   ge(u32, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:140: Assertion Failed
+  [----] failmessages.c:172: Assertion Failed
   [----]   lt(u64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -133,7 +133,7 @@ Testing all assert messages
   [----]   ge(u64, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.c:141: Assertion Failed
+  [----] failmessages.c:173: Assertion Failed
   [----]   lt(iptr, 1, 0): 
   [----]     actual: 0x1
   [----]     reference: 0x0
@@ -146,7 +146,7 @@ Testing all assert messages
   [----]   ge(iptr, 0, 1): 
   [----]     actual: 0x0
   [----]     reference: 0x1
-  [----] failmessages.c:142: Assertion Failed
+  [----] failmessages.c:174: Assertion Failed
   [----]   lt(uptr, 1, 0): 
   [----]     actual: 0x1
   [----]     reference: 0x0
@@ -159,7 +159,7 @@ Testing all assert messages
   [----]   ge(uptr, 0, 1): 
   [----]     actual: 0x0
   [----]     reference: 0x1
-  [----] failmessages.c:143: Assertion Failed
+  [----] failmessages.c:175: Assertion Failed
   [----]   lt(flt, 1 / 3.f, 0): 
   [----]     actual: 0.333333343
   [----]     reference: 0
@@ -172,7 +172,7 @@ Testing all assert messages
   [----]   ge(flt, 0, 1 / 3.f): 
   [----]     actual: 0
   [----]     reference: 0.333333343
-  [----] failmessages.c:144: Assertion Failed
+  [----] failmessages.c:176: Assertion Failed
   [----]   lt(dbl, 1 / 3., 0): 
   [----]     actual: 0.33333333333333331
   [----]     reference: 0
@@ -185,7 +185,7 @@ Testing all assert messages
   [----]   ge(dbl, 0, 1 / 3.): 
   [----]     actual: 0
   [----]     reference: 0.33333333333333331
-  [----] failmessages.c:145: Assertion Failed
+  [----] failmessages.c:177: Assertion Failed
   [----]   lt(ldbl, 1 / 3.l, 0): 
   \[----\]     actual: 0\.3333333333333333(33342|1) (re)
   [----]     reference: 0
@@ -198,7 +198,7 @@ Testing all assert messages
   [----]   ge(ldbl, 0, 1 / 3.l): 
   [----]     actual: 0
   \[----\]     reference: 0\.3333333333333333(33342|1) (re)
-  [----] failmessages.c:148: Assertion Failed
+  [----] failmessages.c:180: Assertion Failed
   [----]   lt(ptr, (void *) 1, (void *) 0): 
   [----]     actual: 0x1
   [----]     reference: 0x0
@@ -211,7 +211,7 @@ Testing all assert messages
   [----]   ge(ptr, (void *) 0, (void *) 1): 
   [----]     actual: 0x0
   [----]     reference: 0x1
-  [----] failmessages.c:150: Assertion Failed
+  [----] failmessages.c:182: Assertion Failed
   [----]   lt(str, "cba", "abc"): 
   [----]     actual: "cba"
   [----]     reference: "abc"
@@ -224,7 +224,7 @@ Testing all assert messages
   [----]   ge(str, "abc", "cba"): 
   [----]     actual: "abc"
   [----]     reference: "cba"
-  [----] failmessages.c:151: Assertion Failed
+  [----] failmessages.c:183: Assertion Failed
   [----]   lt(str, "cba\ncba", "abc\nabc"): 
   [----]     actual: "cba\n"
   [----]       "cba"
@@ -245,7 +245,7 @@ Testing all assert messages
   [----]       "abc"
   [----]     reference: "cba\n"
   [----]       "cba"
-  [----] failmessages.c:153: Assertion Failed
+  [----] failmessages.c:185: Assertion Failed
   [----]   lt(wcs, L"cba", L"abc"): 
   [----]     actual: L"cba"
   [----]     reference: L"abc"
@@ -258,7 +258,7 @@ Testing all assert messages
   [----]   ge(wcs, L"abc", L"cba"): 
   [----]     actual: L"abc"
   [----]     reference: L"cba"
-  [----] failmessages.c:154: Assertion Failed
+  [----] failmessages.c:186: Assertion Failed
   [----]   lt(wcs, L"cba\ncba", L"abc\nabc"): 
   [----]     actual: L"cba\n"
   [----]       L"cba"
@@ -279,7 +279,7 @@ Testing all assert messages
   [----]       L"abc"
   [----]     reference: L"cba\n"
   [----]       L"cba"
-  [----] failmessages.c:174: Assertion Failed
+  [----] failmessages.c:206: Assertion Failed
   [----]   lt(stream, shi, slo): 
   [----]     actual: 00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]       
@@ -301,96 +301,96 @@ Testing all assert messages
   [----]     reference: 00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]       
   [FAIL] messages::cmp
-  [----] failmessages.c:187: Assertion Failed
-  [----] failmessages.c:188: Assertion Failed
+  [----] failmessages.c:219: Assertion Failed
+  [----] failmessages.c:220: Assertion Failed
   [----]   
   [----]   foo bar
   [----]   
   [FAIL] messages::default
-  [----] failmessages.c:48: Assertion Failed
+  [----] failmessages.c:80: Assertion Failed
   [----]   eq(i8, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:49: Assertion Failed
+  [----] failmessages.c:81: Assertion Failed
   [----]   eq(i16, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:50: Assertion Failed
+  [----] failmessages.c:82: Assertion Failed
   [----]   eq(i32, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:51: Assertion Failed
+  [----] failmessages.c:83: Assertion Failed
   [----]   eq(i64, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:52: Assertion Failed
+  [----] failmessages.c:84: Assertion Failed
   [----]   eq(u8, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:53: Assertion Failed
+  [----] failmessages.c:85: Assertion Failed
   [----]   eq(u16, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:54: Assertion Failed
+  [----] failmessages.c:86: Assertion Failed
   [----]   eq(u32, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:55: Assertion Failed
+  [----] failmessages.c:87: Assertion Failed
   [----]   eq(u64, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.c:56: Assertion Failed
+  [----] failmessages.c:88: Assertion Failed
   [----]   eq(iptr, 0, 1): 
   [----]     diff: [-0x0-]{+0x1+}
-  [----] failmessages.c:57: Assertion Failed
+  [----] failmessages.c:89: Assertion Failed
   [----]   eq(uptr, 0, 1): 
   [----]     diff: [-0x0-]{+0x1+}
-  [----] failmessages.c:58: Assertion Failed
+  [----] failmessages.c:90: Assertion Failed
   [----]   eq(flt, 0, 1 / 3.f): 
   [----]     diff: [-0-]{+0.333333343+}
-  [----] failmessages.c:59: Assertion Failed
+  [----] failmessages.c:91: Assertion Failed
   [----]   eq(dbl, 0, 1 / 3.): 
   [----]     diff: [-0-]{+0.33333333333333331+}
-  [----] failmessages.c:60: Assertion Failed
+  [----] failmessages.c:92: Assertion Failed
   [----]   eq(ldbl, 0, 1 / 3.l): 
   \[----\]     diff: \[-0-\]\{\+0\.3333333333333333(1|33342)\+\} (re)
-  [----] failmessages.c:63: Assertion Failed
+  [----] failmessages.c:95: Assertion Failed
   [----]   eq(ptr, (void *) 1, (void *) 0): 
   [----]     diff: [-0x1-]{+0x0+}
-  [----] failmessages.c:65: Assertion Failed
+  [----] failmessages.c:97: Assertion Failed
   [----]   eq(str, "", "foo"): 
   [----]     diff: [-""-]{+"foo"+}
-  [----] failmessages.c:66: Assertion Failed
+  [----] failmessages.c:98: Assertion Failed
   [----]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -"reallyreallylongstringindeedmygoodsirormadam"
   [----]     +"yetanotherreallyreallylongstring"
-  [----] failmessages.c:67: Assertion Failed
+  [----] failmessages.c:99: Assertion Failed
   [----]   eq(str, "foo\nbar", "foo\nbaz"): 
   [----]     @@ -1,2 +1,2 @@
   [----]      "foo\n"
   [----]     -"bar"
   [----]     +"baz"
-  [----] failmessages.c:69: Assertion Failed
+  [----] failmessages.c:101: Assertion Failed
   [----]   eq(wcs, L"", L"foo"): 
   [----]     diff: [-L""-]{+L"foo"+}
-  [----] failmessages.c:70: Assertion Failed
+  [----] failmessages.c:102: Assertion Failed
   [----]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -L"reallyreallylongstringindeedmygoodsirormadam"
   [----]     +L"yetanotherreallyreallylongstring"
-  [----] failmessages.c:71: Assertion Failed
+  [----] failmessages.c:103: Assertion Failed
   [----]   eq(wcs, L"foo\nbar", L"foo\nbaz"): 
   [----]     @@ -1,2 +1,2 @@
   [----]      L"foo\n"
   [----]     -L"bar"
   [----]     +L"baz"
-  [----] failmessages.c:79: Assertion Failed
+  [----] failmessages.c:111: Assertion Failed
   [----]   eq(mem, ma, mb): 
   [----]     @@ -1,2 +1,2 @@
   [----]     -00: 00000000                             ....            
   [----]     +00: 01000000                             ....            
   [----]      
-  [----] failmessages.c:80: Assertion Failed
+  [----] failmessages.c:112: Assertion Failed
   [----]   eq(int[1], &a, &b): 
   [----]     @@ -1,3 +1,3 @@
   [----]      (int[1]) {
   [----]     -\t[0] = 0, (esc)
   [----]     +\t[0] = 1, (esc)
   [----]      }
-  [----] failmessages.c:93: Assertion Failed
+  [----] failmessages.c:125: Assertion Failed
   [----]   eq(mem, marra, marrb): 
   [----]     @@ -1,3 +1,3 @@
   [----]     -00: 00000000 01000000 02000000 03000000  ................
@@ -398,7 +398,7 @@ Testing all assert messages
   [----]     +00: 04000000 03000000 02000000 01000000  ................
   [----]     +10: 00000000                             ....            
   [----]      
-  [----] failmessages.c:94: Assertion Failed
+  [----] failmessages.c:126: Assertion Failed
   [----]   eq(int[sizeof (arra) / sizeof (int)], arra, arrb): 
   [----]     @@ -1,7 +1,7 @@
   [----]      (int[5]) {
@@ -412,7 +412,7 @@ Testing all assert messages
   [----]     +\t[3] = 1, (esc)
   [----]     +\t[4] = 0, (esc)
   [----]      }
-  [----] failmessages.c:99: Assertion Failed
+  [----] failmessages.c:131: Assertion Failed
   [----]   eq(type(struct dummy_struct), dummy1, dummy2): 
   [----]     @@ -1,4 +1,4 @@
   [----]      (struct dummy_struct) {
@@ -420,7 +420,7 @@ Testing all assert messages
   [----]     -\t.b = 24 (esc)
   [----]     +\t.b = 42 (esc)
   [----]      }
-  [----] failmessages.c:100: Assertion Failed
+  [----] failmessages.c:132: Assertion Failed
   [----]   eq(type(struct dummy_struct)[1], &dummy1, &dummy2): 
   [----]     @@ -1,6 +1,6 @@
   [----]      (struct dummy_struct[1]) {
@@ -430,14 +430,69 @@ Testing all assert messages
   [----]     +\t\t.b = 42 (esc)
   [----]      \t}, (esc)
   [----]      }
-  [----] failmessages.c:120: Assertion Failed
+  [----] failmessages.c:152: Assertion Failed
   [----]   eq(stream, s1, s2): 
   [----]     @@ -1,2 +1,2 @@
   [----]     -00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]     +00: 646c726f 77206f6c 6c656800           dlrow olleh.    
   [----]      
   [FAIL] messages::eq
-  [====] Synthesis: Tested: 4 | Passing: 0 | Failing: 4 | Crashing: 0 
+  [----] failmessages.c:53: Assertion Failed
+  [----]   zero(i8, 0): 
+  [----]     value: 0
+  [----] failmessages.c:54: Assertion Failed
+  [----]   zero(i16, 0): 
+  [----]     value: 0
+  [----] failmessages.c:55: Assertion Failed
+  [----]   zero(i32, 0): 
+  [----]     value: 0
+  [----] failmessages.c:56: Assertion Failed
+  [----]   zero(i64, 0): 
+  [----]     value: 0
+  [----] failmessages.c:57: Assertion Failed
+  [----]   zero(u8, 0): 
+  [----]     value: 0
+  [----] failmessages.c:58: Assertion Failed
+  [----]   zero(u16, 0): 
+  [----]     value: 0
+  [----] failmessages.c:59: Assertion Failed
+  [----]   zero(u32, 0): 
+  [----]     value: 0
+  [----] failmessages.c:60: Assertion Failed
+  [----]   zero(u64, 0): 
+  [----]     value: 0
+  [----] failmessages.c:61: Assertion Failed
+  [----]   zero(iptr, 0): 
+  [----]     value: 0x0
+  [----] failmessages.c:62: Assertion Failed
+  [----]   zero(uptr, 0): 
+  [----]     value: 0x0
+  [----] failmessages.c:63: Assertion Failed
+  [----]   zero(flt, 0): 
+  [----]     value: 0
+  [----] failmessages.c:64: Assertion Failed
+  [----]   zero(dbl, 0): 
+  [----]     value: 0
+  [----] failmessages.c:65: Assertion Failed
+  [----]   zero(ldbl, 0): 
+  [----]     value: 0
+  [----] failmessages.c:68: Assertion Failed
+  [----]   zero(ptr, 0): 
+  [----]     value: 0x0
+  [----] failmessages.c:69: Assertion Failed
+  [----]   zero(str, ""): 
+  [----]     value: ""
+  [----] failmessages.c:70: Assertion Failed
+  [----]   zero(wcs, L""): 
+  [----]     value: L""
+  [----] failmessages.c:75: Assertion Failed
+  [----]   zero(type(struct dummy_struct), dummy1): 
+  [----]     value: (struct dummy_struct) {
+  [----]       \t.a = 0, (esc)
+  [----]       \t.b = 0 (esc)
+  [----]       }
+  [FAIL] messages::zero
+  [====] Synthesis: Tested: 5 | Passing: 0 | Failing: 5 | Crashing: 0 
 
 Long assert messages should wrap
 
@@ -476,24 +531,24 @@ C++ equivalents
   [====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
 
   $ failmessages.cc.bin
-  [----] failmessages.cc:169: Assertion Failed
+  [----] failmessages.cc:193: Assertion Failed
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
-  [----] failmessages.cc:170: Assertion Failed
-  [----] failmessages.cc:171: Assertion Failed
+  [----] failmessages.cc:194: Assertion Failed
+  [----] failmessages.cc:195: Assertion Failed
   [----]   eq(i32, 1, 1): 
   [----]     diff: [-1-]{+1+}
   [FAIL] message::compo
-  [----] failmessages.cc:175: Assertion Failed
+  [----] failmessages.cc:199: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("exception message")): 
   [----]     message: "exception message"
-  [----] failmessages.cc:176: Assertion Failed
-  [----] failmessages.cc:177: Assertion Failed
+  [----] failmessages.cc:200: Assertion Failed
+  [----] failmessages.cc:201: Assertion Failed
   [----]   nothrow(throw std::invalid_argument("exception message")): 
   [----]     message: "exception message"
-  [----] failmessages.cc:178: Assertion Failed
+  [----] failmessages.cc:202: Assertion Failed
   [FAIL] message::exception
-  [----] failmessages.cc:127: Assertion Failed
+  [----] failmessages.cc:151: Assertion Failed
   [----]   lt(i8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -506,7 +561,7 @@ C++ equivalents
   [----]   ge(i8, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:128: Assertion Failed
+  [----] failmessages.cc:152: Assertion Failed
   [----]   lt(i16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -519,7 +574,7 @@ C++ equivalents
   [----]   ge(i16, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:129: Assertion Failed
+  [----] failmessages.cc:153: Assertion Failed
   [----]   lt(i32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -532,7 +587,7 @@ C++ equivalents
   [----]   ge(i32, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:130: Assertion Failed
+  [----] failmessages.cc:154: Assertion Failed
   [----]   lt(i64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -545,7 +600,7 @@ C++ equivalents
   [----]   ge(i64, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:131: Assertion Failed
+  [----] failmessages.cc:155: Assertion Failed
   [----]   lt(u8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -558,7 +613,7 @@ C++ equivalents
   [----]   ge(u8, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:132: Assertion Failed
+  [----] failmessages.cc:156: Assertion Failed
   [----]   lt(u16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -571,7 +626,7 @@ C++ equivalents
   [----]   ge(u16, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:133: Assertion Failed
+  [----] failmessages.cc:157: Assertion Failed
   [----]   lt(u32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -584,7 +639,7 @@ C++ equivalents
   [----]   ge(u32, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:134: Assertion Failed
+  [----] failmessages.cc:158: Assertion Failed
   [----]   lt(u64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -597,7 +652,7 @@ C++ equivalents
   [----]   ge(u64, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:135: Assertion Failed
+  [----] failmessages.cc:159: Assertion Failed
   [----]   lt(iptr, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -610,7 +665,7 @@ C++ equivalents
   [----]   ge(iptr, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:136: Assertion Failed
+  [----] failmessages.cc:160: Assertion Failed
   [----]   lt(uptr, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -623,7 +678,7 @@ C++ equivalents
   [----]   ge(uptr, 0, 1): 
   [----]     actual: 0
   [----]     reference: 1
-  [----] failmessages.cc:137: Assertion Failed
+  [----] failmessages.cc:161: Assertion Failed
   [----]   lt(flt, 1 / 3.f, 0): 
   [----]     actual: 0.333333
   [----]     reference: 0
@@ -636,7 +691,7 @@ C++ equivalents
   [----]   ge(flt, 0, 1 / 3.f): 
   [----]     actual: 0
   [----]     reference: 0.333333
-  [----] failmessages.cc:138: Assertion Failed
+  [----] failmessages.cc:162: Assertion Failed
   [----]   lt(dbl, 1 / 3., 0): 
   [----]     actual: 0.333333
   [----]     reference: 0
@@ -649,7 +704,7 @@ C++ equivalents
   [----]   ge(dbl, 0, 1 / 3.): 
   [----]     actual: 0
   [----]     reference: 0.333333
-  [----] failmessages.cc:139: Assertion Failed
+  [----] failmessages.cc:163: Assertion Failed
   [----]   lt(ldbl, 1 / 3.l, 0): 
   [----]     actual: 0.333333
   [----]     reference: 0
@@ -662,7 +717,7 @@ C++ equivalents
   [----]   ge(ldbl, 0, 1 / 3.l): 
   [----]     actual: 0
   [----]     reference: 0.333333
-  [----] failmessages.cc:142: Assertion Failed
+  [----] failmessages.cc:166: Assertion Failed
   [----]   lt(ptr, (void *) 1, (void *) 0): 
   [----]     actual: @1
   [----]     reference: nullptr
@@ -675,7 +730,7 @@ C++ equivalents
   [----]   ge(ptr, (void *) 0, (void *) 1): 
   [----]     actual: nullptr
   [----]     reference: @1
-  [----] failmessages.cc:144: Assertion Failed
+  [----] failmessages.cc:168: Assertion Failed
   [----]   lt(str, "cba", "abc"): 
   [----]     actual: "cba"
   [----]     reference: "abc"
@@ -688,7 +743,7 @@ C++ equivalents
   [----]   ge(str, "abc", "cba"): 
   [----]     actual: "abc"
   [----]     reference: "cba"
-  [----] failmessages.cc:145: Assertion Failed
+  [----] failmessages.cc:169: Assertion Failed
   [----]   lt(str, "cba\ncba", "abc\nabc"): 
   [----]     actual: "cba\n"
   [----]       "cba"
@@ -709,7 +764,7 @@ C++ equivalents
   [----]       "abc"
   [----]     reference: "cba\n"
   [----]       "cba"
-  [----] failmessages.cc:147: Assertion Failed
+  [----] failmessages.cc:171: Assertion Failed
   [----]   lt(wcs, L"cba", L"abc"): 
   [----]     actual: L"cba"
   [----]     reference: L"abc"
@@ -722,7 +777,7 @@ C++ equivalents
   [----]   ge(wcs, L"abc", L"cba"): 
   [----]     actual: L"abc"
   [----]     reference: L"cba"
-  [----] failmessages.cc:148: Assertion Failed
+  [----] failmessages.cc:172: Assertion Failed
   [----]   lt(wcs, L"cba\ncba", L"abc\nabc"): 
   [----]     actual: L"cba\n"
   [----]       L"cba"
@@ -743,7 +798,7 @@ C++ equivalents
   [----]       L"abc"
   [----]     reference: L"cba\n"
   [----]       L"cba"
-  [----] failmessages.cc:165: Assertion Failed
+  [----] failmessages.cc:189: Assertion Failed
   [----]   lt(stream, shi, slo): 
   [----]     actual: 00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]       
@@ -765,102 +820,102 @@ C++ equivalents
   [----]     reference: 00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]       
   [FAIL] messages::cmp
-  [----] failmessages.cc:182: Assertion Failed
-  [----] failmessages.cc:183: Assertion Failed
+  [----] failmessages.cc:206: Assertion Failed
+  [----] failmessages.cc:207: Assertion Failed
   [----]   
   [----]   foo bar
   [----]   
   [FAIL] messages::default
-  [----] failmessages.cc:45: Assertion Failed
+  [----] failmessages.cc:69: Assertion Failed
   [----]   eq(i8, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:46: Assertion Failed
+  [----] failmessages.cc:70: Assertion Failed
   [----]   eq(i16, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:47: Assertion Failed
+  [----] failmessages.cc:71: Assertion Failed
   [----]   eq(i32, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:48: Assertion Failed
+  [----] failmessages.cc:72: Assertion Failed
   [----]   eq(i64, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:49: Assertion Failed
+  [----] failmessages.cc:73: Assertion Failed
   [----]   eq(u8, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:50: Assertion Failed
+  [----] failmessages.cc:74: Assertion Failed
   [----]   eq(u16, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:51: Assertion Failed
+  [----] failmessages.cc:75: Assertion Failed
   [----]   eq(u32, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:52: Assertion Failed
+  [----] failmessages.cc:76: Assertion Failed
   [----]   eq(u64, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:53: Assertion Failed
+  [----] failmessages.cc:77: Assertion Failed
   [----]   eq(iptr, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:54: Assertion Failed
+  [----] failmessages.cc:78: Assertion Failed
   [----]   eq(uptr, 0, 1): 
   [----]     diff: [-0-]{+1+}
-  [----] failmessages.cc:55: Assertion Failed
+  [----] failmessages.cc:79: Assertion Failed
   [----]   eq(flt, 0, 1 / 3.f): 
   [----]     diff: [-0-]{+0.333333+}
-  [----] failmessages.cc:56: Assertion Failed
+  [----] failmessages.cc:80: Assertion Failed
   [----]   eq(dbl, 0, 1 / 3.): 
   [----]     diff: [-0-]{+0.333333+}
-  [----] failmessages.cc:57: Assertion Failed
+  [----] failmessages.cc:81: Assertion Failed
   [----]   eq(ldbl, 0, 1 / 3.l): 
   [----]     diff: [-0-]{+0.333333+}
-  [----] failmessages.cc:60: Assertion Failed
+  [----] failmessages.cc:84: Assertion Failed
   [----]   eq(ptr, (void *) 1, (void *) 0): 
   [----]     diff: [-@1-]{+nullptr+}
-  [----] failmessages.cc:62: Assertion Failed
+  [----] failmessages.cc:86: Assertion Failed
   [----]   eq(str, "", "foo"): 
   [----]     diff: [-""-]{+"foo"+}
-  [----] failmessages.cc:63: Assertion Failed
+  [----] failmessages.cc:87: Assertion Failed
   [----]   eq(str, "reallyreallylongstringindeedmygoodsirormadam", "yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -"reallyreallylongstringindeedmygoodsirormadam"
   [----]     +"yetanotherreallyreallylongstring"
-  [----] failmessages.cc:64: Assertion Failed
+  [----] failmessages.cc:88: Assertion Failed
   [----]   eq(str, "foo\nbar", "foo\nbaz"): 
   [----]     @@ -1,2 +1,2 @@
   [----]      "foo\n"
   [----]     -"bar"
   [----]     +"baz"
-  [----] failmessages.cc:66: Assertion Failed
+  [----] failmessages.cc:90: Assertion Failed
   [----]   eq(wcs, L"", L"foo"): 
   [----]     diff: [-L""-]{+L"foo"+}
-  [----] failmessages.cc:67: Assertion Failed
+  [----] failmessages.cc:91: Assertion Failed
   [----]   eq(wcs, L"reallyreallylongstringindeedmygoodsirormadam", L"yetanotherreallyreallylongstring"): 
   [----]     @@ -1,1 +1,1 @@
   [----]     -L"reallyreallylongstringindeedmygoodsirormadam"
   [----]     +L"yetanotherreallyreallylongstring"
-  [----] failmessages.cc:68: Assertion Failed
+  [----] failmessages.cc:92: Assertion Failed
   [----]   eq(wcs, L"foo\nbar", L"foo\nbaz"): 
   [----]     @@ -1,2 +1,2 @@
   [----]      L"foo\n"
   [----]     -L"bar"
   [----]     +L"baz"
-  [----] failmessages.cc:76: Assertion Failed
+  [----] failmessages.cc:100: Assertion Failed
   [----]   eq(mem, ma, mb): 
   [----]     @@ -1,2 +1,2 @@
   [----]     -00: 00                                   .               
   [----]     +00: 01                                   .               
   [----]      
-  [----] failmessages.cc:77: Assertion Failed
+  [----] failmessages.cc:101: Assertion Failed
   [----]   eq(int[1], &a, &b): 
   [----]     @@ -1,3 +1,3 @@
   [----]      (int[1]) {
   [----]     -\t[0] = 0, (esc)
   [----]     +\t[0] = 1, (esc)
   [----]      }
-  [----] failmessages.cc:90: Assertion Failed
+  [----] failmessages.cc:114: Assertion Failed
   [----]   eq(mem, marra, marrb): 
   [----]     @@ -1,2 +1,2 @@
   [----]     -00: 00000000 01                          .....           
   [----]     +00: 04000000 03                          .....           
   [----]      
-  [----] failmessages.cc:91: Assertion Failed
+  [----] failmessages.cc:115: Assertion Failed
   [----]   eq(int[sizeof (arra) / sizeof (int)], arra, arrb): 
   [----]     @@ -1,7 +1,7 @@
   [----]      (int[5]) {
@@ -874,32 +929,87 @@ C++ equivalents
   [----]     +\t[3] = 1, (esc)
   [----]     +\t[4] = 0, (esc)
   [----]      }
-  [----] failmessages.cc:96: Assertion Failed
+  [----] failmessages.cc:120: Assertion Failed
   [----]   eq(type(struct dummy_struct), dummy1, dummy2): 
   [----]     @@ -1,4 +1,4 @@
   [----]      (struct dummy_struct) {
-  [----]      \t.a = *, (esc)
+  [----]      \t.a = 42, (esc)
   [----]     -\t.b = 24 (esc)
   [----]     +\t.b = 42 (esc)
   [----]      }
-  [----] failmessages.cc:97: Assertion Failed
+  [----] failmessages.cc:121: Assertion Failed
   [----]   eq(type(struct dummy_struct)[1], &dummy1, &dummy2): 
   [----]     @@ -1,6 +1,6 @@
   [----]      (struct dummy_struct[1]) {
   [----]      \t[0] = (struct dummy_struct) { (esc)
-  [----]      \t\t.a = *, (esc)
+  [----]      \t\t.a = 42, (esc)
   [----]     -\t\t.b = 24 (esc)
   [----]     +\t\t.b = 42 (esc)
   [----]      \t}, (esc)
   [----]      }
-  [----] failmessages.cc:114: Assertion Failed
+  [----] failmessages.cc:138: Assertion Failed
   [----]   eq(stream, s1, s2): 
   [----]     @@ -1,2 +1,2 @@
   [----]     -00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]     +00: 646c726f 77206f6c 6c656800           dlrow olleh.    
   [----]      
   [FAIL] messages::eq
-  [====] Synthesis: Tested: 5 | Passing: 0 | Failing: 5 | Crashing: 0 
+  [----] failmessages.cc:45: Assertion Failed
+  [----]   zero(i8, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:46: Assertion Failed
+  [----]   zero(i16, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:47: Assertion Failed
+  [----]   zero(i32, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:48: Assertion Failed
+  [----]   zero(i64, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:49: Assertion Failed
+  [----]   zero(u8, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:50: Assertion Failed
+  [----]   zero(u16, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:51: Assertion Failed
+  [----]   zero(u32, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:52: Assertion Failed
+  [----]   zero(u64, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:53: Assertion Failed
+  [----]   zero(iptr, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:54: Assertion Failed
+  [----]   zero(uptr, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:55: Assertion Failed
+  [----]   zero(flt, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:56: Assertion Failed
+  [----]   zero(dbl, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:57: Assertion Failed
+  [----]   zero(ldbl, 0): 
+  [----]     value: 0
+  [----] failmessages.cc:60: Assertion Failed
+  [----]   zero(ptr, 0): 
+  [----]     value: nullptr
+  [----] failmessages.cc:61: Assertion Failed
+  [----]   zero(str, ""): 
+  [----]     value: ""
+  [----] failmessages.cc:62: Assertion Failed
+  [----]   zero(wcs, L""): 
+  [----]     value: L""
+  [----] failmessages.cc:64: Assertion Failed
+  [----]   zero(type(dummy_struct), dummy_struct{}): 
+  [----]     value: (struct dummy_struct) {
+  [----]       \t.a = 0, (esc)
+  [----]       \t.b = 0 (esc)
+  [----]       }
+  [FAIL] messages::zero
+  [====] Synthesis: Tested: 6 | Passing: 0 | Failing: 6 | Crashing: 0 
 
 Test C++ assertions:
 

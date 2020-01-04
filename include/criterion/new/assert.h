@@ -254,6 +254,30 @@
 #define ge(Tag, Actual, Reference)
 
 /**
+ *  Evaluates to true if `Value` is equal to the "zero value" of its type.
+ *
+ *  The zero value for primitive types and pointer types is the constant 0.
+ *
+ *  The zero value for c-strings (char *, wchar_t *) is the empty string,
+ *  "" and L"" respectively.
+ *
+ *  User-defined types may be used, but what a zero value of these types
+ *  mean depend on the language used.
+ *
+ *  In C, the function `bool cr_user_<type>_zero(const <type> *t)` must be
+ *  defined, and will be invoked to check that `t` is a zero value.
+ *
+ *  In C++, the type corresponding to the passed tag, or the inferred type of
+ *  Value if the tag is unspecified, must be default-constructible. The
+ *  zero value of that type is the default construction of that type, and
+ *  the value is compared against it with ==.
+ *
+ *  @param[in] "Tag (optional)" The type tag of the parameter
+ *  @param[in] Value the value to compare for zeroness
+ */
+#define zero(Tag, Value)
+
+/**
  *  Evaluates to true if the IEEE 754 floating point numbers `Actual` and
  *  `Expected` are almost equal, by being within `Ulp` units from each other.
  *
