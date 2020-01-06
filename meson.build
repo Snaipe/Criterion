@@ -126,7 +126,6 @@ endif
 criterion_includedir = include_directories(
 	'dependencies/debugbreak',
 	'dependencies/klib',
-	'dependencies/nanopb',
 	'dependencies/valgrind/include',
 
 	'include',
@@ -166,6 +165,18 @@ if not nanomsg.found()
 else
 	config.set('NN_H', '<nanomsg/nn.h>')
 	config.set('NN_REQREP_H', '<nanomsg/reqrep.h>')
+endif
+
+nanopb = dependency('nanopb', required: false)
+if not nanopb.found()
+	nanopb_proj = cmake.subproject('nanopb',
+		cmake_options: [
+			'-Dnanopb_BUILD_GENERATOR=OFF',
+			'-DBUILD_SHARED_LIBS=OFF',
+			'-DCMAKE_C_FLAGS=-DPB_ENABLE_MALLOC',
+			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+		])
+	nanopb = nanopb_proj.dependency('protobuf-nanopb')
 endif
 
 libgit2 = dependency('libgit2', required: false)
@@ -219,6 +230,7 @@ deps += [
 	libffi,
 	libgit2,
 	nanomsg,
+	nanopb,
 	librt,
 	libm,
 ]
