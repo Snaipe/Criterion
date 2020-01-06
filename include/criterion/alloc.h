@@ -119,6 +119,9 @@ template <typename T, typename... Params>
 T *new_obj(Params... params)
 {
     T *obj = static_cast<T *>(cr_malloc(sizeof (T)));
+    if (!obj) {
+        throw std::bad_alloc();
+    }
 
     new (obj) T(params...);
     return obj;
@@ -140,7 +143,13 @@ T *new_obj(Params... params)
 template <typename T>
 typename std::enable_if<std::is_fundamental<T>::value>::type
 * new_arr(size_t len) {
+    if (len > (SIZE_MAX - sizeof (size_t)) / sizeof (T)) {
+        throw std::bad_alloc();
+    }
     void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
+    if (!ptr) {
+        throw std::bad_alloc();
+    }
 
     *(reinterpret_cast<size_t *>(ptr)) = len;
     T *arr = reinterpret_cast<T *>(reinterpret_cast<size_t *>(ptr) + 1);
@@ -163,7 +172,13 @@ typename std::enable_if<std::is_fundamental<T>::value>::type
 template <typename T>
 T *new_arr(size_t len)
 {
+    if (len > (SIZE_MAX - sizeof (size_t)) / sizeof (T)) {
+        throw std::bad_alloc();
+    }
     void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
+    if (!ptr) {
+        throw std::bad_alloc();
+    }
 
     *(reinterpret_cast<size_t *>(ptr)) = len;
 
