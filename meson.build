@@ -176,7 +176,7 @@ if not nanopb.found()
 			'-DCMAKE_C_FLAGS=-DPB_ENABLE_MALLOC',
 			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
 		])
-	nanopb = nanopb_proj.dependency('protobuf-nanopb')
+	nanopb = nanopb_proj.dependency('protobuf-nanopb-static')
 endif
 
 libgit2 = dependency('libgit2', required: false)
