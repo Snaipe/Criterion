@@ -9,5 +9,5 @@
 # path is already set up properly and there is no need to give
 # --plugin= on the command line.
 
-NANOPB_PATH="../../dependencies/nanopb/generator"
-exec python2 "$NANOPB_PATH/nanopb_generator.py" --protoc-plugin
+NANOPB_PATH="../../subprojects/nanopb/generator"
+exec python "$NANOPB_PATH/nanopb_generator.py" --protoc-plugin
