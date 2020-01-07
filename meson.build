@@ -225,5 +225,11 @@ deps += [
 
 subdir('include')
 subdir('src')
-subdir('samples')
-subdir('test')
+
+if get_option('samples')
+	subdir('samples')
+endif
+
+if get_option('tests')
+	subdir('test')
+endif
