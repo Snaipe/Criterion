@@ -167,7 +167,8 @@ else
 	config.set('NN_REQREP_H', '<nanomsg/reqrep.h>')
 endif
 
-nanopb = dependency('nanopb', required: false)
+nanopb = dependency('nanopb', required: false, method: 'cmake', modules: ['nanopb::protobuf-nanopb-static'])
+must_regenerate_pb = nanopb.found()
 if not nanopb.found()
 	nanopb_proj = cmake.subproject('nanopb',
 		cmake_options: [
