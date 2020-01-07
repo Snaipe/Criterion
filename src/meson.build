@@ -46,7 +46,6 @@ sources = files(
 	'log/normal.c',
 
 	'protocol/connect.c',
-	'protocol/criterion.pb.c',
 	'protocol/messages.c',
 	'protocol/protocol.c',
 
@@ -57,6 +56,22 @@ sources = files(
 	'string/i18n.c',
 	'string/xxd.c',
 )
+
+if must_regenerate_pb
+	protoc = find_program('protoc')
+	protoc_gen_nanopb = find_program('protoc-gen-nanopb')
+
+	gen_pb_py = meson.current_source_dir() + '/protocol/gen-pb.py'
+
+	gen_pb = custom_target('gen-pb',
+		input   : ['protocol/criterion.proto', 'protocol/criterion.options'],
+		output  : ['criterion.pb.c', 'criterion.pb.h'],
+		command : [gen_pb_py, protoc.path(), protoc_gen_nanopb.path(), '@INPUT0@', '@INPUT1@', meson.current_build_dir()])
+
+	sources += gen_pb
+else
+	sources += 'protocol/criterion.pb.c'
+endif
 
 configure_file(input         : 'config.h.in',
                output        : 'config.h',
