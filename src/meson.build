@@ -49,7 +49,6 @@ sources = files(
 	'protocol/protocol.c',
 
 	'string/brz.c',
-	'string/diff.c',
 	'string/extglobmatch.c',
 	'string/fmt.c',
 	'string/i18n.c',
@@ -70,6 +69,12 @@ if must_regenerate_pb
 	sources += gen_pb
 else
 	sources += 'protocol/criterion.pb.c'
+endif
+
+if get_option('diffs').enabled()
+	sources += files('string/diff.c')
+else
+	sources += files('string/diff-stubs.c')
 endif
 
 if get_option('theories').enabled()

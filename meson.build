@@ -181,7 +181,7 @@ if not nanopb.found()
 endif
 
 libgit2 = dependency('libgit2', required: false)
-if not libgit2.found()
+if not libgit2.found() and get_option('diffs').enabled()
 	libgit2_proj = cmake.subproject('libgit2',
 		cmake_options: [
 			'-DBUILD_SHARED_LIBS=OFF',
