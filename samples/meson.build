@@ -11,9 +11,11 @@ samples = [
 	'simple.c',
 	'skip.c',
 	'suites.c',
-	'theories.c',
 	'timeout.c',
 ]
+if get_option('theories').enabled()
+	samples += ['theories.c']
+endif
 
 if has_cxx
 	samples += [
@@ -28,9 +30,11 @@ if has_cxx
 		'signal.cc',
 		'simple.cc',
 		'skip.cc',
-		'suites.cc',
-		'theories.cc',
+		'suites.cc'
 	]
+	if get_option('theories').enabled()
+		samples += ['theories.cc']
+	endif
 endif
 
 foreach sample : samples

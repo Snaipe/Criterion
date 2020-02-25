@@ -1,8 +1,10 @@
 unit_test_sources = files(
-	'asprintf.c',
 	'ordered-set.c',
 	'path.c',
 )
+if get_option('theories').enabled()
+    unit_test_sources += files('asprintf.c')
+endif
 
 #if has_cxx
 #	unit_test_sources += files(

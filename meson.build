@@ -193,8 +193,6 @@ endif
 boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort'])
 libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'])
 
-config.set('ENABLE_THEORIES', libffi.found())
-
 # optional platform-dependent standard libs
 librt = cc.find_library('rt', required: false)
 libm  = cc.find_library('m',  required: false)

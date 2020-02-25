@@ -25,7 +25,6 @@ sources = files(
 	'core/runner_coroutine.c',
 	'core/stats.c',
 	'core/test.c',
-	'core/theories.c',
 
 	'csptr/array.c',
 	'csptr/mman.c',
@@ -61,6 +60,10 @@ sources = files(
 	meson.current_source_dir() + '/../dependencies/nanopb/pb_encode.c',
 	meson.current_source_dir() + '/../dependencies/nanopb/pb_decode.c',
 )
+
+if get_option('theories').enabled()
+	sources += files('core/theories.c')
+endif
 
 configure_file(input         : 'config.h.in',
                output        : 'config.h',

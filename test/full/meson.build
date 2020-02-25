@@ -4,9 +4,11 @@ full_tests = [
 	'flood.c',
 	'long-messages.c',
 	'other-crashes.c',
-	'theories_regression.c',
 	'with-time.c',
 ]
+if get_option('theories').enabled()
+	full_tests += ['theories_regression.c']
+endif
 
 if has_cxx
 	full_tests += [
@@ -14,9 +16,11 @@ if has_cxx
 		'exit.cc',
 		'failmessages.cc',
 		'long-messages.cc',
-		'other-crashes.cc',
-		'theories_regression.cc',
+		'other-crashes.cc'
 	]
+	if get_option('theories').enabled()
+		full_tests += ['theories_regression.cc']
+	endif
 endif
 
 foreach tst : full_tests
