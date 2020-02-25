@@ -25,7 +25,6 @@ sources = files(
 	'core/runner_coroutine.c',
 	'core/stats.c',
 	'core/test.c',
-	'core/theories.c',
 
 	'csptr/array.c',
 	'csptr/mman.c',
@@ -71,6 +70,10 @@ if must_regenerate_pb
 	sources += gen_pb
 else
 	sources += 'protocol/criterion.pb.c'
+endif
+
+if get_option('theories').enabled()
+	sources += files('core/theories.c')
 endif
 
 configure_file(input         : 'config.h.in',
