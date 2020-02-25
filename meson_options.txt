@@ -5,6 +5,7 @@ option('samples', type: 'boolean', value: true)
 option('cxx-support', type: 'feature', value: 'auto')
 option('i18n',        type: 'feature', value: 'auto')
 option('theories',    type: 'feature', value: 'enabled')
+option('diffs',       type: 'feature', value: 'enabled')
 
 # Platform-specific workarounds
 option('mingw-define-off_t', type: 'boolean', value: false)
