@@ -8,7 +8,7 @@ Testing multiple samples with --xml
       <testcase name="passing" assertions="1" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="failing" assertions="1" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="1 assertion(s) failed.">simple.c:4: The expression 0 is false.&#10;</failure>
+        <failure type="assert" message="1 assertion(s) failed."><![CDATA[simple.c:4: The expression 0 is false.]]>&#10;</failure>
       </testcase>
     </testsuite>
   </testsuites>
@@ -40,14 +40,14 @@ Testing multiple samples with --xml
       <testcase name="stream" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="old_school" assertions="2" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="2 assertion(s) failed.">asserts.c:19: &#10;asserts.c:18: You can fail an assertion with a message from anywhere&#10;</failure>
+        <failure type="assert" message="2 assertion(s) failed."><![CDATA[asserts.c:19: ]]>&#10;<![CDATA[asserts.c:18: You can fail an assertion with a message from anywhere]]>&#10;</failure>
       </testcase>
       <testcase name="native" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="float" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="base" assertions="2" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="2 assertion(s) failed.">asserts.c:13: This assert runs&#10;asserts.c:12: assert is fatal, expect isn't&#10;</failure>
+        <failure type="assert" message="2 assertion(s) failed."><![CDATA[asserts.c:13: This assert runs]]>&#10;<![CDATA[asserts.c:12: assert is fatal, expect isn't]]>&#10;</failure>
       </testcase>
       <testcase name="array" assertions="0" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
@@ -79,7 +79,7 @@ Testing multiple samples with --xml
   <testsuites name="Criterion Tests" tests="1" failures="1" errors="0" disabled="0">
     <testsuite name="sample" tests="1" failures="1" errors="0" disabled="0" skipped="0" time="\d\.\d\d\d"> (re)
       <testcase name="long_msg" assertions="1" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="1 assertion(s) failed.">long-messages.c:4: This is&#10;        A long message&#10;        Spawning multiple lines.&#10;        Formatting is respected.&#10;</failure>
+        <failure type="assert" message="1 assertion(s) failed."><![CDATA[long-messages.c:4: This is]]>&#10;        A long message&#10;        Spawning multiple lines.&#10;        Formatting is respected.&#10;</failure>
       </testcase>
     </testsuite>
   </testsuites>
@@ -93,7 +93,7 @@ Testing multiple samples with --xml
         <skipped/>
       </testcase>
       <testcase name="failing" assertions="1" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="1 assertion(s) failed.">description.c:4: The expression 0 is false.&#10;</failure>
+        <failure type="assert" message="1 assertion(s) failed."><![CDATA[description.c:4: The expression 0 is false.]]>&#10;</failure>
       </testcase>
     </testsuite>
   </testsuites>
@@ -108,7 +108,7 @@ Testing --output=xml
       <testcase name="passing" assertions="1" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="failing" assertions="1" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="1 assertion(s) failed.">simple.c:4: The expression 0 is false.&#10;</failure>
+        <failure type="assert" message="1 assertion(s) failed."><![CDATA[simple.c:4: The expression 0 is false.]]>&#10;</failure>
       </testcase>
     </testsuite>
   </testsuites>
@@ -123,7 +123,7 @@ Testing CRITERION_OUTPUTS
       <testcase name="passing" assertions="1" status="PASSED" time="\d\.\d\d\d"> (re)
       </testcase>
       <testcase name="failing" assertions="1" status="FAILED" time="\d\.\d\d\d"> (re)
-        <failure type="assert" message="1 assertion(s) failed.">simple.c:4: The expression 0 is false.&#10;</failure>
+        <failure type="assert" message="1 assertion(s) failed."><![CDATA[simple.c:4: The expression 0 is false.]]>&#10;</failure>
       </testcase>
     </testsuite>
   </testsuites>

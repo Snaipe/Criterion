@@ -82,7 +82,7 @@
 #define LF                  "&#10;"
 
 #define XML_FAILURE_MSG_ENTRY \
-    "%s:%u: %s" LF
+    "<![CDATA[%s:%u: %s]]>" LF
 
 #define XML_TEST_FAILED_TEMPLATE_BEGIN \
     "      <failure type=\"assert\" message=\"%d assertion(s) failed.\">"
