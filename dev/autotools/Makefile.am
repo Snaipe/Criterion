@@ -8,7 +8,8 @@ LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
 check_PROGRAMS = criterion_tests
 
 criterion_tests_SOURCES = simple.c
-criterion_tests_LDFLAGS = -lcriterion
+criterion_tests_CFLAGS =  $(CRITERION_CFLAGS)
+criterion_tests_LDFLAGS =  $(CRITERION_LIBS)
 
 TESTS = criterion_tests
 EXTRA_DIST = $(TESTS)
