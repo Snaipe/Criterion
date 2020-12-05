@@ -2,7 +2,7 @@
 LOG_COMPILER = $(top_srcdir)/build-aux/criterion-tap-test
 
 # use the TAP log driver
-LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
             $(top_srcdir)/build-aux/tap-driver.sh
 
 check_PROGRAMS = criterion_tests
