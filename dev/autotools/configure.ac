@@ -6,6 +6,9 @@ PKG_CHECK_MODULES([CRITERION], [criterion], [], [
   AC_MSG_ERROR([unable to find Criterion])
 ])
 
+AC_SUBST([CRITERION_CFLAGS])
+AC_SUBST([CRITERION_LIBS])
+
 AC_PROG_AWK
 AC_PROG_CC
 
