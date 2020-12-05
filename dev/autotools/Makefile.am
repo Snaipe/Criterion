@@ -1,9 +1,11 @@
-# use the provided wrapper script to output things properly
-LOG_COMPILER = $(top_srcdir)/build-aux/criterion-tap-test
-
 # use the TAP log driver
 TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
             $(top_srcdir)/build-aux/tap-driver.sh
+
+ # Setup Criterion TAP output using ENV
+ AM_TESTS_ENVIRONMENT = \
+    CRITERION_OUTPUTS='tap:-'; \
+    export CRITERION_OUTPUTS;
 
 check_PROGRAMS = criterion_tests
 
