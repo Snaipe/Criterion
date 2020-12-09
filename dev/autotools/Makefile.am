@@ -14,4 +14,3 @@ criterion_tests_CFLAGS =  $(CRITERION_CFLAGS)
 criterion_tests_LDFLAGS =  $(CRITERION_LIBS)
 
 TESTS = criterion_tests
-EXTRA_DIST = $(TESTS)
