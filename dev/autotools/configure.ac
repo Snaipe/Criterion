@@ -2,9 +2,9 @@ AC_INIT([Criterion Autotools Tests], [1.0], [your@email.com])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 
-AC_CHECK_LIB([criterion], [criterion_initialize], [], [
+PKG_CHECK_MODULES([CRITERION], [criterion], [], [
   AC_MSG_ERROR([unable to find Criterion])
-], [])
+])
 
 AC_PROG_AWK
 AC_PROG_CC
