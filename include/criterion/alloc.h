@@ -268,7 +268,7 @@ struct allocator {
     inline pointer address(reference r) { return &r; }
     inline const_pointer address(const_reference r) { return &r; }
 
-    inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0)
+    inline pointer allocate(size_type cnt, const std::allocator<void>::value_type * = 0)
     {
         return reinterpret_cast<pointer>(cr_malloc(cnt * sizeof (T)));
     }
