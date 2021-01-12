@@ -427,6 +427,9 @@ void normal_log_test_abort(CR_UNUSED struct criterion_test_stats *stats, const c
 
 void normal_log_message(enum criterion_severity severity, const char *msg)
 {
+    if (*msg == '\0')
+        return;
+
     char *dup       = strdup(msg);
     char *saveptr   = NULL;
     char *line      = strtok_r(dup, "\n", &saveptr);
