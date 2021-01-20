@@ -30,6 +30,22 @@ Alpine (gcc,i386)_task:
   setup_script: *alpine-deps
   <<: *pipeline
 
+Alpine (gcc,arm)_task:
+  container:
+    image: snaipe/ci-meson:alpine-armhf
+  env:
+    CIRRUS_SHELL: /sbin/qemu-sh
+  setup_script: *alpine-deps
+  <<: *pipeline
+
+Alpine (gcc,aarch64)_task:
+  container:
+    image: snaipe/ci-meson:alpine-aarch64
+  env:
+    CIRRUS_SHELL: /sbin/qemu-sh
+  setup_script: *alpine-deps
+  <<: *pipeline
+
 MacOS_task:
   osx_instance:
     image: mojave-xcode-10.2
