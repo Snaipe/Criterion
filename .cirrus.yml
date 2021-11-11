@@ -37,7 +37,7 @@ MacOS_task:
     PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
   setup_script: |-
     brew install meson cmake pkg-config libffi libgit2 nanomsg
-    pip3 install cram==0.7
+    sudo pip3 install cram==0.7
   <<: *pipeline
 
 FreeBSD_task:
