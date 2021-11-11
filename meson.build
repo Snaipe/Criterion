@@ -50,6 +50,7 @@ add_project_arguments(
 	]),
 	'-DCRITERION_BUILDING_DLL=1',
 	'-DPB_ENABLE_MALLOC=1',
+	'-DPB_NO_PACKED_STRUCTS=1',
 	'-D_GNU_SOURCE',
 	language: ['c', 'cpp'])
 
@@ -174,7 +175,7 @@ if not nanopb.found()
 		cmake_options: [
 			'-Dnanopb_BUILD_GENERATOR=OFF',
 			'-DBUILD_SHARED_LIBS=OFF',
-			'-DCMAKE_C_FLAGS=-DPB_ENABLE_MALLOC',
+			'-DCMAKE_C_FLAGS=-DPB_ENABLE_MALLOC=1 -DPB_NO_PACKED_STRUCTS=1',
 			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
 		])
 	nanopb = nanopb_proj.dependency('protobuf-nanopb-static')
