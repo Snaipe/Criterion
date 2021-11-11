@@ -27,6 +27,7 @@
 #include <mach-o/getsect.h>
 #include <mach-o/loader.h>
 
+#include "err.h"
 #include "section.h"
 
 #ifdef __LP64__
