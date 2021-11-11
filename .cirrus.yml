@@ -42,7 +42,7 @@ MacOS_task:
 
 FreeBSD_task:
   freebsd_instance:
-    image_family: freebsd-12-0
+    image_family: freebsd-13-0
   setup_script: |-
     pkg install -y gettext-tools pkgconf cmake meson git libffi libgit2 nanomsg
     python3 -m ensurepip
@@ -61,4 +61,3 @@ Windows (mingw-gcc)_task:
     choco install -y --no-progress ninja cmake
     pip install meson cram==0.7
   <<: *pipeline
-
