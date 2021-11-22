@@ -1,0 +1,26 @@
+From 816b1f964b26e29f1113ef1c9a031b510d6311ce Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?L=C3=A1szl=C3=B3=20V=C3=A1rady?=
+ <laszlo.varady@protonmail.com>
+Date: Tue, 23 Nov 2021 00:43:31 +0100
+Subject: [PATCH] Ignore "carriage return"
+
+---
+ cram/_test.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/cram/_test.py b/cram/_test.py
+index 5099a82..bef819c 100644
+--- a/cram/_test.py
++++ b/cram/_test.py
+@@ -148,6 +148,8 @@ def test(lines, shell='/bin/sh', indent=2, testname=None, env=None,
+     if retcode == 80:
+         return (refout, None, [])
+ 
++    output = output.replace(b'\r\n', b'\n')
++
+     pos = -1
+     ret = 0
+     for i, line in enumerate(output[:-1].splitlines(True)):
+-- 
+2.34.0
+
