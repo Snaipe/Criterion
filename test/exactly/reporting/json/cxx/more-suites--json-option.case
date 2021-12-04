@@ -1,0 +1,9 @@
+[act]
+
+% more-suites.cc.bin --json
+
+[assert]
+
+stdout
+  -transformed-by replace_version
+  equals -contents-of expected/more-suites.txt

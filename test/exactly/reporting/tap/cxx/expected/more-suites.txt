@@ -1,0 +1,12 @@
+TAP version 13
+1..3
+# Criterion <VERSION>
+#
+# Running 1 tests from suite2
+ok - suite2::test 
+#
+# Running 1 tests from suite1
+ok - suite1::test 
+#
+# Running 1 tests from disabled
+ok - disabled::test  # SKIP test was skipped

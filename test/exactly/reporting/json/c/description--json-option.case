@@ -1,0 +1,12 @@
+[act]
+
+% description.c.bin --json
+
+[assert]
+
+def text-transformer replace_source_file =
+    replace '"description.c:' '"<SOURCE-FILE>:'
+
+stdout
+  -transformed-by ( replace_version | replace_source_file )
+  equals -contents-of expected/description.txt

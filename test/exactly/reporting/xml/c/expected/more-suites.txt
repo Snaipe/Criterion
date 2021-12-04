@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tests compiled with Criterion <VERSION> -->
+<testsuites name="Criterion Tests" tests="3" failures="0" errors="0" disabled="1">
+  <testsuite name="suite2" tests="1" failures="0" errors="0" disabled="0" skipped="0" time="<TIME>">
+    <testcase name="test" assertions="1" status="PASSED" time="<TIME>">
+    </testcase>
+  </testsuite>
+  <testsuite name="suite1" tests="1" failures="0" errors="0" disabled="0" skipped="0" time="<TIME>">
+    <testcase name="test" assertions="1" status="PASSED" time="<TIME>">
+    </testcase>
+  </testsuite>
+  <testsuite name="disabled" tests="1" failures="0" errors="0" disabled="1" skipped="1" time="<TIME>">
+    <testcase name="test" assertions="0" status="SKIPPED" time="<TIME>">
+      <skipped/>
+    </testcase>
+  </testsuite>
+</testsuites>
