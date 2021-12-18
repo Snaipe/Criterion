@@ -5,7 +5,6 @@ _pipeline: &pipeline
   submodule-update_script: git submodule update --init --recursive
   configure_script: meson -Db_lundef=false build
   compile_script: ninja -C build
-  test_script: ninja -C build test
 
 Debian (gcc)_task:
   container:
@@ -15,6 +14,7 @@ Debian (gcc)_task:
     apt-get install -y pkg-config cmake libgit2-dev libffi-dev libnanomsg-dev
     pip3 install cram==0.7
   <<: *pipeline
+  test_script: ninja -C build test
 
 Alpine (gcc,x86_64)_task:
   container:
@@ -23,32 +23,36 @@ Alpine (gcc,x86_64)_task:
     apk add --no-cache cmake libgit2-dev libffi-dev
     pip3 install cram==0.7
   <<: *pipeline
+  test_script: ninja -C build test
 
 Alpine (gcc,i386)_task:
   container:
     image: snaipe/ci-meson:alpine-x86
   setup_script: *alpine-deps
   <<: *pipeline
+  test_script: ninja -C build test
 
 MacOS_task:
-  osx_instance:
-    image: mojave-xcode-10.2
+  macos_instance:
+    image: monterey-xcode-13.1
   env:
     PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
   setup_script: |-
     brew install meson cmake pkg-config libffi libgit2 nanomsg
-    pip3 install cram==0.7
+    sudo pip3 install cram==0.7
   <<: *pipeline
+  test_script: ninja -C build test
 
 FreeBSD_task:
   freebsd_instance:
-    image_family: freebsd-12-0
+    image_family: freebsd-13-0
   setup_script: |-
     pkg install -y gettext-tools pkgconf cmake meson git libffi libgit2 nanomsg
     python3 -m ensurepip
     python3 -m pip install --upgrade pip
     python3 -m pip install cram==0.7
   <<: *pipeline
+  test_script: ninja -C build test
 
 Windows (mingw-gcc)_task:
   windows_container:
@@ -60,5 +64,8 @@ Windows (mingw-gcc)_task:
     choco install -y --no-progress python3 --params "/InstallDir:C:\Python"
     choco install -y --no-progress ninja cmake
     pip install meson cram==0.7
+    git config --global core.autocrlf false
+    patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
+    patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
   <<: *pipeline
-
+  test_script: meson devenv -C build ninja test

@@ -29,6 +29,7 @@
 #ifdef __cplusplus
 
 # include <cmath>
+# include <limits>
 
 namespace criterion { namespace internal { namespace operators {
 
