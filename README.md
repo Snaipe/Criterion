@@ -91,7 +91,7 @@ Criterion is built with the following projects:
 
 * [boxfort](https://github.com/diacritic/BoxFort)
 * [debugbreak](https://github.com/scottt/debugbreak)
-* [dyncall](http://www.dyncall.org/)
+* [libffi](https://sourceware.org/libffi/)
 * [klib](http://attractivechaos.github.io/klib/)
 * [libcsptr](https://github.com/Snaipe/libcsptr)
 * [nanomsg](http://nanomsg.org/)
