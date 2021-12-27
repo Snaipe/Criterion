@@ -4,7 +4,7 @@ Setup
 Prerequisites
 -------------
 
-The library is supported on Linux, OS X, FreeBSD, and Windows.
+The library is supported on Linux, macOS, FreeBSD, and Windows.
 
 The following compilers are supported to compile both the library and the tests:
 
@@ -28,7 +28,7 @@ Then, run the following commands to build Criterion:
     $ meson build
     $ ninja -C build
 
-Installing the library and language files (Linux, OS X, FreeBSD)
+Installing the library and language files (Linux, macOS, FreeBSD)
 ----------------------------------------------------------------
 
 Run with an elevated shell:

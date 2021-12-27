@@ -30,4 +30,4 @@ Features
 * Supports parameterized tests and theories.
 * Progress and statistics can be followed in real time with report hooks.
 * TAP output format can be enabled with an option.
-* Runs on Linux, FreeBSD, Mac OS X, and Windows (Compiling with MinGW GCC and Visual Studio 2015+).
+* Runs on Linux, FreeBSD, macOS, and Windows (Compiling with MinGW GCC and Visual Studio 2015+).
