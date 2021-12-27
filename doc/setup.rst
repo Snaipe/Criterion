@@ -15,7 +15,19 @@ The following compilers are supported to compile both the library and the tests:
 Building from source
 --------------------
 
-First, clone this repository:
+First, install dependencies:
+
+* C/C++ compiler
+* Meson, Ninja
+* CMake (for subprojects)
+* pkg-config
+* libffi (libffi-dev)
+* libgit2 (libgit2-dev)
+
+Other runtime dependencies will be bundled if they are not available on the
+system (BoxFort, debugbreak, klib, nanomsg, nanopb).
+
+Clone this repository:
 
 .. code-block:: bash
 
