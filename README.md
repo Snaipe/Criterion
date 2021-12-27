@@ -38,15 +38,15 @@ the user would have with other frameworks:
 
 ### Packages
 
-* Mac OS X: `brew install snaipe/soft/criterion`
-* [AUR](https://aur.archlinux.org/packages/criterion/): `pacaur -S criterion`
-* Ubuntu/Debian:
+* Ubuntu (>=21.04) / Debian (>=11): `apt-get install libcriterion-dev`, on older versions:
 
     ```bash
     $ sudo add-apt-repository ppa:snaipewastaken/ppa
     $ sudo apt-get update
     $ sudo apt-get install criterion-dev
     ```
+* Arch Linux ([AUR](https://aur.archlinux.org/packages/criterion/)): `pacaur -S criterion`
+* macOS: `brew install snaipe/soft/criterion`
 
 ### Binary archives
 
