@@ -46,7 +46,7 @@ the user would have with other frameworks:
     $ sudo apt-get install criterion-dev
     ```
 * Arch Linux ([AUR](https://aur.archlinux.org/packages/criterion/)): `pacaur -S criterion`
-* macOS: `brew install snaipe/soft/criterion`
+* macOS: `brew install mranno/tap/criterion`
 
 ### Binary archives
 
