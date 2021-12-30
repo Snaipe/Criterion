@@ -39,6 +39,7 @@ Alpine (gcc,arm)_task:
     CIRRUS_SHELL: /sbin/qemu-sh
   setup_script: *alpine-deps
   <<: *pipeline
+  test_script: ninja -C build test
 
 Alpine (gcc,aarch64)_task:
   container:
@@ -47,6 +48,7 @@ Alpine (gcc,aarch64)_task:
     CIRRUS_SHELL: /sbin/qemu-sh
   setup_script: *alpine-deps
   <<: *pipeline
+  test_script: ninja -C build test
 
 MacOS_task:
   macos_instance:
