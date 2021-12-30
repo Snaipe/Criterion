@@ -47,7 +47,7 @@ typedef enum {
     POST_ALL,
 } e_report_status;
 
-typedef void (*f_report_hook)();
+typedef void (*f_report_hook)(void *);
 
 /**
  *  ReportHook(Kind)(Type *param) { Function Body }
