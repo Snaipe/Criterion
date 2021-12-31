@@ -3,6 +3,7 @@
 #include <exception>
 #include <new>
 #include <array>
+#include <map>
 
 Test(asserts, base) {
     cr_assert(true);
@@ -167,4 +168,20 @@ Test(asserts, exception) {
     cr_expect(throw (std::runtime_error, {}));
     cr_assert(throw (std::invalid_argument, throw std::invalid_argument("some message")));
     cr_assert(throw (std::bad_alloc, throw std::invalid_argument("some other message")));
+}
+
+Test(asserts, containers) {
+    using int_vect = std::vector<int>;
+    cr_assert(zero(int_vect{}));
+
+    int_vect v = {1, 2, 3};
+    cr_assert(not(zero(v)));
+
+    using map = std::map<std::string, int>;
+    map m = {
+        {"hello", 1},
+        {"world", 2},
+    };
+    cr_assert(not(zero(m)));
+    cr_assert(eq(m, m));
 }
