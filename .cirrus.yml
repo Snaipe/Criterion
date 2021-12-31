@@ -1,10 +1,17 @@
-_pipeline: &pipeline
-  info_script: |
-    meson --version
-    ninja --version
+.compile: &compile
   submodule-update_script: git submodule update --init --recursive
   configure_script: meson -Db_lundef=false build
   compile_script: ninja -C build
+
+.test: &test
+  test_script: ninja -C build test
+
+.pipeline: &pipeline
+  info_script: |
+    meson --version
+    ninja --version
+  <<: *compile
+  <<: *test
 
 Debian (gcc)_task:
   container:
@@ -14,7 +21,6 @@ Debian (gcc)_task:
     apt-get install -y pkg-config cmake libgit2-dev libffi-dev libnanomsg-dev
     pip3 install cram==0.7
   <<: *pipeline
-  test_script: ninja -C build test
 
 Alpine (gcc,x86_64)_task:
   container:
@@ -23,14 +29,12 @@ Alpine (gcc,x86_64)_task:
     apk add --no-cache cmake libgit2-dev libffi-dev
     pip3 install cram==0.7
   <<: *pipeline
-  test_script: ninja -C build test
 
 Alpine (gcc,i386)_task:
   container:
     image: snaipe/ci-meson:alpine-x86
   setup_script: *alpine-deps
   <<: *pipeline
-  test_script: ninja -C build test
 
 Alpine (gcc,arm)_task:
   container:
@@ -39,7 +43,6 @@ Alpine (gcc,arm)_task:
     CIRRUS_SHELL: /sbin/qemu-sh
   setup_script: *alpine-deps
   <<: *pipeline
-  test_script: ninja -C build test
 
 Alpine (gcc,aarch64)_task:
   container:
@@ -48,7 +51,6 @@ Alpine (gcc,aarch64)_task:
     CIRRUS_SHELL: /sbin/qemu-sh
   setup_script: *alpine-deps
   <<: *pipeline
-  test_script: ninja -C build test
 
 MacOS_task:
   macos_instance:
@@ -59,7 +61,6 @@ MacOS_task:
     brew install meson cmake pkg-config libffi libgit2 nanomsg
     sudo pip3 install cram==0.7
   <<: *pipeline
-  test_script: ninja -C build test
 
 FreeBSD_task:
   freebsd_instance:
@@ -70,7 +71,6 @@ FreeBSD_task:
     python3 -m pip install --upgrade pip
     python3 -m pip install cram==0.7
   <<: *pipeline
-  test_script: ninja -C build test
 
 Windows (mingw-gcc)_task:
   windows_container:
@@ -85,5 +85,5 @@ Windows (mingw-gcc)_task:
     git config --global core.autocrlf false
     patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
     patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
-  <<: *pipeline
+  <<: *compile
   test_script: meson devenv -C build ninja test
