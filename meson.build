@@ -43,6 +43,7 @@ add_project_arguments(
 		'-Wno-unused-parameter',
 		'-Wno-unused-value',
 		'-fvisibility=hidden',
+		'-fexceptions',
 
 		# MSVC-specific stuff
 		'/SAFESEH:NO',
