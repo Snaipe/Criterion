@@ -129,6 +129,11 @@ static bool is_float(const char *name)
            || contains_word(name, "double", sizeof ("double"));
 }
 
+static bool is_long_double(const char *name)
+{
+    return !strcmp(name, "long double");
+}
+
 static bool is_unsigned_int(const char *name)
 {
     return contains_word(name, "unsigned", sizeof ("unsigned"))
@@ -146,10 +151,10 @@ static void format_arg(char (*arg)[1024], struct criterion_datapoints *dp, void 
     if (is_float(dp->name)) {
         if (dp->size == sizeof (float))
             snprintf(*arg, sizeof (*arg) - 1, "%gf", *(float *) data);
+        else if (dp->size == sizeof (long double) && is_long_double(dp->name))
+            snprintf(*arg, sizeof (*arg) - 1, "%gl", (double) *(long double *) data);
         else if (dp->size == sizeof (double))
             snprintf(*arg, sizeof (*arg) - 1, "%g", *(double *) data);
-        else if (dp->size == sizeof (long double))
-            snprintf(*arg, sizeof (*arg) - 1, "%gl", (double) *(long double *) data);
     } else {
         if (is_string(dp->name)) {
             snprintf(*arg, sizeof (*arg) - 1, "\"%s\"", *(char **) data);
