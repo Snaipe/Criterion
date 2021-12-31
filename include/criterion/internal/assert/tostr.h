@@ -36,16 +36,30 @@ extern "C" char *cr_user_wcs_tostr(const wchar_t **);
 
 namespace criterion { namespace internal { namespace stream_override {
 
+template< class... >
+using __void_t = void;
+
+template<typename T, typename = void>
+struct __is_printable: std::false_type {};
+
+template<typename T>
+struct __is_printable<T,
+        __void_t<decltype(std::declval<std::ostream&>() << std::declval<T>())>>
+: std::true_type {};
+
+template<typename T, typename = void>
+struct __is_iterable: std::false_type {};
+
+template<typename T>
+struct __is_iterable<T,
+        __void_t<decltype(std::declval<T>().begin())>>
+: std::true_type {};
+
 struct ostream {
     constexpr ostream(std::ostream &s)
         : base(s)
     {}
 
-    template <typename T>
-    friend ostream &operator<<(ostream &, const T &);
-    friend ostream &operator<<(ostream &, std::ostream &(*)(std::ostream &));
-
-private:
     std::ostream &base;
 };
 
@@ -55,14 +69,24 @@ inline ostream& operator<<(ostream& s, std::ostream& (*func)(std::ostream&))
     return s;
 }
 
-template <typename T>
+template <typename T,
+    typename = typename std::enable_if<!__is_iterable<T>::value || __is_printable<T>::value>::type, typename = void>
 inline ostream &operator<<(ostream &s, const T &value)
 {
     s.base << value;
     return s;
 }
 
-template <>
+template <typename T, typename U>
+inline ostream &operator<<(ostream &s, const std::pair<T, U> &value)
+{
+    s.base << "[";
+    s << value.first;
+    s.base << "]: ";
+    s << value.second;
+    return s;
+}
+
 inline ostream &operator<<(ostream &s, const std::string &str)
 {
     const char *cstr = str.c_str();
@@ -72,7 +96,6 @@ inline ostream &operator<<(ostream &s, const std::string &str)
     return s;
 }
 
-template <>
 inline ostream &operator<<(ostream &s, const std::wstring &str)
 {
     const wchar_t *cstr = str.c_str();
@@ -82,7 +105,6 @@ inline ostream &operator<<(ostream &s, const std::wstring &str)
     return s;
 }
 
-template <>
 inline ostream &operator<<(ostream &s, const std::nullptr_t &ptr)
 {
     (void) ptr;
@@ -90,7 +112,6 @@ inline ostream &operator<<(ostream &s, const std::nullptr_t &ptr)
     return s;
 }
 
-template <>
 inline ostream &operator<<(ostream &s, void *const &ptr)
 {
     if (!ptr)
@@ -105,24 +126,41 @@ inline ostream &operator<<(ostream &s, void *const &ptr)
 /* These overloads are necessary as int8_t and uint8_t are outputted as
    characters by default. why. */
 
-template <>
 inline ostream &operator<<(ostream &s, const int8_t &i)
 {
     s.base << signed (i);
     return s;
 }
 
-template <>
 inline ostream &operator<<(ostream &s, const uint8_t &i)
 {
     s.base << unsigned (i);
     return s;
 }
 
-template <>
 inline ostream &operator<<(ostream &s, const char &c)
 {
     s.base << c;
+    return s;
+}
+
+/* These overloads are there because none of the stl containers implement <<.
+   We provide a sensible string representation for iterable types. */
+
+template <typename T,
+    typename = typename std::enable_if<__is_iterable<T>::value && !__is_printable<T>::value>::type>
+inline ostream &operator<<(ostream &s, const T &container)
+{
+    s.base << "{";
+    size_t count = 0;
+    for (auto &e : container) {
+        s << std::endl << "\t" << e << ", ";
+        count++;
+    }
+    if (count > 0) {
+        s.base << std::endl;
+    }
+    s.base << "}";
     return s;
 }
 

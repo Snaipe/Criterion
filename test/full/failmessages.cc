@@ -2,6 +2,9 @@
 
 #include <criterion/new/assert.h>
 
+#include <map>
+#include <vector>
+
 struct dummy_struct {
     char a;
     size_t b;
@@ -62,6 +65,13 @@ Test(messages, zero) {
     cr_expect(not(zero(wcs, L"")));
 
     cr_expect(not(zero(type(dummy_struct), dummy_struct{})));
+
+    /* STL containers */
+    using int_vect = std::vector<int>;
+    cr_expect(not(zero(type(int_vect), int_vect{})));
+
+    using string_int_map = std::map<std::string, int>;
+    cr_expect(not(zero(type(string_int_map), string_int_map{})));
 }
 
 Test(messages, eq) {
@@ -136,6 +146,17 @@ Test(messages, eq) {
     criterion::stream s2 = { &arr2, read_array };
 
     cr_expect(eq(stream, s1, s2));
+
+    /* STL containers */
+    using int_vect = std::vector<int>;
+    int_vect vec1 = {1, 2, 3};
+    int_vect vec2 = {3, 2, 1};
+    cr_expect(eq(type(int_vect), vec1, vec2));
+
+    using string_int_map = std::map<std::string, int>;
+    string_int_map m1 = {{"hello", 1}, {"world", 2}};
+    string_int_map m2 = {{"hello", 2}, {"all", 1}};
+    cr_expect(eq(type(string_int_map), m1, m2));
 }
 
 #define cmptest(Tag, Lo, Hi) \
