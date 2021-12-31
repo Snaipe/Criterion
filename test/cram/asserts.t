@@ -187,17 +187,17 @@ Testing all assert messages
   [----]     reference: 0.33333333333333331
   [----] failmessages.c:177: Assertion Failed
   [----]   lt(ldbl, 1 / 3.l, 0): 
-  \[----\]     actual: 0\.3333333333333333(33342|1) (re)
+  \[----\]     actual: 0\.3.* (re)
   [----]     reference: 0
   [----]   le(ldbl, 1 / 3.l, 0): 
-  \[----\]     actual: 0\.3333333333333333(33342|1) (re)
+  \[----\]     actual: 0\.3.* (re)
   [----]     reference: 0
   [----]   gt(ldbl, 0, 1 / 3.l): 
   [----]     actual: 0
-  \[----\]     reference: 0\.3333333333333333(33342|1) (re)
+  \[----\]     reference: 0\.3.* (re)
   [----]   ge(ldbl, 0, 1 / 3.l): 
   [----]     actual: 0
-  \[----\]     reference: 0\.3333333333333333(33342|1) (re)
+  \[----\]     reference: 0\.3.* (re)
   [----] failmessages.c:180: Assertion Failed
   [----]   lt(ptr, (void *) 1, (void *) 0): 
   [----]     actual: 0x1
@@ -345,7 +345,7 @@ Testing all assert messages
   [----]     diff: [-0-]{+0.33333333333333331+}
   [----] failmessages.c:92: Assertion Failed
   [----]   eq(ldbl, 0, 1 / 3.l): 
-  \[----\]     diff: \[-0-\]\{\+0\.3333333333333333(1|33342)\+\} (re)
+  \[----\]     diff: \[-0-\]\{\+0\.3.*\+\} (re)
   [----] failmessages.c:95: Assertion Failed
   [----]   eq(ptr, (void *) 1, (void *) 0): 
   [----]     diff: [-0x1-]{+0x0+}
@@ -1062,4 +1062,3 @@ Test C++ assertions:
   [----] asserts.cc:23: Assertion Failed
   [FAIL] asserts::old_school
   [====] Synthesis: Tested: 10 | Passing: 7 | Failing: 3 | Crashing: 0 
-
