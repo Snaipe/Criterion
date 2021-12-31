@@ -44,6 +44,12 @@ Alpine (gcc,arm32v6)_task:
     pip3 install cram==0.7
   <<: *pipeline
 
+Alpine (gcc,arm32v7)_task:
+  arm_container:
+    image: arm32v7/alpine:3
+  setup_script: *alpine-arm-deps
+  <<: *pipeline
+
 Alpine (gcc,aarch64)_task:
   arm_container:
     image: arm64v8/alpine:3
