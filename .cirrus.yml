@@ -36,20 +36,18 @@ Alpine (gcc,i386)_task:
   setup_script: *alpine-deps
   <<: *pipeline
 
-Alpine (gcc,arm)_task:
-  container:
-    image: snaipe/ci-meson:alpine-armhf
-  env:
-    CIRRUS_SHELL: /sbin/qemu-sh
-  setup_script: *alpine-deps
+Alpine (gcc,arm32v6)_task:
+  arm_container:
+    image: arm32v6/alpine:3
+  setup_script: &alpine-arm-deps |-
+    apk add --no-cache build-base pkgconf meson ninja cmake git libffi-dev libgit2-dev py3-pip
+    pip3 install cram==0.7
   <<: *pipeline
 
 Alpine (gcc,aarch64)_task:
-  container:
-    image: snaipe/ci-meson:alpine-aarch64
-  env:
-    CIRRUS_SHELL: /sbin/qemu-sh
-  setup_script: *alpine-deps
+  arm_container:
+    image: arm64v8/alpine:3
+  setup_script: *alpine-arm-deps
   <<: *pipeline
 
 MacOS_task:
