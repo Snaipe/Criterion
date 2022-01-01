@@ -39,7 +39,7 @@
 #include "config.h"
 #include "common.h"
 
-#define LOG_DIFF_THRESHOLD    25
+#define LOG_DIFF_THRESHOLD    40
 
 typedef const char *const msg_t;
 

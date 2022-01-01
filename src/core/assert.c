@@ -118,7 +118,7 @@ static criterion_protocol_result *collect_leaves(
         res->repr = (char *) tree->repr;
         res->message = (char *) tree->message;
 
-        const size_t display_threshold = 30;
+        const size_t display_threshold = 40;
 
         if (nbparams == 2) {
             if (strcmp(tree->params[0].name, "actual")
