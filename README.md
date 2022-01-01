@@ -4,6 +4,8 @@
 [![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Snaipe/Criterion/blob/master/LICENSE)
 [![Version](https://img.shields.io/github/release/Snaipe/Criterion.svg?label=version)](https://github.com/Snaipe/Criterion/releases/latest)
+[![Documentation (Stable)](https://img.shields.io/badge/docs-stable-green)][online-docs]
+[![Documentation (Bleeding)](https://img.shields.io/badge/docs-bleeding-orange)][online-docs-latest]
 
 A dead-simple, yet extensible, C and C++ unit testing framework.
 
@@ -100,6 +102,7 @@ Criterion is built with the following projects:
 Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 
 [online-docs]: http://criterion.readthedocs.org/
+[online-docs-latest]: http://criterion.readthedocs.org/en/latest
 [pdf-docs]: http://readthedocs.org/projects/criterion/downloads/pdf/latest/
 [zip-docs]: http://readthedocs.org/projects/criterion/downloads/htmlzip/latest/
 [epub-docs]: http://readthedocs.org/projects/criterion/downloads/epub/latest/
