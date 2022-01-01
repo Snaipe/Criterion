@@ -74,7 +74,7 @@ bool ieee_eq(Float &a, Float &b, size_t ulp)
         CRI_ASSERT_TYPE_TAG(Tag) b, size_t ulp)                               \
     {                                                                         \
         if (ulp == 0)                                                         \
-            return 0;                                                         \
+            return a == b;                                                    \
         a = nextafter ## Suffix(a, b);                                        \
         return a == b ? 1 : CRI_USER_TAG_ID(ieee_ulp_eq, Tag)(a, b, ulp - 1); \
     }
