@@ -2,6 +2,7 @@
 import sys
 import os
 import re
+import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -45,15 +46,18 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+
+now = datetime.datetime.now().date()
+
 project = u'Criterion'
-copyright = u'2015-2016, Franklin "Snaipe" Mathieu'
+copyright = now.strftime(u'2015-%Y, Franklin "Snaipe" Mathieu')
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '2.3.3'
+release = re.sub('^v', '', os.popen('git describe --dirty').read().strip())
 # The short X.Y version.
 version = re.search(r'\d+\.\d+', release).group(0)
 
