@@ -111,7 +111,7 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 /* Epsilon specifiers */
 
 #define CRI_EPSILON_EQ(Lhs, Rhs, Eps) \
-    ((Rhs) - (Lhs) <= (Eps) && (Lhs) - (Rhs) <= (Eps))
+    (((Rhs) == (Lhs)) || ((Rhs) - (Lhs) <= (Eps) && (Lhs) - (Rhs) <= (Eps)))
 
 #define CRI_EPSILON_NE(Lhs, Rhs, Eps) !CRI_EPSILON_EQ(Lhs, Rhs, Eps)
 

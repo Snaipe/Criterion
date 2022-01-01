@@ -67,6 +67,12 @@ Test(asserts, native) {
 Test(asserts, float) {
     cr_assert(ieee_ulp_eq(flt, 0.1 * 0.1, 0.01, 3));
     cr_assert(epsilon_eq(flt, 0.1 * 0.1, 0.01, 0.01));
+
+    /* Floating-point infinities still work with epsilons, ulps, and direct
+       equality */
+    cr_assert(ieee_ulp_eq(flt, INFINITY, INFINITY, 0));
+    cr_assert(epsilon_eq(flt, INFINITY, INFINITY, 0));
+    cr_assert(eq(flt, INFINITY, INFINITY));
 }
 
 struct dummy_struct {
