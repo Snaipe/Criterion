@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,10 +34,10 @@
 #include "config.h"
 #include "common.h"
 
-#define JSON_TEST_TEMPLATE_BEGIN                        \
-    "        {\n"                                       \
-    "          \"name\": \"%s\",\n"                     \
-    "          \"assertions\": " CR_SIZE_T_FORMAT ",\n" \
+#define JSON_TEST_TEMPLATE_BEGIN                     \
+    "        {\n"                                    \
+    "          \"name\": \"%s\",\n"                  \
+    "          \"assertions\": %" CRI_PRIuSIZE ",\n" \
     "          \"status\": \"%s\""
 
 #define JSON_TEST_TEMPLATE_END \
@@ -80,13 +79,13 @@
 #define JSON_TEST_LIST_TEMPLATE_END \
     "      ]\n"
 
-#define JSON_TESTSUITE_TEMPLATE_BEGIN            \
-    "    {\n"                                    \
-    "      \"name\": \"%s\",\n"                  \
-    "      \"passed\": " CR_SIZE_T_FORMAT ",\n"  \
-    "      \"failed\": " CR_SIZE_T_FORMAT ",\n"  \
-    "      \"errored\": " CR_SIZE_T_FORMAT ",\n" \
-    "      \"skipped\": " CR_SIZE_T_FORMAT ",\n"
+#define JSON_TESTSUITE_TEMPLATE_BEGIN         \
+    "    {\n"                                 \
+    "      \"name\": \"%s\",\n"               \
+    "      \"passed\": %" CRI_PRIuSIZE ",\n"  \
+    "      \"failed\": %" CRI_PRIuSIZE ",\n"  \
+    "      \"errored\": %" CRI_PRIuSIZE ",\n" \
+    "      \"skipped\": %" CRI_PRIuSIZE ",\n"
 
 #define JSON_TESTSUITE_TEMPLATE_END \
     "    }"
@@ -99,11 +98,11 @@
 
 #define JSON_BASE_TEMPLATE_BEGIN              \
     "{\n"                                     \
-    "  \"id\": \"Criterion v" VERSION "\",\n" \
-    "  \"passed\": " CR_SIZE_T_FORMAT ",\n"   \
-    "  \"failed\": " CR_SIZE_T_FORMAT ",\n"   \
-    "  \"errored\": " CR_SIZE_T_FORMAT ",\n"  \
-    "  \"skipped\": " CR_SIZE_T_FORMAT ",\n"  \
+    "  \"id\": \"Criterion " VERSION "\",\n"  \
+    "  \"passed\": %" CRI_PRIuSIZE ",\n"      \
+    "  \"failed\": %" CRI_PRIuSIZE ",\n"      \
+    "  \"errored\": %" CRI_PRIuSIZE ",\n"     \
+    "  \"skipped\": %" CRI_PRIuSIZE ",\n"     \
 
 #define JSON_BASE_TEMPLATE_END \
     "}\n"

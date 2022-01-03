@@ -41,6 +41,32 @@ the style checker on the region. Note that this feature should be used
 *exceptionally*, and that the maintainer will always have the last word regarding
 stylistic choices that cannot pass the style check.
 
+## Testing
+
+Testing your changes is important. When you submit a pull request, the CI system
+will trigger a build to test your changes on various platforms; however, to speed
+up the initial development process, it's best to test it locally at first.
+
+The following commands should get you going with a workable test system:
+
+```
+$ mkdir -p build && cd $_
+$ cmake -DDEV_BUILD=1 -DCTESTS=1 ..
+$ cmake --build . --target criterion_tests
+$ ctest
+```
+
+Make sure you have cram 0.7 installed before running ctest; Criterion uses cram
+internally for its system tests:
+
+```
+$ pip install --user cram==0.7
+
+or alternatively
+
+$ sudo pip install cram==0.7
+```
+
 ## Translations
 
 * You can contribute new translation files for output messages, on the
@@ -69,3 +95,16 @@ stylistic choices that cannot pass the style check.
         |- outputs/: Expected output files for the current samples
         `- tests/: Internal regression tests
             `- outputs/: Expected output files for the regression tests
+
+## Release Checklist
+
+* [ ] Make sure `bleeding` builds on all platforms and all tests passes.
+* [ ] `git checkout master`
+* [ ] `git merge bleeding --no-commit --no-ff`
+* [ ] Bump version
+* [ ] Update cram tests
+* [ ] Update changelog
+* [ ] `git commit -m "vX.Y.Z: merging bleeding back to master"`
+* [ ] `git tag -s vX.Y.Z`
+* [ ] `git branch -f bleeding`
+* [ ] `git push origin master bleeding vX.Y.Z`

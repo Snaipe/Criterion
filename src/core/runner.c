@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 #define CRITERION_LOGGING_COLORS
+#include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <csptr/smalloc.h>
-#include <nanomsg/nn.h>
+#include NN_H
 #include "criterion/internal/test.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
@@ -40,6 +40,8 @@
 #include "compat/posix.h"
 #include "compat/processor.h"
 #include "compat/kill.h"
+#include "csptr/smalloc.h"
+#include "string/diff.h"
 #include "string/extglobmatch.h"
 #include "string/i18n.h"
 #include "io/event.h"
@@ -48,7 +50,6 @@
 #include "abort.h"
 #include "client.h"
 #include "common.h"
-#include "config.h"
 #include "err.h"
 #include "report.h"
 #include "runner.h"
@@ -61,6 +62,8 @@
 # define ENABLE_VALGRIND_ERRORS
 # define RUNNING_ON_VALGRIND    0
 #endif
+
+int cri_is_runner;
 
 typedef const char *const msg_t;
 
@@ -212,6 +215,7 @@ CR_API struct criterion_test_set *criterion_initialize(void)
     }
 
     init_i18n();
+    cri_diff_init();
 
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
@@ -323,9 +327,6 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 {
     cri_report_init();
 
-    report(PRE_ALL, set);
-    log(pre_all, set);
-
     if (RUNNING_ON_VALGRIND) {
         if (criterion_options.jobs != 1)
             criterion_pimportant(CRITERION_PREFIX_DASHES,
@@ -345,10 +346,16 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 
     cri_alloc_init();
 
+    report(PRE_ALL, set);
+    log(pre_all, set);
+
     struct criterion_global_stats *stats = stats_init();
     run_tests_async(set, stats, url, sock);
 
     report(POST_ALL, stats);
+    if (criterion_options.logging_threshold == CRITERION_LOG_LEVEL_QUIET) {
+        cri_restore_outputs();
+    }
     process_all_output(stats);
     log(post_all, stats);
 
@@ -357,7 +364,9 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 
     cri_proto_close(g_client_socket);
     cri_proto_close(sock);
-    int ok = stats->tests_failed == 0;
+    int ok = stats->tests_failed == 0 && stats->errors == 0;
+    if (!criterion_options.ignore_warnings)
+        ok = ok && stats->warnings == 0;
     sfree(stats);
     return ok;
 }
@@ -374,6 +383,8 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
 
+    cri_is_runner = 1;
+
     if (criterion_options.pattern)
         disable_unmatching(set);
 
@@ -381,6 +392,10 @@ CR_API int criterion_run_all_tests(struct criterion_test_set *set)
         criterion_options.jobs = 1;
         criterion_options.crash = true;
         criterion_options.logging_threshold = 1;
+    }
+
+    if (criterion_options.logging_threshold == CRITERION_LOG_LEVEL_QUIET) {
+        cri_silence_outputs();
     }
 
     int res = criterion_run_all_tests_impl(set);

@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <nanomsg/nn.h>
+#include "config.h"
+#include NN_H
 #include <stdlib.h>
 #include "protocol/protocol.h"
 #include "log/logging.h"
 #include "io/event.h"
-#include "io/asprintf.h"
+#include "string/fmt.h"
 #include "mutex.h"
 
 int read_message(int sock, criterion_protocol_msg *message)

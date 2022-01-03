@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright © 2015-2016 Franklin "Snaipe" Mathieu <http://snai.pe/>
+ * Copyright © 2015-2018 Franklin "Snaipe" Mathieu <http://snai.pe/>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <locale.h>
 #include <getopt.h>
-#include <csptr/smalloc.h>
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "criterion/internal/ordered-set.h"
 #include "compat/posix.h"
 #include "compat/strtok.h"
 #include "core/runner.h"
+#include "csptr/smalloc.h"
 #include "io/output.h"
 #include "config.h"
 #include "common.h"
 #include "err.h"
 
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
 # include <libintl.h>
 #endif
 
-#define VERSION_MSG    "Tests compiled with Criterion v" VERSION "\n"
+#ifdef HAVE_ISATTY
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_NL_LANGINFO
+# include <langinfo.h>
+#endif
+
+#define VERSION_MSG    "Tests compiled with Criterion " VERSION "\n"
 
 #define USAGE                                               \
     VERSION_MSG "\n"                                        \
@@ -54,6 +61,9 @@
     "    -l or --list: prints all the tests in a list\n"    \
     "    -jN or --jobs N: use N concurrent jobs\n"          \
     "    -f or --fail-fast: exit after the first failure\n" \
+    "    --color=<auto|always|never>: colorize the output\n"\
+    "    --encoding=<ENCODING>: use the specified encoding "\
+    "for the output (default: locale-deduced)\n"            \
     "    --ascii: don't use fancy unicode symbols "         \
     "or colors in the output\n"                             \
     "    -S or --short-filename: only display the base "    \
@@ -65,6 +75,8 @@
     "    --tap[=FILE]: writes TAP report in FILE "          \
     "(no file or \"-\" means stderr)\n"                     \
     "    --xml[=FILE]: writes XML report in FILE "          \
+    "(no file or \"-\" means stderr)\n"                     \
+    "    --json[=FILE]: writes JSON report in FILE "        \
     "(no file or \"-\" means stderr)\n"                     \
     "    --always-succeed: always exit with 0\n"            \
     "    --verbose[=level]: sets verbosity to level "       \
@@ -79,6 +91,8 @@
     "    --full-stats: Tests must fully report statistics " \
     "(causes massive slowdown for large number of "         \
     "assertions but is more accurate).\n"                   \
+    "    --ignore-warnings: Ignore warnings, do not exit "  \
+    "with a non-zero exit status.\n"                        \
     "    -OP:F or --output=PROVIDER=FILE: write test "      \
     "report to FILE using the specified provider\n"
 
@@ -107,8 +121,9 @@ bool is_disabled(struct criterion_suite *s, struct criterion_test *t)
     return (s->data && s->data->disabled) || t->data->disabled;
 }
 
-int list_tests(bool unicode)
+int list_tests(void)
 {
+    bool unicode = !strcmp(criterion_options.encoding, "UTF-8");
     struct criterion_test_set *set = criterion_init();
 
     const char *node = unicode ? UTF8_TREE_NODE : ASCII_TREE_NODE;
@@ -121,7 +136,7 @@ int list_tests(bool unicode)
         if (!tests)
             continue;
 
-        printf("%s: " CR_SIZE_T_FORMAT " test%s\n",
+        printf("%s: %" CRI_PRIuSIZE " test%s\n",
                 s->suite.name,
                 tests,
                 tests == 1 ? "" : "s");
@@ -197,6 +212,40 @@ static int parse_dbg(const char *arg)
     return 0;
 }
 
+static void set_encoding(char *encoding)
+{
+    size_t maxlen = sizeof (criterion_options.encoding) - 1;
+    strncpy(criterion_options.encoding, encoding, maxlen);
+    criterion_options.encoding[maxlen] = 0;
+}
+
+static bool deduce_color(char *arg)
+{
+    bool color;
+    if (!arg || !strcmp(arg, "always")) {
+        color = true;
+    } else if (!strcmp(arg, "auto")) {
+        color = true
+#ifdef HAVE_ISATTY
+            && isatty(STDERR_FILENO)
+#endif
+            && strcmp("dumb", DEF(getenv("TERM"), "dumb")) != 0;
+
+    } else if (!strcmp(arg, "never")) {
+        color = false;
+    } else {
+        fprintf(stderr, "Unknown color mode '%s'.\n", arg);
+        exit(3);
+    }
+    return color;
+}
+
+static bool must_be_quiet(const char *output_path)
+{
+    return !strcmp(output_path, "-")
+        || !strcmp(output_path, "/dev/stderr");
+}
+
 CR_API int criterion_handle_args(int argc, char *argv[],
         bool handle_unknown_arg)
 {
@@ -225,13 +274,23 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         { "debug",           optional_argument, 0, 'd' },
         { "debug-transport", required_argument, 0, 'D' },
         { "full-stats",      no_argument,       0, 'U' },
+        { "color",           optional_argument, 0, 'C' },
+        { "encoding",        required_argument, 0, 'e' },
+        { "ignore-warnings", no_argument,       0, 'N' },
         { 0,                 0,                 0, 0   }
     };
 
     setlocale(LC_ALL, "");
-#if ENABLE_NLS
+#ifdef ENABLE_NLS
     textdomain(PACKAGE "-test");
 #endif
+
+#ifdef HAVE_NL_LANGINFO
+    set_encoding(nl_langinfo(CODESET));
+#else
+    set_encoding("ANSI_X3.4-1968");
+#endif
+    criterion_options.color = deduce_color("auto");
 
     if (!handle_unknown_arg)
         opterr = 0;
@@ -250,8 +309,12 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         opt->always_succeed    = !strcmp("1", env_always_succeed);
     if (env_fail_fast)
         opt->fail_fast         = !strcmp("1", env_fail_fast);
-    if (env_use_ascii)
+    if (env_use_ascii) {
+        fprintf(stderr, "CRITERION_USE_ASCII is deprecated. Use LANG/LC_* "
+                "variables to control encoding, and TERM/--color to control "
+                "colors.\n");
         opt->use_ascii         = !strcmp("1", env_use_ascii) || is_term_dumb;
+    }
     if (env_jobs)
         opt->jobs              = atou(env_jobs);
     if (env_logging_threshold)
@@ -295,18 +358,25 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 goto end;
             }
 
-            quiet = true;
+            quiet = must_be_quiet(path);
             criterion_add_output(provider, path);
         }
         free(out);
     }
+
+    criterion_options.executable_name = argv[0];
 
     for (int c; (c = getopt_long(argc, argv, "hvlfj:SqO:wt:", opts, NULL)) != -1;) {
         switch (c) {
             case 'b': criterion_options.logging_threshold = (enum criterion_logging_level) atou(DEF(optarg, "1")); break;
             case 'y': criterion_options.always_succeed    = true; break;
             case 'z': fprintf(stderr, "--no-early-exit is now deprecated as it no longer does anything.\n"); break;
-            case 'k': criterion_options.use_ascii         = true; break;
+            case 'k':
+                fprintf(stderr, "--ascii is deprecated. Use LANG/LC_* "
+                        "variables to control encoding, and TERM/--color to control "
+                        "colors.\n");
+                criterion_options.use_ascii = true;
+                break;
             case 'j': criterion_options.jobs              = atou(optarg); break;
             case 'f': criterion_options.fail_fast         = true; break;
             case 'S': criterion_options.short_filename    = true; break;
@@ -337,7 +407,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
             provider_def: {}
                 const char *path = DEF(optarg, "-");
-                quiet = !strcmp(path, "-");
+                quiet = must_be_quiet(path);
                 criterion_add_output(provider, path);
             } break;
                 /* *INDENT-ON* */
@@ -356,7 +426,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                     break;
                 }
 
-                quiet = !strcmp(path, "-");
+                quiet = must_be_quiet(path);
                 criterion_add_output(arg, path);
             } break;
             case 'w': criterion_options.wait_for_clients = true; break;
@@ -365,6 +435,9 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 exit(3);
             case 'c': criterion_options.crash = true; break;
             case 'U': criterion_options.full_stats = true; break;
+            case 'C': criterion_options.color = deduce_color(optarg); break;
+            case 'e': set_encoding(optarg); break;
+            case 'N': criterion_options.ignore_warnings = true; break;
             case '?':
             default: do_print_usage = handle_unknown_arg; break;
         }
@@ -374,12 +447,17 @@ end:
     if (quiet)
         criterion_options.logging_threshold = CRITERION_LOG_LEVEL_QUIET;
 
+    if (criterion_options.use_ascii) {
+        strcpy(criterion_options.encoding, "ANSI_X3.4-1968");
+        criterion_options.color = false;
+    }
+
     if (do_print_usage)
         return print_usage(argv[0]);
     if (do_print_version)
         return print_version();
     if (do_list_tests)
-        return list_tests(!criterion_options.use_ascii);
+        return list_tests();
 
     return 1;
 }

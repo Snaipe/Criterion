@@ -4,7 +4,7 @@ Setup
 Prerequisites
 -------------
 
-The library is supported on Linux, OS X, FreeBSD, and Windows.
+The library is supported on Linux, macOS, FreeBSD, and Windows.
 
 The following compilers are supported to compile both the library and the tests:
 
@@ -15,21 +15,39 @@ The following compilers are supported to compile both the library and the tests:
 Building from source
 --------------------
 
+First, install dependencies:
+
+* C/C++ compiler
+* Meson, Ninja
+* CMake (for subprojects)
+* pkg-config
+* libffi (libffi-dev)
+* libgit2 (libgit2-dev)
+
+Other runtime dependencies will be bundled if they are not available on the
+system (BoxFort, debugbreak, klib, nanomsg, nanopb).
+
+Clone this repository:
+
 .. code-block:: bash
 
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ cmake --build .
+    $ git clone --recursive https://github.com/Snaipe/Criterion
 
-Installing the library and language files (Linux, OS X, FreeBSD)
+Then, run the following commands to build Criterion:
+
+.. code-block:: bash
+
+    $ meson build
+    $ ninja -C build
+
+Installing the library and language files (Linux, macOS, FreeBSD)
 ----------------------------------------------------------------
 
-From the build directory created above, run with an elevated shell:
+Run with an elevated shell:
 
 .. code-block:: bash
 
-    $ make install
+    $ ninja -C build install
 
 Usage
 -----

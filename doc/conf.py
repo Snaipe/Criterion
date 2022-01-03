@@ -2,6 +2,7 @@
 import sys
 import os
 import re
+import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -14,12 +15,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext"))
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
 
-# hack for readthedocs to cause it to run doxygen first
-# https://github.com/rtfd/readthedocs.org/issues/388
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd:
-  from subprocess import call
-  call('doxygen')
+def generate_doxygen_xml(app):
+    from subprocess import call
+    doxdir = os.path.abspath(os.path.dirname(__file__))
+    call('cd %s; doxygen' % doxdir, shell=True)
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -47,15 +46,18 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+
+now = datetime.datetime.now().date()
+
 project = u'Criterion'
-copyright = u'2015-2016, Franklin "Snaipe" Mathieu'
+copyright = now.strftime(u'2015-%Y, Franklin "Snaipe" Mathieu')
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '2.3.3'
+release = re.sub('^v', '', os.popen('git describe --dirty').read().strip())
 # The short X.Y version.
 version = re.search(r'\d+\.\d+', release).group(0)
 
@@ -306,3 +308,7 @@ from sphinx.highlighting import lexers
 from pygments.lexers.c_cpp import CLexer
 
 lexers['c'] = CLexer(startinline=True)
+
+def setup(app):
+    # Add hook for building doxygen xml when needed
+    app.connect("builder-inited", generate_doxygen_xml)

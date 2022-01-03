@@ -28,10 +28,12 @@
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "compat/process.h"
+#include "core/runner.h"
+#include "core/report.h"
 #include "log/logging.h"
-#include "io/asprintf.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
+#include "string/fmt.h"
 #include "string/i18n.h"
 
 #ifdef ENABLE_NLS
@@ -141,12 +143,16 @@ void criterion_vlog(enum criterion_logging_level level, const char *msg, va_list
 
 void cr_log_noformat(enum criterion_severity severity, const char *out)
 {
-    criterion_protocol_msg msg = criterion_message(message,
-                    .severity = (criterion_protocol_log_level) severity,
-                    .message = (char *) out);
+    if (cri_is_runner) {
+        log(message, severity, out);
+    } else {
+        criterion_protocol_msg msg = criterion_message(message,
+                        .severity = (criterion_protocol_log_level) severity,
+                        .message = (char *) out);
 
-    criterion_message_set_id(msg);
-    cr_send_to_runner(&msg);
+        criterion_message_set_id(msg);
+        cr_send_to_runner(&msg);
+    }
 }
 
 void cr_log(enum criterion_severity severity, const char *msg, ...)

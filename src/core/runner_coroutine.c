@@ -23,7 +23,6 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
-#include <csptr/smalloc.h>
 
 #include "criterion/internal/parameterized.h"
 #include "criterion/redirect.h"
@@ -32,10 +31,12 @@
 #include "compat/posix.h"
 #include "compat/processor.h"
 #include "compat/kill.h"
+#include "csptr/smalloc.h"
 #include "log/logging.h"
 #include "protocol/protocol.h"
 #include "protocol/connect.h"
 #include "protocol/messages.h"
+#include "string/diff.h"
 #include "string/i18n.h"
 #include "client.h"
 #include "err.h"
@@ -187,6 +188,8 @@ static int run_test_child(void)
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
+
+    cri_diff_init();
 
     struct criterion_test test;
     memset(&test, 0, sizeof (test));

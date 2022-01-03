@@ -6,7 +6,7 @@ int cr_file_match_str(FILE *f, const char *str)
 
     char buf[512];
     size_t read;
-    int matches = 0;
+    int matches = 1;
 
     while ((read = fread(buf, 1, sizeof (buf), f)) > 0) {
         matches = !strncmp(buf, str, read);
@@ -20,7 +20,13 @@ int cr_file_match_str(FILE *f, const char *str)
     }
 
     /* consume the rest of what's available */
-    while (fread(buf, 1, sizeof (buf), f) > 0) ;
+    if (read)
+        while (fread(buf, 1, sizeof (buf), f) > 0) ;
+
+    /* there are more bytes in str than in f */
+    if (len) {
+        return 0;
+    }
 
     return matches;
 }
@@ -38,8 +44,9 @@ int cr_file_match_file(FILE *f, FILE *ref)
     rewind(ref);
 
     size_t read1 = 1, read2 = 1;
-    int matches = 0;
-    while ((read1 = fread(buf1, 1, sizeof (buf1), f)) > 0
+    int matches = 1;
+    while (matches
+            && (read1 = fread(buf1, 1, sizeof (buf1), f)) > 0
             && (read2 = fread(buf2, 1, sizeof (buf2), ref)) > 0) {
         if (read1 != read2) {
             matches = 0;

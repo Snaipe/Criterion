@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  */
 #include <string.h>
-#include <csptr/smalloc.h>
 #include "criterion/internal/common.h"
+#include "csptr/smalloc.h"
 #include "stats.h"
 #include "common.h"
 

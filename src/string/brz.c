@@ -165,7 +165,7 @@ glob *glob_blank()
 }
 
 /*
- * single chacacter
+ * single character
  * nullable for ? and *
  * derivative: Empty string if chr == c
  *             Empty set otherwise

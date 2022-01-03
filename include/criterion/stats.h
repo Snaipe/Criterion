@@ -96,6 +96,8 @@ struct criterion_global_stats {
     size_t tests_passed;
     size_t asserts_failed;
     size_t asserts_passed;
+    size_t errors;
+    size_t warnings;
 };
 
 #endif /* !CRITERION_STATS_H_ */

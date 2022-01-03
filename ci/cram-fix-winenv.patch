@@ -1,0 +1,36 @@
+From bde2ee57ba82a44d2b58ead114d4e00bbbf9bb31 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?L=C3=A1szl=C3=B3=20V=C3=A1rady?=
+ <laszlo.varady@protonmail.com>
+Date: Mon, 22 Nov 2021 21:48:15 +0100
+Subject: [PATCH] Fix environment encoding on Windows
+
+cram adds an environment variable called TESTSHELL to each test.
+Unfortunately, the value is encoded with fsencode, which produces a bytes
+object on Windows, but Python on Windows does not support non-string
+environment:
+
+'TESTSHELL': b'C:\\Program Files\\Git\\usr\\bin\\sh.EXE'
+
+File "C:\Python\lib\subprocess.py", line 1435, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+TypeError: environment can only contain strings
+---
+ cram/_test.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cram/_test.py b/cram/_test.py
+index 27ef99c..5099a82 100644
+--- a/cram/_test.py
++++ b/cram/_test.py
+@@ -107,7 +107,7 @@ def test(lines, shell='/bin/sh', indent=2, testname=None, env=None,
+ 
+     if isinstance(shell, (bytestype, unicodetype)):
+         shell = [shell]
+-    env['TESTSHELL'] = shell[0]
++    env['TESTSHELL'] = envencode(shell[0])
+ 
+     if debug:
+         stdin = []
+-- 
+2.34.0
+

@@ -1,0 +1,93 @@
+.compile: &compile
+  submodule-update_script: git submodule update --init --recursive
+  configure_script: meson -Db_lundef=false build
+  compile_script: ninja -C build
+
+.test: &test
+  test_script: ninja -C build test
+
+.pipeline: &pipeline
+  info_script: |
+    meson --version
+    ninja --version
+  <<: *compile
+  <<: *test
+
+Debian (gcc)_task:
+  container:
+    image: snaipe/ci-meson:debian-10
+  setup_script: |-
+    apt-get update
+    apt-get install -y pkg-config cmake libgit2-dev libffi-dev libnanomsg-dev
+    pip3 install cram==0.7
+  <<: *pipeline
+
+Alpine (gcc,x86_64)_task:
+  container:
+    image: snaipe/ci-meson:alpine
+  setup_script: &alpine-deps |-
+    apk add --no-cache cmake libgit2-dev libffi-dev
+    pip3 install cram==0.7
+  <<: *pipeline
+
+Alpine (gcc,i386)_task:
+  container:
+    image: snaipe/ci-meson:alpine-x86
+  setup_script: *alpine-deps
+  <<: *pipeline
+
+Alpine (gcc,arm32v6)_task:
+  arm_container:
+    image: arm32v6/alpine:3
+  setup_script: &alpine-arm-deps |-
+    apk add --no-cache build-base pkgconf meson ninja cmake git libffi-dev libgit2-dev py3-pip
+    pip3 install cram==0.7
+  <<: *pipeline
+
+Alpine (gcc,arm32v7)_task:
+  arm_container:
+    image: arm32v7/alpine:3
+  setup_script: *alpine-arm-deps
+  <<: *pipeline
+
+Alpine (gcc,aarch64)_task:
+  arm_container:
+    image: arm64v8/alpine:3
+  setup_script: *alpine-arm-deps
+  <<: *pipeline
+
+MacOS_task:
+  macos_instance:
+    image: monterey-xcode-13.1
+  env:
+    PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
+  setup_script: |-
+    brew install meson cmake pkg-config libffi libgit2 nanomsg
+    sudo pip3 install cram==0.7
+  <<: *pipeline
+
+FreeBSD_task:
+  freebsd_instance:
+    image_family: freebsd-13-0
+  setup_script: |-
+    pkg install -y gettext-tools pkgconf cmake meson git libffi libgit2 nanomsg
+    python3 -m ensurepip
+    python3 -m pip install --upgrade pip
+    python3 -m pip install cram==0.7
+  <<: *pipeline
+
+Windows (mingw-gcc)_task:
+  windows_container:
+    image: cirrusci/windowsservercore:cmake
+    os_version: 2019
+  env:
+    PATH: C:\\Python;C:\\Python\\Scripts;C:\\ProgramData\\chocolatey\\lib\\ninja\\tools;%PATH%
+  setup_script: |-
+    choco install -y --no-progress python3 --params "/InstallDir:C:\Python"
+    choco install -y --no-progress ninja cmake
+    pip install meson cram==0.7
+    git config --global core.autocrlf false
+    patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
+    patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
+  <<: *compile
+  test_script: meson devenv -C build ninja test

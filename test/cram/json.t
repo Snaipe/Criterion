@@ -2,7 +2,7 @@ Testing multiple samples with --json
 
   $ simple.c.bin --json
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 1,
     "failed": 1,
     "errored": 0,
@@ -35,7 +35,7 @@ Testing multiple samples with --json
 
   $ signal.c.bin --json
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 1,
     "failed": 2,
     "errored": 1,
@@ -74,27 +74,32 @@ Testing multiple samples with --json
 
   $ asserts.c.bin --json
   {
-    "id": "Criterion v2.3.3",
-    "passed": 5,
+    "id": "Criterion v.*", (re)
+    "passed": 6,
     "failed": 2,
     "errored": 0,
     "skipped": 0,
     "test_suites": [
       {
         "name": "asserts",
-        "passed": 5,
+        "passed": 6,
         "failed": 2,
         "errored": 0,
         "skipped": 0,
         "tests": [
           {
             "name": "wstring",
-            "assertions": 10,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
             "name": "string",
-            "assertions": 10,
+            "assertions": 0,
+            "status": "PASSED"
+          },
+          {
+            "name": "stream",
+            "assertions": 0,
             "status": "PASSED"
           },
           {
@@ -102,32 +107,32 @@ Testing multiple samples with --json
             "assertions": 2,
             "status": "FAILED",
             "messages": [
-              "asserts.c:18: The conditions for this assertion were not met.",
-              "asserts.c:17: You can fail an assertion with a message from anywhere"
+              "asserts.c:19: (null)",
+              "asserts.c:18: You can fail an assertion with a message from anywhere"
             ]
           },
           {
             "name": "native",
-            "assertions": 8,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
             "name": "float",
-            "assertions": 2,
+            "assertions": 0,
             "status": "PASSED"
           },
           {
             "name": "base",
-            "assertions": 6,
+            "assertions": 2,
             "status": "FAILED",
             "messages": [
-              "asserts.c:12: This assert runs",
-              "asserts.c:11: assert is fatal, expect isn't"
+              "asserts.c:13: This assert runs",
+              "asserts.c:12: assert is fatal, expect isn't"
             ]
           },
           {
             "name": "array",
-            "assertions": 3,
+            "assertions": 0,
             "status": "PASSED"
           }
         ]
@@ -137,7 +142,7 @@ Testing multiple samples with --json
 
   $ more-suites.c.bin --json
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 2,
     "failed": 0,
     "errored": 0,
@@ -191,7 +196,7 @@ Testing multiple samples with --json
 
   $ long-messages.c.bin --json
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 0,
     "failed": 1,
     "errored": 0,
@@ -222,7 +227,7 @@ Testing multiple samples with --json
 
   $ description.c.bin --json
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 0,
     "failed": 1,
     "errored": 0,
@@ -258,7 +263,7 @@ Testing --output=json
 
   $ simple.c.bin --output=json:-
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 1,
     "failed": 1,
     "errored": 0,
@@ -293,7 +298,7 @@ Testing CRITERION_OUTPUTS
 
   $ CRITERION_OUTPUTS=json:- simple.c.bin
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 1,
     "failed": 1,
     "errored": 0,
@@ -326,7 +331,7 @@ Testing CRITERION_OUTPUTS
 
   $ skip.c.bin --json
   {
-    "id": "Criterion v2.3.3",
+    "id": "Criterion v.*", (re)
     "passed": 0,
     "failed": 0,
     "errored": 0,

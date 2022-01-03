@@ -97,6 +97,8 @@ struct criterion_options {
     /**
      *  Disable unicode and ansi coloring from the logging system.
      *
+     *  This is deprecated. Set the color and the encoding fields instead.
+     *
      *  default: false
      */
     bool use_ascii;
@@ -191,6 +193,33 @@ struct criterion_options {
      * default: false
      */
     bool full_stats;
+
+    /**
+     * The output encoding to assume.
+     *
+     * This is used to know whether we should use special characters to
+     * make the output prettier.
+     *
+     * default: locale-deduced, or ANSI_X3.4-1968.
+     */
+    char encoding[64];
+
+    /**
+     * Whether the output should be colorized or not.
+     *
+     * default: terminal-deduced.
+     */
+    bool color;
+
+    /**
+     * When false, warnings will make criterion exit with a nonzero
+     * exit status (e.g. when a test crashes during its teardown).
+     *
+     * default: false
+     */
+    bool ignore_warnings;
+
+    const char *executable_name;
 };
 
 CR_BEGIN_C_API

@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#define _GNU_SOURCE    1
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

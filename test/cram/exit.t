@@ -1,35 +1,37 @@
 Testing tests that call exit()
 
   $ exit.c.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.3 (esc)
-  [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m3\x1b[0m tests from \x1b[0;33mexit\x1b[0m: (esc)
-  [\x1b[0;34mRUN \x1b[0m] exit::expected_exit (esc)
-  \[\\x1b\[0;32mPASS\\x1b\[0m\] exit::expected_exit: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] exit::normal (esc)
-  \[\\x1b\[0;32mPASS\\x1b\[0m\] exit::normal: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] exit::unexpected_exit (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] exit::unexpected_exit: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m2\x1b[0m tests from \x1b[0;33mexit_with_fixtures\x1b[0m: (esc)
-  [\x1b[0;34mRUN \x1b[0m] exit_with_fixtures::fini_exits (esc)
-  \[\\x1b\[0;32mPASS\\x1b\[0m\] exit_with_fixtures::fini_exits: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mWarning! The test `exit_with_fixtures::fini_exits` exited during its setup or teardown.\x1b[0m (esc)
-  [\x1b[0;34mRUN \x1b[0m] exit_with_fixtures::init_exits (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mWarning! The test `exit_with_fixtures::init_exits` exited during its setup or teardown.\x1b[0m (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m5\x1b[0;1m | Passing: \x1b[0;32m3\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0;31m1\x1b[0;1m \x1b[0m (esc)
+  \[----\] Criterion v.* (re)
+  [====] Running 3 tests from exit:
+  [RUN ] exit::expected_exit
+  [PASS] exit::expected_exit
+  [RUN ] exit::normal
+  [PASS] exit::normal
+  [RUN ] exit::unexpected_exit
+  [FAIL] exit::unexpected_exit
+  [====] Running 2 tests from exit_with_fixtures:
+  [RUN ] exit_with_fixtures::fini_exits
+  [PASS] exit_with_fixtures::fini_exits
+  [----] Warning! The test `exit_with_fixtures::fini_exits` exited during its setup or teardown.
+  [RUN ] exit_with_fixtures::init_exits
+  [----] Warning! The test `exit_with_fixtures::init_exits` exited during its setup or teardown.
+  [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 1 
+
+  $ [ "$CXX_SUPPORT" = 1 ] || exit 80
 
   $ exit.cc.bin --verbose
-  [\x1b[0;34m----\x1b[0m] Criterion v2.3.3 (esc)
-  [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m3\x1b[0m tests from \x1b[0;33mexit\x1b[0m: (esc)
-  [\x1b[0;34mRUN \x1b[0m] exit::expected_exit (esc)
-  \[\\x1b\[0;32mPASS\\x1b\[0m\] exit::expected_exit: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] exit::normal (esc)
-  \[\\x1b\[0;32mPASS\\x1b\[0m\] exit::normal: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34mRUN \x1b[0m] exit::unexpected_exit (esc)
-  \[\\x1b\[0;31mFAIL\\x1b\[0m\] exit::unexpected_exit: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m====\x1b[0m] Running \x1b[0;34m2\x1b[0m tests from \x1b[0;33mexit_with_fixtures\x1b[0m: (esc)
-  [\x1b[0;34mRUN \x1b[0m] exit_with_fixtures::fini_exits (esc)
-  \[\\x1b\[0;32mPASS\\x1b\[0m\] exit_with_fixtures::fini_exits: \(\d\.\d\ds\) \(esc\) (re)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mWarning! The test `exit_with_fixtures::fini_exits` exited during its setup or teardown.\x1b[0m (esc)
-  [\x1b[0;34mRUN \x1b[0m] exit_with_fixtures::init_exits (esc)
-  [\x1b[0;34m----\x1b[0m] \x1b[0;1mWarning! The test `exit_with_fixtures::init_exits` exited during its setup or teardown.\x1b[0m (esc)
-  [\x1b[0;34m====\x1b[0m] \x1b[0;1mSynthesis: Tested: \x1b[0;34m5\x1b[0;1m | Passing: \x1b[0;32m3\x1b[0;1m | Failing: \x1b[0;31m2\x1b[0;1m | Crashing: \x1b[0;31m1\x1b[0;1m \x1b[0m (esc)
+  \[----\] Criterion v.* (re)
+  [====] Running 3 tests from exit:
+  [RUN ] exit::expected_exit
+  [PASS] exit::expected_exit
+  [RUN ] exit::normal
+  [PASS] exit::normal
+  [RUN ] exit::unexpected_exit
+  [FAIL] exit::unexpected_exit
+  [====] Running 2 tests from exit_with_fixtures:
+  [RUN ] exit_with_fixtures::fini_exits
+  [PASS] exit_with_fixtures::fini_exits
+  [----] Warning! The test `exit_with_fixtures::fini_exits` exited during its setup or teardown.
+  [RUN ] exit_with_fixtures::init_exits
+  [----] Warning! The test `exit_with_fixtures::init_exits` exited during its setup or teardown.
+  [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 1 

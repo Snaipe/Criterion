@@ -26,7 +26,7 @@
 
 #include "config.h"
 
-#if !ENABLE_NLS
+#ifndef ENABLE_NLS
 # define _(String)                       String
 # define _s(String, Plural, Quantity)    ((Quantity) == 1 ? String : Plural)
 #else

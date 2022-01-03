@@ -44,8 +44,6 @@ PARSE_EXTS=true
 # FILE_EXTS=".c .h .cpp .hpp"
 FILE_EXTS=".c .h .cc .hh .cpp .hpp .hxx"
 
-EXCLUDE_PATTERN="src/protocol/*.pb.*"
-
 ##################################################################
 # There should be no need to change anything below this line.
 
@@ -109,7 +107,9 @@ do
     fi
 
     case "$file" in
-        $EXCLUDE_PATTERN) continue;
+        src/protocol/*.pb.*) continue;;
+        include/*) continue;;
+        samples/*) continue;;
     esac
 
     # escape special characters in the source filename:

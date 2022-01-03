@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,14 +37,14 @@
 
 #define TESTSUITES_PROPERTIES            \
     "name=\"Criterion Tests\" "          \
-    "tests=\"" CR_SIZE_T_FORMAT "\" "    \
-    "failures=\"" CR_SIZE_T_FORMAT "\" " \
-    "errors=\"" CR_SIZE_T_FORMAT "\" "   \
-    "disabled=\"" CR_SIZE_T_FORMAT "\""
+    "tests=\"%" CRI_PRIuSIZE "\" "    \
+    "failures=\"%" CRI_PRIuSIZE "\" " \
+    "errors=\"%" CRI_PRIuSIZE "\" "   \
+    "disabled=\"%" CRI_PRIuSIZE "\""
 
 #define XML_BASE_TEMPLATE_BEGIN                             \
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"          \
-    "<!-- Tests compiled with Criterion v" VERSION " -->\n" \
+    "<!-- Tests compiled with Criterion " VERSION " -->\n"  \
     "<testsuites " TESTSUITES_PROPERTIES ">\n"              \
 
 #define XML_BASE_TEMPLATE_END \
@@ -53,11 +52,11 @@
 
 #define TESTSUITE_PROPERTIES             \
     "name=\"%s\" "                       \
-    "tests=\"" CR_SIZE_T_FORMAT "\" "    \
-    "failures=\"" CR_SIZE_T_FORMAT "\" " \
-    "errors=\"" CR_SIZE_T_FORMAT "\" "   \
-    "disabled=\"" CR_SIZE_T_FORMAT "\" " \
-    "skipped=\"" CR_SIZE_T_FORMAT "\" "  \
+    "tests=\"%" CRI_PRIuSIZE "\" "    \
+    "failures=\"%" CRI_PRIuSIZE "\" " \
+    "errors=\"%" CRI_PRIuSIZE "\" "   \
+    "disabled=\"%" CRI_PRIuSIZE "\" " \
+    "skipped=\"%" CRI_PRIuSIZE "\" "  \
     "time=\"%.3f\""
 
 #define XML_TESTSUITE_TEMPLATE_BEGIN \
@@ -68,7 +67,7 @@
 
 #define TEST_PROPERTIES                    \
     "name=\"%s\" "                         \
-    "assertions=\"" CR_SIZE_T_FORMAT "\" " \
+    "assertions=\"%" CRI_PRIuSIZE "\" " \
     "status=\"%s\" "                       \
     "time=\"%.3f\""
 
@@ -83,7 +82,7 @@
 #define LF                  "&#10;"
 
 #define XML_FAILURE_MSG_ENTRY \
-    "%s:%u: %s" LF
+    "<![CDATA[%s:%u: %s]]>" LF
 
 #define XML_TEST_FAILED_TEMPLATE_BEGIN \
     "      <failure type=\"assert\" message=\"%d assertion(s) failed.\">"
@@ -115,13 +114,15 @@ static int fprintf_locale(FILE *stream,
 {
     va_list args;
     int result;
-    const char *locale = setlocale(LC_NUMERIC, NULL);
+    const char *locale = strdup(setlocale(LC_NUMERIC, NULL));
 
     setlocale(LC_NUMERIC, "C");
     va_start(args, format);
     result = vfprintf(stream, format, args);
     va_end(args);
     setlocale(LC_NUMERIC, locale);
+
+    free((void *)locale);
     return result;
 }
 
@@ -153,7 +154,7 @@ static void print_test(FILE *f, struct criterion_test_stats *ts)
                     fprintf(f, XML_FAILURE_MSG_ENTRY,
                             sf ? basename_compat(asrt->file) : asrt->file,
                             asrt->line,
-                            line
+                            line ? line : ""
                             );
 
                     while ((line = strtok_r(NULL, "\n", &saveptr)))

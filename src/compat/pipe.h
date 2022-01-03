@@ -82,4 +82,7 @@ extern s_pipe_handle *stdin_redir;
 
 s_pipe_file_handle *pipe_file_open(const char *path);
 
+void cri_silence_outputs(void);
+void cri_restore_outputs(void);
+
 #endif /* !PIPE_H_ */

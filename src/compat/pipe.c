@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 #include <stdio.h>
-#include <csptr/smalloc.h>
 
 #include "criterion/assert.h"
+#include "csptr/smalloc.h"
 #include "pipe-internal.h"
 
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
@@ -162,12 +162,10 @@ int stdpipe_options(s_pipe_handle *handle, int id, int noblock)
     return 1;
 }
 
-void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd)
+void file_std_redirect(s_pipe_file_handle *to, enum criterion_std_fd fd)
 {
-    enum pipe_end end = fd == CR_STDIN ? PIPE_READ : PIPE_WRITE;
-
 #ifdef VANILLA_WIN32
-    int stdfd = _open_osfhandle((intptr_t) pipe->fhs[end], end == PIPE_READ ? _O_RDONLY : _O_WRONLY);
+    int stdfd = _open_osfhandle((intptr_t) to->fh, fd == CR_STDIN ? _O_RDONLY : _O_WRONLY);
     if (stdfd == -1)
         cr_assert_fail("Could not redirect standard file descriptor.");
 
@@ -182,12 +180,26 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd)
         [CR_STDOUT] = STD_OUTPUT_HANDLE,
         [CR_STDERR] = STD_ERROR_HANDLE,
     };
-    SetStdHandle(handles[fd], pipe->fhs[end]);
+    SetStdHandle(handles[fd], to->fh);
 #else
     close(fd);
-    dup2(pipe->fds[end], fd);
-    close(pipe->fds[end]);
+    dup2(to->fd, fd);
+    close(to->fd);
 #endif
+}
+
+void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd)
+{
+    enum pipe_end end = fd == CR_STDIN ? PIPE_READ : PIPE_WRITE;
+
+    s_pipe_file_handle from;
+#ifdef VANILLA_WIN32
+    from.fh = pipe->fhs[end];
+#else
+    from.fd = pipe->fds[end];
+#endif
+
+    file_std_redirect(&from, fd);
 }
 
 void close_pipe_file_handle(void *ptr, CR_UNUSED void *meta)
@@ -335,12 +347,8 @@ s_pipe_handle *stdout_redir = &stdout_redir_;
 s_pipe_handle *stderr_redir = &stderr_redir_;
 s_pipe_handle *stdin_redir  = &stdin_redir_;
 
-s_pipe_file_handle *pipe_file_open(const char *path)
+static void file_open(s_pipe_file_handle *h, const char *path)
 {
-    s_pipe_file_handle *h = smalloc(
-        .size = sizeof (s_pipe_file_handle),
-        .dtor = close_pipe_file_handle);
-
 #ifdef VANILLA_WIN32
     if (!path)
         path = "nul";
@@ -356,5 +364,61 @@ s_pipe_file_handle *pipe_file_open(const char *path)
         path = "/dev/null";
     h->fd = open(path, O_RDWR);
 #endif
+}
+
+s_pipe_file_handle *pipe_file_open(const char *path)
+{
+    s_pipe_file_handle *h = smalloc(
+        .size = sizeof (s_pipe_file_handle),
+        .dtor = close_pipe_file_handle);
+
+    file_open(h, path);
     return h;
+}
+
+static int orig_stdout_fd = -1;
+static int orig_stderr_fd = -1;
+
+#ifdef VANILLA_WIN32
+static HANDLE orig_stdout_winhandle = INVALID_HANDLE_VALUE;
+static HANDLE orig_stderr_winhandle = INVALID_HANDLE_VALUE;
+#endif
+
+void cri_silence_outputs(void)
+{
+#ifdef VANILLA_WIN32
+    orig_stdout_fd = _dup(1);
+    orig_stderr_fd = _dup(2);
+
+    orig_stdout_winhandle = win_dup(GetStdHandle(STD_OUTPUT_HANDLE));
+    orig_stderr_winhandle = win_dup(GetStdHandle(STD_ERROR_HANDLE));
+#else
+    orig_stdout_fd = dup(1);
+    orig_stderr_fd = dup(2);
+#endif
+
+    s_pipe_file_handle fh;
+    file_open(&fh, NULL);
+    file_std_redirect(&fh, CR_STDOUT);
+
+    file_open(&fh, NULL);
+    file_std_redirect(&fh, CR_STDERR);
+}
+
+void cri_restore_outputs(void)
+{
+#ifdef VANILLA_WIN32
+    _dup2(orig_stdout_fd, 1);
+    _close(orig_stdout_fd);
+    _dup2(orig_stderr_fd, 2);
+    _close(orig_stderr_fd);
+
+    SetStdHandle(STD_OUTPUT_HANDLE, orig_stdout_winhandle);
+    SetStdHandle(STD_ERROR_HANDLE, orig_stderr_winhandle);
+#else
+    dup2(orig_stdout_fd, 1);
+    close(orig_stdout_fd);
+    dup2(orig_stderr_fd, 2);
+    close(orig_stderr_fd);
+#endif
 }

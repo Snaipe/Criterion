@@ -50,7 +50,7 @@ struct criterion_prefix_data {
     const char *color;
 };
 
-#define CRIT_COLOR_NORMALIZE(Str)    (criterion_options.use_ascii ? "" : Str)
+#define CRIT_COLOR_NORMALIZE(Str)    (criterion_options.color ? Str : "")
 
 #define CRIT_FG_BOLD     "\33[0;1m"
 #define CRIT_FG_RED      "\33[0;31m"

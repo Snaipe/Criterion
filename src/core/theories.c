@@ -24,67 +24,62 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <dyncall.h>
+#include <ffi.h>
 #include <assert.h>
 #include <limits.h>
 #include "compat/setjmp.h"
 #include "criterion/theories.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
-#include "io/asprintf.h"
 #include "io/event.h"
+#include "string/fmt.h"
 #include "abort.h"
 
-struct criterion_theory_context {
-    DCCallVM *vm;
+enum {
+    MAX_ARGS = 128,
 };
 
-void cr_theory_push_arg(struct criterion_theory_context *ctx, bool is_float, size_t size, void *ptr)
+struct cri_theory_ctx {
+    ffi_type *types[MAX_ARGS];
+    void *args[MAX_ARGS];
+    size_t nargs;
+};
+
+static void cri_append_arg(struct cri_theory_ctx *ctx, ffi_type *t, void *val)
 {
-    if (is_float) {
-        if (size == sizeof (float))
-            dcArgFloat(ctx->vm, *(float *) ptr);
-        else if (size == sizeof (double))
-            dcArgDouble(ctx->vm, *(double *) ptr);
-        else if (size == sizeof (long double))
-            dcArgDouble(ctx->vm, *(long double *) ptr);
-    } else {
-        if (size == sizeof (char)) {
-            dcArgChar(ctx->vm, *(char *) ptr);
-        } else if (size == sizeof (short)) {
-            dcArgShort(ctx->vm, *(short *) ptr);
-        } else if (size == sizeof (int)) {
-            dcArgInt(ctx->vm, *(int *) ptr);
-        } else if (size == sizeof (bool)) {
-            dcArgBool(ctx->vm, *(bool *) ptr);
-#if INT_MAX < LONG_MAX
-        } else if (size == sizeof (long)) {
-            dcArgLong(ctx->vm, *(long *) ptr);
-#endif
-#if LONG_MAX < LLONG_MAX
-        } else if (size == sizeof (long long)) {
-            dcArgLongLong(ctx->vm, *(long long *) ptr);
-#endif
-        } else if (size == sizeof (void *)) {
-            dcArgPointer(ctx->vm, *(void **) ptr);
-        } else {
-            dcArgPointer(ctx->vm, ptr);
-        }
-    }
+    assert(ctx->nargs + 1 < MAX_ARGS);
+    ctx->types[ctx->nargs] = t;
+    ctx->args[ctx->nargs] = val;
+    ctx->nargs++;
 }
 
-struct criterion_theory_context *cr_theory_init(void)
+void cri_theory_push_arg(struct cri_theory_ctx *ctx, bool is_float, size_t size, void *ptr)
 {
-    struct criterion_theory_context *ctx = malloc(sizeof (struct criterion_theory_context));
+    ffi_type *float_ffi_types[] = {
+        [sizeof (float)] = &ffi_type_float,
+        [sizeof (double)] = &ffi_type_double,
+        [sizeof (long double)] = &ffi_type_longdouble,
+    };
 
-    ctx->vm = dcNewCallVM(4096);
-    dcMode(ctx->vm, DC_CALL_C_DEFAULT);
-    return ctx;
+    ffi_type *ffi_types[] = {
+        [sizeof (uint8_t)] = &ffi_type_uint8,
+        [sizeof (uint16_t)] = &ffi_type_uint16,
+        [sizeof (uint32_t)] = &ffi_type_uint32,
+        [sizeof (uint64_t)] = &ffi_type_uint64,
+    };
+
+    ffi_type *type = is_float ? float_ffi_types[size] : ffi_types[size];
+    assert(type);
+    cri_append_arg(ctx, type, ptr);
 }
 
-void cr_theory_free(struct criterion_theory_context *ctx)
+struct cri_theory_ctx *cr_theory_init(void)
 {
-    dcFree(ctx->vm);
+    return calloc(1, sizeof (struct cri_theory_ctx));
+}
+
+void cr_theory_free(struct cri_theory_ctx *ctx)
+{
     free(ctx);
 }
 
@@ -95,14 +90,12 @@ void cr_theory_abort(void)
     cri_longjmp(theory_jmp, 1);
 }
 
-void cr_theory_reset(struct criterion_theory_context *ctx)
+void cr_theory_call(struct cri_theory_ctx *ctx, void (*fnptr)(void))
 {
-    dcReset(ctx->vm);
-}
+    ffi_cif cif;
+    assert(ffi_prep_cif(&cif, FFI_DEFAULT_ABI, ctx->nargs, &ffi_type_void, ctx->types) == FFI_OK);
 
-void cr_theory_call(struct criterion_theory_context *ctx, void (*fnptr)(void))
-{
-    dcCallVoid(ctx->vm, (DCpointer) fnptr);
+    ffi_call(&cif, fnptr, NULL, ctx->args);
 }
 
 static bool contains_word(const char *str, const char *pattern, size_t sz)
@@ -136,6 +129,11 @@ static bool is_float(const char *name)
            || contains_word(name, "double", sizeof ("double"));
 }
 
+static bool is_long_double(const char *name)
+{
+    return !strcmp(name, "long double");
+}
+
 static bool is_unsigned_int(const char *name)
 {
     return contains_word(name, "unsigned", sizeof ("unsigned"))
@@ -153,10 +151,10 @@ static void format_arg(char (*arg)[1024], struct criterion_datapoints *dp, void 
     if (is_float(dp->name)) {
         if (dp->size == sizeof (float))
             snprintf(*arg, sizeof (*arg) - 1, "%gf", *(float *) data);
+        else if (dp->size == sizeof (long double) && is_long_double(dp->name))
+            snprintf(*arg, sizeof (*arg) - 1, "%gl", (double) *(long double *) data);
         else if (dp->size == sizeof (double))
             snprintf(*arg, sizeof (*arg) - 1, "%g", *(double *) data);
-        else if (dp->size == sizeof (long double))
-            snprintf(*arg, sizeof (*arg) - 1, "%gl", (double) *(long double *) data);
     } else {
         if (is_string(dp->name)) {
             snprintf(*arg, sizeof (*arg) - 1, "\"%s\"", *(char **) data);
@@ -200,7 +198,7 @@ static void concat_arg(char (*msg)[BUFSIZE], struct criterion_datapoints *dps, s
     strncat(*msg, arg, BUFSIZE - 1);
 }
 
-int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void))
+int try_call_theory(struct cri_theory_ctx *ctx, void (*fnptr)(void))
 {
     if (!cri_setjmp(g_pre_test)) {
         cr_theory_call(ctx, fnptr);
@@ -211,7 +209,7 @@ int try_call_theory(struct criterion_theory_context *ctx, void (*fnptr)(void))
 
 void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*fnptr)(void))
 {
-    struct criterion_theory_context *ctx = cr_theory_init();
+    struct cri_theory_ctx *ctx = cr_theory_init();
 
     size_t *indices = malloc(sizeof (size_t) * datapoints);
 
@@ -239,12 +237,11 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
 
         int theory_aborted = 0;
         if (!cri_setjmp(theory_jmp)) {
-            cr_theory_reset(ctx);
             for (size_t i = 0; i < datapoints; ++i) {
                 bool is_float = contains_word(dps[i].name, "float", sizeof ("float"))
                         || contains_word(dps[i].name, "double", sizeof ("double"));
 
-                cr_theory_push_arg(ctx,
+                cri_theory_push_arg(ctx,
                         is_float,
                         dps[i].size,
                         ((char *) dps[i].arr) + dps[i].size * indices[i]);

@@ -23,8 +23,8 @@
  */
 #include <stdio.h>
 #include <inttypes.h>
-#include <csptr/smalloc.h>
 #include "compat/strtok.h"
+#include "csptr/smalloc.h"
 #include "protocol/protocol.h"
 #include "protocol/messages.h"
 #include "criterion/options.h"
@@ -205,7 +205,7 @@ static void process_client_message_impl(struct server_ctx *sctx, struct client_c
 struct client_ctx *process_client_message(struct server_ctx *ctx, const criterion_protocol_msg *msg)
 {
     if (msg->version != PROTOCOL_V1) {
-        handler_error(ctx, "%s", "", "Received message using invalid protocol version number '%" PRIi32 "'.", msg->version);
+        handler_error(ctx, "%s", "", "Received message using invalid protocol version number '%" PRId32 "'.", msg->version);
         return NULL;
     }
 
@@ -216,7 +216,7 @@ struct client_ctx *process_client_message(struct server_ctx *ctx, const criterio
             if (k != kh_end(ctx->subprocesses))
                 client = &kh_value(ctx->subprocesses, k);
             else
-                handler_error(ctx, "%s", "", "Received message identified by a PID '%" PRIi64 "' "
+                handler_error(ctx, "%s", "", "Received message identified by a PID '%" PRId64 "' "
                         "that is not a child process.", msg->id.pid);
         } break;
         case criterion_protocol_msg_uid_tag: {
@@ -460,6 +460,7 @@ bool handle_death(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
         case criterion_protocol_death_result_type_CRASH: {
             if (curstate != CS_MAIN) {
                 log(other_crash, ctx->tstats);
+                ++ctx->gstats->warnings;
 
                 if (ctx->state < CS_MAIN) {
                     stat_push_event(ctx->gstats,
@@ -506,6 +507,23 @@ bool handle_death(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
     return false;
 }
 
+static void make_param(struct cr_log_assert_param *param,
+        criterion_protocol_param_entry *entry)
+{
+    *param = (struct cr_log_assert_param) {
+        .name = entry->name,
+    };
+    if (entry->which_data == criterion_protocol_param_entry_raw_tag) {
+        param->size = entry->data.raw->size;
+        param->data = entry->data.raw->bytes;
+        param->kind = CR_LOG_PARAM_RAW;
+    } else if (entry->which_data == criterion_protocol_param_entry_str_tag) {
+        param->size = strlen(entry->data.str);
+        param->data = entry->data.str;
+        param->kind = CR_LOG_PARAM_STR;
+    }
+}
+
 bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criterion_protocol_msg *msg)
 {
     (void) sctx;
@@ -522,6 +540,40 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
     push_event_noreport(ASSERT, .data = &asrt_stats);
     report(ASSERT, &asrt_stats);
     log(assert, &asrt_stats);
+    if (asrt->results_count > 0) {
+        for (size_t i = 0; i < asrt->results_count; ++i) {
+            criterion_protocol_result *res = &asrt->results[i];
+            if (res->value.params->list_count == 0 && !res->message) {
+                continue;
+            }
+
+            log(assert_sub, &asrt_stats, res->repr, res->message);
+
+            if (res->which_value == criterion_protocol_result_params_tag) {
+                size_t j = 0;
+                if (res->value.params->list_count >= 2) {
+                    criterion_protocol_param_entry *actual = &res->value.params->list[0];
+                    criterion_protocol_param_entry *expected = &res->value.params->list[1];
+                    if (!strcmp(actual->name, "actual") && !strcmp(expected->name, "expected")) {
+                        struct cr_log_assert_param pa, pe;
+                        make_param(&pa, actual);
+                        make_param(&pe, expected);
+                        log(assert_param_eq, &asrt_stats, &pa, &pe);
+                        j += 2;
+                    }
+                }
+
+                for (; j < res->value.params->list_count; ++j) {
+                    struct cr_log_assert_param p;
+
+                    make_param(&p, &res->value.params->list[j]);
+                    log(assert_param, &asrt_stats, &p);
+                }
+            } else if (res->which_value == criterion_protocol_result_formatted_tag) {
+                log(assert_formatted, &asrt_stats, res->value.formatted);
+            }
+        }
+    }
     return false;
 }
 
@@ -545,7 +597,12 @@ bool handle_message(struct server_ctx *sctx, struct client_ctx *ctx, const crite
     (void) sctx;
     (void) ctx;
     const criterion_protocol_log *lg = &msg->data.value.message;
+    enum criterion_severity severity = (enum criterion_severity) lg->severity;
 
-    log(message, (enum criterion_severity) lg->severity, lg->message);
+    log(message, severity, lg->message);
+    if (severity == CR_LOG_WARNING)
+        ++ctx->gstats->warnings;
+    if (severity == CR_LOG_ERROR)
+        ++ctx->gstats->errors;
     return false;
 }

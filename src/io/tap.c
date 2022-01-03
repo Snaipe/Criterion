@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,17 +34,13 @@
 
 static void print_prelude(FILE *f, struct criterion_global_stats *stats)
 {
-    fprintf(f, "TAP version 13\n1.."
-            CR_SIZE_T_FORMAT
-            "\n", stats->nb_tests);
-    fprintf(f, "# Criterion v%s\n", VERSION);
+    fprintf(f, "TAP version 13\n1..%" CRI_PRIuSIZE "\n", stats->nb_tests);
+    fprintf(f, "# Criterion %s\n", VERSION);
 }
 
 static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats)
 {
-    fprintf(f, "\n# Running "
-            CR_SIZE_T_FORMAT
-            " tests from %s\n",
+    fprintf(f, "#\n# Running %" CRI_PRIuSIZE " tests from %s\n",
             stats->nb_tests,
             stats->suite->name);
 }
@@ -53,6 +48,9 @@ static void print_pre_suite(FILE *f, struct criterion_suite_stats *stats)
 static void print_test_normal(FILE *f, struct criterion_test_stats *stats)
 {
     const char *format = "%s - %s::%s %s (%3.2fs)\n";
+    if (!criterion_options.measure_time) {
+        format = "%s - %s::%s %s\n";
+    }
 
     fprintf(f, format,
             stats->test_status == CR_STATUS_FAILED ? "not ok" : "ok",
@@ -60,21 +58,31 @@ static void print_test_normal(FILE *f, struct criterion_test_stats *stats)
             stats->test->name,
             DEF(stats->test->data->description, ""),
             stats->elapsed_time);
-    for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
-        if (!asrt->passed) {
-            char *dup = strdup(*asrt->message ? asrt->message : "");
-            char *saveptr = NULL;
-            char *line = strtok_r(dup, "\n", &saveptr);
-            bool sf = criterion_options.short_filename;
-            fprintf(f, "  %s:%u: Assertion failed: %s\n",
-                    sf ? basename_compat(asrt->file) : asrt->file,
-                    asrt->line,
-                    line);
 
-            while ((line = strtok_r(NULL, "\n", &saveptr)))
-                fprintf(f, "    %s\n", line);
-            free(dup);
+    if (stats->test_status == CR_STATUS_FAILED) {
+        fprintf(f, "  ---\n");
+
+        fprintf(f, "  assertions: %" CRI_PRIuSIZE "\n",
+                (size_t) (stats->passed_asserts + stats->failed_asserts));
+        fprintf(f, "  failures:\n");
+        for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
+            if (!asrt->passed) {
+                char *dup = strdup(*asrt->message ? asrt->message : "");
+                char *saveptr = NULL;
+                char *line = strtok_r(dup, "\n", &saveptr);
+                bool sf = criterion_options.short_filename;
+                fprintf(f, "  - %s:%u: |+\n      Assertion failed: %s\n",
+                        sf ? basename_compat(asrt->file) : asrt->file,
+                        asrt->line,
+                        line);
+
+                while ((line = strtok_r(NULL, "\n", &saveptr)))
+                    fprintf(f, "      %s\n", line);
+                free(dup);
+            }
         }
+
+        fprintf(f, "  ...\n");
     }
 }
 

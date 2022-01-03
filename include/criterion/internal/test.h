@@ -26,6 +26,7 @@
 
 #include "designated-initializer-compat.h"
 #include "common.h"
+#include "assert.h"
 
 #ifdef __OBJC__
 # import <Foundation/Foundation.h>
@@ -68,7 +69,6 @@ CR_BEGIN_C_API
 CR_API void criterion_internal_test_setup(void);
 CR_API void criterion_internal_test_main(void (*fn)(void));
 CR_API void criterion_internal_test_teardown(void);
-CR_API void cri_asserts_passed_incr(void);
 
 CR_END_C_API
 

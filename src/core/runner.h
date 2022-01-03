@@ -27,6 +27,7 @@
 #include "criterion/types.h"
 #include "compat/pipe.h"
 
+extern int cri_is_runner;
 struct criterion_test_set *criterion_init(void);
 
 #define FOREACH_TEST_SEC(Test, Start, End)         \

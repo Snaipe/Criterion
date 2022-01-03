@@ -119,6 +119,9 @@ template <typename T, typename... Params>
 T *new_obj(Params... params)
 {
     T *obj = static_cast<T *>(cr_malloc(sizeof (T)));
+    if (!obj) {
+        throw std::bad_alloc();
+    }
 
     new (obj) T(params...);
     return obj;
@@ -140,7 +143,13 @@ T *new_obj(Params... params)
 template <typename T>
 typename std::enable_if<std::is_fundamental<T>::value>::type
 * new_arr(size_t len) {
+    if (len > (SIZE_MAX - sizeof (size_t)) / sizeof (T)) {
+        throw std::bad_alloc();
+    }
     void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
+    if (!ptr) {
+        throw std::bad_alloc();
+    }
 
     *(reinterpret_cast<size_t *>(ptr)) = len;
     T *arr = reinterpret_cast<T *>(reinterpret_cast<size_t *>(ptr) + 1);
@@ -163,7 +172,13 @@ typename std::enable_if<std::is_fundamental<T>::value>::type
 template <typename T>
 T *new_arr(size_t len)
 {
+    if (len > (SIZE_MAX - sizeof (size_t)) / sizeof (T)) {
+        throw std::bad_alloc();
+    }
     void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
+    if (!ptr) {
+        throw std::bad_alloc();
+    }
 
     *(reinterpret_cast<size_t *>(ptr)) = len;
 
@@ -248,12 +263,12 @@ struct allocator {
     inline ~allocator() {}
     inline explicit allocator(allocator const &) {}
     template <typename U>
-    inline explicit allocator(allocator<U> const &) {}
+    inline allocator(allocator<U> const &) {}
 
     inline pointer address(reference r) { return &r; }
     inline const_pointer address(const_reference r) { return &r; }
 
-    inline pointer allocate(size_type cnt, typename std::allocator<void>::const_pointer = 0)
+    inline pointer allocate(size_type cnt, const std::allocator<void>::value_type * = 0)
     {
         return reinterpret_cast<pointer>(cr_malloc(cnt * sizeof (T)));
     }
@@ -272,6 +287,18 @@ struct allocator {
     inline bool operator==(allocator const &) { return true; }
     inline bool operator!=(allocator const &a) { return !operator==(a); }
 };
+
+template<typename T, typename U>
+bool operator==(allocator<T> const& lhs, allocator<U> const& rhs)
+{
+   return false;
+}
+
+template<typename T, typename U>
+bool operator!=(allocator<T> const& lhs, allocator<U> const& rhs)
+{
+   return !(lhs == rhs);
+}
 }
 #endif
 
