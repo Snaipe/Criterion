@@ -1,3 +1,66 @@
+2022-01-03  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.4.0
+    * Addition: added new experimental assertion API. The API brings a more
+      generic approach for comparing values of arbitrary types, alongside
+      value diffing on error.
+    * Addition: added --color=<always|never|auto> CLI switch to explicitly
+      add or strip colors from the test runner output.
+    * Addition: added --encoding CLI switch to control the use of unicode
+      in the test runner output.
+    * Addition: added ARM (v6/v7) and ARM64 support. Huge kudos to László
+      Várady (MrAnno) for fixing most of the issues and testing on real
+      hardware.
+    * Addition: added directory support to write test reports via --output.
+      If the provided path is an existing directory, the report will be
+      created in that directory, and the report file is named after the
+      binary (László Várady).
+    * Breaking: the runner now exits with a non-zero exit status on warning
+      by default. --ignore-warnings has been added to restore the old behaviour.
+    * Breaking: changed '-' to mean stdout rather than stderr.
+      /dev/stderr can instead be used to signify stderr, even on Windows.
+    * Breaking: switched build system from CMake to Meson.
+    * Deprecation: --ascii and CRITERION_USE_ASCII are deprecated in favor of
+      passing --encoding=C or setting LC_ALL=C.
+    * Fix: fixed c++ allocator to work with older compiler versions.
+    * Fix: fixed CRITERION_DISABLE_TIME_MEASUREMENTS=1 not being picked up.
+    * Fix: allow log functions to be called from runner-side report hooks.
+    * Fix: allow assertions to execute in fixtures (init/fini).
+    * Fix: test std{out,err} is now discarded when operating in quiet mode.
+      They are also discarded when the runner output is redirected via
+      --output.
+    * Fix: cr_file_match_str now fails if the input is longer than the
+      expected value (Ethiraric).
+    * Fix: cr_file_match_str passes when both the input and expected value
+      are empty (Ethiraric).
+    * Fix: fixed throw assertion not failing when nothing throws.
+    * Fix: fixed major slowdowns from running criterion in container
+      environments with a high open file descriptor limit.
+    * Fix: fixed libcriterion.so not being loadable on WSL due to the stack
+      not being executable.
+    * Fix: worked around msync not properly working on WSL and causing the
+      runner to break.
+    * Fix: fixed use-after-free in fprintf_locale.
+    * Fix: fixed cr_file_match_file matching only the last block (Ethiraric).
+    * Fix: fixed TAP test description format. TAP mandates that details must
+      use a YAML format, while Criterion directly dumped the description
+      string in the detail section.
+    * Fix: fixed TAP output to comment out blank lines, since the TAP spec
+      doesn't say anything about blank lines, and some parsers have trouble
+      with them.
+    * Fix: fixed c++20 incompatibility with the criterion allocator (Ersikan).
+    * Fix: fixed escape of special characters in XML output (Paul Khuat-Duy).
+    * Fix: fixed crash when passing an empty string to cr_log_info (Ersikan).
+    * Fix: fixed compilation errors on macOS (Kare Nuorteva, László Várady).
+    * Fix: fixed --debug flag aborting runner with gdbserver >= 8.3.
+    * Misc: various documentation fixes (Oleksii Vilchanskyi, Sam Zaydel, Karim
+      Dridi, Florent Poinsard, Tim Gates, László Várady).
+    * Misc: various updates to dependencies (László Várady).
+    * Misc: various build system fixes (Tomasz Sieprawski, László Várady).
+    * Misc: various fixes to the autotools example (Bruno Belany).
+
+    The full git changelog may be accessed with `git log v2.3.3..v2.4.0`.
+
 2018-11-05  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.3.3
