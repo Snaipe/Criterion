@@ -18,6 +18,7 @@ if sh.found() and cram.found()
 
 	test('cram tests', cram,
 			timeout: 240,
-			args: ['--shell=' + sh.path(), meson.current_source_dir()],
+			workdir: join_paths(meson.current_source_dir(), '..', '..'),
+			args: ['--shell=' + sh.path(), 'test/cram'],
 			env: env)
 endif
