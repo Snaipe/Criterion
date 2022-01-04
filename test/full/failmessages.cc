@@ -8,6 +8,8 @@
 struct dummy_struct {
     char a;
     size_t b;
+
+    explicit dummy_struct(char a = '\0', size_t b = 0) : a(a), b(b) {}
 };
 
 /* We need to provide basic functions for our dummy struct */
