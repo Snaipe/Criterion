@@ -36,8 +36,11 @@ extern "C" char *cr_user_wcs_tostr(const wchar_t **);
 
 namespace criterion { namespace internal { namespace stream_override {
 
-template< class... >
-using __void_t = void;
+template< class... T>
+struct make_void { typedef void type; };
+
+template< class... T>
+using __void_t = typename make_void<T...>::type;
 
 template<typename T, typename = void>
 struct __is_printable: std::false_type {};
