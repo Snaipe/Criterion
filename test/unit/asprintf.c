@@ -17,11 +17,11 @@
 
 Test(asprintf, valid) {
     assert_cr_asprintf_format_is_valid("%c", 'a');
-    assert_cr_asprintf_format_is_valid("%hd", 42);
+    assert_cr_asprintf_format_is_valid("%hd", (short) 42);
     assert_cr_asprintf_format_is_valid("%d", 42);
     assert_cr_asprintf_format_is_valid("%ld", 42L);
     assert_cr_asprintf_format_is_valid("%lld", 42LL);
-    assert_cr_asprintf_format_is_valid("%hu", 42U);
+    assert_cr_asprintf_format_is_valid("%hu", (unsigned short) 42U);
     assert_cr_asprintf_format_is_valid("%u", 42U);
     assert_cr_asprintf_format_is_valid("%lu", 42UL);
     assert_cr_asprintf_format_is_valid("%llu", 42ULL);
