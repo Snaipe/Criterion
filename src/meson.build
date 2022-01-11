@@ -104,10 +104,15 @@ criterion = declare_dependency(
 	dependencies: deps,
 	link_with: [libcriterion])
 
+pkgconfig_rpath = ''
+if get_option('rpath-in-pkgconfig').enabled() or (get_option('rpath-in-pkgconfig').auto() and prefix.startswith('/home/'))
+	pkgconfig_rpath = '-Wl,-rpath,${libdir}'
+endif
+
 pkgconfig = import('pkgconfig')
 pkgconfig.generate(
 	name: meson.project_name(),
 	description: 'A KISS, Cross platform unit testing framework for C and C++',
 	url: 'https://snai.pe/git/criterion',
-	libraries: [criterion],
+	libraries: [criterion, pkgconfig_rpath],
 )

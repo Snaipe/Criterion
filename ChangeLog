@@ -15,6 +15,8 @@
       If the provided path is an existing directory, the report will be
       created in that directory, and the report file is named after the
       binary (László Várady).
+    * Addition: added support for setting RPATH for pkg-config users
+      (-Drpath-in-pkgconfig=enabled).
     * Breaking: the runner now exits with a non-zero exit status on warning
       by default. --ignore-warnings has been added to restore the old behaviour.
     * Breaking: changed '-' to mean stdout rather than stderr.
@@ -231,7 +233,7 @@
     * Removal: Removed the deprecated prefixless assertion macros
     * Deprecation: Deprecated cr_abort_test.
     * Deprecation: cr_{assert,expect}_strings_* and cr_{assert,expect}_arrays_*
-      are deprecated in favor of cr_{assert,expect}_str_* and 
+      are deprecated in favor of cr_{assert,expect}_str_* and
       cr_{assert,expect}_arr_* respectively.
 
 2015-08-20  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
