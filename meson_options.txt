@@ -9,3 +9,6 @@ option('diffs',       type: 'feature', value: 'enabled')
 
 # Platform-specific workarounds
 option('mingw-define-off_t', type: 'boolean', value: false)
+
+option('rpath-in-pkgconfig', type: 'feature', value: 'auto',
+       description: 'Sets RPATH for users in the Criterion pkg-config file')
