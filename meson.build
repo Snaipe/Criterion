@@ -4,7 +4,7 @@ project('criterion', 'c',
 		version         : '2.3.3',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
 
-abi_version = '3.1.0'
+abi_version = '3.2.0'
 
 # standard install directories
 prefix    = get_option('prefix')
