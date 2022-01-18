@@ -1,0 +1,39 @@
+name: Fast-forward bleeding
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  FF_ISSUE_TITLE: "No-FF: bleeding is behind master"
+  GITHUB_TOKEN: ${{ github.token }}
+
+jobs:
+  fast-forward-bleeding:
+    name: Fast-forward bleeding
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Criterion
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fast-forward bleeding
+        run: |
+          git checkout bleeding
+          if ! git merge --ff-only --no-edit master; then
+            issue_opened="$(gh issue list --state open --jq ".[] | select(.title == \"${FF_ISSUE_TITLE}\")" --json title)"
+            if [ -z "${issue_opened}" ]; then
+              gh issue create --title "${FF_ISSUE_TITLE}" --body ""
+            fi
+            exit 1
+          fi
+
+          git push origin bleeding
