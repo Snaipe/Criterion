@@ -325,6 +325,10 @@ static bxf_instance *run_test(struct run_next_context *ctx,
                 default: break;
             }
         }
+
+        if (criterion_options.debug == CR_DBG_NATIVE)
+            BXF_DBG_ENABLE_FALLBACK(debugger);
+
         if (!debugger)
             cr_panic("Could not choose the debugger server for an "
                     "unknown compiler");
@@ -347,7 +351,7 @@ static bxf_instance *run_test(struct run_next_context *ctx,
     if (rc < 0) {
         if (rc == -ENOENT && criterion_options.debug) {
             const char *dbgname = "<unknown>";
-            switch (sp.debug.debugger) {
+            switch (BXF_DBG_GET_DEBUGGER(sp.debug.debugger)) {
                 case BXF_DBG_GDB:    dbgname = "gdbserver"; break;
                 case BXF_DBG_LLDB:   dbgname = "lldb-server"; break;
                 case BXF_DBG_WINDBG: dbgname = "windbg"; break;
@@ -364,8 +368,12 @@ static bxf_instance *run_test(struct run_next_context *ctx,
 
     bxf_context_term(inst_ctx);
 
+    if (criterion_options.debug == CR_DBG_NATIVE && instance->status.stopped) {
+        criterion_pinfo(CRITERION_PREFIX_DEBUG, "Default debugger can not be found, falling back to \"idle\" mode\n");
+    }
+
     /* TODO: integrate this to the logger after refactor */
-    if (criterion_options.debug == CR_DBG_IDLE) {
+    if (criterion_options.debug == CR_DBG_IDLE || instance->status.stopped) {
         criterion_pinfo(CRITERION_PREFIX_DEBUG, _(msg_print_pid),
                 ctx->test->category,
                 ctx->test->name,
