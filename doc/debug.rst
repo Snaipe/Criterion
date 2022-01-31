@@ -63,6 +63,27 @@ and run the test with ``continue``
 
 To use a different port use ``--debug --debug-transport=<protocol>:<port>``
 
+Debugging on macOS
+------------------
+
+macOS has its own LLVM-based debugger called ``debugserver``.
+Make sure the debugger server is available in your PATH (by default, it is not).
+
+You will probably need sudo privileges as well:
+
+.. code-block:: bash
+
+    $ sudo ./test --debug
+    Listening to port 1234 for a connection from *...
+
+In another terminal, connect to the debug session:
+
+.. code-block:: bash
+
+    $ sudo lldb ./test
+    (lldb) gdb-remote localhost:1234
+
+
 Debugging with an unsupported debugger
 --------------------------------------
 
