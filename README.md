@@ -16,7 +16,7 @@ A dead-simple, yet extensible, C and C++ unit testing framework.
 Most test frameworks for C require a lot of boilerplate code to
 set up tests and test suites -- you need to create a main,
 then register new test suites, then register the tests within
-these suits, and finally call the right functions.
+these suites, and finally call the right functions.
 
 This gives the user great control, at the unfortunate cost of simplicity.
 
