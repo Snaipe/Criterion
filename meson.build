@@ -206,8 +206,9 @@ if not libgit2.found() and get_option('diffs').enabled()
 	libgit2 = libgit2_proj.dependency('git2')
 endif
 
-boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort'])
-libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'])
+boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort'], default_options: ['default_library=static'])
+libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'],
+					default_options: ['default_library=static'])
 
 # optional platform-dependent standard libs
 librt = cc.find_library('rt', required: false)
