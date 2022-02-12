@@ -55,11 +55,14 @@
     * Fix: fixed crash when passing an empty string to cr_log_info (Ersikan).
     * Fix: fixed compilation errors on macOS (Kare Nuorteva, László Várady).
     * Fix: fixed --debug flag aborting runner with gdbserver >= 8.3.
+    * Fix: fixed gdb stepping issue with '--debug' on macOS (Apple silicon).
     * Misc: various documentation fixes (Oleksii Vilchanskyi, Sam Zaydel, Karim
-      Dridi, Florent Poinsard, Tim Gates, László Várady).
+      Dridi, Florent Poinsard, Tim Gates, László Várady, Japroz Saini).
     * Misc: various updates to dependencies (László Várady).
     * Misc: various build system fixes (Tomasz Sieprawski, László Várady).
     * Misc: various fixes to the autotools example (Bruno Belany).
+    * Misc: from now on, --debug will fall back to the idle method in case no
+      debugger can be found.
 
     The full git changelog may be accessed with `git log v2.3.3..v2.4.0`.
 
