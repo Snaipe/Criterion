@@ -28,6 +28,10 @@ void cri_diff_init(void)
 {
 }
 
+void cri_diff_fini(void)
+{
+}
+
 int cri_diff_buffer_to_buffer(const struct cri_diff_buffer *b1,
         const struct cri_diff_buffer *b2, struct cri_diff_buffer *out)
 {
