@@ -242,6 +242,7 @@ CR_API void criterion_finalize(struct criterion_test_set *set)
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
 
+    cri_diff_fini();
     criterion_free_output();
 }
 
