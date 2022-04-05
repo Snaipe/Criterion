@@ -48,7 +48,7 @@ the user would have with other frameworks:
     $ sudo apt-get install criterion-dev
     ```
 * Arch Linux ([AUR](https://aur.archlinux.org/packages/criterion/)): `pacaur -S criterion`
-* macOS: `brew install mranno/tap/criterion`
+* macOS: `brew install criterion`
 
 ### Binary archives
 
