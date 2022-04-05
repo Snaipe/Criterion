@@ -237,6 +237,8 @@ void cr_theory_main(struct criterion_datapoints *dps, size_t datapoints, void (*
 
         int theory_aborted = 0;
         if (!cri_setjmp(theory_jmp)) {
+            ctx->nargs = 0;
+
             for (size_t i = 0; i < datapoints; ++i) {
                 bool is_float = contains_word(dps[i].name, "float", sizeof ("float"))
                         || contains_word(dps[i].name, "double", sizeof ("double"));
