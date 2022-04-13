@@ -173,6 +173,7 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
         CR_IDENTIFIER_(Category,  Name,  jmp),                               \
         &CR_IDENTIFIER_(Category, Name,  extra)                              \
     };                                                                       \
+    CR_ATTRIBUTE(used)                                                       \
     CR_SECTION_("cr_tst")                                                    \
     struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)               \
         = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;          \
@@ -189,6 +190,7 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
         #Name,                                                           \
         &CR_SUITE_IDENTIFIER_(Name, extra),                              \
     };                                                                   \
+    CR_ATTRIBUTE(used)                                                   \
     CR_SECTION_("cr_sts")                                                \
     struct criterion_suite *CR_SUITE_IDENTIFIER_(Name, ptr)              \
         = &CR_SUITE_IDENTIFIER_(Name, meta) CR_SECTION_SUFFIX_

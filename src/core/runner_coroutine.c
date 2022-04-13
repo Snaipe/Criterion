@@ -234,6 +234,7 @@ static int run_test_child(void)
 #endif
 
     cri_proto_close(g_client_socket);
+    cri_diff_fini();
 
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_ENABLE_ERROR_REPORTING;

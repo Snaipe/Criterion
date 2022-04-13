@@ -1,3 +1,16 @@
+2022-04-13  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.4.1
+    * Fix: compiling tests with link-time-optimization no longer causes
+      the tests to not get detected and run.
+    * Fix: theories now correctly iterate through the argument matrix. This
+      manifested as theories running the expected number of times, but
+      always using the first possible combination of parameters.
+    * Fix: fixed leak due to not calling git_libgit2_shutdown. This should
+      appease valgrind and the address sanitizer.
+
+    The full git changelog may be accessed with `git log v2.4.0..v2.4.1`.
+
 2022-01-03  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.4.0

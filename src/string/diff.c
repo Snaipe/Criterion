@@ -40,6 +40,11 @@ void cri_diff_init(void)
     git_libgit2_init();
 }
 
+void cri_diff_fini(void)
+{
+    git_libgit2_shutdown();
+}
+
 static int process_line(const git_diff_delta *delta, const git_diff_hunk *hunk,
         const git_diff_line *line, void *data)
 {
