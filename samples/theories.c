@@ -26,6 +26,7 @@ TheoryDataPoints(algebra, bad_divide_is_inverse_of_multiply) = {
 
 Theory((int a, int b), algebra, bad_divide_is_inverse_of_multiply) {
     cr_assume(b != 0);
+    cr_assume(a != INT_MIN || b != -1);
     cr_assert_eq(a, bad_div(bad_mul(a, b), b));
 }
 
@@ -48,6 +49,7 @@ TheoryDataPoints(algebra, good_divide_is_inverse_of_multiply) = {
 
 Theory((int a, int b), algebra, good_divide_is_inverse_of_multiply) {
     cr_assume(b != 0);
+    cr_assume(a != INT_MIN || b != -1);
     cr_assert_eq(a, good_div(good_mul(a, b), b));
 }
 
