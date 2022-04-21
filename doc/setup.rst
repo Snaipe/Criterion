@@ -49,6 +49,12 @@ Run with an elevated shell:
 
     $ ninja -C build install
 
+On Linux systems, update the dynamic linker runtime bindings:
+
+.. code-block:: bash
+
+    $ ldconfig
+
 Usage
 -----
 
