@@ -40,11 +40,13 @@ the user would have with other frameworks:
 
 ### Packages
 
-* Ubuntu (>=21.04) / Debian (>=11): `apt-get install libcriterion-dev`.
-* Gentoo: `emerge -a dev-libs/criterion`.
-* Arch Linux ([AUR](https://aur.archlinux.org/packages/criterion/)): `pacaur -S criterion`.
-* macOS: `brew install criterion`.
-* nix: `nix-env -iA nixpkgs.criterion`.
+| Platform | Command |
+| --- | --- |
+**Ubuntu** (>=21.04) / **Debian** (>=11) | `apt-get install libcriterion-dev`
+**Gentoo** | `emerge -a dev-libs/criterion`
+**Arch Linux** ([AUR][aur]) | `pacaur -S criterion`
+**macOS** | `brew install criterion`
+**Nix** | `nix-env -iA nixpkgs.criterion`
 
 If you'd like to see Criterion included in your favorite distribution, please reach out to their package maintainers team.
 
@@ -114,6 +116,8 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 
 [autotools]: ./dev/autotools
 [find-module]: ./dev/FindCriterion.cmake
+
+[aur]: https://aur.archlinux.org/packages/criterion/
 
 [mailing-list]: http://www.freelists.org/list/criterion
 [gh-discussions]: https://github.com/Snaipe/Criterion/discussions/new?category=q-a
