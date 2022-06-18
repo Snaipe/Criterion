@@ -316,7 +316,7 @@
                 ) ")";                                                      \
             size_t cri_paramidx = 0;                                        \
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_AUTO, , __VA_ARGS__)       \
-            cri_tmpn.pass = cri_cond_un;                                    \
+            cri_tmpn.pass = !!cri_cond_un;                                  \
             cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
         }                                                                   \
     } while (0)
@@ -348,7 +348,7 @@
                 ) ")";                                                      \
             size_t cri_paramidx = 0;                                        \
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE, Tag, __VA_ARGS__)         \
-            cri_tmpn.pass = cri_cond_un;                                    \
+            cri_tmpn.pass = !!cri_cond_un;                                  \
             cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
         }                                                                   \
     } while (0)
@@ -375,8 +375,8 @@
             cri_tmpn.dynrepr = 1;                                                   \
             cri_paramidx = 0;                                                       \
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_SUBSCRIPT, Tag, __VA_ARGS__)       \
-            cri_tmpn.pass = CRI_ASSERT_OP_APPLY(Op,                                 \
-                    Tag CRITERION_APPLY(CRI_ASSERT_IT_SUNPACK, , __VA_ARGS__));     \
+            cri_tmpn.pass = !!(CRI_ASSERT_OP_APPLY(Op,                              \
+                    Tag CRITERION_APPLY(CRI_ASSERT_IT_SUNPACK, , __VA_ARGS__)));    \
             cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);                \
             cri_node->pass = cri_node->pass && cri_tmpn.pass;                       \
         }                                                                           \
