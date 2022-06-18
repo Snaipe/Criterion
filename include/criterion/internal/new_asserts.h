@@ -95,7 +95,7 @@
         if (cri_cond_un != cri_cond_expect) {                           \
             cri_assert_node_init(&cri_tmpn);                            \
             cri_tmpn.repr = CR_STR(Val);                                \
-            cri_tmpn.pass = cri_cond_un;                                \
+            cri_tmpn.pass = !!cri_cond_un;                              \
             cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
         }                                                               \
     } while (0)
@@ -124,7 +124,7 @@
         int cri_cond_def = 1, cri_cond_un;                                              \
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_ALL_INDIRECT, cri_cond, __VA_ARGS__);  \
-        cri_node->pass = cri_cond;                                                      \
+        cri_node->pass = !!cri_cond;                                                    \
         *cri_pass = *cri_pass && cri_cond;                                              \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
@@ -146,7 +146,7 @@
         int cri_cond_def = 1, cri_cond_un;                                              \
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_NONE_INDIRECT, cri_cond, __VA_ARGS__); \
-        cri_node->pass = cri_cond;                                                      \
+        cri_node->pass = !!cri_cond;                                                    \
         *cri_pass = *cri_pass && cri_cond;                                              \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
@@ -163,7 +163,7 @@
         int cri_cond_def = 0;                                                           \
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_ANY_INDIRECT, cri_cond, __VA_ARGS__);  \
-        cri_node->pass = cri_cond;                                                      \
+        cri_node->pass = !!cri_cond;                                                    \
         *cri_pass = *cri_pass && cri_cond;                                              \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
