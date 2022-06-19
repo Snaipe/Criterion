@@ -64,10 +64,12 @@ static int streams_eval_cmp(struct cr_stream *m1, struct cr_stream *m2)
         m1->cri_data->remaining = r1;
         m2->cri_data->remaining = r2;
 
-        cmp = r1 - r2;
-        if (!cmp) {
+        if (r1 == r2) {
             cmp = memcmp(m1->cri_data->buffer, m2->cri_data->buffer, r1);
+            continue;
         }
+
+        cmp = r1 < r2 ? -1 : 1;
     } while (r1 && !cmp);
 
     m1->cri_data->dirty = 1;
