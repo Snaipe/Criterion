@@ -47,6 +47,7 @@ the user would have with other frameworks:
 **Arch Linux** ([AUR][aur]) | `pacaur -S criterion`
 **macOS** | `brew install criterion`
 **Nix** | `nix-env -iA nixpkgs.criterion`
+**FreeBSD** | `pkg install criterion`
 
 If you'd like to see Criterion included in your favorite distribution, please reach out to their package maintainers team.
 
