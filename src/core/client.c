@@ -342,12 +342,14 @@ bool handle_abort(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
             log(post_fini, ctx->tstats);
         }
     } else {
+        char *args = strdup(msg->message);
         struct criterion_theory_stats ths = {
-            .formatted_args = strdup(msg->message),
+            .formatted_args = args,
             .stats          = ctx->tstats,
         };
         report(THEORY_FAIL, &ths);
         log(theory_fail, &ths);
+        free(args);
     }
     return false;
 }
