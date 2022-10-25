@@ -543,13 +543,16 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
     if (asrt->results_count > 0) {
         for (size_t i = 0; i < asrt->results_count; ++i) {
             criterion_protocol_result *res = &asrt->results[i];
-            if (res->value.params->list_count == 0 && !res->message) {
-                continue;
-            }
 
             log(assert_sub, &asrt_stats, res->repr, res->message);
 
-            if (res->which_value == criterion_protocol_result_params_tag) {
+            switch (res->which_value) {
+            case criterion_protocol_result_params_tag:
+                if (res->value.params->list_count == 0 && !res->message) {
+                    log(assert_formatted, &asrt_stats, "@@@ <no difference -- this is a user bug in the object stringifier>");
+                    continue;
+                }
+
                 size_t j = 0;
                 if (res->value.params->list_count >= 2) {
                     criterion_protocol_param_entry *actual = &res->value.params->list[0];
@@ -558,7 +561,12 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
                         struct cr_log_assert_param pa, pe;
                         make_param(&pa, actual);
                         make_param(&pe, expected);
-                        log(assert_param_eq, &asrt_stats, &pa, &pe);
+
+                        if (pa.size == pe.size && memcmp(pa.data, pe.data, pa.size) == 0) {
+                            log(assert_formatted, &asrt_stats, "@@@ <no difference -- this is a user bug in the object stringifier>");
+                        } else {
+                            log(assert_param_eq, &asrt_stats, &pa, &pe);
+                        }
                         j += 2;
                     }
                 }
@@ -569,8 +577,19 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
                     make_param(&p, &res->value.params->list[j]);
                     log(assert_param, &asrt_stats, &p);
                 }
-            } else if (res->which_value == criterion_protocol_result_formatted_tag) {
+                break;
+
+            case criterion_protocol_result_formatted_tag:
+                if ((!res->value.formatted || !res->value.formatted[0]) && !res->message) {
+                    log(assert_formatted, &asrt_stats, "@@@ <no message>");
+                    continue;
+                }
                 log(assert_formatted, &asrt_stats, res->value.formatted);
+                break;
+
+            default:
+                log(assert_formatted, &asrt_stats, "@@@ <no message or difference -- this is a user bug in the object stringifier>");
+                break;
             }
         }
     }

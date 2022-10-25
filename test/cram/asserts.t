@@ -27,7 +27,7 @@ Testing all assert messages
   [----] failmessages.c:214: Assertion Failed
   [----] failmessages.c:215: Assertion Failed
   [----]   eq(i32, 1, 1): 
-  [----]     diff: [-1-]{+1+}
+  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
   [FAIL] message::compo
   [----] failmessages.c:165: Assertion Failed
   [----]   lt(i8, 1, 0): 
@@ -537,7 +537,7 @@ C++ equivalents
   [----] failmessages.cc:217: Assertion Failed
   [----] failmessages.cc:218: Assertion Failed
   [----]   eq(i32, 1, 1): 
-  [----]     diff: [-1-]{+1+}
+  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
   [FAIL] message::compo
   [----] failmessages.cc:222: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("exception message")): 

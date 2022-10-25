@@ -5,6 +5,9 @@ full_tests = [
 	'long-messages.c',
 	'other-crashes.c',
 	'with-time.c',
+
+	# bug-specific programs
+	'bug463.c',
 ]
 
 if get_option('theories').enabled()
