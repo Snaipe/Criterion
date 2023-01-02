@@ -58,7 +58,7 @@ Alpine (gcc,aarch64)_task:
 
 MacOS_task:
   macos_instance:
-    image: monterey-xcode-13.1
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
   env:
     PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
   setup_script: |-
