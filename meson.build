@@ -19,14 +19,14 @@ git     = find_program('git', required: false)
 
 # Get the right version
 
-is_git_repo = run_command([isdir, '.git']).returncode() == 0
+is_git_repo = run_command([isdir, '.git'], check: false).returncode() == 0
 
 version = 'v' + meson.project_version()
 if git.found() and is_git_repo
-	git_version = run_command([git.path(), 'describe', '--dirty', '--tags']).stdout().strip()
-	branch = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD']).stdout().strip()
+	git_version = run_command([git.path(), 'describe', '--dirty', '--tags'], check: false).stdout().strip()
+	branch = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
 	if branch == 'HEAD'
-		branch = run_command([git.path(), 'rev-parse', 'HEAD']).stdout().strip()
+		branch = run_command([git.path(), 'rev-parse', 'HEAD'], check: false).stdout().strip()
 	endif
 	if git_version != ''
 		version = git_version
