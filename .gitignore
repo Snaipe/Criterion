@@ -3,5 +3,7 @@
 .*.sw[op]
 build
 subprojects/boxfort
+subprojects/libffi
 subprojects/libgit2
 subprojects/nanomsg
+subprojects/nanopb
