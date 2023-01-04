@@ -97,13 +97,25 @@ $ sudo pip install cram==0.7
 
 ## Release Checklist
 
+### Preparing release candidate
+
 * [ ] Make sure `bleeding` builds on all platforms and all tests passes.
 * [ ] `git checkout master`
 * [ ] `git merge bleeding --no-commit --no-ff`
-* [ ] Bump version
-* [ ] Update cram tests
-* [ ] Update changelog
-* [ ] `git commit -m "vX.Y.Z: merging bleeding back to master"`
+* [ ] Bump project version (`meson.build`)
+* [ ] Bump ABI version when needed (`meson.build`)
+* [ ] Update ChangeLog
+* [ ] `git commit -m "release: vX.Y.Z"`
+* [ ] `git tag -s vX.Y.Z-rc`
+* [ ] `git push origin vX.Y.Z-rc master`
+
+After publishing the RC tag, each new push on master will produce a new release candidate.
+The `bleeding` branch is fast-forwarded automatically during the RC period.
+
+### Finalizing release
+
+After a 1-2 week RC period, the final version can be released:
+
+* [ ] `git checkout master`
 * [ ] `git tag -s vX.Y.Z`
-* [ ] `git branch -f bleeding`
-* [ ] `git push origin master bleeding vX.Y.Z`
+* [ ] `git push origin vX.Y.Z`
