@@ -27,7 +27,7 @@ Display the help message
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
-      -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
+      -OPROVIDER:PATH or --output=PROVIDER=PATH: write test report to PATH using the specified provider. If PATH is an existing directory, the report will be created in that directory and will be named after the binary.
 
 C++ equivalents
 
@@ -60,6 +60,6 @@ C++ equivalents
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
-      -OP:F or --output=PROVIDER=FILE: write test report to FILE using the specified provider
+      -OPROVIDER:PATH or --output=PROVIDER=PATH: write test report to PATH using the specified provider. If PATH is an existing directory, the report will be created in that directory and will be named after the binary.
 
 

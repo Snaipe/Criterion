@@ -93,8 +93,11 @@
     "assertions but is more accurate).\n"                   \
     "    --ignore-warnings: Ignore warnings, do not exit "  \
     "with a non-zero exit status.\n"                        \
-    "    -OP:F or --output=PROVIDER=FILE: write test "      \
-    "report to FILE using the specified provider\n"
+    "    -OPROVIDER:PATH or --output=PROVIDER=PATH: "       \
+    "write test report to PATH using the specified "        \
+    "provider. If PATH is an existing directory, the "      \
+    "report will be created in that directory and will be " \
+    "named after the binary.\n"
 
 int print_usage(char *progname)
 {
