@@ -213,6 +213,9 @@ static int get_section_data(struct mod_handle *mod, const char *name,
     struct section_mapping shstr_map;
     const char *shstr = map_shdr(mod->fd, shstr_shdr, &shstr_map);
 
+    if (shstr == NULL)
+        return 0;
+
     for (size_t i = 0; i < mod->map->e_shnum; i++) {
         const char *section_name = shstr + shdr[i].sh_name;
         if (!strcmp(section_name, name)) {
