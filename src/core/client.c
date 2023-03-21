@@ -263,7 +263,7 @@ bool handle_birth(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
     (void) sctx;
     (void) msg;
 
-    ctx->alive = true;
+    ctx->dead = false;
     return false;
 }
 
@@ -452,7 +452,7 @@ bool handle_death(struct server_ctx *sctx, struct client_ctx *ctx, const criteri
 {
     (void) sctx;
 
-    ctx->alive = false;
+    ctx->dead = true;
 
     const criterion_protocol_death *death = &msg->data.value.death;
     enum client_state curstate = ctx->state & (CS_MAX_CLIENT_STATES - 1);
