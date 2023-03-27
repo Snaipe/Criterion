@@ -56,7 +56,7 @@ struct client_ctx {
     struct criterion_test extern_test;
 
     uint32_t state;
-    bool alive;
+    bool dead;
     struct criterion_global_stats *gstats;
     struct criterion_suite_stats *sstats;
     struct criterion_test_stats *tstats;
