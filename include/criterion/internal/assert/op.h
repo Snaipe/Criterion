@@ -158,8 +158,8 @@
 # define CRI_BINOP_T_NE(Tag, Actual, Ref) (CRI_BINOP_EQ_TAG(Tag, !, Actual, Ref))
 # define CRI_BINOP_T_LE(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, , Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
 # define CRI_BINOP_T_LT(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_GE(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, !, Actual, Ref) || CRI_BINOP_EQ_TAG(Tag, , Actual, Ref))
-# define CRI_BINOP_T_GT(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, !, Actual, Ref))
+# define CRI_BINOP_T_GE(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, !, Actual, Ref))
+# define CRI_BINOP_T_GT(Tag, Actual, Ref) (CRI_BINOP_LT_TAG(Tag, !, Actual, Ref) && CRI_BINOP_EQ_TAG(Tag, !, Actual, Ref))
 
 # define CRI_UNOP_ZERO(X)        !(X)
 # define CRI_UNOP_T_ZERO(Tag, X) CRI_USER_TAG_ID(zero, Tag)(&(X))
