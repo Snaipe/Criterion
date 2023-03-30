@@ -66,6 +66,8 @@ Test(asserts, native) {
     cr_assert(gt(2, 1));
     cr_assert(ge(2, 1));
     cr_assert(ge(2, 2));
+
+    cr_assert(not(gt(i32, 0, 0)));
 }
 
 Test(asserts, float) {
