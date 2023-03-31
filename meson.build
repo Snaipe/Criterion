@@ -128,7 +128,6 @@ if get_option('dev')
 endif
 
 criterion_includedir = include_directories(
-	'dependencies/klib',
 	'dependencies/valgrind/include',
 
 	'include',
@@ -140,6 +139,8 @@ deps = []
 cmake = import('cmake')
 
 debugbreak = dependency('debugbreak')
+
+klib = dependency('klib')
 
 threads = dependency('threads')
 
@@ -231,6 +232,7 @@ endif
 
 deps += [
 	debugbreak,
+	klib,
 	threads,
 	boxfort,
 	libffi,
