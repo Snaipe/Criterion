@@ -1,3 +1,0 @@
-[submodule "dependencies/klib"]
-	path = dependencies/klib
-	url = https://github.com/attractivechaos/klib.git
