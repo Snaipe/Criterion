@@ -2,6 +2,7 @@
 *.sw[op]
 .*.sw[op]
 build
+subprojects/debugbreak
 subprojects/boxfort
 subprojects/libffi
 subprojects/libgit2
