@@ -1,5 +1,5 @@
 project('criterion', 'c',
-		meson_version   : '>= 0.51.0',
+		meson_version   : '>= 0.55.0',
 		license         : 'MIT',
 		version         : '2.4.1',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
