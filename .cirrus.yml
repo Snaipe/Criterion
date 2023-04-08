@@ -1,5 +1,4 @@
 .compile: &compile
-  submodule-update_script: git submodule update --init --recursive
   configure_script: meson -Db_lundef=false build
   compile_script: ninja -C build
 
