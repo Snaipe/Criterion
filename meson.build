@@ -1,5 +1,5 @@
 project('criterion', 'c',
-		meson_version   : '>= 0.51.0',
+		meson_version   : '>= 0.55.0',
 		license         : 'MIT',
 		version         : '2.4.1',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
@@ -128,8 +128,6 @@ if get_option('dev')
 endif
 
 criterion_includedir = include_directories(
-	'dependencies/debugbreak',
-	'dependencies/klib',
 	'dependencies/valgrind/include',
 
 	'include',
@@ -139,6 +137,10 @@ criterion_includedir = include_directories(
 deps = []
 
 cmake = import('cmake')
+
+debugbreak = dependency('debugbreak')
+
+klib = dependency('klib')
 
 threads = dependency('threads')
 
@@ -229,6 +231,8 @@ else
 endif
 
 deps += [
+	debugbreak,
+	klib,
 	threads,
 	boxfort,
 	libffi,

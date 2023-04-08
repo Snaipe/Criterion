@@ -1,0 +1,8 @@
+[wrap-git]
+url = https://github.com/attractivechaos/klib.git
+revision = cdb7e9236dc47abf8da7ebd702cc6f7f21f0c502
+directory = klib
+patch_directory = klib
+
+[provide]
+klib = klib_dep
