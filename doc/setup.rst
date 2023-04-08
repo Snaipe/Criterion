@@ -31,14 +31,13 @@ Clone this repository:
 
 .. code-block:: bash
 
-    $ git clone --recursive https://github.com/Snaipe/Criterion
+    $ git clone https://github.com/Snaipe/Criterion.git
 
 Then, run the following commands to build Criterion:
 
 .. code-block:: bash
-
-    $ meson build
-    $ ninja -C build
+    $ meson setup build
+    $ meson compile -C build
 
 Installing the library and language files (Linux, macOS, FreeBSD)
 ----------------------------------------------------------------
@@ -47,7 +46,7 @@ Run with an elevated shell:
 
 .. code-block:: bash
 
-    $ ninja -C build install
+    $ meson install -C build
 
 On Linux systems, update the dynamic linker runtime bindings:
 
