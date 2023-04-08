@@ -15,45 +15,43 @@
 
 Debian (gcc)_task:
   container:
-    image: snaipe/ci-meson:debian-10
+    image: debian:11
   setup_script: |-
     apt-get update
-    apt-get install -y pkg-config cmake libgit2-dev libffi-dev libnanomsg-dev
+    apt-get install -y build-essential pkg-config meson ninja-build cmake git libgit2-dev libffi-dev libnanomsg-dev python3-pip
     pip3 install cram==0.7
   <<: *pipeline
 
 Alpine (gcc,x86_64)_task:
   container:
-    image: snaipe/ci-meson:alpine
+    image: amd64/alpine:3
   setup_script: &alpine-deps |-
-    apk add --no-cache cmake libgit2-dev libffi-dev
+    apk add --no-cache build-base pkgconf meson ninja cmake git libgit2-dev libffi-dev py3-pip
     pip3 install cram==0.7
   <<: *pipeline
 
 Alpine (gcc,i386)_task:
   container:
-    image: snaipe/ci-meson:alpine-x86
+    image: i386/alpine:3
   setup_script: *alpine-deps
   <<: *pipeline
 
 Alpine (gcc,arm32v6)_task:
   arm_container:
     image: arm32v6/alpine:3
-  setup_script: &alpine-arm-deps |-
-    apk add --no-cache build-base pkgconf meson ninja cmake git libffi-dev libgit2-dev py3-pip
-    pip3 install cram==0.7
+  setup_script: *alpine-deps
   <<: *pipeline
 
 Alpine (gcc,arm32v7)_task:
   arm_container:
     image: arm32v7/alpine:3
-  setup_script: *alpine-arm-deps
+  setup_script: *alpine-deps
   <<: *pipeline
 
 Alpine (gcc,aarch64)_task:
   arm_container:
     image: arm64v8/alpine:3
-  setup_script: *alpine-arm-deps
+  setup_script: *alpine-deps
   <<: *pipeline
 
 MacOS_task:
