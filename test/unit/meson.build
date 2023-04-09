@@ -1,6 +1,7 @@
 unit_test_sources = files(
 	'ordered-set.c',
 	'path.c',
+	'escape.c',
 )
 
 if get_option('theories').enabled()
