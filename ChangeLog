@@ -1,3 +1,25 @@
+2023-04-29  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.4.2
+    * Fix: fixed crash in assert failure reporting when there was no diff.
+      If the user-provided function to stringify an object was bugged and
+      produced equal output for non-equal objects, thus producing an empty
+      diff, Criterion crashed trying to access an unset parameter list.
+    * Fix: fixed crashing tests when Criterion was compiled with nanopb>=0.4.7
+      (Balazs Scheidler).
+    * Fix: fixed deadlock when test timeout was specified and the system was
+      overloaded.
+    * Fix: fixed segfault if map_shdr fails (David Gloe).
+    * Fix: fixed memory leak on test failure (Jookia).
+    * Fix: fixed gt() and ge().
+    * Fix: escape XML/JSON reports.
+    * Misc: converted klib and debugbreak submodules to subprojects
+      (Cristian Prieto).
+    * Misc: various documentation fixes (Yuri Victorovich, Jonas Schulze).
+    * Misc: various updates to dependencies.
+
+    The full git changelog may be accessed with `git log v2.4.1..v2.4.2`.
+
 2022-04-13  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.4.1

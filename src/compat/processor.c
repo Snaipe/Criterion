@@ -47,7 +47,8 @@ size_t get_processor_count(void)
         count = 1;
     return (size_t) count;
 #elif defined (__linux__)
-    return sysconf(_SC_NPROCESSORS_ONLN);
+    long count = sysconf(_SC_NPROCESSORS_ONLN);
+    return count < 1 ? 1 : (size_t) count;
 #else
 # error System not supported
 #endif

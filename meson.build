@@ -1,7 +1,7 @@
 project('criterion', 'c',
-		meson_version   : '>= 0.51.0',
+		meson_version   : '>= 0.55.0',
 		license         : 'MIT',
-		version         : '2.4.1',
+		version         : '2.4.2',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
 
 abi_version = '3.2.0'
@@ -19,14 +19,14 @@ git     = find_program('git', required: false)
 
 # Get the right version
 
-is_git_repo = run_command([isdir, '.git']).returncode() == 0
+is_git_repo = run_command([isdir, '.git'], check: false).returncode() == 0
 
 version = 'v' + meson.project_version()
 if git.found() and is_git_repo
-	git_version = run_command([git.path(), 'describe', '--dirty', '--tags']).stdout().strip()
-	branch = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD']).stdout().strip()
+	git_version = run_command([git.path(), 'describe', '--dirty', '--tags'], check: false).stdout().strip()
+	branch = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
 	if branch == 'HEAD'
-		branch = run_command([git.path(), 'rev-parse', 'HEAD']).stdout().strip()
+		branch = run_command([git.path(), 'rev-parse', 'HEAD'], check: false).stdout().strip()
 	endif
 	if git_version != ''
 		version = git_version
@@ -128,8 +128,6 @@ if get_option('dev')
 endif
 
 criterion_includedir = include_directories(
-	'dependencies/debugbreak',
-	'dependencies/klib',
 	'dependencies/valgrind/include',
 
 	'include',
@@ -139,6 +137,10 @@ criterion_includedir = include_directories(
 deps = []
 
 cmake = import('cmake')
+
+debugbreak = dependency('debugbreak')
+
+klib = dependency('klib')
 
 threads = dependency('threads')
 
@@ -229,6 +231,8 @@ else
 endif
 
 deps += [
+	debugbreak,
+	klib,
 	threads,
 	boxfort,
 	libffi,

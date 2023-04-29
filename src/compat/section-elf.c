@@ -47,7 +47,7 @@ static size_t page_size(void) {
         page_size = 0x1000;
         long v = sysconf(_SC_PAGESIZE);
         if (v > 0) {
-            page_size = v;
+            page_size = (size_t) v;
         }
     }
     return page_size;
@@ -96,11 +96,13 @@ static int open_self(void)
         }
         return -1;
     }
-    if ((size_t) rc == PATH_MAX) {
+
+    size_t fullpath_len = (size_t) rc;
+    if (fullpath_len == PATH_MAX) {
         errno = ENAMETOOLONG;
         return -1;
     }
-    memset(fullpath + rc, 0, PATH_MAX - rc);
+    memset(fullpath + fullpath_len, 0, PATH_MAX - fullpath_len);
 
 do_open:
     return open(fullpath, O_RDONLY);
@@ -184,7 +186,7 @@ static const void *map_shdr(int fd, const ElfW (Shdr) *shdr,
     size_t shdr_map_len = shdr->sh_size + (shdr->sh_offset - shdr_map_off);
 
     const uint8_t *shdr_map = mmap(NULL, shdr_map_len,
-                    PROT_READ, MAP_PRIVATE, fd, shdr_map_off);
+                    PROT_READ, MAP_PRIVATE, fd, (off_t) shdr_map_off);
 
     if (shdr_map == MAP_FAILED)
         return NULL;
@@ -210,6 +212,9 @@ static int get_section_data(struct mod_handle *mod, const char *name,
 
     struct section_mapping shstr_map;
     const char *shstr = map_shdr(mod->fd, shstr_shdr, &shstr_map);
+
+    if (shstr == NULL)
+        return 0;
 
     for (size_t i = 0; i < mod->map->e_shnum; i++) {
         const char *section_name = shstr + shdr[i].sh_name;
@@ -250,7 +255,7 @@ static int section_getaddr(struct dl_phdr_info *info,
 
     if (get_section_data(&mod, ctx->sectname, (void *) info->dlpi_addr, &sect)) {
         if (ctx->i >= ctx->size) {
-            ctx->size *= 1.5f;
+            ctx->size = (size_t) (ctx->size * 1.5);
             ctx->sect = realloc(ctx->sect, sizeof (struct cri_section) * (ctx->size + 1));
             if (!ctx->sect)
                 cr_panic("Could not allocate cri_section");

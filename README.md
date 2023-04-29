@@ -40,21 +40,22 @@ the user would have with other frameworks:
 
 ### Packages
 
-* Ubuntu (>=21.04) / Debian (>=11): `apt-get install libcriterion-dev`, on older versions:
+| Platform | Command |
+| --- | --- |
+**Ubuntu** (>=21.04) / **Debian** (>=11) | `apt-get install libcriterion-dev`
+**Gentoo** | `emerge -a dev-libs/criterion`
+**Arch Linux** ([AUR][aur]) | `pacaur -S criterion`
+**macOS** | `brew install criterion`
+**Nix** | `nix-env -iA nixpkgs.criterion`
+**FreeBSD** | `pkg install criterion`
 
-    ```bash
-    $ sudo add-apt-repository ppa:snaipewastaken/ppa
-    $ sudo apt-get update
-    $ sudo apt-get install criterion-dev
-    ```
-* Arch Linux ([AUR](https://aur.archlinux.org/packages/criterion/)): `pacaur -S criterion`
-* macOS: `brew install criterion`
+If you'd like to see Criterion included in your favorite distribution, please reach out to their package maintainers team.
 
 ### Binary archives
 
-Binary releases are available [on the release page](https://github.com/Snaipe/Criterion/releases)
+Binary releases for Linux x86\_64 are available [on the release page](https://github.com/Snaipe/Criterion/releases).
 
-If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation)
+If you have a different platform, you can still [build the library from source](http://criterion.readthedocs.org/en/latest/setup.html#installation).
 
 ## Developer Resources
 
@@ -78,9 +79,8 @@ Sample tests can be found in the [sample directory][samples].
 
 | Channel | Description |
 | --- | --- |
+[![Ask a question in GitHub discussions](https://img.shields.io/badge/github-Ask%20a%20question-46BC99.svg)][gh-discussions] | Ask a question in GitHub discussions
 [![Subscribe to the mailing list](https://img.shields.io/badge/ml-criterion@freelists.org-46BC99.svg)][mailing-list] | Criterion mailing list on freelists.org
-[![Join the chat at https://gitter.im/Snaipe/Criterion](https://badges.gitter.im/Join%20Chat.svg)][gitter-chan] | `Snaipe/Criterion` on gitter.im
-[![Join #criterion on freenode](https://img.shields.io/badge/irc-%23criterion-46BC99.svg)][irc-chan] | `#criterion` on irc.freenode.net
 
 ### Misc
 
@@ -118,6 +118,7 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 [autotools]: ./dev/autotools
 [find-module]: ./dev/FindCriterion.cmake
 
-[irc-chan]: http://webchat.freenode.net/?channels=%23criterion&uio=MTY9dHJ1ZSYyPXRydWUmOT10cnVlJjExPTE5NQ4e
-[gitter-chan]: https://gitter.im/Snaipe/Criterion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[aur]: https://aur.archlinux.org/packages/criterion/
+
 [mailing-list]: http://www.freelists.org/list/criterion
+[gh-discussions]: https://github.com/Snaipe/Criterion/discussions/new?category=q-a

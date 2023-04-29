@@ -1,6 +1,0 @@
-[submodule "dependencies/klib"]
-	path = dependencies/klib
-	url = https://github.com/attractivechaos/klib.git
-[submodule "dependencies/debugbreak"]
-	path = dependencies/debugbreak
-	url = https://github.com/MrAnno/debugbreak.git

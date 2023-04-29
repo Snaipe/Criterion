@@ -32,4 +32,13 @@ int cri_fmt_bprintf(char **buf, size_t *offset, size_t *sz,
 int cri_fmt_vbprintf(char **buf, size_t *offset, size_t *sz,
         const char *fmt, va_list ap);
 
+
+typedef struct cri_escape_char {
+  char unsafe_char;
+  const char *escape_seq;
+} cri_escape_char;
+
+char *cri_escape_str(const char *in, size_t in_len,
+        const cri_escape_char *escape, size_t escape_size);
+
 #endif /* !FMT_H_ */

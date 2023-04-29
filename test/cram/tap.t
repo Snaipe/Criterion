@@ -43,7 +43,7 @@ Testing multiple samples with --tap
     assertions: 2
     failures:
     - asserts.c:19: |+
-        Assertion failed: (null)
+        Assertion failed: (no message)
     - asserts.c:18: |+
         Assertion failed: You can fail an assertion with a message from anywhere
     ...

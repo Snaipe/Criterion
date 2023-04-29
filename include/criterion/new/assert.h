@@ -320,7 +320,7 @@
 /**
  *  Evaluates to true if the floating point numbers `Actual` and `Expected` 
  *  are almost equal, by being within an absolute `Epsilon` from each other
- *  (In other words, if `fabs(Actual + Expected) <= Epsilon`).
+ *  (In other words, if `fabs(Actual - Expected) <= Epsilon`).
  *
  *  This method of comparison is more accurate when comparing two IEEE 754
  *  floating point values that are near zero.
@@ -343,7 +343,7 @@
 /**
  *  Evaluates to true if the floating point numbers `Actual` and `Expected` 
  *  are different, by not being within an absolute `Epsilon` from each other
- *  (In other words, if `fabs(Actual + Expected) > Epsilon`).
+ *  (In other words, if `fabs(Actual - Expected) > Epsilon`).
  *
  *  This method of comparison is more accurate when comparing two IEEE 754
  *  floating point values that are near zero.

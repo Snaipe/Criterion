@@ -27,7 +27,7 @@ Testing all assert messages
   [----] failmessages.c:214: Assertion Failed
   [----] failmessages.c:215: Assertion Failed
   [----]   eq(i32, 1, 1): 
-  [----]     diff: [-1-]{+1+}
+  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
   [FAIL] message::compo
   [----] failmessages.c:165: Assertion Failed
   [----]   lt(i8, 1, 0): 
@@ -437,6 +437,14 @@ Testing all assert messages
   [----]     +00: 646c726f 77206f6c 6c656800           dlrow olleh.    
   [----]      
   [FAIL] messages::eq
+  [----] failmessages.c:224: Assertion Failed
+  [----] failmessages.c:225: Assertion Failed
+  [----] failmessages.c:226: Assertion Failed
+  [----]   
+  [----]   "dquote" \\and\\ 'squote'\t\r (esc)
+  [----]   <script>\x01. (esc)
+  [----]   
+  [FAIL] messages::report_escape
   [----] failmessages.c:53: Assertion Failed
   [----]   zero(i8, 0): 
   [----]     value: 0
@@ -492,7 +500,7 @@ Testing all assert messages
   [----]       \t.b = 0 (esc)
   [----]       }
   [FAIL] messages::zero
-  [====] Synthesis: Tested: 5 | Passing: 0 | Failing: 5 | Crashing: 0 
+  [====] Synthesis: Tested: 6 | Passing: 0 | Failing: 6 | Crashing: 0 
 
 Long assert messages should wrap
 
@@ -537,7 +545,7 @@ C++ equivalents
   [----] failmessages.cc:217: Assertion Failed
   [----] failmessages.cc:218: Assertion Failed
   [----]   eq(i32, 1, 1): 
-  [----]     diff: [-1-]{+1+}
+  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
   [FAIL] message::compo
   [----] failmessages.cc:222: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("exception message")): 
@@ -973,6 +981,14 @@ C++ equivalents
   [----]     +\t["hello"]: 2,  (esc)
   [----]      }
   [FAIL] messages::eq
+  [----] failmessages.cc:234: Assertion Failed
+  [----] failmessages.cc:235: Assertion Failed
+  [----] failmessages.cc:236: Assertion Failed
+  [----]   
+  [----]   "dquote" \\and\\ 'squote'\t\r (esc)
+  [----]   <script>\x01. (esc)
+  [----]   
+  [FAIL] messages::report_escape
   [----] failmessages.cc:50: Assertion Failed
   [----]   zero(i8, 0): 
   [----]     value: 0
@@ -1034,7 +1050,7 @@ C++ equivalents
   [----]   zero(type(string_int_map), string_int_map{}): 
   [----]     value: {}
   [FAIL] messages::zero
-  [====] Synthesis: Tested: 6 | Passing: 0 | Failing: 6 | Crashing: 0 
+  [====] Synthesis: Tested: 7 | Passing: 0 | Failing: 7 | Crashing: 0 
 
 Test C++ assertions:
 
@@ -1048,10 +1064,10 @@ Test C++ assertions:
   [----]   This assert runs
   [----]   
   [FAIL] asserts::base
-  [----] asserts.cc:168: Assertion Failed
+  [----] asserts.cc:170: Assertion Failed
   [----]   throw(std::runtime_error, {}): 
   [----]     message: <nothing was thrown>
-  [----] asserts.cc:170: Assertion Failed
+  [----] asserts.cc:172: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("some other message")): 
   [----]     message: "some other message"
   [FAIL] asserts::exception

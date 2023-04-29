@@ -1,5 +1,4 @@
 .compile: &compile
-  submodule-update_script: git submodule update --init --recursive
   configure_script: meson -Db_lundef=false build
   compile_script: ninja -C build
 
@@ -15,50 +14,48 @@
 
 Debian (gcc)_task:
   container:
-    image: snaipe/ci-meson:debian-10
+    image: debian:11
   setup_script: |-
     apt-get update
-    apt-get install -y pkg-config cmake libgit2-dev libffi-dev libnanomsg-dev
+    apt-get install -y build-essential pkg-config meson ninja-build cmake git libgit2-dev libffi-dev libnanomsg-dev python3-pip
     pip3 install cram==0.7
   <<: *pipeline
 
 Alpine (gcc,x86_64)_task:
   container:
-    image: snaipe/ci-meson:alpine
+    image: amd64/alpine:3
   setup_script: &alpine-deps |-
-    apk add --no-cache cmake libgit2-dev libffi-dev
+    apk add --no-cache build-base pkgconf meson ninja cmake git libgit2-dev libffi-dev py3-pip
     pip3 install cram==0.7
   <<: *pipeline
 
 Alpine (gcc,i386)_task:
   container:
-    image: snaipe/ci-meson:alpine-x86
+    image: i386/alpine:3
   setup_script: *alpine-deps
   <<: *pipeline
 
 Alpine (gcc,arm32v6)_task:
   arm_container:
     image: arm32v6/alpine:3
-  setup_script: &alpine-arm-deps |-
-    apk add --no-cache build-base pkgconf meson ninja cmake git libffi-dev libgit2-dev py3-pip
-    pip3 install cram==0.7
+  setup_script: *alpine-deps
   <<: *pipeline
 
 Alpine (gcc,arm32v7)_task:
   arm_container:
     image: arm32v7/alpine:3
-  setup_script: *alpine-arm-deps
+  setup_script: *alpine-deps
   <<: *pipeline
 
 Alpine (gcc,aarch64)_task:
   arm_container:
     image: arm64v8/alpine:3
-  setup_script: *alpine-arm-deps
+  setup_script: *alpine-deps
   <<: *pipeline
 
 MacOS_task:
   macos_instance:
-    image: monterey-xcode-13.1
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
   env:
     PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
   setup_script: |-
@@ -68,7 +65,7 @@ MacOS_task:
 
 FreeBSD_task:
   freebsd_instance:
-    image_family: freebsd-13-0
+    image_family: freebsd-13-1
   setup_script: |-
     pkg install -y gettext-tools pkgconf cmake meson git libffi libgit2 nanomsg
     python3 -m ensurepip
@@ -83,7 +80,7 @@ Windows (mingw-gcc)_task:
   env:
     PATH: C:\\Python;C:\\Python\\Scripts;C:\\ProgramData\\chocolatey\\lib\\ninja\\tools;%PATH%
   setup_script: |-
-    choco install -y --no-progress python3 --params "/InstallDir:C:\Python"
+    choco install -y --no-progress python311 --params "/InstallDir:C:\Python"
     choco install -y --no-progress ninja cmake
     pip install meson cram==0.7
     git config --global core.autocrlf false

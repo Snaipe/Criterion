@@ -229,3 +229,9 @@ Test(messages, default) {
     cr_expect(0);
     cr_expect(0, "foo %s", "bar");
 }
+
+Test(messages, report_escape) {
+    cr_fail();
+    cr_fail("");
+    cr_fail("\"dquote\" \\and\\ 'squote'\t\r\n<script>\x01.");
+}

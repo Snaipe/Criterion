@@ -13,11 +13,14 @@ Command line arguments
   linked against.
 * ``-l or --list``: Print all the tests in a list.
 * ``-f or --fail-fast``: Exit after the first test failure.
+* ``--color=<auto|always|never>``: Colorize the output.
+* ``--encoding=<ENCODING>``: Use the specified encoding for the output (default: locale-deduced)
 * ``--ascii``: Don't use fancy unicode symbols or colors in the output.
 * ``-jN or --jobs N``: Use ``N`` parallel jobs to run the tests. ``0`` picks
   a number of jobs ideal for your hardware configuration.
 * ``--filter [PATTERN]``: Run tests whose string identifier matches
   the given shell wildcard pattern (see dedicated section below). (\*nix only)
+* ``--timeout [TIMEOUT]``: Set a timeout (in seconds) for all tests
 * ``--debug[=debugger]``: Run tests with a debugging server attached.
   ``debugger`` can be 'gdb', 'lldb', or 'windbg' (windows only).
 * ``--debug-transport [TRANSPORT]``: Make the debugging server use the
@@ -37,15 +40,18 @@ Command line arguments
   equivalent to ``--output=tap:FILE``.
 * ``--verbose[=level]``: Makes the output verbose. When provided with an integer,
   sets the verbosity level to that integer.
+* ``--crash``: Crash failing assertions rather than aborting (for debugging purposes)
 * ``--full-stats``: Forces tests to fully report statistics. By default,
   tests do not report details for passing assertions, so this option forces
   them to do so.
   Activating this causes massive slowdowns for large number of assertions, but
   provides more accurate reports.
-* ``-OPROVIDER:FILE or --output=PROVIDER:FILE``: Write a test report to FILE
-  using the output provider named by PROVIDER.
-  If FILE is ``"-"``, it implies ``--quiet``, and the report shall be written
-  to ``stderr``.
+* ``--ignore-warnings``: Ignore warnings, do not exit with a non-zero exit status.
+* ``-OPROVIDER:PATH or --output=PROVIDER=PATH``: Write test report to PATH using the specified provider.
+  If PATH is an existing directory, the report will be created in that directory
+  and will be named after the binary.
+  If PATH is ``"-"``, it implies ``--quiet``, and the report shall be written
+  to ``stdout``.
 
 Shell Wildcard Pattern
 ----------------------

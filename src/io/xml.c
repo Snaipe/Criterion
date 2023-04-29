@@ -32,8 +32,17 @@
 #include "compat/posix.h"
 #include "compat/strtok.h"
 #include "compat/time.h"
+#include "string/fmt.h"
 #include "config.h"
 #include "common.h"
+
+#define LF "&#10;"
+#define ARRAY_ELEMENTS(arr) (sizeof (arr) / sizeof ((arr)[0]))
+
+/* CDATA is used */
+static cri_escape_char xml_escape_chars[] = {
+    { '\n', LF, },
+};
 
 #define TESTSUITES_PROPERTIES            \
     "name=\"Criterion Tests\" "          \
@@ -78,8 +87,6 @@
     "    </testcase>\n"
 
 #define XML_TEST_SKIPPED    "      <skipped/>\n"
-
-#define LF                  "&#10;"
 
 #define XML_FAILURE_MSG_ENTRY \
     "<![CDATA[%s:%u: %s]]>" LF
@@ -147,19 +154,23 @@ static void print_test(FILE *f, struct criterion_test_stats *ts)
             for (struct criterion_assert_stats *asrt = ts->asserts; asrt; asrt = asrt->next) {
                 if (!asrt->passed) {
                     bool sf = criterion_options.short_filename;
-                    char *dup = strdup(*asrt->message ? asrt->message : "");
-                    char *saveptr = NULL;
-                    char *line = strtok_r(dup, "\n", &saveptr);
+
+                    const char *fail_msg = asrt->message && *asrt->message ? asrt->message : "(no message)";
+                    char *escaped_fail_msg = cri_escape_str(fail_msg, strlen(fail_msg),
+                                                xml_escape_chars, ARRAY_ELEMENTS(xml_escape_chars));
+
+                    const char *file = sf ? basename_compat(asrt->file) : asrt->file;
+                    char *escaped_file = cri_escape_str(file, strlen(file),
+                                            xml_escape_chars, ARRAY_ELEMENTS(xml_escape_chars));
 
                     fprintf(f, XML_FAILURE_MSG_ENTRY,
-                            sf ? basename_compat(asrt->file) : asrt->file,
+                            escaped_file,
                             asrt->line,
-                            line ? line : ""
+                            escaped_fail_msg
                             );
 
-                    while ((line = strtok_r(NULL, "\n", &saveptr)))
-                        fprintf(f, "        %s" LF, line);
-                    free(dup);
+                    free(escaped_file);
+                    free(escaped_fail_msg);
                 }
             }
             fprintf(f, XML_TEST_FAILED_TEMPLATE_END);

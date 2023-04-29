@@ -289,7 +289,7 @@ CRI_ASSERT_DECLARE_NATIVE_CMP_FN(ptr)
 
 static inline char *CRI_USER_TAG_ID(tostr, iptr)(intptr_t *e)
 {
-    uintptr_t absptr = *e;
+    uintptr_t absptr = (uintptr_t) *e;
     if (absptr > (uintptr_t)INTPTR_MAX)
         absptr = -absptr;
 
