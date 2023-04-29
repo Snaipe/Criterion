@@ -144,9 +144,11 @@ klib = dependency('klib')
 
 threads = dependency('threads')
 
-nanomsg = dependency('nanomsg', required: false)
-if not nanomsg.found()
-	nanomsg_proj = cmake.subproject('nanomsg',
+nanomsg = dependency('nanomsg', required: get_option('wrap_mode') == 'nofallback')
+if (not nanomsg.found()
+	or get_option('wrap_mode') == 'forcefallback'
+	or 'nanomsg' in get_option('force_fallback_for'))
+	nanomsg_proj = cmake.subproject('nanomsg-cmake',
 		cmake_options: [
 			'-DNN_TESTS=OFF',
 			'-DNN_TOOLS=OFF',
@@ -173,10 +175,13 @@ else
 	config.set('NN_REQREP_H', '<nanomsg/reqrep.h>')
 endif
 
-nanopb = dependency('nanopb', required: false, method: 'cmake', modules: ['nanopb::protobuf-nanopb-static'])
+nanopb = dependency('nanopb', required: get_option('wrap_mode') == 'nofallback', method: 'cmake',
+					modules: ['nanopb::protobuf-nanopb-static'])
 must_regenerate_pb = nanopb.found()
-if not nanopb.found()
-	nanopb_proj = cmake.subproject('nanopb',
+if (not nanopb.found()
+	or get_option('wrap_mode') == 'forcefallback'
+	or 'nanopb' in get_option('force_fallback_for'))
+	nanopb_proj = cmake.subproject('nanopb-cmake',
 		cmake_options: [
 			'-Dnanopb_BUILD_GENERATOR=OFF',
 			'-DBUILD_SHARED_LIBS=OFF',
@@ -186,9 +191,11 @@ if not nanopb.found()
 	nanopb = nanopb_proj.dependency('protobuf-nanopb-static')
 endif
 
-libgit2 = dependency('libgit2', required: false)
-if not libgit2.found() and get_option('diffs').enabled()
-	libgit2_proj = cmake.subproject('libgit2',
+libgit2 = dependency('libgit2', required: get_option('wrap_mode') == 'nofallback')
+if ((not libgit2.found() and get_option('diffs').enabled())
+	or get_option('wrap_mode') == 'forcefallback'
+	or 'libgit2' in get_option('force_fallback_for'))
+	libgit2_proj = cmake.subproject('libgit2-cmake',
 		cmake_options: [
 			'-DBUILD_SHARED_LIBS=OFF',
 			'-DBUILD_CLAR=OFF',
