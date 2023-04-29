@@ -31,8 +31,20 @@
 #include "compat/posix.h"
 #include "compat/strtok.h"
 #include "compat/time.h"
+#include "string/fmt.h"
 #include "config.h"
 #include "common.h"
+
+#define ARRAY_ELEMENTS(arr) (sizeof (arr) / sizeof ((arr)[0]))
+
+/*
+ * RFC 8259: MUST be escaped: quotation mark, reverse solidus,
+ * and the control characters (U+0000 through U+001F).
+ */
+static cri_escape_char json_escape_chars[] = {
+    { '"', "\\\"", },
+    { '\\', "\\\\", },
+};
 
 #define JSON_TEST_TEMPLATE_BEGIN                     \
     "        {\n"                                    \
@@ -124,9 +136,16 @@ static void print_test(FILE *f, struct criterion_test_stats *ts)
             );
 
     if (ts->test_status == CR_STATUS_SKIPPED) {
+        const char *skipped_msg = JSON_SKIPPED_MSG_ENTRY;
+        if (ts->message) {
+            skipped_msg = cri_escape_str(ts->message, strlen(ts->message),
+                              json_escape_chars, ARRAY_ELEMENTS(json_escape_chars));
+        }
         fprintf(f, "%s%s%s", JSON_TEST_SKIPPED_TEMPLATE_BEGIN,
-                ts->message ? ts->message : JSON_SKIPPED_MSG_ENTRY,
+                skipped_msg,
                 JSON_TEST_SKIPPED_TEMPLATE_END);
+        if (ts->message)
+            free((char *)skipped_msg);
     } else if (ts->crashed) {
         fprintf(f, JSON_CRASH_MSG_ENTRY);
     } else if (ts->timed_out) {
@@ -143,19 +162,22 @@ static void print_test(FILE *f, struct criterion_test_stats *ts)
                     first = false;
 
                 bool sf = criterion_options.short_filename;
-                char *dup = strdup(*asrt->message ? asrt->message : "");
-                char *saveptr = NULL;
-                char *line = strtok_r(dup, "\n", &saveptr);
+                const char *fail_msg = asrt->message && *asrt->message ? asrt->message : "(no message)";
+                char *escaped_fail_msg = cri_escape_str(fail_msg, strlen(fail_msg),
+                                             json_escape_chars, ARRAY_ELEMENTS(json_escape_chars));
+
+                const char *file = sf ? basename_compat(asrt->file) : asrt->file;
+                char *escaped_file = cri_escape_str(file, strlen(file),
+                                         json_escape_chars, ARRAY_ELEMENTS(json_escape_chars));
 
                 fprintf(f, JSON_FAILURE_MSG_ENTRY,
-                        sf ? basename_compat(asrt->file) : asrt->file,
+                        escaped_file,
                         asrt->line,
-                        line
+                        escaped_fail_msg
                         );
 
-                while ((line = strtok_r(NULL, "\n", &saveptr)))
-                    fprintf(f, ",\n            \"  %s\"", line);
-                free(dup);
+                free(escaped_file);
+                free(escaped_fail_msg);
             }
         }
         fprintf(f, JSON_TEST_FAILED_TEMPLATE_END);

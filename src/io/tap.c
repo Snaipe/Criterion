@@ -67,14 +67,14 @@ static void print_test_normal(FILE *f, struct criterion_test_stats *stats)
         fprintf(f, "  failures:\n");
         for (struct criterion_assert_stats *asrt = stats->asserts; asrt; asrt = asrt->next) {
             if (!asrt->passed) {
-                char *dup = strdup(*asrt->message ? asrt->message : "");
+                char *dup = strdup(asrt->message && *asrt->message ? asrt->message : "");
                 char *saveptr = NULL;
                 char *line = strtok_r(dup, "\n", &saveptr);
                 bool sf = criterion_options.short_filename;
                 fprintf(f, "  - %s:%u: |+\n      Assertion failed: %s\n",
                         sf ? basename_compat(asrt->file) : asrt->file,
                         asrt->line,
-                        line);
+                        line ? line : "(no message)");
 
                 while ((line = strtok_r(NULL, "\n", &saveptr)))
                     fprintf(f, "      %s\n", line);
