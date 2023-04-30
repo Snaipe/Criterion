@@ -23,10 +23,10 @@ is_git_repo = run_command([isdir, '.git'], check: false).returncode() == 0
 
 version = 'v' + meson.project_version()
 if git.found() and is_git_repo
-	git_version = run_command([git.path(), 'describe', '--dirty', '--tags'], check: false).stdout().strip()
-	branch = run_command([git.path(), 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
+	git_version = run_command([git.full_path(), 'describe', '--dirty', '--tags'], check: false).stdout().strip()
+	branch = run_command([git.full_path(), 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
 	if branch == 'HEAD'
-		branch = run_command([git.path(), 'rev-parse', 'HEAD'], check: false).stdout().strip()
+		branch = run_command([git.full_path(), 'rev-parse', 'HEAD'], check: false).stdout().strip()
 	endif
 	if git_version != ''
 		version = git_version
@@ -148,14 +148,16 @@ nanomsg = dependency('nanomsg', required: get_option('wrap_mode') == 'nofallback
 if (not nanomsg.found()
 	or get_option('wrap_mode') == 'forcefallback'
 	or 'nanomsg' in get_option('force_fallback_for'))
-	nanomsg_proj = cmake.subproject('nanomsg-cmake',
-		cmake_options: [
-			'-DNN_TESTS=OFF',
-			'-DNN_TOOLS=OFF',
-			'-DNN_STATIC_LIB=ON',
-			'-DBUILD_SHARED_LIBS=OFF',
-			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
-		])
+
+	nanomsg_opts = cmake.subproject_options()
+	nanomsg_opts.add_cmake_defines({
+		'NN_TESTS': false,
+		'NN_TOOLS': false,
+		'NN_STATIC_LIB': true,
+		'BUILD_SHARED_LIBS': false,
+		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+	})
+	nanomsg_proj = cmake.subproject('nanomsg-cmake', options: nanomsg_opts)
 	nanomsg = nanomsg_proj.dependency('nanomsg')
 	# nanomsg has a bad include file hierarchy when used from source
 	config.set('NN_H', '<src/nn.h>')
@@ -181,13 +183,15 @@ must_regenerate_pb = nanopb.found()
 if (not nanopb.found()
 	or get_option('wrap_mode') == 'forcefallback'
 	or 'nanopb' in get_option('force_fallback_for'))
-	nanopb_proj = cmake.subproject('nanopb-cmake',
-		cmake_options: [
-			'-Dnanopb_BUILD_GENERATOR=OFF',
-			'-DBUILD_SHARED_LIBS=OFF',
-			'-DCMAKE_C_FLAGS=-DPB_ENABLE_MALLOC=1 -DPB_NO_PACKED_STRUCTS=1',
-			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
-		])
+
+	nanopb_opts = cmake.subproject_options()
+	nanopb_opts.add_cmake_defines({
+		'nanopb_BUILD_GENERATOR': false,
+		'BUILD_SHARED_LIBS': false,
+		'CMAKE_C_FLAGS': '-DPB_ENABLE_MALLOC=1 -DPB_NO_PACKED_STRUCTS=1',
+		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+	})
+	nanopb_proj = cmake.subproject('nanopb-cmake', options: nanopb_opts)
 	nanopb = nanopb_proj.dependency('protobuf-nanopb-static')
 endif
 
@@ -195,23 +199,25 @@ libgit2 = dependency('libgit2', required: get_option('wrap_mode') == 'nofallback
 if ((not libgit2.found() and get_option('diffs').enabled())
 	or get_option('wrap_mode') == 'forcefallback'
 	or 'libgit2' in get_option('force_fallback_for'))
-	libgit2_proj = cmake.subproject('libgit2-cmake',
-		cmake_options: [
-			'-DBUILD_SHARED_LIBS=OFF',
-			'-DBUILD_CLAR=OFF',
-			'-DUSE_ICONV=OFF',
-			'-DUSE_SSH=OFF',
-			'-DUSE_GSSAPI=OFF',
-			'-DUSE_OPENSSL=OFF',
-			'-DVALGRIND=OFF',
-			'-DCURL=OFF',
-			'-DWINHTTP=OFF',
-			'-DCMAKE_DISABLE_FIND_PACKAGE_HTTP_Parser=TRUE',
-			'-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE',
-			'-DCMAKE_DISABLE_FIND_PACKAGE_Iconv=TRUE',
-			'-DCMAKE_DISABLE_FIND_PACKAGE_Security=TRUE',
-			'-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
-		])
+
+	libgit2_opts = cmake.subproject_options()
+	libgit2_opts.add_cmake_defines({
+		'BUILD_SHARED_LIBS': false,
+		'BUILD_CLAR': false,
+		'USE_ICONV': false,
+		'USE_SSH': false,
+		'USE_GSSAPI': false,
+		'USE_OPENSSL': false,
+		'VALGRIND': false,
+		'CURL': false,
+		'WINHTTP': false,
+		'CMAKE_DISABLE_FIND_PACKAGE_HTTP_Parser': true,
+		'CMAKE_DISABLE_FIND_PACKAGE_ZLIB': true,
+		'CMAKE_DISABLE_FIND_PACKAGE_Iconv': true,
+		'CMAKE_DISABLE_FIND_PACKAGE_Security': true,
+		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+	})
+	libgit2_proj = cmake.subproject('libgit2-cmake', options: libgit2_opts)
 	libgit2 = libgit2_proj.dependency('git2')
 endif
 
