@@ -256,6 +256,8 @@ deps += [
 	libm,
 ]
 
+meson.add_dist_script('.dist-filter.sh')
+
 subdir('include')
 subdir('src')
 
