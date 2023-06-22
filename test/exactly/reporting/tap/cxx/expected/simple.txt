@@ -1,0 +1,13 @@
+TAP version 13
+1..2
+# Criterion <VERSION>
+#
+# Running 2 tests from misc
+ok - misc::passing 
+not ok - misc::failing 
+  ---
+  assertions: 1
+  failures:
+  - simple.cc:4: |+
+      Assertion failed: The expression 0 is false.
+  ...

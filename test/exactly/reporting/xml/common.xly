@@ -1,0 +1,15 @@
+[setup]
+
+including ../common.xly
+
+[before-assert]
+
+def text-transformer replace_times =
+
+    replace 'time="\d\.\d\d\d"' 'time="<TIME>"'
+
+[assert]
+
+exit-code == 0
+
+stderr is-empty

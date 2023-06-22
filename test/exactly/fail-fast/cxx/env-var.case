@@ -1,0 +1,17 @@
+[setup]
+
+env -of act CRITERION_FAIL_FAST = 1
+
+[act]
+
+% simple.cc.bin --verbose
+
+[assert]
+
+exit-code == 1
+
+stdout is-empty
+
+stderr
+ -transformed-by replace_version
+ equals -contents-of err-output.txt

@@ -1,0 +1,12 @@
+[act]
+
+% long-messages.c.bin --json
+
+[assert]
+
+def text-transformer replace_source_file =
+    replace '"long-messages.c:' '"<SOURCE-FILE>:'
+
+stdout
+  -transformed-by ( replace_version | replace_source_file )
+  equals -contents-of expected/long-messages.txt
