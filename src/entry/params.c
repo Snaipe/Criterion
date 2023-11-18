@@ -363,6 +363,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
             quiet = must_be_quiet(path);
             criterion_add_output(provider, path);
+            free(s);
         }
         free(out);
     }
@@ -431,6 +432,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
                 quiet = must_be_quiet(path);
                 criterion_add_output(arg, path);
+                free(arg);
             } break;
             case 'w': criterion_options.wait_for_clients = true; break;
             case 's':
