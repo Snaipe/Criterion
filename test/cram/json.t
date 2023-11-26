@@ -335,9 +335,9 @@ Testing --output=json
             "assertions": 3,
             "status": "FAILED",
             "messages": [
-              "failmessages.c:226: \"dquote\" \\and\\ 'squote'\t\r\n<script>\u0001.",
-              "failmessages.c:225: (no message)",
-              "failmessages.c:224: (no message)"
+              "failmessages.c:229: \"dquote\" \\and\\ 'squote'\t\r\n<script>\u0001.",
+              "failmessages.c:228: (no message)",
+              "failmessages.c:227: (no message)"
             ]
           },
           {
@@ -379,8 +379,8 @@ Testing --output=json
             "assertions": 2,
             "status": "FAILED",
             "messages": [
-              "failmessages.c:220: foo bar",
-              "failmessages.c:219: (no message)"
+              "failmessages.c:223: foo bar",
+              "failmessages.c:222: (no message)"
             ]
           },
           {
@@ -388,12 +388,15 @@ Testing --output=json
             "assertions": 19,
             "status": "FAILED",
             "messages": [
-              "failmessages.c:206: (no message)",
+              "failmessages.c:209: (no message)",
+              "failmessages.c:189: (no message)",
+              "failmessages.c:188: (no message)",
               "failmessages.c:186: (no message)",
               "failmessages.c:185: (no message)",
               "failmessages.c:183: (no message)",
-              "failmessages.c:182: (no message)",
               "failmessages.c:180: (no message)",
+              "failmessages.c:179: (no message)",
+              "failmessages.c:178: (no message)",
               "failmessages.c:177: (no message)",
               "failmessages.c:176: (no message)",
               "failmessages.c:175: (no message)",
@@ -403,10 +406,7 @@ Testing --output=json
               "failmessages.c:171: (no message)",
               "failmessages.c:170: (no message)",
               "failmessages.c:169: (no message)",
-              "failmessages.c:168: (no message)",
-              "failmessages.c:167: (no message)",
-              "failmessages.c:166: (no message)",
-              "failmessages.c:165: (no message)"
+              "failmessages.c:168: (no message)"
             ]
           }
         ]
@@ -423,9 +423,9 @@ Testing --output=json
             "assertions": 3,
             "status": "FAILED",
             "messages": [
-              "failmessages.c:215: (no message)",
-              "failmessages.c:214: (no message)",
-              "failmessages.c:213: (no message)"
+              "failmessages.c:218: (no message)",
+              "failmessages.c:217: (no message)",
+              "failmessages.c:216: (no message)"
             ]
           }
         ]

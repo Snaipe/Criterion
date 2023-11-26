@@ -73,6 +73,8 @@ int criterion_add_output(const char *provider, const char *path)
         k = kh_put(ht_path, outputs, provider, &absent);
         if (absent == -1)
             return -1;
+        if (absent != 0) /* The key does not exist yet and must be allocated */
+            kh_key(outputs, k) = strdup(provider);
 
         str_vec *vec = malloc(sizeof (str_vec));
         kv_init(*vec);
@@ -80,7 +82,7 @@ int criterion_add_output(const char *provider, const char *path)
     }
     str_vec *vec = kh_value(outputs, k);
 
-    kv_push(const char *, *vec, path);
+    kv_push(const char *, *vec, strdup(path));
     return 1;
 }
 
@@ -94,8 +96,11 @@ void criterion_free_output(void)
             if (!kh_exist(outputs, k))
                 continue;
             str_vec *vec = kh_value(outputs, k);
+            for (size_t i = 0; i < kv_size(*vec); ++i)
+                free((char *)kv_A(*vec, i));
             kv_destroy(*vec);
             free(vec);
+            free((char *)kh_key(outputs, k));
         }
         kh_destroy(ht_path, outputs);
     }

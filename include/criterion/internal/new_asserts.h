@@ -86,6 +86,8 @@
             cri_assert_node_send(File, Line, &cri_root);                        \
             cri_assert_node_term(&cri_root);                                    \
             Fail();                                                             \
+        } else {                                                                \
+            cri_assert_node_term(&cri_root);                                    \
         }                                                                       \
     } while (0))
 
