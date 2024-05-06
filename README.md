@@ -92,7 +92,7 @@ Sample tests can be found in the [sample directory][samples].
 Criterion is built with the following projects:
 
 * [boxfort](https://github.com/diacritic/BoxFort)
-* [debugbreak](https://github.com/scottt/debugbreak)
+* [debugbreak](https://github.com/MrAnno/debugbreak)
 * [libffi](https://sourceware.org/libffi/)
 * [klib](http://attractivechaos.github.io/klib/)
 * [libcsptr](https://github.com/Snaipe/libcsptr)
