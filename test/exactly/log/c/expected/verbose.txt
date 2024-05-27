@@ -1,0 +1,11 @@
+[----] Criterion <VERSION>
+[====] Running 2 tests from logging:
+[RUN ] logging::format
+[----] Log messages are printf-formatted strings.
+[PASS] logging::format
+[RUN ] logging::simple
+[----] This is an informational message. They are not displayed by default.
+[WARN] This is a warning. They indicate some possible malfunction or misconfiguration in the test.
+[ERR ] This is an error. They indicate serious problems and are usually shown before the test is aborted.
+[PASS] logging::simple
+[====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 

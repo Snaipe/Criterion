@@ -1,0 +1,13 @@
+[setup]
+
+env -of act CRITERION_OUTPUTS = xml:-
+
+[act]
+
+% simple.cc.bin
+
+[assert]
+
+stdout
+  -transformed-by ( replace_version | replace_times )
+  equals -contents-of expected/simple.txt

@@ -1,0 +1,8 @@
+[suites]
+
+normal-globs
+character-classes
+extended-globs
+nested-extglob-patterns
+malformed-pattern
+special-char-escaping

@@ -1,0 +1,18 @@
+[act]
+
+% fixtures.c.bin
+
+[assert]
+
+exit-code == 0
+
+stdout equals
+<<EOF
+Runs before the test
+Runs after the test
+EOF
+
+stderr equals
+<<EOF
+[====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
+EOF

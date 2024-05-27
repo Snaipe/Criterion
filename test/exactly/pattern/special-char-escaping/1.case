@@ -1,0 +1,12 @@
+[act]
+
+% simple.c.bin --filter='\!(escaped)' --verbose
+
+[assert]
+
+exit-code == 3
+
+stderr equals
+<<EOF
+pattern error: Unexpected character '('
+EOF

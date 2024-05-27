@@ -1,0 +1,13 @@
+[setup]
+
+env -of act CRITERION_OUTPUTS = tap:-
+
+[act]
+
+% simple.c.bin
+
+[assert]
+
+stdout
+  -transformed-by replace_version
+  equals -contents-of expected/simple.txt

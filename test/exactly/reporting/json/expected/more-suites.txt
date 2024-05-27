@@ -1,0 +1,52 @@
+{
+  "id": "Criterion <VERSION>",
+  "passed": 2,
+  "failed": 0,
+  "errored": 0,
+  "skipped": 1,
+  "test_suites": [
+    {
+      "name": "suite2",
+      "passed": 1,
+      "failed": 0,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "test",
+          "assertions": 1,
+          "status": "PASSED"
+        }
+      ]
+    },
+    {
+      "name": "suite1",
+      "passed": 1,
+      "failed": 0,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "test",
+          "assertions": 1,
+          "status": "PASSED"
+        }
+      ]
+    },
+    {
+      "name": "disabled",
+      "passed": 0,
+      "failed": 0,
+      "errored": 0,
+      "skipped": 1,
+      "tests": [
+        {
+          "name": "test",
+          "assertions": 0,
+          "status": "SKIPPED",
+          "messages": ["The test was skipped."]
+        }
+      ]
+    }
+  ]
+}

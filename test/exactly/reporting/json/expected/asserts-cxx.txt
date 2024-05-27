@@ -1,0 +1,75 @@
+{
+  "id": "Criterion <VERSION>",
+  "passed": 6,
+  "failed": 3,
+  "errored": 0,
+  "skipped": 0,
+  "test_suites": [
+    {
+      "name": "asserts",
+      "passed": 6,
+      "failed": 3,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "wstring",
+          "assertions": 0,
+          "status": "PASSED"
+        },
+        {
+          "name": "string",
+          "assertions": 0,
+          "status": "PASSED"
+        },
+        {
+          "name": "stream",
+          "assertions": 0,
+          "status": "PASSED"
+        },
+        {
+          "name": "old_school",
+          "assertions": 2,
+          "status": "FAILED",
+          "messages": [
+            "asserts.cc:22: (null)",
+            "asserts.cc:21: You can fail an assertion with a message from anywhere"
+          ]
+        },
+        {
+          "name": "native",
+          "assertions": 0,
+          "status": "PASSED"
+        },
+        {
+          "name": "float",
+          "assertions": 0,
+          "status": "PASSED"
+        },
+        {
+          "name": "exception",
+          "assertions": 2,
+          "status": "FAILED",
+          "messages": [
+            "asserts.cc:169: (null)",
+            "asserts.cc:167: (null)"
+          ]
+        },
+        {
+          "name": "base",
+          "assertions": 2,
+          "status": "FAILED",
+          "messages": [
+            "asserts.cc:16: This assert runs",
+            "asserts.cc:15: assert is fatal, expect isn't"
+          ]
+        },
+        {
+          "name": "array",
+          "assertions": 0,
+          "status": "PASSED"
+        }
+      ]
+    }
+  ]
+}
