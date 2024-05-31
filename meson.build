@@ -11,22 +11,20 @@ prefix    = get_option('prefix')
 localedir = get_option('localedir')
 
 # Helper scripts
-auxdir  = join_paths(meson.current_source_dir(), 'ci')
-isdir   = join_paths(auxdir, 'isdir.py')
-
-python3 = find_program('python3')
-git     = find_program('git', required: false)
+git = find_program('git', required: false)
 
 # Get the right version
+fs = import('fs')
 
-is_git_repo = run_command([isdir, '.git'], check: false).returncode() == 0
+git_dir = join_paths(meson.current_source_dir(), '.git')
+is_git_repo = fs.exists(git_dir)
 
 version = 'v' + meson.project_version()
 if git.found() and is_git_repo
-	git_version = run_command([git.full_path(), 'describe', '--dirty', '--tags'], check: false).stdout().strip()
-	branch = run_command([git.full_path(), 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
+	git_version = run_command([git.full_path(), '--git-dir', git_dir, 'describe', '--dirty', '--tags'], check: false).stdout().strip()
+	branch = run_command([git.full_path(), '--git-dir', git_dir, 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
 	if branch == 'HEAD'
-		branch = run_command([git.full_path(), 'rev-parse', 'HEAD'], check: false).stdout().strip()
+		branch = run_command([git.full_path(), '--git-dir', git_dir, 'rev-parse', 'HEAD'], check: false).stdout().strip()
 	endif
 	if git_version != ''
 		version = git_version
