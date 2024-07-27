@@ -1196,13 +1196,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_eq_cmp(Actual, Expected, Size, Cmp, FormatString, ...)    internal
+#define cr_assert_arr_eq_cmp(Actual, Expected, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively equal to Expected (C++ / GNU C99 only)
@@ -1220,13 +1220,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Expected Expected array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_eq_cmp(Actual, Expected, Size, Cmp, FormatString, ...)    internal
+#define cr_expect_arr_eq_cmp(Actual, Expected, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is not comparatively equal to Unexpected (C++ / GNU C99
@@ -1246,13 +1246,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Unexpected Unexpected array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_neq_cmp(Actual, Unexpected, Size, Cmp, FormatString, ...)    internal
+#define cr_assert_arr_neq_cmp(Actual, Unexpected, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is not comparatively equal to Unexpected (C++ / GNU C99
@@ -1271,13 +1271,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Unexpected Unexpected array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_neq_cmp(Actual, Unexpected, Size, Cmp, FormatString, ...)    internal
+#define cr_expect_arr_neq_cmp(Actual, Unexpected, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively less than Reference (C++ / GNU C99 only)
@@ -1296,13 +1296,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_lt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_assert_arr_lt_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively less than Reference (C++ / GNU C99 only)
@@ -1320,13 +1320,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_lt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_expect_arr_lt_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively less or equal to Reference (C++ / GNU C99
@@ -1346,13 +1346,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_leq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_assert_arr_leq_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively less or equal to Reference (C++ / GNU C99
@@ -1371,13 +1371,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_leq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_expect_arr_leq_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively greater than Reference (C++ / GNU C99 only)
@@ -1396,13 +1396,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_gt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_assert_arr_gt_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively greater than Reference (C++ / GNU C99 only)
@@ -1420,13 +1420,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_gt_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_expect_arr_gt_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively greater or equal to Reference (C++ / GNU
@@ -1446,13 +1446,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_assert_arr_geq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_assert_arr_geq_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**
  * Passes if Actual is comparatively greater or equal to Reference (C++ / GNU
@@ -1471,13 +1471,13 @@
  *
  * @param[in] Actual Array to test
  * @param[in] Reference Reference array
- * @param[in] Size Number of bytes to check
+ * @param[in] Length Count of array elements to compare
  * @param[in] Cmp The comparator to use
  * @param[in] FormatString (optional) printf-like format string
  * @param[in] ... (optional) format string parameters
  *
  *****************************************************************************/
-#define cr_expect_arr_geq_cmp(Actual, Reference, Size, Cmp, FormatString, ...)    internal
+#define cr_expect_arr_geq_cmp(Actual, Reference, Length, Cmp, FormatString, ...)    internal
 
 /**@}*/
 
