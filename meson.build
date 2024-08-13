@@ -44,6 +44,7 @@ add_project_arguments(
 	cc.get_supported_arguments([
 		'-Wno-unused-parameter',
 		'-Wno-unused-value',
+		'-Werror',
 		'-fvisibility=hidden',
 		'-fexceptions',
 
