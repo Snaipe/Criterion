@@ -8,17 +8,17 @@ struct dummy_struct {
 };
 
 /* We need to provide basic functions for our dummy struct */
-int cr_user_dummy_struct_eq(struct dummy_struct *a, struct dummy_struct *b)
+int cr_user_dummy_struct_eq(const struct dummy_struct *a, const struct dummy_struct *b)
 {
     return a->a == b->a && a->b == b->b;
 }
 
-int cr_user_dummy_struct_zero(struct dummy_struct *a)
+int cr_user_dummy_struct_zero(const struct dummy_struct *a)
 {
     return !a->a && !a->b;
 }
 
-char *cr_user_dummy_struct_tostr(struct dummy_struct *d)
+char *cr_user_dummy_struct_tostr(const struct dummy_struct *d)
 {
     char *out;
 
