@@ -97,7 +97,7 @@ char *cr_user_stream_tostr(const struct cr_stream *m)
 
 void cr_stream_init(struct cr_stream *s)
 {
-    s->cri_data = calloc(sizeof (*s->cri_data), 1);
+    s->cri_data = calloc(1, sizeof (*s->cri_data));
     s->cri_data->ref = 1;
 }
 
