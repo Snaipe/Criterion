@@ -287,7 +287,7 @@ CRI_ASSERT_DECLARE_NATIVE_CMP_FN(iptr)
 CRI_ASSERT_DECLARE_NATIVE_CMP_FN(uptr)
 CRI_ASSERT_DECLARE_NATIVE_CMP_FN(ptr)
 
-static inline char *CRI_USER_TAG_ID(tostr, iptr)(intptr_t *e)
+static inline char *CRI_USER_TAG_ID(tostr, iptr)(const intptr_t *e)
 {
     uintptr_t absptr = (uintptr_t) *e;
     if (absptr > (uintptr_t)INTPTR_MAX)
@@ -298,7 +298,7 @@ static inline char *CRI_USER_TAG_ID(tostr, iptr)(intptr_t *e)
     return str;
 }
 
-static inline char *CRI_USER_TAG_ID(tostr, uptr)(uintptr_t *e)
+static inline char *CRI_USER_TAG_ID(tostr, uptr)(const uintptr_t *e)
 {
     char *str = NULL;
     cr_asprintf(&str, "0x%" CRI_PRIxPTR, *e);
