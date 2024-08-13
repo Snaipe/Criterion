@@ -195,19 +195,19 @@
 
 #define CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)     \
     static inline int CRI_USER_TAG_ID(lt, Tag)(   \
-        CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
-        CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
+        CRI_ASSERT_TYPE_TAG(Tag) const *actual,   \
+        CRI_ASSERT_TYPE_TAG(Tag) const *expected) \
     {                                             \
         return *actual < *expected;               \
     }                                             \
     static inline int CRI_USER_TAG_ID(eq, Tag)(   \
-        CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
-        CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
+        CRI_ASSERT_TYPE_TAG(Tag) const *actual,   \
+        CRI_ASSERT_TYPE_TAG(Tag) const *expected) \
     {                                             \
         return *actual == *expected;              \
     }                                             \
     static inline int CRI_USER_TAG_ID(zero, Tag)( \
-        CRI_ASSERT_TYPE_TAG(Tag) *val)            \
+        CRI_ASSERT_TYPE_TAG(Tag) const *val)      \
     {                                             \
         return !*val;                             \
     }
@@ -215,7 +215,7 @@
 #define CRI_ASSERT_DECLARE_NATIVE_FN(Tag, Fmt)       \
     CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)            \
     static inline char *CRI_USER_TAG_ID(tostr, Tag)( \
-        CRI_ASSERT_TYPE_TAG(Tag) *e)                 \
+        CRI_ASSERT_TYPE_TAG(Tag) const *e)           \
     {                                                \
         char *str = NULL;                            \
         cr_asprintf(&str, "%" Fmt, *e);              \
