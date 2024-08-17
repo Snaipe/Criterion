@@ -138,7 +138,7 @@ the cleanup function that should be called on the generated parameter context:
         static my_params params[] = {{
             .some_int_ptr = cr_malloc(sizeof (int));
         }};
-        param[0].some_int_ptr = 42;
+        *param[0].some_int_ptr = 42;
 
         return cr_make_param_array(struct my_params, params, 1, cleanup_params);
     }
