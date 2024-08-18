@@ -129,7 +129,7 @@
 
 #define CRI_ASSERT_TEST_TAG_ptr         ,
 #define CRI_ASSERT_TEST_TAGC_ptr()      ,
-#define CRI_ASSERT_TYPE_TAG_ptr         void *,
+#define CRI_ASSERT_TYPE_TAG_ptr         const void *,
 #define CRI_ASSERT_TYPE_TAG_ID_ptr      ptr,
 
 #define CRI_ASSERT_TEST_TAG_str         ,
@@ -311,7 +311,7 @@ static inline char *CRI_USER_TAG_ID(tostr, uptr)(const uintptr_t *e)
     return str;
 }
 
-static inline char *CRI_USER_TAG_ID(tostr, ptr)(void **e)
+static inline char *CRI_USER_TAG_ID(tostr, ptr)(const void **e)
 {
     char *str = NULL;
     cr_asprintf(&str, "0x%" CRI_PRIxPTR, (uintptr_t) *e);
