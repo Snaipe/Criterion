@@ -8,6 +8,7 @@ full_tests = [
 
 	# bug-specific programs
 	'bug463.c',
+	'bug521.c',
 ]
 
 if get_option('theories').enabled()
