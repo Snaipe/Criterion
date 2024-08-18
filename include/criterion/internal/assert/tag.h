@@ -36,6 +36,8 @@
 
 #define CRI_ASSERT_TYPE_TAG(Tag)           CR_EXPAND(CRI_ASSERT_TYPE_TAG_(Tag))
 #define CRI_ASSERT_TYPE_TAG_(Tag)          CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAG_ ## Tag, CR_VA_HEAD(CRI_ASSERT_TYPE_TAG_ ## Tag), , CRI_ASSERT_TYPE_TAG_UNKNOWN, (Tag))
+#define CRI_ASSERT_MUT_TYPE_TAG(Tag)       CR_EXPAND(CRI_ASSERT_MUT_TYPE_TAG_(Tag))
+#define CRI_ASSERT_MUT_TYPE_TAG_(Tag)      CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAG_ ## Tag, CR_VA_HEAD(CRI_ASSERT_MUT_TYPE_TAG_ ## Tag), , CRI_ASSERT_TYPE_TAG_UNKNOWN, (Tag))
 
 #define CRI_USER_TAG_ID(Id, Tag)           CR_CONCAT(CR_CONCAT(cr_user_, CRI_ASSERT_TYPE_TAG_ID(Tag)), _ ## Id)
 
@@ -135,7 +137,8 @@
 #ifdef __cplusplus
 # define CRI_ASSERT_TYPE_TAG_str        std::string,
 #else
-# define CRI_ASSERT_TYPE_TAG_str        char *,
+# define CRI_ASSERT_TYPE_TAG_str        const char *,
+# define CRI_ASSERT_MUT_TYPE_TAG_str    char *,
 #endif
 #define CRI_ASSERT_TYPE_TAG_ID_str      str,
 
@@ -144,7 +147,8 @@
 #ifdef __cplusplus
 # define CRI_ASSERT_TYPE_TAG_wcs        std::wstring,
 #else
-# define CRI_ASSERT_TYPE_TAG_wcs        wchar_t *,
+# define CRI_ASSERT_TYPE_TAG_wcs        const wchar_t *,
+# define CRI_ASSERT_MUT_TYPE_TAG_wcs    wchar_t *,
 #endif
 #define CRI_ASSERT_TYPE_TAG_ID_wcs      wcs,
 
@@ -222,15 +226,17 @@
         return str;                                  \
     }
 
-#define CRI_ASSERT_DECLARE_STR_FN(Tag, Prefix, Fmt)                         \
-    CR_API int CRI_USER_TAG_ID(lt, Tag)(                                    \
-        CRI_ASSERT_TYPE_TAG(Tag) *actual,                                   \
-        CRI_ASSERT_TYPE_TAG(Tag) *expected);                                \
-    CR_API int CRI_USER_TAG_ID(eq, Tag)(                                    \
-        CRI_ASSERT_TYPE_TAG(Tag) *actual,                                   \
-        CRI_ASSERT_TYPE_TAG(Tag) *expected);                                \
-    CR_API int CRI_USER_TAG_ID(zero, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *val);   \
-    CR_API char *CRI_USER_TAG_ID(tostr, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *e);
+#define CRI_ASSERT_DECLARE_STR_FN(Tag, Prefix, Fmt) \
+    CR_API int CRI_USER_TAG_ID(lt, Tag)(            \
+        CRI_ASSERT_TYPE_TAG(Tag) const *actual,     \
+        CRI_ASSERT_TYPE_TAG(Tag) const *expected);  \
+    CR_API int CRI_USER_TAG_ID(eq, Tag)(            \
+        CRI_ASSERT_TYPE_TAG(Tag) const *actual,     \
+        CRI_ASSERT_TYPE_TAG(Tag) const *expected);  \
+    CR_API int CRI_USER_TAG_ID(zero, Tag)(          \
+        CRI_ASSERT_TYPE_TAG(Tag) const *val);       \
+    CR_API char *CRI_USER_TAG_ID(tostr, Tag)(       \
+        CRI_ASSERT_TYPE_TAG(Tag) const *e);
 
 #ifndef __cplusplus
 # include <string.h>
