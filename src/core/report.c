@@ -38,6 +38,8 @@
 
 static struct cri_section *limits[POST_ALL + 1];
 
+static inline void nothing_voidptr(void *d) {}
+
 #define IMPL_CALL_REPORT_HOOKS(Kind)                               \
     void call_report_hooks_ ## Kind(void *data) {                  \
         if (!limits[Kind])                                         \
@@ -47,7 +49,7 @@ static struct cri_section *limits[POST_ALL + 1];
             f_report_hook *end = (void *)                          \
                     ((char *) s->addr + s->length);                \
             for (f_report_hook *hook = start; hook < end; ++hook)  \
-                (*hook ? *hook : nothing)(data);                   \
+                (*hook ? *hook : nothing_voidptr)(data);                   \
         }                                                          \
     }
 
