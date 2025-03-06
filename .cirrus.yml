@@ -14,10 +14,12 @@
 
 Debian (gcc)_task:
   container:
-    image: debian:11
+    image: debian:12
   setup_script: |-
     apt-get update
-    apt-get install -y build-essential pkg-config meson ninja-build cmake git libgit2-dev libffi-dev libnanomsg-dev python3-pip
+    apt-get install -y build-essential pkg-config meson ninja-build cmake git libgit2-dev libffi-dev libnanomsg-dev python3-pip python3-venv
+    python3 -m venv .venv
+    . .venv/bin/activate
     pip3 install cram==0.7
   <<: *pipeline
 
@@ -26,6 +28,8 @@ Alpine (gcc,x86_64)_task:
     image: amd64/alpine:3
   setup_script: &alpine-deps |-
     apk add --no-cache build-base pkgconf meson ninja cmake git libgit2-dev libffi-dev py3-pip
+    python3 -m venv .venv
+    . .venv/bin/activate
     pip3 install cram==0.7
   <<: *pipeline
 
@@ -55,20 +59,24 @@ Alpine (gcc,aarch64)_task:
 
 MacOS_task:
   macos_instance:
-    image: ghcr.io/cirruslabs/macos-ventura-base:latest
+    image: ghcr.io/cirruslabs/macos-runner:sonoma
   env:
     PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
   setup_script: |-
     brew install meson cmake pkg-config libffi libgit2 nanomsg
-    sudo pip3 install cram==0.7
+    python3 -m venv .venv
+    . .venv/bin/activate
+    pip3 install cram==0.7
   <<: *pipeline
 
 FreeBSD_task:
   freebsd_instance:
-    image_family: freebsd-13-1
+    image_family: freebsd-14-2
   setup_script: |-
     pkg install -y gettext-tools pkgconf cmake meson git libffi libgit2 nanomsg
     python3 -m ensurepip
+    python3 -m venv .venv
+    . .venv/bin/activate
     python3 -m pip install --upgrade pip
     python3 -m pip install cram==0.7
   <<: *pipeline
