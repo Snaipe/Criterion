@@ -31,9 +31,11 @@
 #ifdef __cplusplus
 # include <memory>
 # include <cstddef>
+# include <cstdint>
 using std::size_t;
 #else
 # include <stddef.h>
+# include <stdint.h>
 #endif
 #include "internal/common.h"
 
