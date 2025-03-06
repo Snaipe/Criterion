@@ -12,15 +12,19 @@
   <<: *compile
   <<: *test
 
+.python_env: &python_env
+  python_env_setup_script: |
+    python3 -m venv .venv
+    . .venv/bin/activate
+    python3 -m pip install cram==0.7
+
 Debian (gcc)_task:
   container:
     image: debian:12
   setup_script: |-
     apt-get update
     apt-get install -y build-essential pkg-config meson ninja-build cmake git libgit2-dev libffi-dev libnanomsg-dev python3-pip python3-venv
-    python3 -m venv .venv
-    . .venv/bin/activate
-    pip3 install cram==0.7
+  <<: *python_env
   <<: *pipeline
 
 Alpine (gcc,x86_64)_task:
@@ -28,33 +32,35 @@ Alpine (gcc,x86_64)_task:
     image: amd64/alpine:3
   setup_script: &alpine-deps |-
     apk add --no-cache build-base pkgconf meson ninja cmake git libgit2-dev libffi-dev py3-pip
-    python3 -m venv .venv
-    . .venv/bin/activate
-    pip3 install cram==0.7
+  <<: *python_env
   <<: *pipeline
 
 Alpine (gcc,i386)_task:
   container:
     image: i386/alpine:3
   setup_script: *alpine-deps
+  <<: *python_env
   <<: *pipeline
 
 Alpine (gcc,arm32v6)_task:
   arm_container:
     image: arm32v6/alpine:3
   setup_script: *alpine-deps
+  <<: *python_env
   <<: *pipeline
 
 Alpine (gcc,arm32v7)_task:
   arm_container:
     image: arm32v7/alpine:3
   setup_script: *alpine-deps
+  <<: *python_env
   <<: *pipeline
 
 Alpine (gcc,aarch64)_task:
   arm_container:
     image: arm64v8/alpine:3
   setup_script: *alpine-deps
+  <<: *python_env
   <<: *pipeline
 
 MacOS_task:
@@ -64,9 +70,7 @@ MacOS_task:
     PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
   setup_script: |-
     brew install meson cmake pkg-config libffi libgit2 nanomsg
-    python3 -m venv .venv
-    . .venv/bin/activate
-    pip3 install cram==0.7
+  <<: *python_env
   <<: *pipeline
 
 FreeBSD_task:
@@ -75,10 +79,7 @@ FreeBSD_task:
   setup_script: |-
     pkg install -y gettext-tools pkgconf cmake meson git libffi libgit2 nanomsg
     python3 -m ensurepip
-    python3 -m venv .venv
-    . .venv/bin/activate
-    python3 -m pip install --upgrade pip
-    python3 -m pip install cram==0.7
+  <<: *python_env
   <<: *pipeline
 
 Windows (mingw-gcc)_task:
