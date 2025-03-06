@@ -45,7 +45,7 @@ DECL_CALL_REPORT_HOOKS(POST_FINI);
 DECL_CALL_REPORT_HOOKS(POST_SUITE);
 DECL_CALL_REPORT_HOOKS(POST_ALL);
 
-static inline void nothing() {}
+static inline void nothing(void) {}
 
 #define log(Type, ...) \
     log_(criterion_options.logger->log_ ## Type, __VA_ARGS__)
