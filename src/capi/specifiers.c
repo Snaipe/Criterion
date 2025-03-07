@@ -33,25 +33,26 @@
 /* *INDENT-OFF* */
 #define CRI_ASSERT_DEFINE_STR_FN(Tag, Prefix, Fmt)                              \
     int CRI_USER_TAG_ID(lt, Tag)(                                               \
-        CRI_ASSERT_TYPE_TAG(Tag) *actual,                                       \
-        CRI_ASSERT_TYPE_TAG(Tag) *expected)                                     \
+        CRI_ASSERT_TYPE_TAG(Tag) const *actual,                                 \
+        CRI_ASSERT_TYPE_TAG(Tag) const *expected)                               \
     {                                                                           \
         return Tag ## cmp(*actual, *expected) < 0;                              \
     }                                                                           \
     int CRI_USER_TAG_ID(eq, Tag)(                                               \
-        CRI_ASSERT_TYPE_TAG(Tag) *actual,                                       \
-        CRI_ASSERT_TYPE_TAG(Tag) *expected)                                     \
+        CRI_ASSERT_TYPE_TAG(Tag) const *actual,                                 \
+        CRI_ASSERT_TYPE_TAG(Tag) const *expected)                               \
     {                                                                           \
         return !Tag ## cmp(*actual, *expected);                                 \
     }                                                                           \
-    int CRI_USER_TAG_ID(zero, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *val)               \
+    int CRI_USER_TAG_ID(zero, Tag)(CRI_ASSERT_TYPE_TAG(Tag) const *val)         \
     {                                                                           \
         return !Tag ## len(*val);                                               \
     }                                                                           \
-    char *CRI_USER_TAG_ID(tostr, Tag)(CRI_ASSERT_TYPE_TAG(Tag) *e)              \
+    char *CRI_USER_TAG_ID(tostr, Tag)(CRI_ASSERT_TYPE_TAG(Tag) const *e)        \
     {                                                                           \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_dup = Tag ## dup(*e);                      \
-        CRI_ASSERT_TYPE_TAG(Tag) cri_line = cri_ ## Tag ## tokc(cri_dup, '\n'); \
+        CRI_ASSERT_MUT_TYPE_TAG(Tag) cri_dup = Tag ## dup(*e);                  \
+        CRI_ASSERT_MUT_TYPE_TAG(Tag) cri_line;                                  \
+        cri_line = cri_ ## Tag ## tokc(cri_dup, '\n');                          \
                                                                                 \
         char *cri_str = NULL;                                                   \
         size_t cri_off = 0;                                                     \

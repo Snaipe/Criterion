@@ -83,12 +83,12 @@ struct dummy_struct {
 };
 
 /* We need to provide basic functions for our dummy struct */
-int cr_user_dummy_struct_eq(struct dummy_struct *a, struct dummy_struct *b)
+int cr_user_dummy_struct_eq(const struct dummy_struct *a, const struct dummy_struct *b)
 {
     return a->a == b->a && a->b == b->b;
 }
 
-char *cr_user_dummy_struct_tostr(struct dummy_struct *d)
+char *cr_user_dummy_struct_tostr(const struct dummy_struct *d)
 {
     char *out;
 
@@ -97,8 +97,8 @@ char *cr_user_dummy_struct_tostr(struct dummy_struct *d)
 }
 
 Test(asserts, array) {
-    int arr1[] = { 1, 2, 3, 4 };
-    int arr2[] = { 4, 3, 2, 1 };
+    static const int arr1[] = { 1, 2, 3, 4 };
+    static const int arr2[] = { 4, 3, 2, 1 };
 
     /* For primitive types we can compare their byte-to-byte representation */
     struct cr_mem mem_arr1 = { .data = arr1, .size = 4 * sizeof (int) };
