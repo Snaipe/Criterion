@@ -23,7 +23,7 @@ Display the help message
       --always-succeed: always exit with 0
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
-      --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
+      --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or windbg.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
@@ -56,7 +56,7 @@ C++ equivalents
       --always-succeed: always exit with 0
       --verbose[=level]: sets verbosity to level (1 by default)
       --crash: crash failing assertions rather than aborting (for debugging purposes)
-      --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or wingbd.
+      --debug[=TYPE]: run tests with a debugging server, listening on localhost:1234 by default. TYPE may be gdb, lldb, or windbg.
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.

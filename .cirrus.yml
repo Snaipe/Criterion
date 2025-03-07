@@ -14,9 +14,7 @@
 
 .python_env: &python_env
   python_env_setup_script: |
-    python3 -m venv .venv
-    . .venv/bin/activate
-    python3 -m pip install cram==0.7
+    python3 -m pip install --break-system-packages cram==0.7
 
 Debian (gcc)_task:
   container:
