@@ -1,6 +1,9 @@
 add_executable (foo_test test.c)
 
-target_link_libraries (foo_test foo ${CRITERION_LIBRARIES})
+# Find Criterion
+find_package(Criterion REQUIRED)
+
+target_link_libraries(foo_test PRIVATE foo Criterion::Criterion)
 
 # use C99
 set_property (TARGET foo_test PROPERTY C_STANDARD 99)

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.14)
 
 project (Sample C)
 
@@ -14,9 +14,6 @@ include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_subdirectory (src)
 
 if (ENABLE_TESTS)
-  # Check for criterion
-  find_package (Criterion REQUIRED)
-
   # Add tests
   enable_testing ()
   add_subdirectory (test)

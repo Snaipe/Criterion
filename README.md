@@ -116,7 +116,7 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 [sample-report]: ./samples/report.c
 
 [autotools]: ./dev/autotools
-[find-module]: ./dev/FindCriterion.cmake
+[find-module]: ./dev/cmake/cmake/FindCriterion.cmake
 
 [aur]: https://aur.archlinux.org/packages/criterion/
 
