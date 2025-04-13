@@ -36,6 +36,7 @@ Clone this repository:
 Then, run the following commands to build Criterion:
 
 .. code-block:: bash
+
     $ meson setup build
     $ meson compile -C build
 
