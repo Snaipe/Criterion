@@ -93,7 +93,8 @@ CR_END_C_API
  *  Defines a new set of data points.
  *
  *  @param Type The type of each data point in the set.
- *  @param ...  The data points in the set.
+ *              Must be a type whose size is less than or equal to sizeof(uint64_t).
+ *  @param ...  The data points in the set, listed as comma-separated values.
  */
 #define DataPoints(Type, ...)    CR_EXPAND(CR_TH_INTERNAL_DP(Type, __VA_ARGS__))
 
