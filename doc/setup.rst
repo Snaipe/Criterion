@@ -44,8 +44,10 @@ Installing the library and language files (Linux, macOS, FreeBSD)
 
 Run with an elevated shell:
 
-.. code-block:: bash
 
+.. code-block:: bash
+    $ meson setup build
+    $ meson compile -C build
     $ meson install -C build
 
 On Linux systems, update the dynamic linker runtime bindings:
