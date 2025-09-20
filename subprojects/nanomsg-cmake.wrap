@@ -1,5 +1,5 @@
 [wrap-git]
 directory = nanomsg
 url = https://github.com/nanomsg/nanomsg
-revision = 1.2
+revision = 1.2.1
 depth = 1
