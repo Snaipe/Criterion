@@ -32,6 +32,7 @@
 # include <memory>
 # include <cstddef>
 # include <cstdint>
+# include <limits>
 using std::size_t;
 #else
 # include <stddef.h>
@@ -145,7 +146,7 @@ T *new_obj(Params... params)
 template <typename T>
 typename std::enable_if<std::is_fundamental<T>::value>::type
 * new_arr(size_t len) {
-    if (len > (SIZE_MAX - sizeof (size_t)) / sizeof (T)) {
+    if (len > (std::numeric_limits<size_t>::max() - sizeof (size_t)) / sizeof (T)) {
         throw std::bad_alloc();
     }
     void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
@@ -174,7 +175,7 @@ typename std::enable_if<std::is_fundamental<T>::value>::type
 template <typename T>
 T *new_arr(size_t len)
 {
-    if (len > (SIZE_MAX - sizeof (size_t)) / sizeof (T)) {
+    if (len > (std::numeric_limits<size_t>::max() - sizeof (size_t)) / sizeof (T)) {
         throw std::bad_alloc();
     }
     void *ptr = cr_malloc(sizeof (size_t) + sizeof (T) * len);
