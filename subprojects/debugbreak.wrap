@@ -1,8 +1,8 @@
 [wrap-git]
+directory = debugbreak
 url = https://github.com/MrAnno/debugbreak.git
 revision = 83bf7e933311b88613cbaadeced9c2e2c811054a
-directory = debugbreak
-patch_directory = debugbreak 
+patch_directory = debugbreak
 
 [provide]
 debugbreak = debugbreak_dep
