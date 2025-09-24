@@ -1,4 +1,4 @@
 [wrap-git]
 directory = boxfort
 url = https://github.com/Snaipe/BoxFort.git
-revision = c91d7181734ab2fd6d1299e8aa927297f0ddb754
+revision = v0.1.5
