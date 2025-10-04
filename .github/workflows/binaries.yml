@@ -1,0 +1,70 @@
+name: Binaries
+
+on:
+  workflow_call:
+    inputs:
+      tarball-artifact:
+        required: false
+        type: string
+      binaries-artifact:
+        required: false
+        type: string
+      version:
+        required: false
+        type: string
+  workflow_dispatch:
+
+jobs:
+  binaries:
+    name: "Binaries"
+    runs-on: ubuntu-latest
+    # glibc v2.17 builder
+    container: centos:7
+
+    env:
+      version: ${{ inputs.version || 'test' }}
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          yum update -y
+          yum install -y epel-release centos-release-scl
+          yum install -y python3-pip ninja-build cmake3 pkgconfig gcc gcc-c++
+          python3 -m pip install meson
+          ln -s /usr/bin/cmake3 /usr/bin/cmake
+
+      - name: Download source tarball
+        if: ${{ inputs.tarball-artifact }}
+        uses: actions/download-artifact@v5
+        with:
+          name: ${{ inputs.tarball-artifact }}
+
+      - name: Extract source tarball
+        if: ${{ inputs.tarball-artifact }}
+        run: |
+          tar -xf "criterion-*.tar.xz" && rm "criterion-*.tar.xz"
+
+      - name: Checkout Criterion
+        if: ${{ !inputs.tarball-artifact }}
+        uses: actions/checkout@v5
+
+      - name: Build Criterion
+        run: |
+          meson setup -Dc_std=gnu11 --prefix /usr/local --libdir lib --buildtype plain \
+            --force-fallback-for libffi --wrap-mode nodownload \
+            build "criterion-${version}"
+          meson compile -C build
+          meson install -C build --skip-subprojects --destdir "$(realpath .)/binaries/criterion-${version}"
+
+      - name: Create binary tarball
+        run: |
+          tar --create --xz --file "binaries/criterion-${version}-linux-x86_64.tar.xz" \
+            --exclude='*.a' --transform="s,^\.,criterion-${version}," \
+            -C "binaries/criterion-${version}/usr/local" .
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.binaries-artifact || 'binaries' }}
+          path: binaries/criterion-*.tar.xz
+          if-no-files-found: error
