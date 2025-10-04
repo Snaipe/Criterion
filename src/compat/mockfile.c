@@ -32,14 +32,14 @@
 
 #if defined (HAVE_FUNOPEN) || defined (HAVE_FOPENCOOKIE)
 
-# ifdef HAVE_FUNOPEN
+# ifdef HAVE_FOPENCOOKIE
+typedef size_t cr_count;
+typedef ssize_t cr_retcount;
+typedef off_t cr_off;
+# else
 typedef int cr_count;
 typedef int cr_retcount;
 typedef fpos_t cr_off;
-# else
-typedef size_t cr_count;
-typedef ssize_t cr_retcount;
-typedef off64_t cr_off;
 # endif
 
 struct memfile {
@@ -121,7 +121,20 @@ static cr_retcount mock_file_write(void *cookie, const char *buf, cr_count count
     return count;
 }
 
-# ifdef HAVE_FUNOPEN
+# ifdef HAVE_FOPENCOOKIE
+static int mock_file_seek(void *cookie, cr_off *off, int whence)
+{
+    struct memfile *mf = cookie;
+
+    switch (whence) {
+        case SEEK_SET: mf->cur = *off; break;
+        case SEEK_CUR: *off = (mf->cur = off_safe_add(mf->size, mf->cur, *off)); break;
+        case SEEK_END: *off = (mf->cur = off_safe_add(mf->size, mf->size, *off)); break;
+        default: errno = EINVAL; return -1;
+    }
+    return 0;
+}
+# else
 static cr_off mock_file_seek(void *cookie, cr_off off, int whence)
 {
     struct memfile *mf = cookie;
@@ -134,19 +147,6 @@ static cr_off mock_file_seek(void *cookie, cr_off off, int whence)
     }
     errno = EINVAL;
     return (off_t) -1;
-}
-# else
-static int mock_file_seek(void *cookie, cr_off *off, int whence)
-{
-    struct memfile *mf = cookie;
-
-    switch (whence) {
-        case SEEK_SET: mf->cur = *off; break;
-        case SEEK_CUR: *off = (mf->cur = off_safe_add(mf->size, mf->cur, *off)); break;
-        case SEEK_END: *off = (mf->cur = off_safe_add(mf->size, mf->size, *off)); break;
-        default: errno = EINVAL; return -1;
-    }
-    return 0;
 }
 # endif
 

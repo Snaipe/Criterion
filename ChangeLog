@@ -1,3 +1,17 @@
+2025-10-05  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.4.3
+    * Fix: fixed C23 compilation (Petr Gajdos)
+    * Fix: fixed compilation on FreeBSD 14.2
+    * Misc: CMake FindCriterion improvements (Peter Kokot).
+    * Misc: various documentation fixes (Yohann Boniface, Christopher Sahnwaldt,
+      Jurriaan H. Spaaks, Jonatan Schroeder, Benjamin Linskey,
+      Sebastian Certuche).
+    * Misc: various build system fixes (Arthur Skowronek).
+    * Misc: various updates to dependencies.
+
+    The full git changelog may be accessed with `git log v2.4.2..v2.4.3`.
+
 2023-04-29  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.4.2

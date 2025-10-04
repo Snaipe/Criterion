@@ -5,7 +5,7 @@ Assertion reference
 
 This is an exhaustive list of all assertion macros that Criterion provides.
 
-.. note::
+.. attention::
    This documents the new (but experimental) assertion API. To see the
    documentation of the old API, see: :ref:`old-assertions-ref`.
 

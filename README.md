@@ -46,7 +46,7 @@ the user would have with other frameworks:
 **Gentoo** | `emerge -a dev-libs/criterion`
 **Arch Linux** ([AUR][aur]) | `pacaur -S criterion`
 **macOS** | `brew install criterion`
-**Nix** | `nix-env -iA nixpkgs.criterion`
+**Nix** | `nix-shell -p criterion`
 **FreeBSD** | `pkg install criterion`
 
 If you'd like to see Criterion included in your favorite distribution, please reach out to their package maintainers team.
@@ -92,7 +92,7 @@ Sample tests can be found in the [sample directory][samples].
 Criterion is built with the following projects:
 
 * [boxfort](https://github.com/diacritic/BoxFort)
-* [debugbreak](https://github.com/scottt/debugbreak)
+* [debugbreak](https://github.com/MrAnno/debugbreak)
 * [libffi](https://sourceware.org/libffi/)
 * [klib](http://attractivechaos.github.io/klib/)
 * [libcsptr](https://github.com/Snaipe/libcsptr)
@@ -116,7 +116,7 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 [sample-report]: ./samples/report.c
 
 [autotools]: ./dev/autotools
-[find-module]: ./dev/FindCriterion.cmake
+[find-module]: ./dev/cmake/cmake/FindCriterion.cmake
 
 [aur]: https://aur.archlinux.org/packages/criterion/
 

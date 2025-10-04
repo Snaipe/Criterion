@@ -1,7 +1,7 @@
 project('criterion', 'c',
 		meson_version   : '>= 0.55.0',
 		license         : 'MIT',
-		version         : '2.4.2',
+		version         : '2.4.3',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
 
 abi_version = '3.2.0'
@@ -11,22 +11,20 @@ prefix    = get_option('prefix')
 localedir = get_option('localedir')
 
 # Helper scripts
-auxdir  = join_paths(meson.current_source_dir(), 'ci')
-isdir   = join_paths(auxdir, 'isdir.py')
-
-python3 = find_program('python3')
-git     = find_program('git', required: false)
+git = find_program('git', required: false)
 
 # Get the right version
+fs = import('fs')
 
-is_git_repo = run_command([isdir, '.git'], check: false).returncode() == 0
+git_dir = join_paths(meson.current_source_dir(), '.git')
+is_git_repo = fs.exists(git_dir)
 
 version = 'v' + meson.project_version()
 if git.found() and is_git_repo
-	git_version = run_command([git.full_path(), 'describe', '--dirty', '--tags'], check: false).stdout().strip()
-	branch = run_command([git.full_path(), 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
+	git_version = run_command([git.full_path(), '--git-dir', git_dir, 'describe', '--dirty', '--tags'], check: false).stdout().strip()
+	branch = run_command([git.full_path(), '--git-dir', git_dir, 'rev-parse', '--abbrev-ref', 'HEAD'], check: false).stdout().strip()
 	if branch == 'HEAD'
-		branch = run_command([git.full_path(), 'rev-parse', 'HEAD'], check: false).stdout().strip()
+		branch = run_command([git.full_path(), '--git-dir', git_dir, 'rev-parse', 'HEAD'], check: false).stdout().strip()
 	endif
 	if git_version != ''
 		version = git_version
@@ -36,7 +34,7 @@ if git.found() and is_git_repo
 	endif
 endif
 
-has_cxx = add_languages('cpp', required: get_option('cxx-support'))
+has_cxx = add_languages('cpp', native: false, required: get_option('cxx-support'))
 
 cc = meson.get_compiler('c')
 
@@ -156,6 +154,7 @@ if (not nanomsg.found()
 		'NN_STATIC_LIB': true,
 		'BUILD_SHARED_LIBS': false,
 		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+		'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
 	})
 	nanomsg_proj = cmake.subproject('nanomsg-cmake', options: nanomsg_opts)
 	nanomsg = nanomsg_proj.dependency('nanomsg')
@@ -216,6 +215,7 @@ if ((not libgit2.found() and get_option('diffs').enabled())
 		'CMAKE_DISABLE_FIND_PACKAGE_Iconv': true,
 		'CMAKE_DISABLE_FIND_PACKAGE_Security': true,
 		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+		'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
 	})
 	libgit2_proj = cmake.subproject('libgit2-cmake', options: libgit2_opts)
 	libgit2 = libgit2_proj.dependency('git2')

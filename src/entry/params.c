@@ -85,7 +85,7 @@
     "aborting (for debugging purposes)\n"                   \
     "    --debug[=TYPE]: run tests with a debugging "       \
     "server, listening on localhost:1234 by "               \
-    "default. TYPE may be gdb, lldb, or wingbd.\n"          \
+    "default. TYPE may be gdb, lldb, or windbg.\n"          \
     "    --debug-transport=VAL: the transport to use by "   \
     "the debugging server. `tcp:1234` by default\n"         \
     "    --full-stats: Tests must fully report statistics " \
