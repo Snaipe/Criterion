@@ -358,6 +358,8 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
             if (provider == NULL || path == NULL) {
                 do_print_usage = true;
+                free(s);
+                free(out);
                 goto end;
             }
 
@@ -427,6 +429,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 char *path = strtok_r(NULL, ":", &buf);
                 if (arg == NULL || path == NULL) {
                     do_print_usage = true;
+                    free(arg);
                     break;
                 }
 
