@@ -95,7 +95,7 @@ inline ostream &operator<<(ostream &s, const std::string &str)
     const char *cstr = str.c_str();
     char *fmt = cr_user_str_tostr(&cstr);
     s.base << fmt;
-    free(fmt);
+    std::free(fmt);
     return s;
 }
 
@@ -104,7 +104,7 @@ inline ostream &operator<<(ostream &s, const std::wstring &str)
     const wchar_t *cstr = str.c_str();
     char *fmt = cr_user_wcs_tostr(&cstr);
     s.base << fmt;
-    free(fmt);
+    std::free(fmt);
     return s;
 }
 
