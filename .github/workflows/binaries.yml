@@ -18,8 +18,8 @@ jobs:
   binaries:
     name: "Binaries"
     runs-on: ubuntu-latest
-    # glibc v2.17 builder
-    container: centos:7
+    # glibc v2.28 builder
+    container: almalinux:8
 
     env:
       version: ${{ inputs.version || 'test' }}
@@ -27,11 +27,9 @@ jobs:
     steps:
       - name: Install build dependencies
         run: |
-          yum update -y
-          yum install -y epel-release centos-release-scl
-          yum install -y python3-pip ninja-build cmake3 pkgconfig gcc gcc-c++
-          python3 -m pip install meson
-          ln -s /usr/bin/cmake3 /usr/bin/cmake
+          dnf install --assumeyes epel-release
+          dnf install --assumeyes python3-pip cmake pkgconf gcc gcc-c++ git
+          python3 -m pip install meson ninja
 
       - name: Download source tarball
         if: ${{ inputs.tarball-artifact }}
@@ -50,9 +48,14 @@ jobs:
 
       - name: Build Criterion
         run: |
-          meson setup -Dc_std=gnu11 --prefix /usr/local --libdir lib --buildtype plain \
-            --force-fallback-for libffi --wrap-mode nodownload \
-            build "criterion-${version}"
+          srcdir="."
+
+          if [ -n "${{ inputs.tarball-artifact }}" ]; then
+            srcdir="criterion-${version}"
+          fi
+
+          meson setup -Dc_std=gnu11 --prefix /usr/local --libdir lib --buildtype plain --wrap-mode=forcefallback \
+            build $src_dir
           meson compile -C build
           meson install -C build --skip-subprojects --destdir "$(realpath .)/binaries/criterion-${version}"
 
