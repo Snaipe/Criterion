@@ -1,4 +1,4 @@
 [wrap-git]
-directory=libgit2
-url=https://github.com/libgit2/libgit2
-revision=v0.25.1
+directory = libgit2
+url = https://github.com/libgit2/libgit2.git
+revision = v0.25.1

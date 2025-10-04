@@ -1,0 +1,155 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 23 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  setup-ubuntu: &setup-ubuntu |
+    sudo apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes \
+      build-essential pkgconf meson cmake git python3-pip python3-venv \
+      libgit2-dev libffi-dev libnanomsg-dev
+  setup-debian: &setup-debian |
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install --yes \
+      build-essential pkgconf meson cmake git python3-pip python3-venv \
+      libgit2-dev libffi-dev libnanomsg-dev
+  setup-alpine: &setup-alpine |
+    apk add --update-cache --upgrade --no-cache \
+      build-base pkgconf meson cmake git py3-pip \
+      libgit2-dev libffi-dev # nanomsg-dev is currently broken
+  setup-alpine-armv7: &setup-alpine-armv7
+    apk add --update-cache --upgrade --no-cache build-base pkgconf meson cmake git py3-pip libgit2-dev libffi-dev
+  setup-fedora: &setup-fedora |
+    dnf install --assumeyes \
+      @development-tools pkgconf meson cmake git python3-pip python3-virtualenv \
+      libgit2-devel libffi-devel # nanomsg-devel is currently broken
+  setup-macos: &setup-macos |
+    brew update
+    brew install pkgconf meson cmake git libgit2 libffi nanomsg
+  setup-windows: &setup-windows |
+    choco install --yes --no-progress ninja cmake python
+
+jobs:
+  build-and-test:
+    name: "CI @ ${{ matrix.platform.name }}"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - name: Ubuntu (x86-64)
+            os: ubuntu-latest
+            setup: *setup-ubuntu
+
+          - name: Ubuntu (AArch64)
+            os: ubuntu-24.04-arm
+            setup: *setup-ubuntu
+
+          # - name: macOS (x86-64)
+          #   os: macos-15-intel
+          #   setup: *setup-macos
+
+          - name: macOS (AArch64)
+            os: macos-latest
+            setup: *setup-macos
+
+          - name: Windows (x86-64)
+            os: windows-latest
+            setup: *setup-windows
+
+          - name: Debian (x86-64)
+            container: debian:latest
+            setup: *setup-debian
+
+          - name: Fedora (x86-64)
+            container: fedora:latest
+            setup: *setup-fedora
+
+          - name: Alpine (x86-64)
+            container: alpine:latest
+            setup: *setup-alpine
+            shell: sh
+
+          - name: Alpine (AArch64)
+            container: alpine:latest
+            runs-on: ubuntu-24.04-arm
+            setup: *setup-alpine
+            shell: sh
+            checkout-workaround: true
+
+          - name: Alpine (ARMv7)
+            container: arm32v7/alpine:latest
+            runs-on: ubuntu-24.04-arm
+            setup: *setup-alpine-armv7
+            shell: sh
+            checkout-workaround: true
+
+    runs-on: ${{ matrix.platform.os || matrix.platform.runs-on || 'ubuntu-latest' }}
+    container: ${{ matrix.platform.container || '' }}
+
+    defaults:
+      run:
+        shell: ${{ matrix.platform.shell || 'bash' }}
+
+    env:
+      python_test_venv_activate: .venv/bin/activate
+
+    steps:
+      - name: "Platform setup"
+        run: ${{ matrix.platform.setup }}
+
+      - name: Checkout Criterion
+        if: ${{ !matrix.platform.checkout-workaround }}
+        uses: actions/checkout@v5
+
+      - name: Checkout Criterion (workaround)
+        if: ${{ matrix.platform.checkout-workaround }}
+        run: |
+          git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+          git init
+          git remote add origin "https://github.com/${{ github.repository }}.git"
+          git fetch --depth=1 origin "${{ github.ref }}"
+          git checkout FETCH_HEAD
+
+      - name: "Setup Python test venv"
+        run: |
+          python3 -m venv .venv
+
+          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
+            python_test_venv_activate=".venv/Scripts/activate"
+            echo "python_test_venv_activate=$python_test_venv_activate" >> $GITHUB_ENV
+          fi
+
+          . $python_test_venv_activate
+          pip install cram==0.7
+
+          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
+            pip install meson
+            git config --global core.autocrlf false
+            patch --forward --directory=".venv\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
+            patch --forward --directory=".venv\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
+          fi
+
+      - name: "Setup"
+        run: |
+          . $python_test_venv_activate
+          meson setup build
+
+      - name: "Build"
+        run: |
+          . $python_test_venv_activate
+          meson compile -C build
+
+      - name: "Test"
+        run: |
+          . $python_test_venv_activate
+          meson test -C build

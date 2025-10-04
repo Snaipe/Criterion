@@ -16,61 +16,6 @@
   python_env_setup_script: |
     python3 -m pip install --break-system-packages cram==0.7
 
-Debian (gcc)_task:
-  container:
-    image: debian:12
-  setup_script: |-
-    apt-get update
-    apt-get install -y build-essential pkg-config meson ninja-build cmake git libgit2-dev libffi-dev libnanomsg-dev python3-pip python3-venv
-  <<: *python_env
-  <<: *pipeline
-
-Alpine (gcc,x86_64)_task:
-  container:
-    image: amd64/alpine:3
-  setup_script: &alpine-deps |-
-    apk add --no-cache build-base pkgconf meson ninja cmake git libgit2-dev libffi-dev py3-pip
-  <<: *python_env
-  <<: *pipeline
-
-Alpine (gcc,i386)_task:
-  container:
-    image: i386/alpine:3
-  setup_script: *alpine-deps
-  <<: *python_env
-  <<: *pipeline
-
-Alpine (gcc,arm32v6)_task:
-  arm_container:
-    image: arm32v6/alpine:3
-  setup_script: *alpine-deps
-  <<: *python_env
-  <<: *pipeline
-
-Alpine (gcc,arm32v7)_task:
-  arm_container:
-    image: arm32v7/alpine:3
-  setup_script: *alpine-deps
-  <<: *python_env
-  <<: *pipeline
-
-Alpine (gcc,aarch64)_task:
-  arm_container:
-    image: arm64v8/alpine:3
-  setup_script: *alpine-deps
-  <<: *python_env
-  <<: *pipeline
-
-MacOS_task:
-  macos_instance:
-    image: ghcr.io/cirruslabs/macos-runner:sonoma
-  env:
-    PKG_CONFIG_PATH: ${PKG_CONFIG_PATH}:/usr/local/opt/libffi/lib/pkgconfig
-  setup_script: |-
-    brew install meson cmake pkg-config libffi libgit2 nanomsg
-  <<: *python_env
-  <<: *pipeline
-
 FreeBSD_task:
   freebsd_instance:
     image_family: freebsd-14-2
@@ -79,19 +24,3 @@ FreeBSD_task:
     python3 -m ensurepip
   <<: *python_env
   <<: *pipeline
-
-Windows (mingw-gcc)_task:
-  windows_container:
-    image: cirrusci/windowsservercore:cmake
-    os_version: 2019
-  env:
-    PATH: C:\\Python;C:\\Python\\Scripts;C:\\ProgramData\\chocolatey\\lib\\ninja\\tools;%PATH%
-  setup_script: |-
-    choco install -y --no-progress python311 --params "/InstallDir:C:\Python"
-    choco install -y --no-progress ninja cmake
-    pip install meson cram==0.7
-    git config --global core.autocrlf false
-    patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
-    patch --forward --directory="C:\\Python\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
-  <<: *compile
-  test_script: meson devenv -C build ninja test
