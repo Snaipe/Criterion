@@ -154,6 +154,7 @@ if (not nanomsg.found()
 		'NN_STATIC_LIB': true,
 		'BUILD_SHARED_LIBS': false,
 		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+		'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
 	})
 	nanomsg_proj = cmake.subproject('nanomsg-cmake', options: nanomsg_opts)
 	nanomsg = nanomsg_proj.dependency('nanomsg')
@@ -214,6 +215,7 @@ if ((not libgit2.found() and get_option('diffs').enabled())
 		'CMAKE_DISABLE_FIND_PACKAGE_Iconv': true,
 		'CMAKE_DISABLE_FIND_PACKAGE_Security': true,
 		'CMAKE_POSITION_INDEPENDENT_CODE': true,
+		'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
 	})
 	libgit2_proj = cmake.subproject('libgit2-cmake', options: libgit2_opts)
 	libgit2 = libgit2_proj.dependency('git2')
