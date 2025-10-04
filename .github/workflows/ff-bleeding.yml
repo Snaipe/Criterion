@@ -15,8 +15,8 @@ jobs:
     name: Fast-forward bleeding
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Criterion
-        uses: actions/checkout@v3
+      - name: Checkout Criterion
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
