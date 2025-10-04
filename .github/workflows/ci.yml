@@ -153,3 +153,7 @@ jobs:
         run: |
           . $python_test_venv_activate
           meson test -C build
+
+  binaries:
+    name: "Binaries"
+    uses: ./.github/workflows/binaries.yml

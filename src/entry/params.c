@@ -358,11 +358,14 @@ CR_API int criterion_handle_args(int argc, char *argv[],
 
             if (provider == NULL || path == NULL) {
                 do_print_usage = true;
+                free(s);
+                free(out);
                 goto end;
             }
 
             quiet = must_be_quiet(path);
             criterion_add_output(provider, path);
+            free(s);
         }
         free(out);
     }
@@ -426,11 +429,13 @@ CR_API int criterion_handle_args(int argc, char *argv[],
                 char *path = strtok_r(NULL, ":", &buf);
                 if (arg == NULL || path == NULL) {
                     do_print_usage = true;
+                    free(arg);
                     break;
                 }
 
                 quiet = must_be_quiet(path);
                 criterion_add_output(arg, path);
+                free(arg);
             } break;
             case 'w': criterion_options.wait_for_clients = true; break;
             case 's':

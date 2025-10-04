@@ -150,6 +150,9 @@ Test(messages, eq) {
     cr_stream_init(&s2);
 
     cr_expect(eq(stream, s1, s2));
+
+    cr_stream_close(&s1);
+    cr_stream_close(&s2);
 }
 
 #define cmptest(Tag, Lo, Hi) \
