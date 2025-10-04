@@ -40,7 +40,7 @@ jobs:
       - name: Extract source tarball
         if: ${{ inputs.tarball-artifact }}
         run: |
-          tar -xf "criterion-*.tar.xz" && rm "criterion-*.tar.xz"
+          tar -xf "criterion-${version}.tar.xz" && rm "criterion-${version}.tar.xz"
 
       - name: Checkout Criterion
         if: ${{ !inputs.tarball-artifact }}
