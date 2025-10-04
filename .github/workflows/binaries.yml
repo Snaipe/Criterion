@@ -55,7 +55,7 @@ jobs:
           fi
 
           meson setup -Dc_std=gnu11 --prefix /usr/local --libdir lib --buildtype plain --wrap-mode=forcefallback \
-            build $src_dir
+            build $srcdir
           meson compile -C build
           meson install -C build --skip-subprojects --destdir "$(realpath .)/binaries/criterion-${version}"
 
