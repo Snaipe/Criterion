@@ -44,7 +44,7 @@ the user would have with other frameworks:
 | --- | --- |
 **Ubuntu** (>=21.04) / **Debian** (>=11) | `apt-get install libcriterion-dev`
 **Gentoo** | `emerge -a dev-libs/criterion`
-**Arch Linux** ([AUR][aur]) | `pacaur -S criterion`
+**Arch Linux** | `pacman -S criterion`
 **macOS** | `brew install criterion`
 **Nix** | `nix-shell -p criterion`
 **FreeBSD** | `pkg install criterion`
@@ -117,8 +117,6 @@ Logo made by [Paul Bouigue](http://www.cargocollective.com/pbouigue).
 
 [autotools]: ./dev/autotools
 [find-module]: ./dev/cmake/cmake/FindCriterion.cmake
-
-[aur]: https://aur.archlinux.org/packages/criterion/
 
 [mailing-list]: http://www.freelists.org/list/criterion
 [gh-discussions]: https://github.com/Snaipe/Criterion/discussions/new?category=q-a
