@@ -1,5 +1,5 @@
 [wrap-git]
 directory = nanomsg
-url = https://github.com/MrAnno/nanomsg.git
-revision = 1.2-fix-windows
+url = https://github.com/nanomsg/nanomsg.git
+revision = 1.2.2
 depth = 1
