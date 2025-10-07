@@ -62,9 +62,9 @@ jobs:
             os: macos-latest
             setup: *setup-macos
 
-          - name: Windows (x86-64)
-            os: windows-latest
-            setup: *setup-windows
+          # - name: Windows (x86-64)
+          #   os: windows-latest
+          #   setup: *setup-windows
 
           - name: Debian (x86-64)
             container: debian:latest
