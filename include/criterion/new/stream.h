@@ -74,8 +74,8 @@ CR_BEGIN_C_API
 CR_API void cr_stream_init(struct cr_stream *s);
 CR_API void cr_stream_close(struct cr_stream *s);
 
-CR_API int cr_user_stream_eq(struct cr_stream *s1, struct cr_stream *s2);
-CR_API int cr_user_stream_lt(struct cr_stream *s1, struct cr_stream *s2);
+CR_API int cr_user_stream_eq(const struct cr_stream *s1, const struct cr_stream *s2);
+CR_API int cr_user_stream_lt(const struct cr_stream *s1, const struct cr_stream *s2);
 CR_API char *cr_user_stream_tostr(const struct cr_stream *s);
 
 CR_END_C_API

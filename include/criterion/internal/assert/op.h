@@ -205,7 +205,7 @@
 #define CRI_ASSERT_OP_TYPE_TAGGED(Type, Var, Name, MkNode, Val)         Type
 #define CRI_ASSERT_OP_TYPE_SINGLE(Type, Var, Name, MkNode, Val)         Type
 
-#define CRI_ASSERT_OP_ARRTYPE_TAGGED(Type, Var, Name, MkNode, Val)      Type *
+#define CRI_ASSERT_OP_ARRTYPE_TAGGED(Type, Var, Name, MkNode, Val)      Type const *
 #define CRI_ASSERT_OP_ARRTYPE_SINGLE(Type, Var, Name, MkNode, Val)      Type
 
 #define CRI_ASSERT_OPKIND(Kind, Type, Var, Name, MkNode, Val)           Kind
