@@ -1,0 +1,14 @@
+[act]
+
+% simple.c.bin --version
+
+[assert]
+
+exit-code == 0
+
+stdout is-empty
+
+stderr matches -full
+<<EOF
+Tests compiled with Criterion v.*
+EOF

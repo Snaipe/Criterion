@@ -1,0 +1,9 @@
+[act]
+
+% signal.c.bin --json
+
+[assert]
+
+stdout
+  -transformed-by replace_version
+  equals -contents-of expected/signal.txt

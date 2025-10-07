@@ -1,0 +1,11 @@
+[act]
+
+% parameterized.cc.bin --list
+
+[assert]
+
+`Parameterized tests should be listed as one test`
+
+stdout equals -contents-of expected/list.txt
+
+stderr is-empty

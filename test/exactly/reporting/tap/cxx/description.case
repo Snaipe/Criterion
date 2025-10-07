@@ -1,0 +1,9 @@
+[act]
+
+% description.cc.bin --tap
+
+[assert]
+
+stdout
+  -transformed-by replace_version
+  equals -contents-of expected/description.txt

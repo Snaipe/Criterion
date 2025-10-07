@@ -1,0 +1,10 @@
+[cases]
+
+*.case
+
+[setup]
+
+including ../common.xly
+
+def text-transformer replace_simple_source_file =
+    replace '"simple.c:' '"<SOURCE-FILE>:'

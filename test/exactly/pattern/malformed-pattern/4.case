@@ -1,0 +1,10 @@
+[act]
+
+% simple.c.bin --filter='misc/[' --verbose
+
+[assert]
+
+stderr equals
+<<EOF
+pattern error: Mismatching brackets.
+EOF

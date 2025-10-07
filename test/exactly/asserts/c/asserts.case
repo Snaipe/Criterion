@@ -1,0 +1,24 @@
+[act]
+
+% asserts.c.bin
+
+[assert]
+
+stderr equals <<EOF
+[----] asserts.c:12: Assertion Failed
+[----]   
+[----]   assert is fatal, expect isn't
+[----]   
+[----] asserts.c:13: Assertion Failed
+[----]   
+[----]   This assert runs
+[----]   
+[FAIL] asserts::base
+[----] asserts.c:18: Assertion Failed
+[----]   
+[----]   You can fail an assertion with a message from anywhere
+[----]   
+[----] asserts.c:19: Assertion Failed
+[FAIL] asserts::old_school
+[====] Synthesis: Tested: 8 | Passing: 6 | Failing: 2 | Crashing: 0 
+EOF

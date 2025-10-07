@@ -1,0 +1,5 @@
+[suites]
+
+json/c.suite
+tap/c.suite
+xml/c.suite
