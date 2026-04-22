@@ -40,104 +40,25 @@ env:
 
 jobs:
   build-and-test:
-    name: "CI @ ${{ matrix.platform.name }}"
-
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - name: Ubuntu (x86-64)
-            os: ubuntu-latest
-            setup: *setup-ubuntu
-
-          - name: Ubuntu (AArch64)
-            os: ubuntu-24.04-arm
-            setup: *setup-ubuntu
-
-          # - name: macOS (x86-64)
-          #   os: macos-15-intel
-          #   setup: *setup-macos
-
-          - name: macOS (AArch64)
-            os: macos-latest
-            setup: *setup-macos
-
-          # - name: Windows (x86-64)
-          #   os: windows-latest
-          #   setup: *setup-windows
-
-          - name: Debian (x86-64)
-            container: debian:latest
-            setup: *setup-debian
-
-          - name: Fedora (x86-64)
-            container: fedora:latest
-            setup: *setup-fedora
-
-          - name: Alpine (x86-64)
-            container: alpine:latest
-            setup: *setup-alpine
-            shell: sh
-
-          - name: Alpine (AArch64)
-            container: alpine:latest
-            runs-on: ubuntu-24.04-arm
-            setup: *setup-alpine
-            shell: sh
-            checkout-workaround: true
-
-          - name: Alpine (ARMv7)
-            container: arm32v7/alpine:latest
-            runs-on: ubuntu-24.04-arm
-            setup: *setup-alpine-armv7
-            shell: sh
-            checkout-workaround: true
-
-    runs-on: ${{ matrix.platform.os || matrix.platform.runs-on || 'ubuntu-latest' }}
-    container: ${{ matrix.platform.container || '' }}
-
-    defaults:
-      run:
-        shell: ${{ matrix.platform.shell || 'bash' }}
+    name: "CI @ Ubuntu (x86-64)"
+    runs-on: ubuntu-latest
 
     env:
       python_test_venv_activate: .venv/bin/activate
 
     steps:
       - name: "Platform setup"
-        run: ${{ matrix.platform.setup }}
+        run: ${{ env.setup-ubuntu }}
 
       - name: Checkout Criterion
-        if: ${{ !matrix.platform.checkout-workaround }}
         uses: actions/checkout@v5
-
-      - name: Checkout Criterion (workaround)
-        if: ${{ matrix.platform.checkout-workaround }}
-        run: |
-          git config --global --add safe.directory "${GITHUB_WORKSPACE}"
-          git init
-          git remote add origin "https://github.com/${{ github.repository }}.git"
-          git fetch --depth=1 origin "${{ github.ref }}"
-          git checkout FETCH_HEAD
 
       - name: "Setup Python test venv"
         run: |
           python3 -m venv .venv
 
-          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
-            python_test_venv_activate=".venv/Scripts/activate"
-            echo "python_test_venv_activate=$python_test_venv_activate" >> $GITHUB_ENV
-          fi
-
           . $python_test_venv_activate
           pip install cram==0.7
-
-          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
-            pip install meson
-            git config --global core.autocrlf false
-            patch --forward --directory=".venv\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
-            patch --forward --directory=".venv\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
-          fi
 
       - name: "Setup"
         run: |
@@ -211,6 +132,8 @@ jobs:
           meson setup build \
             --force-fallback-for=nanomsg,libgit2 \
             -Dtheories=disabled \
+            -Ddiffs=disabled \
+            -Dfilc-simple=true \
             -Dshared-library=false \
             -Dtests=false \
             -Dsamples=false \
@@ -224,60 +147,86 @@ jobs:
           . $python_test_venv_activate
           meson compile -C build criterion
 
-      - name: "Install"
+      - name: "Smoke test subproject consumer"
+        env:
+          CC: /opt/fil/bin/filcc
+          CXX: /opt/fil/bin/fil++
         run: |
-          rm -rf artifacts/criterion-fil
-          mkdir -p artifacts/criterion-fil/opt/criterion-fil/include
-          mkdir -p artifacts/criterion-fil/opt/criterion-fil/lib/pkgconfig
+          rm -rf /tmp/criterion-filc-consumer
+          mkdir -p /tmp/criterion-filc-consumer/subprojects/criterion
 
-          boxfort_lib="$(find build -type f \( -name 'libboxfort*.a' -o -name '*boxfort*.a' \) | head -n1)"
-          libgit2_lib="$(find build -type f \( -name 'libgit2*.a' -o -name 'git2.a' \) | head -n1)"
-          nanomsg_lib="$(find build -type f -name 'libnanomsg*.a' | head -n1)"
-          nanopb_lib="$(find build -type f \( -name 'libprotobuf-nanopb-static.a' -o -name 'libprotobuf*.a' -o -name 'libnanopb*.a' \) | head -n1)"
+          cp ci/filc-consumer/meson.build /tmp/criterion-filc-consumer/
+          cp ci/filc-consumer/sample_tests.c /tmp/criterion-filc-consumer/
 
-          cp -R include/criterion artifacts/criterion-fil/opt/criterion-fil/include/
-          cp build/src/libcriterion.a artifacts/criterion-fil/opt/criterion-fil/lib/
-          
-          private_libs="-lm -lrt -lpthread"
-          if [ -n "$boxfort_lib" ]; then
-            cp "$boxfort_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
-            private_libs="-lboxfort $private_libs"
-          fi
-          if [ -n "$libgit2_lib" ]; then
-            cp "$libgit2_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
-            private_libs="-lgit2 $private_libs"
-          fi
-          if [ -n "$nanomsg_lib" ]; then
-            cp "$nanomsg_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
-            private_libs="-lnanomsg $private_libs"
-          fi
-          if [ -n "$nanopb_lib" ]; then
-            cp "$nanopb_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
-            nanopb_name="$(basename "$nanopb_lib")"
-            nanopb_name="${nanopb_name#lib}"
-            nanopb_name="${nanopb_name%.a}"
-            private_libs="-l${nanopb_name} $private_libs"
-          fi
+          git archive --format=tar HEAD \
+            | tar -C /tmp/criterion-filc-consumer/subprojects/criterion -xf -
 
-          cat > artifacts/criterion-fil/opt/criterion-fil/lib/pkgconfig/criterion.pc <<EOF
-          prefix=/opt/criterion-fil
-          exec_prefix=\${prefix}
-          libdir=\${exec_prefix}/lib
-          includedir=\${prefix}/include
+          . $python_test_venv_activate
+          CC="$CC" CXX="$CXX" meson setup /tmp/criterion-filc-consumer/build /tmp/criterion-filc-consumer
+          CC="$CC" CXX="$CXX" meson test -C /tmp/criterion-filc-consumer/build --print-errorlogs
 
-          Name: criterion
-          Description: Criterion unit testing framework for C/C++
-          Version: 2.4.3-fil
-          Cflags: -I\${includedir}
-          Libs: -L\${libdir} -lcriterion
-          Libs.private: ${private_libs}
+      - name: "Create Fil-C source bundle"
+        run: |
+          rm -rf artifacts/criterion-fil-source
+          mkdir -p artifacts/criterion-fil-source
+
+          git archive --format=tar.gz \
+            --output=artifacts/criterion-fil-source/criterion-fil-source.tar.gz \
+            HEAD
+
+          cat > artifacts/criterion-fil-source/README.txt <<'EOF'
+          Criterion Fil-C source bundle
+
+          This bundle is intended to be built from source with Fil-C in the consuming
+          project's CI job or build environment. It is not a standalone prebuilt SDK.
+
+          Supported target:
+          - Linux x86-64 with /opt/fil
+
+          End-to-end example:
+          - see ci/filc-consumer for a minimal Meson consumer project that builds
+            Criterion as a subproject with Fil-C
+
+          Preferred installation path:
+
+            ./ci/install-fil-criterion-from-source.sh <criterion-source-dir> <install-prefix>
+
+          Example:
+
+            ./ci/install-fil-criterion-from-source.sh "$PWD" "$PWD/out"
+
+          Equivalent manual configure/build commands:
+
+            CC=/opt/fil/bin/filcc \
+            CXX=/opt/fil/bin/fil++ \
+            meson setup build \
+              --force-fallback-for=nanomsg,libgit2 \
+              -Dtheories=disabled \
+              -Ddiffs=disabled \
+              -Dfilc-simple=true \
+              -Dshared-library=false \
+              -Dtests=false \
+              -Dsamples=false
+
+            meson compile -C build criterion
+
+          The helper script installs:
+          - headers into <install-prefix>/include
+          - libcriterion.a into <install-prefix>/lib
+          - criterion.pc into <install-prefix>/lib/pkgconfig
+
+          Then build your downstream tests with:
+
+            export PKG_CONFIG_PATH="<install-prefix>/lib/pkgconfig"
+            /opt/fil/bin/filcc your-tests.c \
+              $(pkg-config --cflags --libs --static criterion)
           EOF
 
       - name: Upload Fil-C artifact
         uses: actions/upload-artifact@v4
         with:
-          name: criterion-fil-linux-x86_64
-          path: artifacts/criterion-fil/opt/criterion-fil
+          name: criterion-fil-source-linux-x86_64
+          path: artifacts/criterion-fil-source
           if-no-files-found: error
 
   binaries:

@@ -55,6 +55,10 @@ add_project_arguments(
 	'-D_GNU_SOURCE',
 	language: ['c', 'cpp'])
 
+if get_option('filc-simple')
+	add_project_arguments('-DCRITERION_FILC_SIMPLE=1', language: ['c', 'cpp'])
+endif
+
 if target_machine.system() == 'windows'
 	add_project_arguments(
 			'-DVC_EXTRALEAN',
@@ -221,7 +225,9 @@ if ((not libgit2.found() and get_option('diffs').enabled())
 	libgit2 = libgit2_proj.dependency('git2')
 endif
 
-boxfort = dependency('boxfort', fallback: ['boxfort', 'boxfort'], default_options: ['default_library=static'])
+boxfort = dependency('boxfort',
+					fallback: ['boxfort', 'boxfort'],
+					default_options: ['default_library=static', 'samples=false', 'tests=false'])
 libffi = dependency('libffi', required: get_option('theories'), fallback: ['libffi', 'ffi_dep'],
 					default_options: ['default_library=static'])
 
@@ -248,13 +254,19 @@ deps += [
 	klib,
 	threads,
 	boxfort,
-	libffi,
-	libgit2,
 	nanomsg,
 	nanopb,
 	librt,
 	libm,
 ]
+
+if get_option('theories').enabled()
+	deps += libffi
+endif
+
+if get_option('diffs').enabled()
+	deps += libgit2
+endif
 
 meson.add_dist_script('.dist-filter.sh')
 

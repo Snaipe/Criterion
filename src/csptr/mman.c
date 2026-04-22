@@ -34,6 +34,115 @@
 
 s_allocator smalloc_allocator = {malloc, free};
 
+#ifdef CRITERION_FILC_SIMPLE
+
+#include <stddef.h>
+
+typedef struct {
+    enum pointer_kind kind;
+    f_destructor dtor;
+    size_t ref_count;
+    size_t size;
+    size_t nmemb;
+    size_t meta_size;
+#ifndef NDEBUG
+    void *ptr;
+#endif
+} filc_meta;
+
+static size_t filc_align_up(size_t value, size_t alignment)
+{
+    return (value + alignment - 1) & ~(alignment - 1);
+}
+
+static filc_meta *filc_meta_from_ptr(void *ptr)
+{
+    return *((filc_meta **)((char *) ptr - sizeof (filc_meta *)));
+}
+
+CSPTR_INLINE void *get_smart_ptr_meta(void *ptr) {
+    filc_meta *meta = filc_meta_from_ptr(ptr);
+    if (!meta->meta_size)
+        return NULL;
+    return (char *) meta + sizeof (*meta);
+}
+
+void *sref(void *ptr) {
+    filc_meta *meta = filc_meta_from_ptr(ptr);
+    if (meta->kind & SHARED)
+        ++meta->ref_count;
+    return ptr;
+}
+
+void *smove_size(void *ptr, size_t size) {
+    filc_meta *meta = filc_meta_from_ptr(ptr);
+    s_smalloc_args args = {
+        .size = size,
+        .nmemb = 0,
+        .kind = SHARED,
+        .dtor = meta->dtor,
+        .meta = { get_smart_ptr_meta(ptr), meta->meta_size },
+    };
+    void *newptr = smalloc(&args);
+    memcpy(newptr, ptr, size);
+    return newptr;
+}
+
+void *smalloc(s_smalloc_args *args) {
+    if (!args->size)
+        return NULL;
+
+    size_t object_size = args->nmemb ? args->nmemb * args->size : args->size;
+    size_t prefix_size = filc_align_up(
+        sizeof (filc_meta) + args->meta.size + sizeof (filc_meta *),
+        _Alignof(max_align_t));
+    char *raw = smalloc_allocator.alloc(prefix_size + object_size);
+    if (!raw)
+        return NULL;
+
+    filc_meta *meta = (filc_meta *) raw;
+    *meta = (filc_meta) {
+        .kind = args->nmemb ? (enum pointer_kind) (args->kind | ARRAY) : args->kind,
+        .dtor = args->dtor,
+        .ref_count = (args->kind & SHARED) ? 1 : 0,
+        .size = args->size,
+        .nmemb = args->nmemb,
+        .meta_size = args->meta.size,
+#ifndef NDEBUG
+        .ptr = raw + prefix_size,
+#endif
+    };
+
+    if (args->meta.size && args->meta.data)
+        memcpy(raw + sizeof (*meta), args->meta.data, args->meta.size);
+
+    *((filc_meta **)(raw + prefix_size - sizeof (filc_meta *))) = meta;
+    return raw + prefix_size;
+}
+
+void sfree(void *ptr) {
+    if (!ptr)
+        return;
+
+    filc_meta *meta = filc_meta_from_ptr(ptr);
+    if ((meta->kind & SHARED) && --meta->ref_count)
+        return;
+
+    if (meta->dtor) {
+        void *user_meta = get_smart_ptr_meta(ptr);
+        if (meta->kind & ARRAY) {
+            for (size_t i = 0; i < meta->nmemb; ++i)
+                meta->dtor((char *) ptr + meta->size * i, user_meta);
+        } else {
+            meta->dtor(ptr, user_meta);
+        }
+    }
+
+    smalloc_allocator.dealloc(meta);
+}
+
+#else
+
 #ifdef _MSC_VER
 # include <windows.h>
 # include <malloc.h>
@@ -222,3 +331,5 @@ void sfree(void *ptr) {
 
     dealloc_entry(meta, ptr);
 }
+
+#endif

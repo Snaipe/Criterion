@@ -66,9 +66,13 @@
 
 CR_BEGIN_C_API
 
+#ifdef CRITERION_FILC_SIMPLE
+CR_API void criterion_internal_run_test(void (*fn)(void));
+#else
 CR_API void criterion_internal_test_setup(void);
 CR_API void criterion_internal_test_main(void (*fn)(void));
 CR_API void criterion_internal_test_teardown(void);
+#endif
 
 CR_END_C_API
 
@@ -134,12 +138,19 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
         }                                                                                       \
     }
 # else
+#  ifdef CRITERION_FILC_SIMPLE
+#   define CR_TEST_TRAMPOLINE_(Category, Name)                                               \
+    static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {                          \
+        criterion_internal_run_test((void (*)(void))CR_IDENTIFIER_(Category, Name, impl));  \
+    }
+#  else
 #  define CR_TEST_TRAMPOLINE_(Category, Name)                                               \
     static inline void CR_IDENTIFIER_(Category, Name, jmp)(void) {                          \
         criterion_internal_test_setup();                                                    \
         criterion_internal_test_main((void (*)(void))CR_IDENTIFIER_(Category, Name, impl)); \
         criterion_internal_test_teardown();                                                 \
     }
+#  endif
 # endif
 #endif
 
