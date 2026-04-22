@@ -261,15 +261,15 @@ jobs:
 
           cat > artifacts/criterion-fil/opt/criterion-fil/lib/pkgconfig/criterion.pc <<EOF
           prefix=/opt/criterion-fil
-          exec_prefix=${prefix}
-          libdir=${exec_prefix}/lib
-          includedir=${prefix}/include
+          exec_prefix=\${prefix}
+          libdir=\${exec_prefix}/lib
+          includedir=\${prefix}/include
 
           Name: criterion
           Description: Criterion unit testing framework for C/C++
           Version: 2.4.3-fil
-          Cflags: -I${includedir}
-          Libs: -L${libdir} -lcriterion
+          Cflags: -I\${includedir}
+          Libs: -L\${libdir} -lcriterion
           Libs.private: ${private_libs}
           EOF
 
