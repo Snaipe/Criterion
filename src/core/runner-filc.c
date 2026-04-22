@@ -6,7 +6,10 @@
 #include "criterion/internal/preprocess.h"
 #include "criterion/options.h"
 #include "criterion/criterion.h"
+#include "criterion/stats.h"
+#include "report.h"
 #include "csptr/smalloc.h"
+#include "err.h"
 #include "filc-simple.h"
 #include "runner.h"
 #include "common.h"
@@ -15,6 +18,29 @@
 CR_API const struct criterion_test *criterion_current_test;
 CR_API const struct criterion_suite *criterion_current_suite;
 int cri_is_runner = 1;
+
+struct filc_test_node {
+    struct criterion_test *test;
+    struct filc_test_node *next;
+};
+
+static struct filc_test_node *g_filc_tests_head;
+static struct filc_test_node *g_filc_tests_tail;
+
+CR_API void criterion_internal_filc_register_test(struct criterion_test *test)
+{
+    struct filc_test_node *n = malloc(sizeof (*n));
+    if (!n)
+        cr_panic("Could not allocate filc test node");
+    n->test = test;
+    n->next = NULL;
+
+    if (g_filc_tests_tail)
+        g_filc_tests_tail->next = n;
+    else
+        g_filc_tests_head = n;
+    g_filc_tests_tail = n;
+}
 
 static int filc_should_print(enum criterion_logging_level level)
 {
@@ -76,6 +102,17 @@ struct criterion_test_set *criterion_init(void)
         .tests = 0,
     };
 
+    for (struct filc_test_node *n = g_filc_tests_head; n; n = n->next) {
+        if (!n->test || !n->test->category || !n->test->name)
+            continue;
+        if (!*n->test->category || !*n->test->name)
+            continue;
+        criterion_register_test(set, n->test);
+    }
+
+    if (set->tests != 0)
+        return set;
+
     if (!__start_cr_tst || !__stop_cr_tst)
         return set;
 
@@ -121,6 +158,7 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
     size_t suites_enabled = 0;
     size_t tests_enabled = 0;
     size_t tests_run = 0;
+    size_t tests_passed = 0;
 
     FOREACH_SET(struct criterion_suite_set *suite_set, set->suites) {
         if ((suite_set->suite.data && suite_set->suite.data->disabled) || !suite_set->tests)
@@ -143,6 +181,10 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
             fprintf(stderr, "criterion (filc-simple): running %zu test(s)\n", tests_enabled);
     }
 
+    if (criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET) {
+        log(pre_all, set);
+    }
+
     FOREACH_SET(struct criterion_suite_set *suite_set, set->suites) {
         if ((suite_set->suite.data && suite_set->suite.data->disabled) || !suite_set->tests)
             continue;
@@ -162,10 +204,23 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
             if (filc_should_print(CRITERION_INFO))
                 fprintf(stderr, "  [TEST] %s/%s\n", test->category, test->name);
 
+            if (criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET) {
+                log(pre_init, &suite_set->suite, test);
+            }
+
             test->test();
 
             if (cri_filc_test_skipped()) {
                 ++skipped;
+                if (criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET) {
+                    struct criterion_test_stats st = {
+                        .test = test,
+                        .test_status = CR_STATUS_SKIPPED,
+                        .elapsed_time = 0.0f,
+                        .message = NULL,
+                    };
+                    log(post_test, &st);
+                }
                 continue;
             }
 
@@ -174,8 +229,29 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
                 if (filc_should_print(CRITERION_IMPORTANT) && !filc_should_print(CRITERION_INFO))
                     fprintf(stderr, "[FAIL] %s/%s\n", test->category, test->name);
 
+                if (criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET) {
+                    struct criterion_test_stats st = {
+                        .test = test,
+                        .test_status = CR_STATUS_FAILED,
+                        .elapsed_time = 0.0f,
+                        .message = NULL,
+                    };
+                    log(post_test, &st);
+                }
+
                 if (criterion_options.fail_fast)
                     goto done;
+            } else {
+                ++tests_passed;
+                if (criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET) {
+                    struct criterion_test_stats st = {
+                        .test = test,
+                        .test_status = CR_STATUS_PASSED,
+                        .elapsed_time = 0.0f,
+                        .message = NULL,
+                    };
+                    log(post_test, &st);
+                }
             }
         }
     }
@@ -184,6 +260,20 @@ done:
     if (filc_should_print(CRITERION_IMPORTANT)) {
         int passed = (int)tests_run - failed - skipped;
         fprintf(stderr, "criterion (filc-simple): %d passed, %d failed, %d skipped\n", passed, failed, skipped);
+    }
+
+    if (criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET) {
+        struct criterion_global_stats gst = {
+            .nb_suites = suites_enabled,
+            .nb_tests = tests_run,
+            .tests_skipped = (size_t)skipped,
+            .tests_failed = (size_t)failed,
+            .tests_crashed = 0,
+            .tests_passed = tests_passed,
+            .errors = 0,
+            .warnings = 0,
+        };
+        log(post_all, &gst);
     }
 
     return failed == 0;

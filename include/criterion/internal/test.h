@@ -68,6 +68,7 @@ CR_BEGIN_C_API
 
 #ifdef CRITERION_FILC_SIMPLE
 CR_API void criterion_internal_run_test(void (*fn)(void));
+CR_API void criterion_internal_filc_register_test(struct criterion_test *test);
 #else
 CR_API void criterion_internal_test_setup(void);
 CR_API void criterion_internal_test_main(void (*fn)(void));
@@ -164,6 +165,35 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
 # define CR_COMPILER_    CR_COMP_UNKNOWN
 #endif
 
+#ifdef CRITERION_FILC_SIMPLE
+#define CR_TEST_BASE(Category, Name, ...)                                    \
+    CR_TEST_PROTOTYPE_(Category, Name);                                      \
+    CR_TEST_TRAMPOLINE_(Category, Name)                                      \
+    struct criterion_test_extra_data CR_IDENTIFIER_(Category, Name, extra) = \
+            CR_EXPAND(CRITERION_MAKE_STRUCT(criterion_test_extra_data,       \
+                    .compiler_ = CR_COMPILER_,                               \
+                    .lang_ = CR_LANG,                                        \
+                    .kind_ = CR_TEST_NORMAL,                                 \
+                    .param_ = (struct criterion_test_params (*)(void))NULL,  \
+                    .identifier_ = #Category "/" #Name,                      \
+                    .file_    = __FILE__,                                    \
+                    .line_    = __LINE__,                                    \
+                    __VA_ARGS__                                              \
+                    ));                                                      \
+    struct criterion_test CR_IDENTIFIER_(Category, Name, meta) = {           \
+        #Name,                                                               \
+        #Category,                                                           \
+        CR_IDENTIFIER_(Category,  Name,  jmp),                               \
+        &CR_IDENTIFIER_(Category, Name,  extra)                              \
+    };                                                                       \
+    static void CR_IDENTIFIER_(Category, Name, reg)(void)                    \
+        CR_ATTRIBUTE(constructor);                                           \
+    static void CR_IDENTIFIER_(Category, Name, reg)(void)                    \
+    {                                                                        \
+        criterion_internal_filc_register_test(&CR_IDENTIFIER_(Category, Name, meta)); \
+    }                                                                        \
+    CR_TEST_PROTOTYPE_(Category, Name)
+#else
 #define CR_TEST_BASE(Category, Name, ...)                                    \
     CR_TEST_PROTOTYPE_(Category, Name);                                      \
     CR_TEST_TRAMPOLINE_(Category, Name)                                      \
@@ -189,6 +219,7 @@ static const char *const cr_msg_test_fini_other_exception = "Caught some unexpec
     struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)               \
         = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;          \
     CR_TEST_PROTOTYPE_(Category, Name)
+#endif
 
 #define CR_SUITE_BASE(Name, ...)                                         \
     struct criterion_test_extra_data CR_SUITE_IDENTIFIER_(Name, extra) = \
