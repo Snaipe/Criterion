@@ -43,6 +43,6 @@ foreach sample : samples
 	e = executable(sample + '.bin', sample,
 			include_directories: [criterion_api],
 			dependencies: [libm],
-			link_with: libcriterion.get_shared_lib())
+			link_with: criterion_shared_link)
 	test('sample / ' + sample, e, args: '--always-succeed')
 endforeach

@@ -85,19 +85,36 @@ configure_file(input         : 'config.h.in',
                output        : 'config.h',
                configuration : config)
 
-libcriterion = both_libraries('criterion', sources,
-	include_directories: [criterion_includedir],
-	# extra args that we don't want to pass to tests, samples, etc
-	c_args: [
-		'-D__USE_MINGW_ANSI_STDIO',
-	],
-	version: abi_version,
-	dependencies: deps,
-	install: true,
-	link_args: cc.get_supported_link_arguments([
-		'-Wl,--exclude-libs,ALL',
-	]),
-)
+if get_option('shared-library')
+	libcriterion = both_libraries('criterion', sources,
+		include_directories: [criterion_includedir],
+		c_args: [
+			'-D__USE_MINGW_ANSI_STDIO',
+		],
+		version: abi_version,
+		dependencies: deps,
+		install: true,
+		link_args: cc.get_supported_link_arguments([
+			'-Wl,--exclude-libs,ALL',
+		]),
+	)
+	criterion_static_link = libcriterion.get_static_lib()
+	criterion_shared_link = libcriterion.get_shared_lib()
+else
+	libcriterion = static_library('criterion', sources,
+		include_directories: [criterion_includedir],
+		c_args: [
+			'-D__USE_MINGW_ANSI_STDIO',
+		],
+		dependencies: deps,
+		install: true,
+		link_args: cc.get_supported_link_arguments([
+			'-Wl,--exclude-libs,ALL',
+		]),
+	)
+	criterion_static_link = libcriterion
+	criterion_shared_link = libcriterion
+endif
 
 criterion = declare_dependency(
 	include_directories: [criterion_api],

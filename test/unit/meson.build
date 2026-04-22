@@ -17,7 +17,7 @@ endif
 
 unit_tests = executable('unit_tests', unit_test_sources,
 		include_directories: [criterion_includedir],
-		link_with: libcriterion.get_static_lib())
+		link_with: criterion_static_link)
 test('unit tests',
 	unit_tests,
 	args: ['--tap'],

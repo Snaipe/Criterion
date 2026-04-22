@@ -6,6 +6,7 @@ option('cxx-support', type: 'feature', value: 'auto')
 option('i18n',        type: 'feature', value: 'auto')
 option('theories',    type: 'feature', value: 'enabled')
 option('diffs',       type: 'feature', value: 'enabled')
+option('shared-library', type: 'boolean', value: true)
 
 # Platform-specific workarounds
 option('mingw-define-off_t', type: 'boolean', value: false)

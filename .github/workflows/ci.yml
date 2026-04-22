@@ -154,6 +154,132 @@ jobs:
           . $python_test_venv_activate
           meson test -C build
 
+  build-with-fil-c:
+    name: "Build with Fil-C (x86-64)"
+    runs-on: ubuntu-latest
+
+    env:
+      python_test_venv_activate: .venv/bin/activate
+
+    steps:
+      - name: "Platform setup"
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes \
+            pkgconf meson cmake git python3-pip python3-venv \
+            libgit2-dev libffi-dev \
+            curl jq xz-utils
+
+      - name: Checkout Criterion
+        uses: actions/checkout@v5
+
+      - name: Install Fil-C
+        run: |
+          release_json="$(curl --fail --silent --show-error \
+            https://api.github.com/repos/pizlonator/fil-c/releases/latest)"
+          asset_url="$(printf '%s' "$release_json" | jq -r '
+            .assets[]
+            | select(.name | test("^optfil-.*-linux-x86_64\\.tar\\.xz$"))
+            | .browser_download_url
+          ' | head -n1)"
+
+          if [ -z "$asset_url" ] || [ "$asset_url" = "null" ]; then
+            echo "Unable to find a Linux x86_64 /opt/fil asset in the latest release." >&2
+            exit 1
+          fi
+
+          mkdir -p .filc
+          curl --fail --location --silent --show-error "$asset_url" --output .filc/optfil.tar.xz
+          tar -xJf .filc/optfil.tar.xz -C .filc --strip-components=1
+          (
+            cd .filc
+            printf 'YES\n' | sudo ./setup.sh
+          )
+
+      - name: "Setup Python test venv"
+        run: |
+          python3 -m venv .venv
+          . $python_test_venv_activate
+          pip install cram==0.7
+
+      - name: "Setup"
+        env:
+          CC: /opt/fil/bin/filcc
+          CXX: /opt/fil/bin/fil++
+        run: |
+          . $python_test_venv_activate
+          meson setup build \
+            --force-fallback-for=nanomsg,libgit2 \
+            -Dtheories=disabled \
+            -Dshared-library=false \
+            -Dtests=false \
+            -Dsamples=false \
+            --prefix=/opt/criterion-fil
+
+      - name: "Build"
+        env:
+          CC: /opt/fil/bin/filcc
+          CXX: /opt/fil/bin/fil++
+        run: |
+          . $python_test_venv_activate
+          meson compile -C build criterion
+
+      - name: "Install"
+        run: |
+          rm -rf artifacts/criterion-fil
+          mkdir -p artifacts/criterion-fil/opt/criterion-fil/include
+          mkdir -p artifacts/criterion-fil/opt/criterion-fil/lib/pkgconfig
+
+          boxfort_lib="$(find build -type f \( -name 'libboxfort*.a' -o -name '*boxfort*.a' \) | head -n1)"
+          libgit2_lib="$(find build -type f \( -name 'libgit2*.a' -o -name 'git2.a' \) | head -n1)"
+          nanomsg_lib="$(find build -type f -name 'libnanomsg*.a' | head -n1)"
+          nanopb_lib="$(find build -type f \( -name 'libprotobuf-nanopb-static.a' -o -name 'libprotobuf*.a' -o -name 'libnanopb*.a' \) | head -n1)"
+
+          cp -R include/criterion artifacts/criterion-fil/opt/criterion-fil/include/
+          cp build/src/libcriterion.a artifacts/criterion-fil/opt/criterion-fil/lib/
+          
+          private_libs="-lm -lrt -lpthread"
+          if [ -n "$boxfort_lib" ]; then
+            cp "$boxfort_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
+            private_libs="-lboxfort $private_libs"
+          fi
+          if [ -n "$libgit2_lib" ]; then
+            cp "$libgit2_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
+            private_libs="-lgit2 $private_libs"
+          fi
+          if [ -n "$nanomsg_lib" ]; then
+            cp "$nanomsg_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
+            private_libs="-lnanomsg $private_libs"
+          fi
+          if [ -n "$nanopb_lib" ]; then
+            cp "$nanopb_lib" artifacts/criterion-fil/opt/criterion-fil/lib/
+            nanopb_name="$(basename "$nanopb_lib")"
+            nanopb_name="${nanopb_name#lib}"
+            nanopb_name="${nanopb_name%.a}"
+            private_libs="-l${nanopb_name} $private_libs"
+          fi
+
+          cat > artifacts/criterion-fil/opt/criterion-fil/lib/pkgconfig/criterion.pc <<EOF
+          prefix=/opt/criterion-fil
+          exec_prefix=${prefix}
+          libdir=${exec_prefix}/lib
+          includedir=${prefix}/include
+
+          Name: criterion
+          Description: Criterion unit testing framework for C/C++
+          Version: 2.4.3-fil
+          Cflags: -I${includedir}
+          Libs: -L${libdir} -lcriterion
+          Libs.private: ${private_libs}
+          EOF
+
+      - name: Upload Fil-C artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: criterion-fil-linux-x86_64
+          path: artifacts/criterion-fil/opt/criterion-fil
+          if-no-files-found: error
+
   binaries:
     name: "Binaries"
     uses: ./.github/workflows/binaries.yml

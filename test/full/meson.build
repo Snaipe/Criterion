@@ -32,6 +32,6 @@ foreach tst : full_tests
 	e = executable(tst + '.bin', tst,
 			include_directories: [criterion_api],
 			dependencies: [libm],
-			link_with: libcriterion.get_shared_lib())
+			link_with: criterion_shared_link)
 	test('full / ' + tst, e, args: '--always-succeed')
 endforeach
