@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -14,6 +15,12 @@
 CR_API const struct criterion_test *criterion_current_test;
 CR_API const struct criterion_suite *criterion_current_suite;
 int cri_is_runner = 1;
+
+static int filc_should_print(enum criterion_logging_level level)
+{
+    return criterion_options.logging_threshold != CRITERION_LOG_LEVEL_QUIET
+        && level >= criterion_options.logging_threshold;
+}
 
 static int cmp_suite(void *a, void *b)
 {
@@ -110,10 +117,38 @@ CR_API void criterion_finalize(struct criterion_test_set *set)
 static int criterion_run_all_tests_impl(struct criterion_test_set *set)
 {
     int failed = 0;
+    int skipped = 0;
+    size_t suites_enabled = 0;
+    size_t tests_enabled = 0;
+    size_t tests_run = 0;
 
     FOREACH_SET(struct criterion_suite_set *suite_set, set->suites) {
         if ((suite_set->suite.data && suite_set->suite.data->disabled) || !suite_set->tests)
             continue;
+
+        int suite_has_enabled_tests = 0;
+        FOREACH_SET(struct criterion_test *test, suite_set->tests) {
+            if (test->data->disabled)
+                continue;
+            suite_has_enabled_tests = 1;
+            ++tests_enabled;
+        }
+        suites_enabled += suite_has_enabled_tests ? 1u : 0u;
+    }
+
+    if (filc_should_print(CRITERION_IMPORTANT)) {
+        if (filc_should_print(CRITERION_INFO))
+            fprintf(stderr, "criterion (filc-simple): running %zu test(s) from %zu suite(s)\n", tests_enabled, suites_enabled);
+        else
+            fprintf(stderr, "criterion (filc-simple): running %zu test(s)\n", tests_enabled);
+    }
+
+    FOREACH_SET(struct criterion_suite_set *suite_set, set->suites) {
+        if ((suite_set->suite.data && suite_set->suite.data->disabled) || !suite_set->tests)
+            continue;
+
+        if (filc_should_print(CRITERION_INFO))
+            fprintf(stderr, "[SUITE] %s\n", suite_set->suite.name);
 
         FOREACH_SET(struct criterion_test *test, suite_set->tests) {
             if (test->data->disabled)
@@ -122,13 +157,33 @@ static int criterion_run_all_tests_impl(struct criterion_test_set *set)
             criterion_current_test = test;
             criterion_current_suite = &suite_set->suite;
             cri_filc_reset_test_state();
+            ++tests_run;
+
+            if (filc_should_print(CRITERION_INFO))
+                fprintf(stderr, "  [TEST] %s/%s\n", test->category, test->name);
+
             test->test();
 
-            if (cri_filc_test_skipped())
+            if (cri_filc_test_skipped()) {
+                ++skipped;
                 continue;
-            if (cri_filc_test_failed())
+            }
+
+            if (cri_filc_test_failed()) {
                 ++failed;
+                if (filc_should_print(CRITERION_IMPORTANT) && !filc_should_print(CRITERION_INFO))
+                    fprintf(stderr, "[FAIL] %s/%s\n", test->category, test->name);
+
+                if (criterion_options.fail_fast)
+                    goto done;
+            }
         }
+    }
+
+done:
+    if (filc_should_print(CRITERION_IMPORTANT)) {
+        int passed = (int)tests_run - failed - skipped;
+        fprintf(stderr, "criterion (filc-simple): %d passed, %d failed, %d skipped\n", passed, failed, skipped);
     }
 
     return failed == 0;
