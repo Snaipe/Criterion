@@ -123,110 +123,67 @@ jobs:
           . $python_test_venv_activate
           pip install cram==0.7
 
-      - name: "Setup"
-        env:
-          CC: /opt/fil/bin/filcc
-          CXX: /opt/fil/bin/fil++
+      - name: "Build Fil-C SDK"
         run: |
           . $python_test_venv_activate
-          meson setup build \
-            --force-fallback-for=nanomsg,libgit2 \
-            -Dtheories=disabled \
-            -Ddiffs=disabled \
-            -Dfilc-simple=true \
-            -Dshared-library=false \
-            -Dtests=false \
-            -Dsamples=false \
-            --prefix=/opt/criterion-fil
+          rm -rf /tmp/criterion-filc-prefix
+          ./ci/install-fil-criterion-from-source.sh "$PWD" /tmp/criterion-filc-prefix
 
-      - name: "Build"
-        env:
-          CC: /opt/fil/bin/filcc
-          CXX: /opt/fil/bin/fil++
+      - name: "Smoke test installed Fil-C SDK"
         run: |
           . $python_test_venv_activate
-          meson compile -C build criterion
+          export PKG_CONFIG_PATH=/tmp/criterion-filc-prefix/lib/pkgconfig
 
-      - name: "Smoke test subproject consumer"
-        env:
-          CC: /opt/fil/bin/filcc
-          CXX: /opt/fil/bin/fil++
+          cat > /tmp/smoke-criterion.c <<'EOF'
+          #include <criterion/criterion.h>
+
+          Test(smoke, passes) {
+              cr_assert(2 + 2 == 4);
+          }
+          EOF
+
+          /opt/fil/bin/filcc \
+            /tmp/smoke-criterion.c \
+            -o /tmp/smoke-criterion \
+            $(pkg-config --cflags --libs --static criterion)
+
+          /tmp/smoke-criterion
+
+      - name: "Create Fil-C SDK artifact"
         run: |
-          rm -rf /tmp/criterion-filc-consumer
-          mkdir -p /tmp/criterion-filc-consumer/subprojects/criterion
+          rm -rf artifacts/criterion-fil-sdk
+          mkdir -p artifacts/criterion-fil-sdk/opt
+          cp -R /tmp/criterion-filc-prefix artifacts/criterion-fil-sdk/opt/criterion-fil
 
-          cp ci/filc-consumer/meson.build /tmp/criterion-filc-consumer/
-          cp ci/filc-consumer/sample_tests.c /tmp/criterion-filc-consumer/
-
-          git archive --format=tar HEAD \
-            | tar -C /tmp/criterion-filc-consumer/subprojects/criterion -xf -
-
-          . $python_test_venv_activate
-          CC="$CC" CXX="$CXX" meson setup /tmp/criterion-filc-consumer/build /tmp/criterion-filc-consumer
-          CC="$CC" CXX="$CXX" meson test -C /tmp/criterion-filc-consumer/build --print-errorlogs
-
-      - name: "Create Fil-C source bundle"
-        run: |
-          rm -rf artifacts/criterion-fil-source
-          mkdir -p artifacts/criterion-fil-source
-
-          git archive --format=tar.gz \
-            --output=artifacts/criterion-fil-source/criterion-fil-source.tar.gz \
-            HEAD
-
-          cat > artifacts/criterion-fil-source/README.txt <<'EOF'
-          Criterion Fil-C source bundle
-
-          This bundle is intended to be built from source with Fil-C in the consuming
-          project's CI job or build environment. It is not a standalone prebuilt SDK.
+          cat > artifacts/criterion-fil-sdk/README.txt <<'EOF'
+          Criterion Fil-C SDK
 
           Supported target:
           - Linux x86-64 with /opt/fil
 
-          End-to-end example:
-          - see ci/filc-consumer for a minimal Meson consumer project that builds
-            Criterion as a subproject with Fil-C
-
-          Preferred installation path:
-
-            ./ci/install-fil-criterion-from-source.sh <criterion-source-dir> <install-prefix>
-
-          Example:
-
-            ./ci/install-fil-criterion-from-source.sh "$PWD" "$PWD/out"
-
-          Equivalent manual configure/build commands:
-
-            CC=/opt/fil/bin/filcc \
-            CXX=/opt/fil/bin/fil++ \
-            meson setup build \
-              --force-fallback-for=nanomsg,libgit2 \
-              -Dtheories=disabled \
-              -Ddiffs=disabled \
-              -Dfilc-simple=true \
-              -Dshared-library=false \
-              -Dtests=false \
-              -Dsamples=false
-
-            meson compile -C build criterion
-
-          The helper script installs:
-          - headers into <install-prefix>/include
-          - libcriterion.a into <install-prefix>/lib
-          - criterion.pc into <install-prefix>/lib/pkgconfig
+          Artifact layout:
+          - opt/criterion-fil/include
+          - opt/criterion-fil/lib
+          - opt/criterion-fil/lib/pkgconfig/criterion.pc
 
           Then build your downstream tests with:
 
-            export PKG_CONFIG_PATH="<install-prefix>/lib/pkgconfig"
-            /opt/fil/bin/filcc your-tests.c \
+            export CRITERION_PREFIX="$PWD/opt/criterion-fil"
+            export PKG_CONFIG_PATH="$CRITERION_PREFIX/lib/pkgconfig"
+
+            /opt/fil/bin/filcc your-tests.c -o your-tests \
               $(pkg-config --cflags --libs --static criterion)
+
+          Important:
+          - consumers must use /opt/fil on Linux x86-64
+          - the pkg-config metadata already enables CRITERION_FILC_SIMPLE
           EOF
 
       - name: Upload Fil-C artifact
         uses: actions/upload-artifact@v4
         with:
-          name: criterion-fil-source-linux-x86_64
-          path: artifacts/criterion-fil-source
+          name: criterion-fil-sdk-linux-x86_64
+          path: artifacts/criterion-fil-sdk
           if-no-files-found: error
 
   binaries:
