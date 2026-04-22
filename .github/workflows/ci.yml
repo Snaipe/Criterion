@@ -154,6 +154,70 @@ jobs:
           . $python_test_venv_activate
           meson test -C build
 
+  build-with-fil-c:
+    name: "Build with Fil-C"
+    runs-on: ubuntu-latest
+
+    env:
+      python_test_venv_activate: .venv/bin/activate
+
+    steps:
+      - name: "Platform setup"
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes \
+            pkgconf meson cmake git python3-pip python3-venv \
+            libgit2-dev libffi-dev libnanomsg-dev \
+            curl jq xz-utils
+
+      - name: Checkout Criterion
+        uses: actions/checkout@v5
+
+      - name: Install Fil-C
+        run: |
+          release_json="$(curl --fail --silent --show-error \
+            https://api.github.com/repos/pizlonator/fil-c/releases/latest)"
+          asset_url="$(printf '%s' "$release_json" | jq -r '
+            .assets[]
+            | select(.name | test("^filc-.*-linux-x86_64\\.tar\\.xz$"))
+            | .browser_download_url
+          ' | head -n1)"
+
+          if [ -z "$asset_url" ] || [ "$asset_url" = "null" ]; then
+            echo "Unable to find a Linux x86_64 Fil-C asset in the latest release." >&2
+            exit 1
+          fi
+
+          mkdir -p .filc
+          curl --fail --location --silent --show-error "$asset_url" --output .filc/filc.tar.xz
+          tar -xJf .filc/filc.tar.xz -C .filc --strip-components=1
+          (
+            cd .filc
+            ./setup.sh
+          )
+
+      - name: "Setup Python test venv"
+        run: |
+          python3 -m venv .venv
+          . $python_test_venv_activate
+          pip install cram==0.7
+
+      - name: "Setup"
+        env:
+          CC: ${{ github.workspace }}/.filc/build/bin/clang
+          CXX: ${{ github.workspace }}/.filc/build/bin/clang++
+        run: |
+          . $python_test_venv_activate
+          meson setup build
+
+      - name: "Build"
+        env:
+          CC: ${{ github.workspace }}/.filc/build/bin/clang
+          CXX: ${{ github.workspace }}/.filc/build/bin/clang++
+        run: |
+          . $python_test_venv_activate
+          meson compile -C build
+
   binaries:
     name: "Binaries"
     uses: ./.github/workflows/binaries.yml
