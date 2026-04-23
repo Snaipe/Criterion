@@ -127,12 +127,14 @@ jobs:
         run: |
           . $python_test_venv_activate
           rm -rf /tmp/criterion-filc-prefix
+          export CRITERION_FILC_SHARED_LIBRARY=true
           ./ci/install-fil-criterion-from-source.sh "$PWD" /tmp/criterion-filc-prefix
 
       - name: "Smoke test installed Fil-C SDK"
         run: |
           . $python_test_venv_activate
           export PKG_CONFIG_PATH=/tmp/criterion-filc-prefix/lib/pkgconfig
+          export LD_LIBRARY_PATH=/tmp/criterion-filc-prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
           cat > /tmp/smoke-criterion.c <<'EOF'
           #include <criterion/criterion.h>
@@ -142,12 +144,21 @@ jobs:
           }
           EOF
 
+          # Dynamic link against libcriterion.so (requires LD_LIBRARY_PATH).
           /opt/fil/bin/filcc \
             /tmp/smoke-criterion.c \
-            -o /tmp/smoke-criterion \
+            -o /tmp/smoke-criterion-dynamic \
+            $(pkg-config --cflags --libs criterion)
+
+          /tmp/smoke-criterion-dynamic
+
+          # Static link against libcriterion.a (does not require LD_LIBRARY_PATH).
+          /opt/fil/bin/filcc \
+            /tmp/smoke-criterion.c \
+            -o /tmp/smoke-criterion-static \
             $(pkg-config --cflags --libs --static criterion)
 
-          /tmp/smoke-criterion
+          /tmp/smoke-criterion-static
 
       - name: "Create Fil-C SDK artifact"
         run: |
@@ -172,7 +183,7 @@ jobs:
             export PKG_CONFIG_PATH="$CRITERION_PREFIX/lib/pkgconfig"
 
             /opt/fil/bin/filcc your-tests.c -o your-tests \
-              $(pkg-config --cflags --libs --static criterion)
+              $(pkg-config --cflags --libs criterion)
 
           Important:
           - consumers must use /opt/fil on Linux x86-64

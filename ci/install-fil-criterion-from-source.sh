@@ -8,6 +8,7 @@ fi
 
 criterion_src="$1"
 install_prefix="$2"
+shared_library="${CRITERION_FILC_SHARED_LIBRARY:-false}"
 
 if [ ! -d "$criterion_src" ]; then
   echo "criterion source directory not found: $criterion_src" >&2
@@ -30,7 +31,7 @@ meson setup "$build_dir" "$criterion_src" \
   -Dtheories=disabled \
   -Ddiffs=disabled \
   -Dfilc-simple=true \
-  -Dshared-library=false \
+  -Dshared-library="$shared_library" \
   -Dtests=false \
   -Dsamples=false \
   --prefix="$install_prefix"
@@ -52,6 +53,15 @@ if [ ! -f "$criterion_lib" ]; then
 fi
 if [ -z "${criterion_lib:-}" ] || [ ! -f "$criterion_lib" ]; then
   criterion_lib="$(find "$build_dir" -type f -name 'libcriterion*.a' | head -n1)"
+fi
+
+criterion_shared_lib=""
+if [ "$shared_library" = "true" ]; then
+  criterion_shared_lib="$(find "$build_dir" -type f -name 'libcriterion.so*' | head -n1)"
+  if [ -z "${criterion_shared_lib:-}" ] || [ ! -f "$criterion_shared_lib" ]; then
+    echo "Missing Criterion shared library (libcriterion.so)" >&2
+    exit 1
+  fi
 fi
 
 boxfort_lib="$(find "$build_dir" -type f -name 'libboxfort*.a' | head -n1)"
@@ -79,6 +89,11 @@ if [ -z "$nanopb_lib" ] || [ ! -f "$nanopb_lib" ]; then
 fi
 
 cp "$criterion_lib" "$install_prefix/lib/"
+if [ -n "${criterion_shared_lib:-}" ]; then
+  # Preserve symlinks if Meson produced them.
+  cp -P "$build_dir/src/libcriterion.so"* "$install_prefix/lib/" 2>/dev/null || true
+  cp "$criterion_shared_lib" "$install_prefix/lib/"
+fi
 cp "$boxfort_lib" "$install_prefix/lib/"
 cp "$nanomsg_lib" "$install_prefix/lib/"
 cp "$nanopb_lib" "$install_prefix/lib/"
