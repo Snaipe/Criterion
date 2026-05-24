@@ -20,7 +20,10 @@ Command line arguments
   a number of jobs ideal for your hardware configuration.
 * ``--filter [PATTERN]``: Run tests whose string identifier matches
   the given shell wildcard pattern (see dedicated section below). (\*nix only)
-* ``--timeout [TIMEOUT]``: Set a timeout (in seconds) for all tests
+* ``--timeout [TIMEOUT]``: Cap the timeout (in seconds) for all tests,
+  overriding any per-test value that exceeds it.
+* ``--default-timeout [TIMEOUT]``: Set a fallback timeout (in seconds)
+  applied only to tests with no timeout set.
 * ``--debug[=debugger]``: Run tests with a debugging server attached.
   ``debugger`` can be 'gdb', 'lldb', or 'windbg' (windows only).
 * ``--debug-transport [TRANSPORT]``: Make the debugging server use the
