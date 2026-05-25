@@ -16,7 +16,8 @@ Display the help message
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
       --filter [PATTERN]: run tests matching the given pattern
-      --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
+      --timeout [TIMEOUT]: cap the timeout (in seconds) for all tests, overriding any per-test value that exceeds it
+      --default-timeout [TIMEOUT]: set a fallback timeout (in seconds) applied only to tests with no timeout set
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)
@@ -49,7 +50,8 @@ C++ equivalents
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
       --filter [PATTERN]: run tests matching the given pattern
-      --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
+      --timeout [TIMEOUT]: cap the timeout (in seconds) for all tests, overriding any per-test value that exceeds it
+      --default-timeout [TIMEOUT]: set a fallback timeout (in seconds) applied only to tests with no timeout set
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)

@@ -70,8 +70,12 @@
     "name of the source file on a failure\n"                \
     "    --filter [PATTERN]: run tests matching the "       \
     "given pattern\n"                                       \
-    "    --timeout [TIMEOUT]: set a timeout (in seconds) "  \
-    "for all tests\n"                                       \
+    "    --timeout [TIMEOUT]: cap the timeout (in "         \
+    "seconds) for all tests, overriding any per-test "      \
+    "value that exceeds it\n"                               \
+    "    --default-timeout [TIMEOUT]: set a fallback "      \
+    "timeout (in seconds) applied only to tests with "      \
+    "no timeout set\n"                                      \
     "    --tap[=FILE]: writes TAP report in FILE "          \
     "(no file or \"-\" means stderr)\n"                     \
     "    --xml[=FILE]: writes XML report in FILE "          \
@@ -264,6 +268,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         { "ascii",           no_argument,       0, 'k' },
         { "jobs",            required_argument, 0, 'j' },
         { "timeout",         required_argument, 0, 't' },
+        { "default-timeout", required_argument, 0, 'g' },
         { "fail-fast",       no_argument,       0, 'f' },
         { "short-filename",  no_argument,       0, 'S' },
         { "single",          required_argument, 0, 's' },
@@ -394,6 +399,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'q': quiet = true; break;
 
             case 't': criterion_options.timeout = atof(optarg); break;
+            case 'g': criterion_options.default_timeout = atof(optarg); break;
 
             case 'd':
                 if (!parse_dbg(optarg))

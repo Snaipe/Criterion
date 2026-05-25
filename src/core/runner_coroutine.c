@@ -344,6 +344,8 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         timeout = ctx->test->data->timeout;
     if (criterion_options.timeout > 0 && timeout > criterion_options.timeout)
         timeout = criterion_options.timeout;
+    if (timeout <= 0 && criterion_options.default_timeout > 0)
+        timeout = criterion_options.default_timeout;
 
     sp.iquotas.runtime = timeout;
 
