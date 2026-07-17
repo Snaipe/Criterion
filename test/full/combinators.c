@@ -12,6 +12,12 @@ Test(combinators, not_all) {
     cr_expect(not(none(eq(i32, 1, 1))));
 }
 
+Test(combinators, siblings) {
+    cr_expect(all(any(eq(i32, 1, 1), eq(i32, 1, 0)), any(eq(i32, 2, 2))));
+    cr_expect(any(all(eq(i32, 1, 0)), all(eq(i32, 2, 2))));
+    cr_expect(none(any(eq(i32, 1, 0)), any(eq(i32, 0, 1))));
+}
+
 Test(combinators, not_all_fails) {
     cr_expect(not(all(eq(i32, 1, 1), eq(i32, 2, 2))));
 }

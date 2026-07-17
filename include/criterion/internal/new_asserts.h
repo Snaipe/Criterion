@@ -113,8 +113,8 @@
     if (cri_cond_un != cri_cond_expect)          \
         cri_assert_node_negate(cri_prevnode)
 
-#define CRI_ASSERT_SPECIFIER_ALL_INDIRECT(Cond, E);             \
-    cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E);  \
+#define CRI_ASSERT_SPECIFIER_ALL_INDIRECT(Cond, E);                     \
+    { cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); }      \
     Cond = Cond && cri_cond_un
 
 #define CRI_ASSERT_TEST_SPECIFIER_all(...)            ,
@@ -131,12 +131,12 @@
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 
-#define CRI_ASSERT_SPECIFIER_NONE_INDIRECT(Cond, E);            \
-    cri_cond_expect = !cri_cond_expect;                         \
-    cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E);  \
-    if (cri_cond_un != cri_cond_expect)                         \
-      cri_assert_node_negate(cri_prevnode);                     \
-    cri_cond_expect = !cri_cond_expect;                         \
+#define CRI_ASSERT_SPECIFIER_NONE_INDIRECT(Cond, E);                    \
+    cri_cond_expect = !cri_cond_expect;                                 \
+    { cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); }      \
+    if (cri_cond_un != cri_cond_expect)                                 \
+      cri_assert_node_negate(cri_prevnode);                             \
+    cri_cond_expect = !cri_cond_expect;                                 \
     Cond = Cond && !(cri_cond_un)
 
 #define CRI_ASSERT_TEST_SPECIFIER_none(...)            ,
@@ -153,8 +153,8 @@
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 
-#define CRI_ASSERT_SPECIFIER_ANY_INDIRECT(Cond, E)              \
-    ; cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); \
+#define CRI_ASSERT_SPECIFIER_ANY_INDIRECT(Cond, E)                      \
+    ; { cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); }    \
     Cond = Cond || cri_cond_un
 
 #define CRI_ASSERT_TEST_SPECIFIER_any(...)            ,
