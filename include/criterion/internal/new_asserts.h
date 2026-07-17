@@ -154,7 +154,8 @@
     } while (0); cri_pass = cri_pass_orig
 
 #define CRI_ASSERT_SPECIFIER_ANY_INDIRECT(Cond, E)              \
-    ; Cond = Cond || CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E)
+    ; cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); \
+    Cond = Cond || cri_cond_un
 
 #define CRI_ASSERT_TEST_SPECIFIER_any(...)            ,
 #define CRI_ASSERT_SPECIFIER_any(...)                                                   \
@@ -166,7 +167,7 @@
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_ANY_INDIRECT, cri_cond, __VA_ARGS__);  \
         cri_node->pass = !!cri_cond;                                                    \
-        *cri_pass = *cri_pass && cri_cond;                                              \
+        *cri_pass = *cri_pass || cri_cond;                                              \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 
