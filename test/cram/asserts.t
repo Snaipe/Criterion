@@ -25,6 +25,12 @@ Testing all assert messages
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
   [----] failmessages.c:217: Assertion Failed
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
   [----] failmessages.c:218: Assertion Failed
   [----]   eq(i32, 1, 1): 
   [----]     @@@ <no difference -- this is a user bug in the object stringifier>
@@ -543,6 +549,12 @@ C++ equivalents
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
   [----] failmessages.cc:217: Assertion Failed
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
   [----] failmessages.cc:218: Assertion Failed
   [----]   eq(i32, 1, 1): 
   [----]     @@@ <no difference -- this is a user bug in the object stringifier>
