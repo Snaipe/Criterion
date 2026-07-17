@@ -127,7 +127,7 @@
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_ALL_INDIRECT, cri_cond, __VA_ARGS__);  \
         cri_node->pass = !!cri_cond;                                                    \
-        *cri_pass = *cri_pass && cri_cond;                                              \
+        *cri_pass = cri_cond;                                                           \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 
@@ -149,7 +149,7 @@
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_NONE_INDIRECT, cri_cond, __VA_ARGS__); \
         cri_node->pass = !!cri_cond;                                                    \
-        *cri_pass = *cri_pass && cri_cond;                                              \
+        *cri_pass = cri_cond;                                                           \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 
@@ -167,7 +167,7 @@
         int cri_cond = cri_cond_def                                                     \
             CRITERION_APPLY(CRI_ASSERT_SPECIFIER_ANY_INDIRECT, cri_cond, __VA_ARGS__);  \
         cri_node->pass = !!cri_cond;                                                    \
-        *cri_pass = *cri_pass || cri_cond;                                              \
+        *cri_pass = cri_cond;                                                           \
         cri_prevnode = cri_node;                                                        \
     } while (0); cri_pass = cri_pass_orig
 

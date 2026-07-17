@@ -1,4 +1,5 @@
 full_tests = [
+	'combinators.c',
 	'exit.c',
 	'failmessages.c',
 	'flood.c',
