@@ -35,8 +35,9 @@ Testing all assert messages
   [----]     diff: [-1-]{+0+}
   [----] failmessages.c:218: Assertion Failed
   [----]   none(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 1)): 
-  [----]   eq(i32, 1, 1): 
-  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
+  [----]   eq(i32, 1, 1): passed, but was expected to fail
+  [----]     actual: 1
+  [----]     expected: 1
   [FAIL] message::compo
   [----] failmessages.c:168: Assertion Failed
   [----]   all(lt(i8, 1, 0), le(i8, 1, 0), gt(i8, 0, 1), ge(i8, 0, 1)): 
@@ -475,71 +476,71 @@ Testing all assert messages
   [FAIL] messages::report_escape
   [----] failmessages.c:53: Assertion Failed
   [----]   not(zero(i8, 0)): 
-  [----]   zero(i8, 0): 
+  [----]   zero(i8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:54: Assertion Failed
   [----]   not(zero(i16, 0)): 
-  [----]   zero(i16, 0): 
+  [----]   zero(i16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:55: Assertion Failed
   [----]   not(zero(i32, 0)): 
-  [----]   zero(i32, 0): 
+  [----]   zero(i32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:56: Assertion Failed
   [----]   not(zero(i64, 0)): 
-  [----]   zero(i64, 0): 
+  [----]   zero(i64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:57: Assertion Failed
   [----]   not(zero(u8, 0)): 
-  [----]   zero(u8, 0): 
+  [----]   zero(u8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:58: Assertion Failed
   [----]   not(zero(u16, 0)): 
-  [----]   zero(u16, 0): 
+  [----]   zero(u16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:59: Assertion Failed
   [----]   not(zero(u32, 0)): 
-  [----]   zero(u32, 0): 
+  [----]   zero(u32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:60: Assertion Failed
   [----]   not(zero(u64, 0)): 
-  [----]   zero(u64, 0): 
+  [----]   zero(u64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:61: Assertion Failed
   [----]   not(zero(iptr, 0)): 
-  [----]   zero(iptr, 0): 
+  [----]   zero(iptr, 0): passed, but was expected to fail
   [----]     value: 0x0
   [----] failmessages.c:62: Assertion Failed
   [----]   not(zero(uptr, 0)): 
-  [----]   zero(uptr, 0): 
+  [----]   zero(uptr, 0): passed, but was expected to fail
   [----]     value: 0x0
   [----] failmessages.c:63: Assertion Failed
   [----]   not(zero(flt, 0)): 
-  [----]   zero(flt, 0): 
+  [----]   zero(flt, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:64: Assertion Failed
   [----]   not(zero(dbl, 0)): 
-  [----]   zero(dbl, 0): 
+  [----]   zero(dbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:65: Assertion Failed
   [----]   not(zero(ldbl, 0)): 
-  [----]   zero(ldbl, 0): 
+  [----]   zero(ldbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:68: Assertion Failed
   [----]   not(zero(ptr, 0)): 
-  [----]   zero(ptr, 0): 
+  [----]   zero(ptr, 0): passed, but was expected to fail
   [----]     value: 0x0
   [----] failmessages.c:69: Assertion Failed
   [----]   not(zero(str, "")): 
-  [----]   zero(str, ""): 
+  [----]   zero(str, ""): passed, but was expected to fail
   [----]     value: ""
   [----] failmessages.c:70: Assertion Failed
   [----]   not(zero(wcs, L"")): 
-  [----]   zero(wcs, L""): 
+  [----]   zero(wcs, L""): passed, but was expected to fail
   [----]     value: L""
   [----] failmessages.c:75: Assertion Failed
   [----]   not(zero(type(struct dummy_struct), dummy1)): 
-  [----]   zero(type(struct dummy_struct), dummy1): 
+  [----]   zero(type(struct dummy_struct), dummy1): passed, but was expected to fail
   [----]     value: (struct dummy_struct) {
   [----]       \t.a = 0, (esc)
   [----]       \t.b = 0 (esc)
@@ -598,14 +599,16 @@ C++ equivalents
   [----]     diff: [-1-]{+0+}
   [----] failmessages.cc:218: Assertion Failed
   [----]   none(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 1)): 
-  [----]   eq(i32, 1, 1): 
-  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
+  [----]   eq(i32, 1, 1): passed, but was expected to fail
+  [----]     actual: 1
+  [----]     expected: 1
   [FAIL] message::compo
   [----] failmessages.cc:222: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("exception message")): 
   [----]     message: "exception message"
   [----] failmessages.cc:223: Assertion Failed
   [----]   not(throw(std::invalid_argument, throw std::invalid_argument("exception message"))): 
+  [----]   throw(std::invalid_argument, throw std::invalid_argument("exception message")): passed, but was expected to fail
   [----] failmessages.cc:224: Assertion Failed
   [----]   nothrow(throw std::invalid_argument("exception message")): 
   [----]     message: "exception message"
@@ -1065,82 +1068,82 @@ C++ equivalents
   [FAIL] messages::report_escape
   [----] failmessages.cc:50: Assertion Failed
   [----]   not(zero(i8, 0)): 
-  [----]   zero(i8, 0): 
+  [----]   zero(i8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:51: Assertion Failed
   [----]   not(zero(i16, 0)): 
-  [----]   zero(i16, 0): 
+  [----]   zero(i16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:52: Assertion Failed
   [----]   not(zero(i32, 0)): 
-  [----]   zero(i32, 0): 
+  [----]   zero(i32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:53: Assertion Failed
   [----]   not(zero(i64, 0)): 
-  [----]   zero(i64, 0): 
+  [----]   zero(i64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:54: Assertion Failed
   [----]   not(zero(u8, 0)): 
-  [----]   zero(u8, 0): 
+  [----]   zero(u8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:55: Assertion Failed
   [----]   not(zero(u16, 0)): 
-  [----]   zero(u16, 0): 
+  [----]   zero(u16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:56: Assertion Failed
   [----]   not(zero(u32, 0)): 
-  [----]   zero(u32, 0): 
+  [----]   zero(u32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:57: Assertion Failed
   [----]   not(zero(u64, 0)): 
-  [----]   zero(u64, 0): 
+  [----]   zero(u64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:58: Assertion Failed
   [----]   not(zero(iptr, 0)): 
-  [----]   zero(iptr, 0): 
+  [----]   zero(iptr, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:59: Assertion Failed
   [----]   not(zero(uptr, 0)): 
-  [----]   zero(uptr, 0): 
+  [----]   zero(uptr, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:60: Assertion Failed
   [----]   not(zero(flt, 0)): 
-  [----]   zero(flt, 0): 
+  [----]   zero(flt, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:61: Assertion Failed
   [----]   not(zero(dbl, 0)): 
-  [----]   zero(dbl, 0): 
+  [----]   zero(dbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:62: Assertion Failed
   [----]   not(zero(ldbl, 0)): 
-  [----]   zero(ldbl, 0): 
+  [----]   zero(ldbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:65: Assertion Failed
   [----]   not(zero(ptr, 0)): 
-  [----]   zero(ptr, 0): 
+  [----]   zero(ptr, 0): passed, but was expected to fail
   [----]     value: nullptr
   [----] failmessages.cc:66: Assertion Failed
   [----]   not(zero(str, "")): 
-  [----]   zero(str, ""): 
+  [----]   zero(str, ""): passed, but was expected to fail
   [----]     value: ""
   [----] failmessages.cc:67: Assertion Failed
   [----]   not(zero(wcs, L"")): 
-  [----]   zero(wcs, L""): 
+  [----]   zero(wcs, L""): passed, but was expected to fail
   [----]     value: L""
   [----] failmessages.cc:69: Assertion Failed
   [----]   not(zero(type(dummy_struct), dummy_struct{})): 
-  [----]   zero(type(dummy_struct), dummy_struct{}): 
+  [----]   zero(type(dummy_struct), dummy_struct{}): passed, but was expected to fail
   [----]     value: (struct dummy_struct) {
   [----]       \t.a = 0, (esc)
   [----]       \t.b = 0 (esc)
   [----]       }
   [----] failmessages.cc:73: Assertion Failed
   [----]   not(zero(type(int_vect), int_vect{})): 
-  [----]   zero(type(int_vect), int_vect{}): 
+  [----]   zero(type(int_vect), int_vect{}): passed, but was expected to fail
   [----]     value: {}
   [----] failmessages.cc:76: Assertion Failed
   [----]   not(zero(type(string_int_map), string_int_map{})): 
-  [----]   zero(type(string_int_map), string_int_map{}): 
+  [----]   zero(type(string_int_map), string_int_map{}): passed, but was expected to fail
   [----]     value: {}
   [FAIL] messages::zero
   [====] Synthesis: Tested: 7 | Passing: 0 | Failing: 7 | Crashing: 0 

@@ -115,10 +115,14 @@ static criterion_protocol_result *collect_leaves(
     if (nbparams > 0) {
         res->repr = (char *) tree->repr;
         res->message = (char *) tree->message;
+        res->has_negated = true;
+        res->negated = tree->negated;
 
         const size_t display_threshold = 40;
 
-        if (nbparams == 2) {
+        /* Negated operands are recorded because they matched; diffing
+           them would come up empty, so always send them verbatim. */
+        if (nbparams == 2 && !tree->negated) {
             if (strcmp(tree->params[0].name, "actual")
                     || strcmp(tree->params[1].name, "expected")) {
                 goto process_params;
@@ -182,10 +186,12 @@ static criterion_protocol_result *collect_leaves(
     /* Combinator group nodes announce themselves in a value-less header
        result before their failing operands are reported. The root node
        has no repr and stays silent. */
-    if (tree->repr && tree->nchild > 0) {
+    if (tree->repr && (tree->nchild > 0 || tree->negated)) {
         *res = (criterion_protocol_result) {
             .repr = (char *) tree->repr,
             .message = (char *) tree->message,
+            .has_negated = true,
+            .negated = tree->negated,
         };
         ++res;
     }
