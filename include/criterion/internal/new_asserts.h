@@ -105,13 +105,19 @@
 /* Logical specifiers */
 
 #define CRI_ASSERT_TEST_SPECIFIER_not(...)    ,
-#define CRI_ASSERT_SPECIFIER_not(E)              \
-    cri_cond_expect = !cri_cond_expect;          \
-    CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); \
-    cri_cond_expect = !cri_cond_expect;          \
-    cri_cond_un = !cri_cond_un;                  \
-    if (cri_cond_un != cri_cond_expect)          \
-        cri_assert_node_negate(cri_prevnode)
+#define CRI_ASSERT_SPECIFIER_not(E)                                                     \
+    cri_cond_def; int *cri_pass_orig = cri_pass; cri_pass = &cri_cond_un; do {          \
+        cri_assert_node_init(&cri_tmpn);                                                \
+        cri_tmpn.repr = "not(" CR_STR(E) ")";                                           \
+        struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);     \
+        struct cri_assert_node *cri_node = cri_tmp;                                     \
+        int cri_cond_def = 1, cri_cond_un;                                              \
+        int cri_cond = cri_cond_def                                                     \
+            CRITERION_APPLY(CRI_ASSERT_SPECIFIER_NONE_INDIRECT, cri_cond, E);           \
+        cri_node->pass = !!cri_cond;                                                    \
+        *cri_pass = cri_cond;                                                           \
+        cri_prevnode = cri_node;                                                        \
+    } while (0); cri_pass = cri_pass_orig
 
 #define CRI_ASSERT_SPECIFIER_ALL_INDIRECT(Cond, E);                     \
     { cri_cond_un = CRI_OBSTRUCT_N(CRI_SPECIFIER_INDIRECT)()(E); }      \
