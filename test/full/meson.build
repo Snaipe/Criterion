@@ -28,7 +28,7 @@ if has_cxx
 	endif
 endif
 
-executable('default-timeout.c.bin', 'default-timeout.c',
+default_timeout = executable('default-timeout.c.bin', 'default-timeout.c',
 		include_directories: [criterion_api],
 		link_with: libcriterion.get_shared_lib())
 
