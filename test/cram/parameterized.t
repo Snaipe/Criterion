@@ -46,23 +46,33 @@ Using parameterized tests
   [----]   Parameter: 3
   [----]   
   [FAIL] params::simple
-  [----] parameterized.c:113: Assertion Failed
+  [----] parameterized.c:99: Assertion Failed
+  [----]   
+  [----]   static strings: (foo, foo)
+  [----]   
+  [FAIL] params::static_string
+  [----] parameterized.c:99: Assertion Failed
+  [----]   
+  [----]   static strings: (bar, bar)
+  [----]   
+  [FAIL] params::static_string
+  [----] parameterized.c:133: Assertion Failed
   [----]   
   [----]   string: Hello
   [----]   
   [FAIL] params::string
-  [----] parameterized.c:113: Assertion Failed
+  [----] parameterized.c:133: Assertion Failed
   [----]   
   [----]   string: World
   [----]   
   [FAIL] params::string
-  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
+  [====] Synthesis: Tested: 13 | Passing: 0 | Failing: 13 | Crashing: 0 
 
 Using parameterized tests (verbose)
 
   $ parameterized.c.bin --verbose
   \[----\] Criterion v.* (re)
-  [====] Running 4 tests from params:
+  [====] Running 5 tests from params:
   [RUN ] params::cleanup
   [----] parameterized.c:79: Assertion Failed
   [----]   
@@ -117,27 +127,40 @@ Using parameterized tests (verbose)
   [----]   Parameter: 3
   [----]   
   [FAIL] params::simple
+  [RUN ] params::static_string
+  [----] parameterized.c:99: Assertion Failed
+  [----]   
+  [----]   static strings: (foo, foo)
+  [----]   
+  [FAIL] params::static_string
+  [RUN ] params::static_string
+  [----] parameterized.c:99: Assertion Failed
+  [----]   
+  [----]   static strings: (bar, bar)
+  [----]   
+  [FAIL] params::static_string
   [RUN ] params::string
-  [----] parameterized.c:113: Assertion Failed
+  [----] parameterized.c:133: Assertion Failed
   [----]   
   [----]   string: Hello
   [----]   
   [FAIL] params::string
   [RUN ] params::string
-  [----] parameterized.c:113: Assertion Failed
+  [----] parameterized.c:133: Assertion Failed
   [----]   
   [----]   string: World
   [----]   
   [FAIL] params::string
-  [====] Synthesis: Tested: 11 | Passing: 0 | Failing: 11 | Crashing: 0 
+  [====] Synthesis: Tested: 13 | Passing: 0 | Failing: 13 | Crashing: 0 
 
 Parameterized tests should be listed as one test
 
   $ parameterized.c.bin --list
-  params: 4 tests
+  params: 5 tests
   |-- cleanup
   |-- multiple
   |-- simple
+  |-- static_string
   `-- string
 
 C++ equivalents

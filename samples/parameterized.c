@@ -79,6 +79,26 @@ ParameterizedTest(struct parameter_tuple_dyn *tup, params, cleanup) {
     cr_fatal("Parameters: (%d, %f)", tup->i, *tup->d);
 }
 
+/* Using static strings in parameterized tests */
+
+struct string_tuple {
+    const char *input;
+    const char *expected;
+};
+
+ParameterizedTestParameters(params, static_string) {
+    static struct string_tuple params[] = {
+        { "foo", "foo" },
+        { "bar", "bar" },
+    };
+
+    return cr_make_param_array(struct string_tuple, params, sizeof (params) / sizeof (params[0]));
+}
+
+ParameterizedTest(struct string_tuple *tup, params, static_string) {
+    cr_fatal("static strings: (%s, %s)", tup->input, tup->expected);
+}
+
 /* Using strings in parameterized tests */
 
 /* you **MUST** use cr_malloc, cr_free, cr_realloc, and cr_calloc instead of their
