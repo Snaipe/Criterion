@@ -54,13 +54,6 @@ CR_API struct cri_assert_node *cri_assert_node_add(struct cri_assert_node *tree,
     return &tree->children[tree->nchild - 1];
 }
 
-CR_API void cri_assert_node_negate(struct cri_assert_node *tree)
-{
-    for (size_t i = 0; i < tree->nchild; ++i)
-        cri_assert_node_negate(&tree->children[i]);
-    tree->pass = !tree->pass;
-}
-
 CR_API void cri_assert_node_term(struct cri_assert_node *tree)
 {
     for (struct cri_assert_param *p = &tree->params[0]; p->name; ++p)
@@ -73,13 +66,18 @@ CR_API void cri_assert_node_term(struct cri_assert_node *tree)
         free((char *) tree->repr);
 }
 
+static bool node_failed(const struct cri_assert_node *node)
+{
+    return node->pass == node->negated;
+}
+
 static size_t leaf_count(struct cri_assert_node *tree)
 {
     size_t count = 0;
 
     for (size_t i = 0; i < tree->nchild; ++i) {
         struct cri_assert_node *node = &tree->children[i];
-        if (!node->pass)
+        if (node_failed(node))
             ++count;
         if (node->nchild > 0)
             count += leaf_count(&tree->children[i]);
@@ -183,7 +181,7 @@ static criterion_protocol_result *collect_leaves(
 
     for (size_t i = 0; i < tree->nchild; ++i) {
         struct cri_assert_node *node = &tree->children[i];
-        if (node->pass)
+        if (!node_failed(node))
             continue;
         res = collect_leaves(res, node);
     }
