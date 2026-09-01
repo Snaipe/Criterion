@@ -56,7 +56,9 @@
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
             cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
-        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
+        cri_tmpn.pass = !!cri_cond_un;                              \
+        cri_tmpn.negated = !cri_cond_expect;                        \
+        cri_assert_node_add(cri_node, &cri_tmpn);                   \
     } while (0)
 
 #define CRI_ASSERT_TEST_SPECIFIER_nothrow(...) ,
@@ -82,7 +84,9 @@
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
             cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
-        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
+        cri_tmpn.pass = !!cri_cond_un;                              \
+        cri_tmpn.negated = !cri_cond_expect;                        \
+        cri_assert_node_add(cri_node, &cri_tmpn);                   \
     } while (0)
 
 #define CRI_ASSERT_TEST_SPECIFIER_anythrow(...) ,
@@ -101,7 +105,9 @@
             cri_tmpn.params[0].type = CRI_ASSERT_RT_STR;            \
             cri_tmpn.params[0].data = cri_str;                      \
         }                                                           \
-        cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);    \
+        cri_tmpn.pass = !!cri_cond_un;                              \
+        cri_tmpn.negated = !cri_cond_expect;                        \
+        cri_assert_node_add(cri_node, &cri_tmpn);                   \
     } while (0)
 
 #endif /* !CRITERION_INTERNAL_ASSERT_EXCEPTIONS_H_ */

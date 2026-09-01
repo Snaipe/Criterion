@@ -1,4 +1,5 @@
 full_tests = [
+	'combinators.c',
 	'exit.c',
 	'failmessages.c',
 	'flood.c',
@@ -8,6 +9,7 @@ full_tests = [
 
 	# bug-specific programs
 	'bug463.c',
+	'bug594.c',
 ]
 
 if get_option('theories').enabled()
