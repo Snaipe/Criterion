@@ -158,8 +158,13 @@ static criterion_protocol_result *collect_leaves(
             actual.ptr[actual_len] = '\n';
 
             int rc = cri_diff_buffer_to_buffer(&expected, &actual, &diff);
-            if (rc < 0)
-                res->value.formatted = NULL;
+            if (rc < 0 || !diff.ptr) {
+                /* An empty or failed diff can't explain the mismatch;
+                   fall back to the raw values. */
+                expected.ptr[expected_len] = '\0';
+                actual.ptr[actual_len] = '\0';
+                goto process_params;
+            }
 
             res->value.formatted = diff.ptr;
         } else {
