@@ -25,18 +25,17 @@ env:
   setup-alpine: &setup-alpine |
     apk add --update-cache --upgrade --no-cache \
       build-base pkgconf meson cmake git py3-pip \
-      libgit2-dev libffi-dev # nanomsg-dev is currently broken
-  setup-alpine-armv7: &setup-alpine-armv7
-    apk add --update-cache --upgrade --no-cache build-base pkgconf meson cmake git py3-pip libgit2-dev libffi-dev
+      libgit2-dev libffi-dev nanomsg-dev
   setup-fedora: &setup-fedora |
     dnf install --assumeyes \
       @development-tools pkgconf meson cmake git python3-pip python3-virtualenv \
-      libgit2-devel libffi-devel # nanomsg-devel is currently broken
+      libgit2-devel libffi-devel nanomsg-devel
   setup-macos: &setup-macos |
     brew update
     brew install pkgconf meson cmake git libgit2 libffi nanomsg
   setup-windows: &setup-windows |
     choco install --yes --no-progress ninja cmake python
+    git config --global core.autocrlf false
 
 jobs:
   build-and-test:
@@ -51,20 +50,20 @@ jobs:
             setup: *setup-ubuntu
 
           - name: Ubuntu (AArch64)
-            os: ubuntu-24.04-arm
+            os: ubuntu-26.04-arm
             setup: *setup-ubuntu
 
-          # - name: macOS (x86-64)
-          #   os: macos-15-intel
-          #   setup: *setup-macos
+          - name: macOS (x86-64)
+            os: macos-26-intel
+            setup: *setup-macos
 
           - name: macOS (AArch64)
             os: macos-latest
             setup: *setup-macos
 
-          # - name: Windows (x86-64)
-          #   os: windows-latest
-          #   setup: *setup-windows
+          - name: Windows (x86-64)
+            os: windows-latest
+            setup: *setup-windows
 
           - name: Debian (x86-64)
             container: debian:latest
@@ -81,15 +80,15 @@ jobs:
 
           - name: Alpine (AArch64)
             container: alpine:latest
-            runs-on: ubuntu-24.04-arm
+            runs-on: ubuntu-26.04-arm
             setup: *setup-alpine
             shell: sh
             checkout-workaround: true
 
           - name: Alpine (ARMv7)
             container: arm32v7/alpine:latest
-            runs-on: ubuntu-24.04-arm
-            setup: *setup-alpine-armv7
+            runs-on: ubuntu-26.04-arm
+            setup: *setup-alpine
             shell: sh
             checkout-workaround: true
 
@@ -109,7 +108,7 @@ jobs:
 
       - name: Checkout Criterion
         if: ${{ !matrix.platform.checkout-workaround }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Checkout Criterion (workaround)
         if: ${{ matrix.platform.checkout-workaround }}
@@ -134,7 +133,6 @@ jobs:
 
           if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
             pip install meson
-            git config --global core.autocrlf false
             patch --forward --directory=".venv\\Lib\\site-packages\\cram" < ci/cram-fix-winenv.patch
             patch --forward --directory=".venv\\Lib\\site-packages\\cram" < ci/cram-ignore-cr.patch
           fi
@@ -152,7 +150,39 @@ jobs:
       - name: "Test"
         run: |
           . $python_test_venv_activate
-          meson test -C build
+
+          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
+            export PATH="$(dirname "$(command -v gcc)"):$PATH"
+            meson devenv -C build ninja test
+          else
+            meson test -C build
+          fi
+
+  build-and-test-freebsd:
+    name: "CI @ FreeBSD (x86-64)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Criterion
+        uses: actions/checkout@v7
+
+      - name: "Build and test (FreeBSD VM)"
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "15"
+          copyback: false
+          prepare: |
+            pkg install -y gettext-tools pkgconf cmake meson git python3 libffi libgit2 nanomsg
+          run: |
+            set -e
+
+            python3 -m venv .venv
+            . .venv/bin/activate
+            pip install cram==0.7
+
+            meson setup -Db_lundef=false build
+            meson compile -C build
+            meson test -C build
 
   binaries:
     name: "Binaries"
