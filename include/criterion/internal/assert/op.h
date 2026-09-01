@@ -359,7 +359,8 @@
     1; do {                                                                         \
         CRI_ASSERT_NAMESPACES;                                                      \
         CRITERION_APPLY(CRI_ASSERT_IT_VAR, ARRTYPE, __VA_ARGS__)                    \
-        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag);                          \
+        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag,                           \
+                CRI_ASSERT_OPGET(VAR, CR_VA_HEAD(__VA_ARGS__)));                    \
         cri_assert_node_init(&cri_tmpn);                                            \
         const char *cri_repr = #Name "(" #Tag CR_STR CR_EXPAND(                     \
                 (CRITERION_APPLY(CRI_ASSERT_IT_VUNPACK, , __VA_ARGS__))             \
