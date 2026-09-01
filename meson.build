@@ -148,6 +148,10 @@ if (not nanomsg.found()
 	or 'nanomsg' in get_option('force_fallback_for'))
 
 	nanomsg_opts = cmake.subproject_options()
+ 	nanomsg_c_args = cc.get_supported_arguments(['-Wno-error=incompatible-pointer-types'])
+ 	if nanomsg_c_args.length() > 0
+ 		nanomsg_opts.add_cmake_defines({'CMAKE_C_FLAGS': ' '.join(nanomsg_c_args)})
+ 	endif
 	nanomsg_opts.add_cmake_defines({
 		'NN_TESTS': false,
 		'NN_TOOLS': false,
@@ -155,6 +159,7 @@ if (not nanomsg.found()
 		'BUILD_SHARED_LIBS': false,
 		'CMAKE_POSITION_INDEPENDENT_CODE': true,
 		'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
+		'CMAKE_POLICY_DEFAULT_CMP0219': 'NEW',
 	})
 	nanomsg_proj = cmake.subproject('nanomsg-cmake', options: nanomsg_opts)
 	nanomsg = nanomsg_proj.dependency('nanomsg')
