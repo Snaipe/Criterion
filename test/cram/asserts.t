@@ -39,6 +39,16 @@ Testing all assert messages
   [----]     actual: 1
   [----]     expected: 1
   [FAIL] message::compo
+  [----] failmessages.c:234: Assertion Failed
+  [----]   eq(i64[len], actual, expected): 
+  [----]     @@ -1,5 +1,5 @@
+  [----]      (int64_t[3]) {
+  [----]      \t[0] = 1, (esc)
+  [----]      \t[1] = 2, (esc)
+  [----]     -\t[2] = 3, (esc)
+  [----]     +\t[2] = 9, (esc)
+  [----]      }
+  [FAIL] messages::array_runtime_length
   [----] failmessages.c:168: Assertion Failed
   [----]   all(lt(i8, 1, 0), le(i8, 1, 0), gt(i8, 0, 1), ge(i8, 0, 1)): 
   [----]   lt(i8, 1, 0): 
@@ -546,7 +556,7 @@ Testing all assert messages
   [----]       \t.b = 0 (esc)
   [----]       }
   [FAIL] messages::zero
-  [====] Synthesis: Tested: 6 | Passing: 0 | Failing: 6 | Crashing: 0 
+  [====] Synthesis: Tested: 7 | Passing: 0 | Failing: 7 | Crashing: 0 
 
 Long assert messages should wrap
 
@@ -614,6 +624,16 @@ C++ equivalents
   [----]     message: "exception message"
   [----] failmessages.cc:225: Assertion Failed
   [FAIL] message::exception
+  [----] failmessages.cc:241: Assertion Failed
+  [----]   eq(i64[len], actual, expected): 
+  [----]     @@ -1,5 +1,5 @@
+  [----]      (int64_t[3]) {
+  [----]      \t[0] = 1, (esc)
+  [----]      \t[1] = 2, (esc)
+  [----]     -\t[2] = 3, (esc)
+  [----]     +\t[2] = 9, (esc)
+  [----]      }
+  [FAIL] messages::array_runtime_length
   [----] failmessages.cc:174: Assertion Failed
   [----]   all(lt(i8, 1, 0), le(i8, 1, 0), gt(i8, 0, 1), ge(i8, 0, 1)): 
   [----]   lt(i8, 1, 0): 
@@ -1146,7 +1166,7 @@ C++ equivalents
   [----]   zero(type(string_int_map), string_int_map{}): passed, but was expected to fail
   [----]     value: {}
   [FAIL] messages::zero
-  [====] Synthesis: Tested: 7 | Passing: 0 | Failing: 7 | Crashing: 0 
+  [====] Synthesis: Tested: 8 | Passing: 0 | Failing: 8 | Crashing: 0 
 
 Test C++ assertions:
 

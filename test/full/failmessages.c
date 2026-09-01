@@ -228,3 +228,15 @@ Test(messages, report_escape) {
     cr_fail("");
     cr_fail("\"dquote\" \\and\\ 'squote'\t\r\n<script>\x01.");
 }
+
+static void expect_i64_array_eq(int64_t *actual, int64_t *expected, size_t len)
+{
+    cr_expect(eq(i64[len], actual, expected));
+}
+
+Test(messages, array_runtime_length) {
+    int64_t a[] = { 1, 2, 3 };
+    int64_t b[] = { 1, 2, 9 };
+
+    expect_i64_array_eq(a, b, sizeof (a) / sizeof (a[0]));
+}
