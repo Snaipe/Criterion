@@ -76,7 +76,7 @@ $ sudo pip install cram==0.7
 ## Project Directory Structure
 
     .
-    |-- ci, .github, .cirrus.yml: CI and release pipeline
+    |-- ci, .github: CI and release pipeline
     |-- dependencies, subprojects: Dependencies for building libcriterion
     |-- dev: Developer files
     |-- doc: Sphinx documentation files
