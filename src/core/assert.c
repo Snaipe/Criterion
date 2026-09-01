@@ -179,6 +179,17 @@ static criterion_protocol_result *collect_leaves(
         return res + 1;
     }
 
+    /* Combinator group nodes announce themselves in a value-less header
+       result before their failing operands are reported. The root node
+       has no repr and stays silent. */
+    if (tree->repr && tree->nchild > 0) {
+        *res = (criterion_protocol_result) {
+            .repr = (char *) tree->repr,
+            .message = (char *) tree->message,
+        };
+        ++res;
+    }
+
     for (size_t i = 0; i < tree->nchild; ++i) {
         struct cri_assert_node *node = &tree->children[i];
         if (!node_failed(node))

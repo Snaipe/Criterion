@@ -126,6 +126,7 @@
 #define CRI_ASSERT_SPECIFIER_all(...)                                                   \
     cri_cond_def; int *cri_pass_orig = cri_pass; cri_pass = &cri_cond_un; do {          \
         cri_assert_node_init(&cri_tmpn);                                                \
+        cri_tmpn.repr = "all(" CR_STR(__VA_ARGS__) ")";                                 \
         cri_tmpn.negated = !cri_cond_expect;                                            \
         struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);     \
         struct cri_assert_node *cri_node = cri_tmp;                                     \
@@ -146,6 +147,7 @@
 #define CRI_ASSERT_SPECIFIER_none(...)                                                  \
     cri_cond_def; int *cri_pass_orig = cri_pass; cri_pass = &cri_cond_un; do {          \
         cri_assert_node_init(&cri_tmpn);                                                \
+        cri_tmpn.repr = "none(" CR_STR(__VA_ARGS__) ")";                                \
         cri_tmpn.negated = !cri_cond_expect;                                            \
         struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);     \
         struct cri_assert_node *cri_node = cri_tmp;                                     \
@@ -164,6 +166,7 @@
 #define CRI_ASSERT_SPECIFIER_any(...)                                                   \
     cri_cond_def; int *cri_pass_orig = cri_pass; cri_pass = &cri_cond_un; do {          \
         cri_assert_node_init(&cri_tmpn);                                                \
+        cri_tmpn.repr = "any(" CR_STR(__VA_ARGS__) ")";                                 \
         cri_tmpn.negated = !cri_cond_expect;                                            \
         struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn);     \
         struct cri_assert_node *cri_node = cri_tmp;                                     \

@@ -590,7 +590,8 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
                 break;
 
             default:
-                log(assert_formatted, &asrt_stats, "@@@ <no message or difference -- this is a user bug in the object stringifier>");
+                /* No value payload: a combinator group header; its
+                   failing operands follow as results of their own. */
                 break;
             }
         }

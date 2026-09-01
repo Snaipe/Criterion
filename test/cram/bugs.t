@@ -15,12 +15,16 @@ Nested assertion combinators must resolve and compose correctly
 
   $ combinators.c.bin
   [----] combinators.c:26: Assertion Failed
+  [----]   any(eq(i32, 1, 0), all(eq(i32, 1, 0), eq(i32, 1, 1))): 
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
+  [----]   all(eq(i32, 1, 0), eq(i32, 1, 1)): 
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
   [FAIL] combinators::nested_any_fails
   [----] combinators.c:22: Assertion Failed
+  [----]   not(all(eq(i32, 1, 1), eq(i32, 2, 2))): 
+  [----]   all(eq(i32, 1, 1), eq(i32, 2, 2)): 
   [----]   eq(i32, 1, 1): 
   [----]     @@@ <no difference -- this is a user bug in the object stringifier>
   [----]   eq(i32, 2, 2): 
