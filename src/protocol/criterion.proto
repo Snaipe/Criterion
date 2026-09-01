@@ -67,6 +67,8 @@ message result {
         param_list params = 3;
         string formatted = 4;
     }
+
+    optional bool negated = 5;
 }
 
 message assert {
