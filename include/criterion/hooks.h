@@ -67,6 +67,6 @@ typedef void (*f_report_hook)(void *);
  *
  *  @param Kind The report phase to hook the function onto.
  */
-#define ReportHook(Kind)    CR_REPORT_HOOK_IMPL(Kind)
+#define ReportHook(Kind)    CR_REPORT_HOOK_IMPL(Kind, __COUNTER__)
 
 #endif /* !CRITERION_HOOKS_H_ */

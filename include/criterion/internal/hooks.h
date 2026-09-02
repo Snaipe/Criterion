@@ -27,17 +27,12 @@
 #include "common.h"
 #include "../types.h"
 
-#define CR_HOOK_IDENTIFIER_(Suffix)            CR_HOOK_IDENTIFIER__(__LINE__, Suffix)
-#define CR_HOOK_IDENTIFIER__(Line, Suffix)     CR_HOOK_IDENTIFIER___(Line, Suffix)
-#define CR_HOOK_IDENTIFIER___(Line, Suffix)    hook_l ## Line ## _ ## Suffix
+#define CR_HOOK_IDENTIFIER_(Id, Suffix)           CR_HOOK_IDENTIFIER__(__LINE__, Id, Suffix)
+#define CR_HOOK_IDENTIFIER__(Line, Id, Suffix)    CR_HOOK_IDENTIFIER___(Line, Id, Suffix)
+#define CR_HOOK_IDENTIFIER___(Line, Id, Suffix)   hook_l ## Line ## _ ## Id ## _ ## Suffix
 
-#ifdef __cplusplus
-# define CR_HOOK_PROTOTYPE_ \
-    extern "C" void CR_HOOK_IDENTIFIER_(impl)
-#else
-# define CR_HOOK_PROTOTYPE_ \
-    void CR_HOOK_IDENTIFIER_(impl)
-#endif
+#define CR_HOOK_PROTOTYPE_(Id) \
+    static void CR_HOOK_IDENTIFIER_(Id, impl)
 
 /* Section abbreviations */
 #define CR_HOOK_SECTION_PRE_ALL        cr_pra
@@ -72,13 +67,13 @@
 
 #define CR_HOOK_PARAM_TYPE(Kind)    CR_HOOK_PARAM_TYPE_ ## Kind
 
-#define CR_REPORT_HOOK_IMPL(Kind)                     \
-    CR_HOOK_PROTOTYPE_(CR_HOOK_PARAM_TYPE(Kind));     \
-    CR_ATTRIBUTE(used)                                \
-    CR_SECTION_(CR_HOOK_SECTION_STRINGIFY(Kind))      \
-    f_report_hook CR_HOOK_IDENTIFIER_(func) =         \
-            (f_report_hook) CR_HOOK_IDENTIFIER_(impl) \
-            CR_SECTION_SUFFIX_;                       \
-    CR_HOOK_PROTOTYPE_
+#define CR_REPORT_HOOK_IMPL(Kind, Id)                         \
+    CR_HOOK_PROTOTYPE_(Id)(CR_HOOK_PARAM_TYPE(Kind));         \
+    CR_ATTRIBUTE(used)                                        \
+    CR_SECTION_(CR_HOOK_SECTION_STRINGIFY(Kind))              \
+    static f_report_hook CR_HOOK_IDENTIFIER_(Id, func) =      \
+            (f_report_hook) CR_HOOK_IDENTIFIER_(Id, impl)     \
+            CR_SECTION_SUFFIX_;                               \
+    CR_HOOK_PROTOTYPE_(Id)
 
 #endif /* !CRITERION_INTERNAL_HOOKS_H_ */

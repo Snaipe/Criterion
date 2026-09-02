@@ -106,3 +106,12 @@ https://github.com/Snaipe/Criterion/issues/342
   [RUN ] bug342_init::signal
   [SKIP] bug342_init::signal: skipped from init
   [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
+
+https://github.com/Snaipe/Criterion/issues/584
+
+  $ bug584.c.bin
+  PRE_INIT hook from bug584.c
+  PRE_INIT hook from bug584-other-file.c
+  PRE_TEST hook from a macro
+  POST_TEST hook from the same macro
+  [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
