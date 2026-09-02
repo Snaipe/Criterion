@@ -25,3 +25,9 @@ Test(combinators, not_all_fails) {
 Test(combinators, nested_any_fails) {
     cr_expect(any(eq(i32, 1, 0), all(eq(i32, 1, 0), eq(i32, 1, 1))));
 }
+
+Test(combinators, any_true_operand_in_any_position) {
+    cr_expect(any(eq(int, 0, 1), eq(int, 0, 2), eq(int, 3, 3)));
+    cr_expect(any(eq(int, 0, 1), eq(int, 2, 2), eq(int, 0, 3)));
+    cr_expect(any(eq(int, 1, 1), eq(int, 0, 2), eq(int, 0, 3)));
+}

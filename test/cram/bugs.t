@@ -32,7 +32,7 @@ Nested assertion combinators must resolve and compose correctly
   [----]     actual: 2
   [----]     expected: 2
   [FAIL] combinators::not_all_fails
-  [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 0 
+  [====] Synthesis: Tested: 6 | Passing: 4 | Failing: 2 | Crashing: 0 
 
 https://github.com/Snaipe/Criterion/issues/594
 
