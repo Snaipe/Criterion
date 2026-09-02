@@ -138,7 +138,15 @@ cmake = import('cmake')
 
 debugbreak = dependency('debugbreak')
 
-klib = dependency('klib')
+# klib is header-only
+klib_fallback = (get_option('wrap_mode') == 'forcefallback'
+	or 'klib' in get_option('force_fallback_for'))
+if not klib_fallback and cc.has_header('khash.h') and cc.has_header('kvec.h')
+	klib = declare_dependency()
+else
+	klib = dependency('klib',
+		not_found_message: 'klib is header-only: install khash.h and kvec.h, point CFLAGS at them, or allow the wrap fallback')
+endif
 
 threads = dependency('threads')
 
