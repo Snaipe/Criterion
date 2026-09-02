@@ -120,7 +120,8 @@ Freeing dynamically allocated parameter fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One can pass an extra parameter to ``cr_make_param_array`` to specify
-the cleanup function that should be called on the generated parameter context:
+the cleanup function that should be called on the generated parameter context
+once all the tests using these parameters have finished running:
 
 .. code-block:: c
 
