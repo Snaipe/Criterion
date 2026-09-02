@@ -69,7 +69,7 @@
 
 #define CR_REPORT_HOOK_IMPL(Kind, Id)                         \
     CR_HOOK_PROTOTYPE_(Id)(CR_HOOK_PARAM_TYPE(Kind));         \
-    CR_ATTRIBUTE(used)                                        \
+    CR_ATTRIBUTE(used) CR_RETAIN                              \
     CR_SECTION_(CR_HOOK_SECTION_STRINGIFY(Kind))              \
     static f_report_hook CR_HOOK_IDENTIFIER_(Id, func) =      \
             (f_report_hook) CR_HOOK_IDENTIFIER_(Id, impl)     \
