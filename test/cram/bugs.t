@@ -81,3 +81,8 @@ https://github.com/Snaipe/Criterion/issues/463
   [----]     expected: "a string well over the forty character display threshold"
   [FAIL] bug594::not_long
   [====] Synthesis: Tested: 7 | Passing: 1 | Failing: 6 | Crashing: 0 
+
+https://github.com/Snaipe/Criterion/issues/550
+
+  $ bug550.c.bin
+  [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 

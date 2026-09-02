@@ -91,7 +91,7 @@
 
 #define CRI_ASSERT_SPECIFIER_VALUE(Val)                                 \
     1; do {                                                             \
-        cri_cond_un = (Val);                                            \
+        cri_cond_un = !!(Val);                                          \
         if (cri_cond_un != cri_cond_expect) {                           \
             cri_assert_node_init(&cri_tmpn);                            \
             cri_tmpn.repr = CR_STR(Val);                                \
