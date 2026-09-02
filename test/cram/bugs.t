@@ -85,4 +85,6 @@ https://github.com/Snaipe/Criterion/issues/463
 https://github.com/Snaipe/Criterion/issues/550
 
   $ bug550.c.bin
-  [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
+  [----] bug550.c:35: Assertion Failed
+  [FAIL] bug550::leading_paren_fails
+  [====] Synthesis: Tested: 3 | Passing: 2 | Failing: 1 | Crashing: 0 

@@ -51,6 +51,12 @@
 #define CRI_SPECIFIER_INDIRECT()      CRI_ASSERT_SPECIFIER
 
 #define CRI_ASSERT_SPECIFIER(Spec)                      \
+    CRI_IF_PAREN(Spec,                                  \
+        CRI_ASSERT_SPECIFIER_VALUE, (Spec),             \
+        CRI_ASSERT_SPECIFIER_LOOKUP, (Spec)             \
+    )
+
+#define CRI_ASSERT_SPECIFIER_LOOKUP(Spec)               \
     CRI_IF_DEFINED(CRI_ASSERT_TEST_SPECIFIER_ ## Spec,  \
         CR_CONCAT2, (CRI_ASSERT_SPECIFIER_, Spec),      \
         CRI_ASSERT_SPECIFIER_VALUE, (Spec)              \
