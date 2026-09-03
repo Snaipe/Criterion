@@ -42,7 +42,9 @@
  *    (see criterion/types.h).\n
  *    Example: .exit_code = 1
  */
-#define Test(Suite, Name, ...)    internal
+#ifndef Test
+# define Test(Suite, Name, ...)    internal
+#endif
 
 /**
  *  Explicitely defines a test suite and its options.
@@ -53,7 +55,9 @@
  *    (see criterion/types.h).
  *    These options will provide the defaults for each test.
  */
-#define TestSuite(Name, ...)    internal
+#ifndef TestSuite
+# define TestSuite(Name, ...)    internal
+#endif
 
 CR_BEGIN_C_API
 
