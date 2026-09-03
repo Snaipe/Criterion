@@ -34,7 +34,7 @@ Nested assertion combinators must resolve and compose correctly
   [FAIL] combinators::not_all_fails
   [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 0 
 
-https://github.com/Snaipe/Criterion/issues/463
+https://github.com/Snaipe/Criterion/issues/594
 
   $ bug594.c.bin
   [----] bug594.c:19: Assertion Failed
@@ -88,3 +88,21 @@ https://github.com/Snaipe/Criterion/issues/550
   [----] bug550.c:35: Assertion Failed
   [FAIL] bug550::leading_paren_fails
   [====] Synthesis: Tested: 3 | Passing: 2 | Failing: 1 | Crashing: 0 
+
+https://github.com/Snaipe/Criterion/issues/342
+
+  $ bug342.c.bin --verbose
+  \[----\] Criterion v.* (re)
+  [====] Running 2 tests from bug342_body:
+  [RUN ] bug342_body::exit_code
+  [SKIP] bug342_body::exit_code: skipped from body
+  [RUN ] bug342_body::signal
+  [SKIP] bug342_body::signal: skipped from body
+  [====] Running 3 tests from bug342_init:
+  [RUN ] bug342_init::exit_code
+  [SKIP] bug342_init::exit_code: skipped from init
+  [RUN ] bug342_init::plain
+  [SKIP] bug342_init::plain: skipped from init
+  [RUN ] bug342_init::signal
+  [SKIP] bug342_init::signal: skipped from init
+  [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
