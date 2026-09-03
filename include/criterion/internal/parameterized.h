@@ -97,7 +97,7 @@ struct criterion_test_params {
         CR_IDENTIFIER_(Category,  Name, jmp),                                \
         &CR_IDENTIFIER_(Category, Name, extra)                               \
     };                                                                       \
-    CR_ATTRIBUTE(used)                                                       \
+    CR_ATTRIBUTE(used) CR_RETAIN                                             \
     CR_SECTION_("cr_tst")                                                    \
     struct criterion_test *CR_IDENTIFIER_(Category, Name, ptr)               \
         = &CR_IDENTIFIER_(Category, Name, meta) CR_SECTION_SUFFIX_;          \

@@ -32,7 +32,7 @@ Nested assertion combinators must resolve and compose correctly
   [----]     actual: 2
   [----]     expected: 2
   [FAIL] combinators::not_all_fails
-  [====] Synthesis: Tested: 5 | Passing: 3 | Failing: 2 | Crashing: 0 
+  [====] Synthesis: Tested: 6 | Passing: 4 | Failing: 2 | Crashing: 0 
 
 https://github.com/Snaipe/Criterion/issues/594
 
@@ -106,3 +106,12 @@ https://github.com/Snaipe/Criterion/issues/342
   [RUN ] bug342_init::signal
   [SKIP] bug342_init::signal: skipped from init
   [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
+
+https://github.com/Snaipe/Criterion/issues/584
+
+  $ bug584.c.bin
+  PRE_INIT hook from bug584.c
+  PRE_INIT hook from bug584-other-file.c
+  PRE_TEST hook from a macro
+  POST_TEST hook from the same macro
+  [====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
