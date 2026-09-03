@@ -8,3 +8,9 @@ Testing skipping
   [RUN ] misc::skipping
   [SKIP] misc::skipping: Test was skipped
   [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
+
+  $ skip.c.bin --show-skipped
+  [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 | Skipped: 2 
+
+  $ CRITERION_SHOW_SKIPPED=1 skip.c.bin
+  [====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 | Skipped: 2 

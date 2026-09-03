@@ -229,6 +229,14 @@ struct criterion_options {
     bool ignore_warnings;
 
     const char *executable_name;
+
+    /**
+     *  Show the number of skipped tests in the synthesis line of the normal
+     *  logger.
+     *
+     *  default: false
+     */
+    bool show_skipped;
 };
 
 CR_BEGIN_C_API

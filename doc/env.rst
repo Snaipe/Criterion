@@ -50,6 +50,7 @@ Command line arguments
   Activating this causes massive slowdowns for large number of assertions, but
   provides more accurate reports.
 * ``--ignore-warnings``: Ignore warnings, do not exit with a non-zero exit status.
+* ``--show-skipped``: Show the number of skipped tests in the synthesis line.
 * ``-OPROVIDER:PATH or --output=PROVIDER=PATH``: Write test report to PATH using the specified provider.
   If PATH is an existing directory, the report will be created in that directory
   and will be named after the binary.
@@ -103,6 +104,7 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_JOBS``:            Same as ``--jobs``. Sets the number of jobs to
   its value.
 * ``CRITERION_SHORT_FILENAME``:  Same as ``--short-filename``.
+* ``CRITERION_SHOW_SKIPPED``:    Same as ``--show-skipped``.
 * ``CRITERION_VERBOSITY_LEVEL``: Same as ``--verbose``. Sets the verbosity level
   to its value.
 * ``CRITERION_TEST_PATTERN``:    Same as ``--pattern``. Sets the test pattern
