@@ -60,6 +60,7 @@ s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts);
 s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts);
 
 int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
+int stdpipe_is_initialized(s_pipe_handle *pipe);
 void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
 
 int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe);

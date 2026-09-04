@@ -162,6 +162,15 @@ int stdpipe_options(s_pipe_handle *handle, int id, int noblock)
     return 1;
 }
 
+int stdpipe_is_initialized(s_pipe_handle *handle)
+{
+#ifdef VANILLA_WIN32
+    return handle->fhs[0] != handle->fhs[1];
+#else
+    return handle->fds[0] != handle->fds[1];
+#endif
+}
+
 void file_std_redirect(s_pipe_file_handle *to, enum criterion_std_fd fd)
 {
 #ifdef VANILLA_WIN32

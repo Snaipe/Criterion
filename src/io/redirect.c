@@ -36,6 +36,12 @@ void cr_redirect(enum criterion_std_fd fd_kind, s_pipe_handle *pipe)
     pipe_std_redirect(pipe, fd_kind);
 }
 
+static void check_redirected(s_pipe_handle *pipe, const char *name)
+{
+    if (!stdpipe_is_initialized(pipe))
+        cr_assert_fail("%s is not redirected: call cr_redirect_%s() first.", name, name);
+}
+
 void cr_redirect_stdout(void)
 {
     cr_redirect(CR_STDOUT, stdout_redir);
@@ -55,6 +61,7 @@ FILE *cr_get_redirected_stdout(void)
 {
     static FILE *f;
 
+    check_redirected(stdout_redir, "stdout");
     if (!f) {
         f = pipe_in(stdout_redir, PIPE_DUP);
         if (!f)
@@ -67,6 +74,7 @@ FILE *cr_get_redirected_stderr(void)
 {
     static FILE *f;
 
+    check_redirected(stderr_redir, "stderr");
     if (!f) {
         f = pipe_in(stderr_redir, PIPE_DUP);
         if (!f)
@@ -79,6 +87,7 @@ FILE *cr_get_redirected_stdin(void)
 {
     static FILE *f;
 
+    check_redirected(stdin_redir, "stdin");
     if (!f) {
         f = pipe_out(stdin_redir, PIPE_NOOPT);
         if (!f)
@@ -91,6 +100,7 @@ FILE *cri_redirected_stdout(void)
 {
     static FILE *f;
 
+    check_redirected(stdout_redir, "stdout");
     if (!f) {
         f = pipe_in(stdout_redir, PIPE_NOOPT);
         if (!f)
@@ -103,6 +113,7 @@ FILE *cri_redirected_stderr(void)
 {
     static FILE *f;
 
+    check_redirected(stderr_redir, "stderr");
     if (!f) {
         f = pipe_in(stderr_redir, PIPE_NOOPT);
         if (!f)
