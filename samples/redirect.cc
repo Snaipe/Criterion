@@ -37,6 +37,19 @@ Test(redirect, multiple_assertions, .init = cr_redirect_stdout) {
     cr_assert_stdout_eq_str("bar");
 }
 
+Test(redirect, read_then_assert, .init = cr_redirect_stdout) {
+    std::cout << "foo" << std::flush;
+
+    auto &f_cout = criterion::get_redirected_cout();
+    char buf[8] = {};
+    f_cout.read(buf, sizeof (buf));
+    cr_assert(f_cout.gcount() == 3);
+    cr_assert(std::string(buf) == "foo");
+
+    std::cout << "bar";
+    cr_assert_stdout_eq_str("bar");
+}
+
 /* Testing general I/O with sample command-line rot13 */
 
 char rot13_char(char c)

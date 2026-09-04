@@ -1,4 +1,5 @@
 #include <criterion/redirect.h>
+#include "io/redirect.h"
 
 int cr_file_match_str(FILE *f, const char *str)
 {
@@ -68,7 +69,7 @@ static FILE *redirected_stdout(void)
 {
     fflush(stdout);
 
-    FILE *f = cr_get_redirected_stdout();
+    FILE *f = cri_redirected_stdout();
     clearerr(f);
     return f;
 }
@@ -77,7 +78,7 @@ static FILE *redirected_stderr(void)
 {
     fflush(stderr);
 
-    FILE *f = cr_get_redirected_stderr();
+    FILE *f = cri_redirected_stderr();
     clearerr(f);
     return f;
 }

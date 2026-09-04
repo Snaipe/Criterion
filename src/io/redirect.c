@@ -25,6 +25,7 @@
 #include "criterion/assert.h"
 #include "criterion/redirect.h"
 #include "compat/pipe.h"
+#include "io/redirect.h"
 
 void cr_redirect(enum criterion_std_fd fd_kind, s_pipe_handle *pipe)
 {
@@ -55,7 +56,7 @@ FILE *cr_get_redirected_stdout(void)
     static FILE *f;
 
     if (!f) {
-        f = pipe_in(stdout_redir, PIPE_NOOPT);
+        f = pipe_in(stdout_redir, PIPE_DUP);
         if (!f)
             cr_assert_fail("Could not get redirected stdout read end.");
     }
@@ -67,7 +68,7 @@ FILE *cr_get_redirected_stderr(void)
     static FILE *f;
 
     if (!f) {
-        f = pipe_in(stderr_redir, PIPE_NOOPT);
+        f = pipe_in(stderr_redir, PIPE_DUP);
         if (!f)
             cr_assert_fail("Could not get redirected stderr read end.");
     }
@@ -82,6 +83,30 @@ FILE *cr_get_redirected_stdin(void)
         f = pipe_out(stdin_redir, PIPE_NOOPT);
         if (!f)
             cr_assert_fail("Could not get redirected stdin write end.");
+    }
+    return f;
+}
+
+FILE *cri_redirected_stdout(void)
+{
+    static FILE *f;
+
+    if (!f) {
+        f = pipe_in(stdout_redir, PIPE_NOOPT);
+        if (!f)
+            cr_assert_fail("Could not get redirected stdout read end.");
+    }
+    return f;
+}
+
+FILE *cri_redirected_stderr(void)
+{
+    static FILE *f;
+
+    if (!f) {
+        f = pipe_in(stderr_redir, PIPE_NOOPT);
+        if (!f)
+            cr_assert_fail("Could not get redirected stderr read end.");
     }
     return f;
 }

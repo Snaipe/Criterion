@@ -2,6 +2,7 @@
 #include <criterion/redirect.h>
 
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 
 /* Testing stdout/stderr */
@@ -31,6 +32,20 @@ Test(redirect, empty_output, .init = cr_redirect_stdout) {
 Test(redirect, multiple_assertions, .init = cr_redirect_stdout) {
     fprintf(stdout, "foo");
     cr_assert_stdout_eq_str("foo");
+
+    fprintf(stdout, "bar");
+    cr_assert_stdout_eq_str("bar");
+}
+
+Test(redirect, read_then_assert, .init = cr_redirect_stdout) {
+    fprintf(stdout, "foo");
+    fflush(stdout);
+
+    FILE *f_stdout = cr_get_redirected_stdout();
+    char buf[8] = { 0 };
+    cr_assert(fread(buf, 1, sizeof (buf), f_stdout) == 3);
+    cr_assert(!strcmp(buf, "foo"));
+    fclose(f_stdout);
 
     fprintf(stdout, "bar");
     cr_assert_stdout_eq_str("bar");
