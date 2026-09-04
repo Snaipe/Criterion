@@ -67,35 +67,31 @@ int cr_file_match_file(FILE *f, FILE *ref)
 int cr_stdout_match_file(FILE *ref)
 {
     FILE *f = cr_get_redirected_stdout();
-    int res = cr_file_match_file(f, ref);
 
-    fclose(f);
-    return res;
+    clearerr(f);
+    return cr_file_match_file(f, ref);
 }
 
 int cr_stdout_match_str(const char *ref)
 {
     FILE *f = cr_get_redirected_stdout();
-    int res = cr_file_match_str(f, ref);
 
-    fclose(f);
-    return res;
+    clearerr(f);
+    return cr_file_match_str(f, ref);
 }
 
 int cr_stderr_match_file(FILE *ref)
 {
     FILE *f = cr_get_redirected_stderr();
-    int res = cr_file_match_file(f, ref);
 
-    fclose(f);
-    return res;
+    clearerr(f);
+    return cr_file_match_file(f, ref);
 }
 
 int cr_stderr_match_str(const char *ref)
 {
     FILE *f = cr_get_redirected_stderr();
-    int res = cr_file_match_str(f, ref);
 
-    fclose(f);
-    return res;
+    clearerr(f);
+    return cr_file_match_str(f, ref);
 }

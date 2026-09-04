@@ -21,6 +21,16 @@ Test(redirect, test_outputs, .init = redirect_all_std) {
     cr_assert_stderr_eq_str("bar");
 }
 
+/* Each assertion consumes the output written since the previous one */
+
+Test(redirect, multiple_assertions, .init = cr_redirect_stdout) {
+    std::cout << "foo" << std::flush;
+    cr_assert_stdout_eq_str("foo");
+
+    std::cout << "bar" << std::flush;
+    cr_assert_stdout_eq_str("bar");
+}
+
 /* Testing general I/O with sample command-line rot13 */
 
 char rot13_char(char c)
