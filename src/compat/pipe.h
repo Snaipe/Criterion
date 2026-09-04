@@ -49,23 +49,15 @@ enum criterion_std_fd {
 enum pipe_opt {
     PIPE_NOOPT = 0,
     PIPE_DUP = 1 << 0,
-    PIPE_CLOSE = 1 << 1,
 };
 
-s_pipe_handle *stdpipe();
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts);
 FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts);
-
-s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts);
-s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts);
 
 int stdpipe_options(s_pipe_handle *pipe, int id, int noblock);
 int stdpipe_is_initialized(s_pipe_handle *pipe);
 void stdpipe_close(s_pipe_handle *pipe, enum pipe_end end);
 void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd);
-
-int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe);
-int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe);
 
 CR_INLINE FILE *get_std_file(enum criterion_std_fd fd_kind)
 {
@@ -81,8 +73,6 @@ CR_INLINE FILE *get_std_file(enum criterion_std_fd fd_kind)
 extern s_pipe_handle *stdout_redir;
 extern s_pipe_handle *stderr_redir;
 extern s_pipe_handle *stdin_redir;
-
-s_pipe_file_handle *pipe_file_open(const char *path);
 
 void cri_std_redirect_to_null(enum criterion_std_fd fd);
 void cri_silence_outputs(void);
