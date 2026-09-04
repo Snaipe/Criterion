@@ -254,6 +254,10 @@ CR_END_C_API
 
 /**
  * @defgroup StreamAsserts Standard stream assertions
+ *
+ * The standard stream is flushed before its contents are compared, and each
+ * assertion consumes the output written since the previous one.
+ *
  * @{
  */
 

@@ -64,34 +64,40 @@ int cr_file_match_file(FILE *f, FILE *ref)
     return matches;
 }
 
+static FILE *redirected_stdout(void)
+{
+    fflush(stdout);
+
+    FILE *f = cr_get_redirected_stdout();
+    clearerr(f);
+    return f;
+}
+
+static FILE *redirected_stderr(void)
+{
+    fflush(stderr);
+
+    FILE *f = cr_get_redirected_stderr();
+    clearerr(f);
+    return f;
+}
+
 int cr_stdout_match_file(FILE *ref)
 {
-    FILE *f = cr_get_redirected_stdout();
-
-    clearerr(f);
-    return cr_file_match_file(f, ref);
+    return cr_file_match_file(redirected_stdout(), ref);
 }
 
 int cr_stdout_match_str(const char *ref)
 {
-    FILE *f = cr_get_redirected_stdout();
-
-    clearerr(f);
-    return cr_file_match_str(f, ref);
+    return cr_file_match_str(redirected_stdout(), ref);
 }
 
 int cr_stderr_match_file(FILE *ref)
 {
-    FILE *f = cr_get_redirected_stderr();
-
-    clearerr(f);
-    return cr_file_match_file(f, ref);
+    return cr_file_match_file(redirected_stderr(), ref);
 }
 
 int cr_stderr_match_str(const char *ref)
 {
-    FILE *f = cr_get_redirected_stderr();
-
-    clearerr(f);
-    return cr_file_match_str(f, ref);
+    return cr_file_match_str(redirected_stderr(), ref);
 }

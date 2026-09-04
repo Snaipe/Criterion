@@ -14,25 +14,25 @@ void redirect_all_std(void)
 
 Test(redirect, test_outputs, .init = redirect_all_std) {
     fprintf(stdout, "foo");
-    fflush(stdout);
-
     cr_assert_stdout_eq_str("foo");
 
     fprintf(stderr, "bar");
-    fflush(stderr);
-
     cr_assert_stderr_eq_str("bar");
+}
+
+/* A stream that received no output compares equal to the empty string */
+
+Test(redirect, empty_output, .init = cr_redirect_stdout) {
+    cr_assert_stdout_eq_str("");
 }
 
 /* Each assertion consumes the output written since the previous one */
 
 Test(redirect, multiple_assertions, .init = cr_redirect_stdout) {
     fprintf(stdout, "foo");
-    fflush(stdout);
     cr_assert_stdout_eq_str("foo");
 
     fprintf(stdout, "bar");
-    fflush(stdout);
     cr_assert_stdout_eq_str("bar");
 }
 
