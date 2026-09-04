@@ -29,4 +29,7 @@
 FILE *cri_redirected_stdout(void);
 FILE *cri_redirected_stderr(void);
 
+/* Releases the redirections at the end of the test. */
+void cri_redirect_release(void);
+
 #endif /* !REDIRECT_H_ */

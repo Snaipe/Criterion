@@ -26,6 +26,7 @@
 
 #include "criterion/internal/parameterized.h"
 #include "criterion/redirect.h"
+#include "io/redirect.h"
 #include "compat/alloc.h"
 #include "compat/time.h"
 #include "compat/posix.h"
@@ -228,6 +229,8 @@ static int run_test_child(void)
 
     if (test.test)
         test.test();
+
+    cri_redirect_release();
 
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;

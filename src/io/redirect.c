@@ -121,3 +121,22 @@ FILE *cri_redirected_stderr(void)
     }
     return f;
 }
+
+/* The standard descriptor is sent to the null device before the read end is
+   closed, so that late writes (exit handlers, sanitizer reports, ...) cannot
+   raise SIGPIPE. The read end is opened first if no assertion did. */
+void cri_redirect_release(void)
+{
+    if (stdpipe_is_initialized(stdout_redir)) {
+        cri_std_redirect_to_null(CR_STDOUT);
+        fclose(cri_redirected_stdout());
+    }
+    if (stdpipe_is_initialized(stderr_redir)) {
+        cri_std_redirect_to_null(CR_STDERR);
+        fclose(cri_redirected_stderr());
+    }
+    /* The write end belongs to the test once cr_get_redirected_stdin()
+       handed it out, and is skipped by stdpipe_close() then. */
+    if (stdpipe_is_initialized(stdin_redir))
+        stdpipe_close(stdin_redir, PIPE_WRITE);
+}

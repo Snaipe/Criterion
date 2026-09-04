@@ -29,6 +29,7 @@
 #include "criterion/criterion.h"
 #include "criterion/options.h"
 #include "io/event.h"
+#include "io/redirect.h"
 #include "debugbreak.h"
 
 jmp_buf g_pre_test;
@@ -62,6 +63,7 @@ void criterion_skip_test(const char *format, ...)
     cr_send_to_runner(&skip_msg);
     free(msg);
 
+    cri_redirect_release();
     exit(0);
 }
 
@@ -93,5 +95,6 @@ void criterion_test_die(const char *msg, ...)
 
     free(formatted_msg);
 
+    cri_redirect_release();
     exit(0);
 }

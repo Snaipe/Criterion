@@ -27,6 +27,16 @@
 #include "csptr/smalloc.h"
 #include "pipe-internal.h"
 
+/* The descriptor now belongs to the FILE handed to the caller. */
+static void disown(s_pipe_handle *p, enum pipe_end end)
+{
+#ifdef VANILLA_WIN32
+    p->fhs[end] = INVALID_HANDLE_VALUE;
+#else
+    p->fds[end] = -1;
+#endif
+}
+
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 {
 #ifdef VANILLA_WIN32
@@ -48,6 +58,8 @@ FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 #endif
     if (!in)
         return NULL;
+    if (!(opts & PIPE_DUP))
+        disown(p, PIPE_READ);
 
     setvbuf(in, NULL, _IONBF, 0);
     return in;
@@ -74,6 +86,8 @@ FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts)
 #endif
     if (!out)
         return NULL;
+    if (!(opts & PIPE_DUP))
+        disown(p, PIPE_WRITE);
 
     setvbuf(out, NULL, _IONBF, 0);
     return out;
@@ -168,6 +182,17 @@ int stdpipe_is_initialized(s_pipe_handle *handle)
     return handle->fhs[0] != handle->fhs[1];
 #else
     return handle->fds[0] != handle->fds[1];
+#endif
+}
+
+void stdpipe_close(s_pipe_handle *handle, enum pipe_end end)
+{
+#ifdef VANILLA_WIN32
+    if (handle->fhs[end] != INVALID_HANDLE_VALUE)
+        CloseHandle(handle->fhs[end]);
+#else
+    if (handle->fds[end] >= 0)
+        close(handle->fds[end]);
 #endif
 }
 
@@ -406,12 +431,15 @@ void cri_silence_outputs(void)
     orig_stderr_fd = dup(2);
 #endif
 
+    cri_std_redirect_to_null(CR_STDOUT);
+    cri_std_redirect_to_null(CR_STDERR);
+}
+
+void cri_std_redirect_to_null(enum criterion_std_fd fd)
+{
     s_pipe_file_handle fh;
     file_open(&fh, NULL);
-    file_std_redirect(&fh, CR_STDOUT);
-
-    file_open(&fh, NULL);
-    file_std_redirect(&fh, CR_STDERR);
+    file_std_redirect(&fh, fd);
 }
 
 void cri_restore_outputs(void)

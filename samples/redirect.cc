@@ -45,6 +45,7 @@ Test(redirect, read_then_assert, .init = cr_redirect_stdout) {
     f_cout.read(buf, sizeof (buf));
     cr_assert(f_cout.gcount() == 3);
     cr_assert(std::string(buf) == "foo");
+    f_cout.close();
 
     std::cout << "bar";
     cr_assert_stdout_eq_str("bar");

@@ -27,6 +27,7 @@
 #include <fstream>
 #include <cstdio>
 #include <memory>
+#include <type_traits>
 
 #include "stdio_filebuf.hxx"
 
@@ -63,12 +64,16 @@ public:
 
     void close(void)
     {
-        Super::flush();
+        flush_output(std::is_base_of<std::basic_ostream<CharT>, Super>());
         Super::close();
         std::fclose(file);
     }
 
 private:
+    /* Input streams have nothing to flush, and no flush() to call. */
+    void flush_output(std::true_type) { Super::flush(); }
+    void flush_output(std::false_type) {}
+
     std::shared_ptr<stdio_sync_filebuf<CharT> > fbuf;
     std::FILE *file;
 };
