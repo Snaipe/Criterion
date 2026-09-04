@@ -295,14 +295,14 @@ Testing --output=json
   {
     "id": "Criterion v.*", (re)
     "passed": 0,
-    "failed": 6,
+    "failed": 7,
     "errored": 0,
     "skipped": 0,
     "test_suites": [
       {
         "name": "messages",
         "passed": 0,
-        "failed": 5,
+        "failed": 6,
         "errored": 0,
         "skipped": 0,
         "tests": [
@@ -407,6 +407,14 @@ Testing --output=json
               "failmessages.c:170: (no message)",
               "failmessages.c:169: (no message)",
               "failmessages.c:168: (no message)"
+            ]
+          },
+          {
+            "name": "array_runtime_length",
+            "assertions": 1,
+            "status": "FAILED",
+            "messages": [
+              "failmessages.c:234: (no message)"
             ]
           }
         ]

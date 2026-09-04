@@ -100,7 +100,7 @@ void cr_theory_call(struct cri_theory_ctx *ctx, void (*fnptr)(void))
 
 static bool contains_word(const char *str, const char *pattern, size_t sz)
 {
-    char *res = strstr(str, pattern);
+    const char *res = strstr(str, pattern);
 
     return res
            && (res == str || (res > str && res[-1] == ' '))

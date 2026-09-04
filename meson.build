@@ -4,7 +4,7 @@ project('criterion', 'c',
 		version         : '2.4.3',
 		default_options : ['c_std=c11', 'cpp_std=c++11', 'warning_level=2'])
 
-abi_version = '3.2.0'
+abi_version = '4.0.0'
 
 # standard install directories
 prefix    = get_option('prefix')
@@ -138,7 +138,15 @@ cmake = import('cmake')
 
 debugbreak = dependency('debugbreak')
 
-klib = dependency('klib')
+# klib is header-only
+klib_fallback = (get_option('wrap_mode') == 'forcefallback'
+	or 'klib' in get_option('force_fallback_for'))
+if not klib_fallback and cc.has_header('khash.h') and cc.has_header('kvec.h')
+	klib = declare_dependency()
+else
+	klib = dependency('klib',
+		not_found_message: 'klib is header-only: install khash.h and kvec.h, point CFLAGS at them, or allow the wrap fallback')
+endif
 
 threads = dependency('threads')
 
@@ -148,6 +156,10 @@ if (not nanomsg.found()
 	or 'nanomsg' in get_option('force_fallback_for'))
 
 	nanomsg_opts = cmake.subproject_options()
+ 	nanomsg_c_args = cc.get_supported_arguments(['-Wno-error=incompatible-pointer-types'])
+ 	if nanomsg_c_args.length() > 0
+ 		nanomsg_opts.add_cmake_defines({'CMAKE_C_FLAGS': ' '.join(nanomsg_c_args)})
+ 	endif
 	nanomsg_opts.add_cmake_defines({
 		'NN_TESTS': false,
 		'NN_TOOLS': false,
@@ -155,6 +167,7 @@ if (not nanomsg.found()
 		'BUILD_SHARED_LIBS': false,
 		'CMAKE_POSITION_INDEPENDENT_CODE': true,
 		'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
+		'CMAKE_POLICY_DEFAULT_CMP0219': 'NEW',
 	})
 	nanomsg_proj = cmake.subproject('nanomsg-cmake', options: nanomsg_opts)
 	nanomsg = nanomsg_proj.dependency('nanomsg')

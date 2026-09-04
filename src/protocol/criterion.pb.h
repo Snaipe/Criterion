@@ -59,6 +59,8 @@ typedef struct _criterion_protocol_result {
         struct _criterion_protocol_param_list *params;
         char *formatted;
     } value;
+    bool has_negated;
+    bool negated;
 } criterion_protocol_result;
 
 typedef struct _criterion_protocol_ack {
@@ -168,7 +170,7 @@ extern "C" {
 #define criterion_protocol_statistic_init_default {NULL, 0, {0}}
 #define criterion_protocol_param_entry_init_default {NULL, 0, {NULL}}
 #define criterion_protocol_param_list_init_default {0, NULL}
-#define criterion_protocol_result_init_default   {NULL, NULL, 0, {NULL}}
+#define criterion_protocol_result_init_default   {NULL, NULL, 0, {NULL}, false, false}
 #define criterion_protocol_assert_init_default   {NULL, 0, NULL, false, 0, false, 0, 0, NULL}
 #define criterion_protocol_log_init_default      {_criterion_protocol_log_level_MIN, NULL, false, 0}
 #define criterion_protocol_ack_init_default      {_criterion_protocol_ack_status_MIN, NULL}
@@ -180,7 +182,7 @@ extern "C" {
 #define criterion_protocol_statistic_init_zero   {NULL, 0, {0}}
 #define criterion_protocol_param_entry_init_zero {NULL, 0, {NULL}}
 #define criterion_protocol_param_list_init_zero  {0, NULL}
-#define criterion_protocol_result_init_zero      {NULL, NULL, 0, {NULL}}
+#define criterion_protocol_result_init_zero      {NULL, NULL, 0, {NULL}, false, false}
 #define criterion_protocol_assert_init_zero      {NULL, 0, NULL, false, 0, false, 0, 0, NULL}
 #define criterion_protocol_log_init_zero         {_criterion_protocol_log_level_MIN, NULL, false, 0}
 #define criterion_protocol_ack_init_zero         {_criterion_protocol_ack_status_MIN, NULL}
@@ -196,6 +198,7 @@ extern "C" {
 #define criterion_protocol_result_message_tag    2
 #define criterion_protocol_result_params_tag     3
 #define criterion_protocol_result_formatted_tag  4
+#define criterion_protocol_result_negated_tag    5
 #define criterion_protocol_ack_status_code_tag   1
 #define criterion_protocol_ack_message_tag       2
 #define criterion_protocol_assert_message_tag    1
@@ -276,7 +279,8 @@ X(a, POINTER,  REPEATED, MESSAGE,  list,              1)
 X(a, POINTER,  REQUIRED, STRING,   repr,              1) \
 X(a, POINTER,  OPTIONAL, STRING,   message,           2) \
 X(a, POINTER,  ONEOF,    MESSAGE,  (value,params,value.params),   3) \
-X(a, POINTER,  ONEOF,    STRING,   (value,formatted,value.formatted),   4)
+X(a, POINTER,  ONEOF,    STRING,   (value,formatted,value.formatted),   4) \
+X(a, STATIC,   OPTIONAL, BOOL,     negated,           5)
 #define criterion_protocol_result_CALLBACK NULL
 #define criterion_protocol_result_DEFAULT NULL
 #define criterion_protocol_result_value_params_MSGTYPE criterion_protocol_param_list

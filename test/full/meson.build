@@ -1,4 +1,5 @@
 full_tests = [
+	'combinators.c',
 	'exit.c',
 	'failmessages.c',
 	'flood.c',
@@ -9,6 +10,9 @@ full_tests = [
 	# bug-specific programs
 	'bug463.c',
 	'bug521.c',
+	'bug550.c',
+	'bug594.c',
+	'bug342.c',
 ]
 
 if get_option('theories').enabled()
@@ -29,6 +33,10 @@ if has_cxx
 	endif
 endif
 
+default_timeout = executable('default-timeout.c.bin', 'default-timeout.c',
+		include_directories: [criterion_api],
+		link_with: libcriterion.get_shared_lib())
+
 foreach tst : full_tests
 	e = executable(tst + '.bin', tst,
 			include_directories: [criterion_api],
@@ -36,3 +44,8 @@ foreach tst : full_tests
 			link_with: libcriterion.get_shared_lib())
 	test('full / ' + tst, e, args: '--always-succeed')
 endforeach
+
+bug584 = executable('bug584.c.bin', ['bug584.c', 'bug584-other-file.c'],
+		include_directories: [criterion_api],
+		link_with: libcriterion.get_shared_lib())
+test('full / bug584.c', bug584, args: '--always-succeed')

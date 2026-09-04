@@ -108,4 +108,7 @@
 #define CRI_IF_DEFINED_NODEFER_1(Then, ThenParams, Else, ElseParams)     Else ElseParams
 #define CRI_IF_DEFINED_NODEFER_2(Then, ThenParams, Else, ElseParams)     Then ThenParams
 
+#define CRI_IS_PAREN_PROBE(...)                                          ,
+#define CRI_IF_PAREN(X, Then, ThenParams, Else, ElseParams)              CRI_IF_DEFINED_NODEFER_(CRI_IF_DEFINED_NODEFER_, CR_VA_TAIL_SELECT(CRI_IS_PAREN_PROBE X))(Then, ThenParams, Else, ElseParams)
+
 #endif /* !CRITERION_PREPROCESS_H_ */

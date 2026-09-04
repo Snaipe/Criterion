@@ -20,7 +20,10 @@ Command line arguments
   a number of jobs ideal for your hardware configuration.
 * ``--filter [PATTERN]``: Run tests whose string identifier matches
   the given shell wildcard pattern (see dedicated section below). (\*nix only)
-* ``--timeout [TIMEOUT]``: Set a timeout (in seconds) for all tests
+* ``--timeout [TIMEOUT]``: Cap the timeout (in seconds) for all tests,
+  overriding any per-test value that exceeds it.
+* ``--default-timeout [TIMEOUT]``: Set a fallback timeout (in seconds)
+  applied only to tests with no timeout set.
 * ``--debug[=debugger]``: Run tests with a debugging server attached.
   ``debugger`` can be 'gdb', 'lldb', or 'windbg' (windows only).
 * ``--debug-transport [TRANSPORT]``: Make the debugging server use the
@@ -47,6 +50,7 @@ Command line arguments
   Activating this causes massive slowdowns for large number of assertions, but
   provides more accurate reports.
 * ``--ignore-warnings``: Ignore warnings, do not exit with a non-zero exit status.
+* ``--show-skipped``: Show the number of skipped tests in the synthesis line.
 * ``-OPROVIDER:PATH or --output=PROVIDER=PATH``: Write test report to PATH using the specified provider.
   If PATH is an existing directory, the report will be created in that directory
   and will be named after the binary.
@@ -100,6 +104,7 @@ Environment variables are alternatives to command line switches when set to 1.
 * ``CRITERION_JOBS``:            Same as ``--jobs``. Sets the number of jobs to
   its value.
 * ``CRITERION_SHORT_FILENAME``:  Same as ``--short-filename``.
+* ``CRITERION_SHOW_SKIPPED``:    Same as ``--show-skipped``.
 * ``CRITERION_VERBOSITY_LEVEL``: Same as ``--verbose``. Sets the verbosity level
   to its value.
 * ``CRITERION_TEST_PATTERN``:    Same as ``--pattern``. Sets the test pattern

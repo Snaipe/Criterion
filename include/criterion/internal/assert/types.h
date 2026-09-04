@@ -44,7 +44,8 @@ struct cri_assert_node {
 
     unsigned pass : 1;
     unsigned dynrepr : 1;
-    uint32_t nchild : 30;
+    unsigned negated : 1;
+    uint32_t nchild : 29;
     uint32_t maxchild;
     struct cri_assert_node *children;
 };
@@ -54,7 +55,6 @@ CR_BEGIN_C_API
 CR_API void cri_assert_node_init(struct cri_assert_node *node);
 CR_API struct cri_assert_node *cri_assert_node_add(struct cri_assert_node *tree,
         struct cri_assert_node *node);
-CR_API void cri_assert_node_negate(struct cri_assert_node *tree);
 CR_API void cri_assert_node_term(struct cri_assert_node *tree);
 CR_API void cri_assert_node_send(const char *file, size_t line, struct cri_assert_node *tree);
 CR_API char *cri_assert_message(const char *fmt, ...);

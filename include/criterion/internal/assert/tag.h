@@ -44,10 +44,11 @@
 #define CRI_ASSERT_TYPE_TAG_ID(Tag)        CR_EXPAND(CRI_ASSERT_TYPE_TAG_ID_(Tag))
 #define CRI_ASSERT_TYPE_TAG_ID_(Tag)       CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_TAG_ ## Tag, CR_VA_HEAD(CRI_ASSERT_TYPE_TAG_ID_ ## Tag), , CRI_ASSERT_SWALLOW_KEYWORD, (Tag))
 
-#define CRI_ASSERT_TYPE_TAG_ARRLEN(Tag)    CR_EXPAND(CRI_ASSERT_TYPE_TAG_ARRLEN_(Tag))
-#define CRI_ASSERT_TYPE_TAG_ARRLEN_(Tag)                                                                   \
-    CRI_IF_DEFINED(CRI_ASSERT_TEST_TAG_ ## Tag,                                                            \
-            ((intptr_t) &((*(char (*)[])((char volatile *) 0))CR_VA_TAIL(CRI_ASSERT_TYPE_TAG_ ## Tag))), , \
+#define CRI_ASSERT_TYPE_TAG_ARRLEN(Tag, Base)    CR_EXPAND(CRI_ASSERT_TYPE_TAG_ARRLEN_(Tag, Base))
+#define CRI_ASSERT_TYPE_TAG_ARRLEN_(Tag, Base)                                                        \
+    CRI_IF_DEFINED(CRI_ASSERT_TEST_TAG_ ## Tag,                                                       \
+            ((size_t) (&((const volatile char *) (Base))CR_VA_TAIL(CRI_ASSERT_TYPE_TAG_ ## Tag)       \
+                       - (const volatile char *) (Base))), ,                                          \
             CRI_ASSERT_TYPE_TAG_UNKNOWN, (Tag))
 
 #define CRI_ASSERT_TYPE_TAG_UNKNOWN(Tag)        COMPILE_ERROR(Unknown tag #Tag.)

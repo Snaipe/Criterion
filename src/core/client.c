@@ -546,7 +546,13 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
         for (size_t i = 0; i < asrt->results_count; ++i) {
             criterion_protocol_result *res = &asrt->results[i];
 
-            log(assert_sub, &asrt_stats, res->repr, res->message);
+            bool negated = res->has_negated && res->negated;
+
+            const char *msg = res->message;
+            if (negated && (!msg || !msg[0]))
+                msg = "passed, but was expected to fail";
+
+            log(assert_sub, &asrt_stats, res->repr, msg);
 
             switch (res->which_value) {
             case criterion_protocol_result_params_tag:
@@ -556,7 +562,7 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
                 }
 
                 size_t j = 0;
-                if (res->value.params->list_count >= 2) {
+                if (!negated && res->value.params->list_count >= 2) {
                     criterion_protocol_param_entry *actual = &res->value.params->list[0];
                     criterion_protocol_param_entry *expected = &res->value.params->list[1];
                     if (!strcmp(actual->name, "actual") && !strcmp(expected->name, "expected")) {
@@ -590,7 +596,8 @@ bool handle_assert(struct server_ctx *sctx, struct client_ctx *ctx, const criter
                 break;
 
             default:
-                log(assert_formatted, &asrt_stats, "@@@ <no message or difference -- this is a user bug in the object stringifier>");
+                /* No value payload: a combinator group header; its
+                   failing operands follow as results of their own. */
                 break;
             }
         }
