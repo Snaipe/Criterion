@@ -97,6 +97,8 @@
     "assertions but is more accurate).\n"                   \
     "    --ignore-warnings: Ignore warnings, do not exit "  \
     "with a non-zero exit status.\n"                        \
+    "    --show-skipped: Show the number of skipped tests " \
+    "in the synthesis line.\n"                              \
     "    -OPROVIDER:PATH or --output=PROVIDER=PATH: "       \
     "write test report to PATH using the specified "        \
     "provider. If PATH is an existing directory, the "      \
@@ -285,6 +287,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         { "color",           optional_argument, 0, 'C' },
         { "encoding",        required_argument, 0, 'e' },
         { "ignore-warnings", no_argument,       0, 'N' },
+        { "show-skipped",    no_argument,       0, 'K' },
         { 0,                 0,                 0, 0   }
     };
 
@@ -309,6 +312,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
     char *env_jobs              = getenv("CRITERION_JOBS");
     char *env_logging_threshold = getenv("CRITERION_VERBOSITY_LEVEL");
     char *env_short_filename    = getenv("CRITERION_SHORT_FILENAME");
+    char *env_show_skipped      = getenv("CRITERION_SHOW_SKIPPED");
 
     bool is_term_dumb = !strcmp("dumb", DEF(getenv("TERM"), "dumb"));
 
@@ -329,6 +333,8 @@ CR_API int criterion_handle_args(int argc, char *argv[],
         opt->logging_threshold = (enum criterion_logging_level) atou(env_logging_threshold);
     if (env_short_filename)
         opt->short_filename    = !strcmp("1", env_short_filename);
+    if (env_show_skipped)
+        opt->show_skipped      = !strcmp("1", env_show_skipped);
 
     char *env_pattern = getenv("CRITERION_TEST_PATTERN");
     if (env_pattern)
@@ -452,6 +458,7 @@ CR_API int criterion_handle_args(int argc, char *argv[],
             case 'C': criterion_options.color = deduce_color(optarg); break;
             case 'e': set_encoding(optarg); break;
             case 'N': criterion_options.ignore_warnings = true; break;
+            case 'K': criterion_options.show_skipped = true; break;
             case '?':
             default: do_print_usage = handle_unknown_arg; break;
         }
