@@ -25,6 +25,7 @@
 #include "criterion/assert.h"
 #include "criterion/redirect.h"
 #include "compat/pipe.h"
+#include "io/redirect.h"
 
 void cr_redirect(enum criterion_std_fd fd_kind, s_pipe_handle *pipe)
 {
@@ -33,6 +34,12 @@ void cr_redirect(enum criterion_std_fd fd_kind, s_pipe_handle *pipe)
         cr_assert_fail("Could not redirect standard file descriptor.");
 
     pipe_std_redirect(pipe, fd_kind);
+}
+
+static void check_redirected(s_pipe_handle *pipe, const char *name)
+{
+    if (!stdpipe_is_initialized(pipe))
+        cr_assert_fail("%s is not redirected: call cr_redirect_%s() first.", name, name);
 }
 
 void cr_redirect_stdout(void)
@@ -54,8 +61,9 @@ FILE *cr_get_redirected_stdout(void)
 {
     static FILE *f;
 
+    check_redirected(stdout_redir, "stdout");
     if (!f) {
-        f = pipe_in(stdout_redir, PIPE_NOOPT);
+        f = pipe_in(stdout_redir, PIPE_DUP);
         if (!f)
             cr_assert_fail("Could not get redirected stdout read end.");
     }
@@ -66,8 +74,9 @@ FILE *cr_get_redirected_stderr(void)
 {
     static FILE *f;
 
+    check_redirected(stderr_redir, "stderr");
     if (!f) {
-        f = pipe_in(stderr_redir, PIPE_NOOPT);
+        f = pipe_in(stderr_redir, PIPE_DUP);
         if (!f)
             cr_assert_fail("Could not get redirected stderr read end.");
     }
@@ -78,10 +87,56 @@ FILE *cr_get_redirected_stdin(void)
 {
     static FILE *f;
 
+    check_redirected(stdin_redir, "stdin");
     if (!f) {
         f = pipe_out(stdin_redir, PIPE_NOOPT);
         if (!f)
             cr_assert_fail("Could not get redirected stdin write end.");
     }
     return f;
+}
+
+FILE *cri_redirected_stdout(void)
+{
+    static FILE *f;
+
+    check_redirected(stdout_redir, "stdout");
+    if (!f) {
+        f = pipe_in(stdout_redir, PIPE_NOOPT);
+        if (!f)
+            cr_assert_fail("Could not get redirected stdout read end.");
+    }
+    return f;
+}
+
+FILE *cri_redirected_stderr(void)
+{
+    static FILE *f;
+
+    check_redirected(stderr_redir, "stderr");
+    if (!f) {
+        f = pipe_in(stderr_redir, PIPE_NOOPT);
+        if (!f)
+            cr_assert_fail("Could not get redirected stderr read end.");
+    }
+    return f;
+}
+
+/* The standard descriptor is sent to the null device before the read end is
+   closed, so that late writes (exit handlers, sanitizer reports, ...) cannot
+   raise SIGPIPE. The read end is opened first if no assertion did. */
+void cri_redirect_release(void)
+{
+    if (stdpipe_is_initialized(stdout_redir)) {
+        cri_std_redirect_to_null(CR_STDOUT);
+        fclose(cri_redirected_stdout());
+    }
+    if (stdpipe_is_initialized(stderr_redir)) {
+        cri_std_redirect_to_null(CR_STDERR);
+        fclose(cri_redirected_stderr());
+    }
+    /* The write end belongs to the test once cr_get_redirected_stdin()
+       handed it out, and is skipped by stdpipe_close() then. */
+    if (stdpipe_is_initialized(stdin_redir))
+        stdpipe_close(stdin_redir, PIPE_WRITE);
 }
