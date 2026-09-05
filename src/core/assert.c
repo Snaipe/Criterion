@@ -54,13 +54,6 @@ CR_API struct cri_assert_node *cri_assert_node_add(struct cri_assert_node *tree,
     return &tree->children[tree->nchild - 1];
 }
 
-CR_API void cri_assert_node_negate(struct cri_assert_node *tree)
-{
-    for (size_t i = 0; i < tree->nchild; ++i)
-        cri_assert_node_negate(&tree->children[i]);
-    tree->pass = !tree->pass;
-}
-
 CR_API void cri_assert_node_term(struct cri_assert_node *tree)
 {
     for (struct cri_assert_param *p = &tree->params[0]; p->name; ++p)
@@ -73,13 +66,18 @@ CR_API void cri_assert_node_term(struct cri_assert_node *tree)
         free((char *) tree->repr);
 }
 
+static bool node_failed(const struct cri_assert_node *node)
+{
+    return node->pass == node->negated;
+}
+
 static size_t leaf_count(struct cri_assert_node *tree)
 {
     size_t count = 0;
 
     for (size_t i = 0; i < tree->nchild; ++i) {
         struct cri_assert_node *node = &tree->children[i];
-        if (!node->pass)
+        if (node_failed(node))
             ++count;
         if (node->nchild > 0)
             count += leaf_count(&tree->children[i]);
@@ -117,10 +115,14 @@ static criterion_protocol_result *collect_leaves(
     if (nbparams > 0) {
         res->repr = (char *) tree->repr;
         res->message = (char *) tree->message;
+        res->has_negated = true;
+        res->negated = tree->negated;
 
         const size_t display_threshold = 40;
 
-        if (nbparams == 2) {
+        /* Negated operands are recorded because they matched; diffing
+           them would come up empty, so always send them verbatim. */
+        if (nbparams == 2 && !tree->negated) {
             if (strcmp(tree->params[0].name, "actual")
                     || strcmp(tree->params[1].name, "expected")) {
                 goto process_params;
@@ -158,8 +160,13 @@ static criterion_protocol_result *collect_leaves(
             actual.ptr[actual_len] = '\n';
 
             int rc = cri_diff_buffer_to_buffer(&expected, &actual, &diff);
-            if (rc < 0)
-                res->value.formatted = NULL;
+            if (rc < 0 || !diff.ptr) {
+                /* An empty or failed diff can't explain the mismatch;
+                   fall back to the raw values. */
+                expected.ptr[expected_len] = '\0';
+                actual.ptr[actual_len] = '\0';
+                goto process_params;
+            }
 
             res->value.formatted = diff.ptr;
         } else {
@@ -176,9 +183,22 @@ static criterion_protocol_result *collect_leaves(
         return res + 1;
     }
 
+    /* Combinator group nodes announce themselves in a value-less header
+       result before their failing operands are reported. The root node
+       has no repr and stays silent. */
+    if (tree->repr && (tree->nchild > 0 || tree->negated)) {
+        *res = (criterion_protocol_result) {
+            .repr = (char *) tree->repr,
+            .message = (char *) tree->message,
+            .has_negated = true,
+            .negated = tree->negated,
+        };
+        ++res;
+    }
+
     for (size_t i = 0; i < tree->nchild; ++i) {
         struct cri_assert_node *node = &tree->children[i];
-        if (node->pass)
+        if (!node_failed(node))
             continue;
         res = collect_leaves(res, node);
     }

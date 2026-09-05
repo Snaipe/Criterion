@@ -317,7 +317,8 @@
             size_t cri_paramidx = 0;                                        \
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_AUTO, , __VA_ARGS__)       \
             cri_tmpn.pass = !!cri_cond_un;                                  \
-            cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
+            cri_tmpn.negated = !cri_cond_expect;                            \
+            cri_assert_node_add(cri_node, &cri_tmpn);                       \
         }                                                                   \
     } while (0)
 #else
@@ -349,7 +350,8 @@
             size_t cri_paramidx = 0;                                        \
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE, Tag, __VA_ARGS__)         \
             cri_tmpn.pass = !!cri_cond_un;                                  \
-            cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);        \
+            cri_tmpn.negated = !cri_cond_expect;                            \
+            cri_assert_node_add(cri_node, &cri_tmpn);                       \
         }                                                                   \
     } while (0)
 
@@ -357,13 +359,15 @@
     1; do {                                                                         \
         CRI_ASSERT_NAMESPACES;                                                      \
         CRITERION_APPLY(CRI_ASSERT_IT_VAR, ARRTYPE, __VA_ARGS__)                    \
-        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag);                          \
+        size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag,                           \
+                CRI_ASSERT_OPGET(VAR, CR_VA_HEAD(__VA_ARGS__)));                    \
         cri_assert_node_init(&cri_tmpn);                                            \
         const char *cri_repr = #Name "(" #Tag CR_STR CR_EXPAND(                     \
                 (CRITERION_APPLY(CRI_ASSERT_IT_VUNPACK, , __VA_ARGS__))             \
             ) ")";                                                                  \
         cri_tmpn.repr = cri_repr;                                                   \
         cri_tmpn.pass = 1;                                                          \
+        cri_tmpn.negated = !cri_cond_expect;                                        \
         size_t cri_paramidx = 0;                                                    \
         CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_ARR, Tag, __VA_ARGS__)                 \
         struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn); \
@@ -377,7 +381,8 @@
             CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_SUBSCRIPT, Tag, __VA_ARGS__)       \
             cri_tmpn.pass = !!(CRI_ASSERT_OP_APPLY(Op,                              \
                     Tag CRITERION_APPLY(CRI_ASSERT_IT_SUNPACK, , __VA_ARGS__)));    \
-            cri_prevnode = cri_assert_node_add(cri_node, &cri_tmpn);                \
+            cri_tmpn.negated = !cri_cond_expect;                                    \
+            cri_assert_node_add(cri_node, &cri_tmpn);                               \
             cri_node->pass = cri_node->pass && cri_tmpn.pass;                       \
         }                                                                           \
         cri_cond_un = cri_node->pass;                                               \

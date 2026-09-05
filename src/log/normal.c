@@ -69,7 +69,8 @@ static msg_t msg_post_all = N_("%1$sSynthesis: Tested: %2$s%3$lu%4$s "
                 "| Passing: %5$s%6$lu%7$s "
                 "| Failing: %8$s%9$lu%10$s "
                 "| Crashing: %11$s%12$lu%13$s "
-                "%14$s\n");
+                "%14$s");
+static msg_t msg_post_all_skipped = N_("%1$s| Skipped: %2$s%3$lu%4$s ");
 static msg_t msg_line = N_("%2$*1$s%3$s%4$s%5$s\n");
 #else
 static msg_t msg_pre_init = "%s::%s\n";
@@ -94,7 +95,8 @@ static msg_t msg_post_all = "%sSynthesis: Tested: %s%lu%s "
         "| Passing: %s%lu%s "
         "| Failing: %s%lu%s "
         "| Crashing: %s%lu%s "
-        "%s\n";
+        "%s";
+static msg_t msg_post_all_skipped = "%s| Skipped: %s%lu%s ";
 static msg_t msg_line = "%*s%s%s%s\n";
 #endif
 
@@ -155,6 +157,7 @@ void normal_log_post_all(struct criterion_global_stats *stats)
     size_t tested = stats->nb_tests - stats->tests_skipped;
     char *tests_crashed_color = (stats->tests_crashed) ? CR_FG_RED : CR_RESET;
     char *tests_failed_color  = (stats->tests_failed)  ? CR_FG_RED : CR_RESET;
+    char *tests_skipped_color = (stats->tests_skipped) ? CR_FG_GOLD : CR_RESET;
 
     criterion_pimportant(CRITERION_PREFIX_EQUALS,
             _(msg_post_all),
@@ -164,6 +167,12 @@ void normal_log_post_all(struct criterion_global_stats *stats)
             tests_failed_color, (unsigned long) stats->tests_failed, CR_FG_BOLD,
             tests_crashed_color, (unsigned long) stats->tests_crashed, CR_FG_BOLD,
             CR_RESET);
+
+    if (criterion_options.show_skipped)
+        criterion_important(_(msg_post_all_skipped),
+                CR_FG_BOLD, tests_skipped_color, (unsigned long) stats->tests_skipped, CR_RESET);
+
+    criterion_important("\n");
 }
 
 void normal_log_assert(struct criterion_assert_stats *stats)

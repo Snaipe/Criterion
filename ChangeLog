@@ -1,3 +1,75 @@
+2026-09-05  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
+
+    * criterion: version 2.5.0
+    * Addition: added --default-timeout CLI switch to set a fallback timeout
+      for tests that have no timeout set. Unlike --timeout, which caps the
+      timeout of every test, explicitly timed tests are left untouched
+      (Matéo LE FLEM).
+    * Addition: added --show-skipped CLI switch to show the number of skipped
+      tests in the synthesis line.
+    * Breaking: ABI incompatibility with prior versions of criterion. You
+      **must** recompile your tests.
+    * Change: cr_get_redirected_stdout(), cr_get_redirected_stderr() and
+      cr_get_redirected_stdin() (and their C++ counterparts) now return a
+      stream owned by the caller, who is responsible for closing it.
+      Closing that stream no longer interferes with the standard stream
+      assertions.
+    * Change: the standard stream assertions (cr_assert_stdout_eq_str and
+      friends) now flush the stream before comparing its contents, so tests
+      no longer need to fflush() or disable buffering beforehand. Each
+      assertion consumes the output written since the previous one.
+    * Fix: fixed crash when a standard stream assertion was used more than
+      once in a test, or when the test wrote to the stream after asserting
+      on it.
+    * Fix: standard stream assertions now fail with an explicit message
+      instead of hanging when the stream was never redirected.
+    * Fix: fixed any() only passing when its last operand was true
+      (Ray Chern).
+    * Fix: fixed result propagation of nested assertion combinators, and
+      not() being ignored when applied to another combinator.
+    * Fix: sibling assertion combinators, like all(any(...), any(...)), now
+      compile.
+    * Fix: failing not() and none() operands were reported with
+      "<no difference -- this is a user bug in the object stringifier>"
+      instead of their values. Failing combinators now also print a header
+      line above their failing operands.
+    * Fix: assertion failures whose value diff is empty (because the user
+      stringifier produced the same output for different values) now print
+      the raw actual and expected values instead of a generic message.
+    * Fix: fixed plain expressions in the new assertion API failing when
+      they evaluated to a non-zero value other than 1, like
+      cr_assert(flags & 4).
+    * Fix: plain expressions starting with an operator, a literal or a cast
+      can now be passed to the new assertion API by wrapping them in an
+      extra pair of parentheses, like cr_assert((!x)).
+    * Fix: fixed undefined behavior (null pointer arithmetic, reported by
+      UBSan) when computing the length of array type tags in the new
+      assertion API.
+    * Fix: fixed multiple definition errors when ReportHook was used on the
+      same line in different files, or several times in one macro
+      (Cade-Peterson).
+    * Fix: tests, suites, parameterized tests and report hooks are no
+      longer discarded by the linker when building with optimizations or
+      --gc-sections (Jerry James).
+    * Fix: the cleanup function of parameterized tests was called as soon
+      as the last test worker had been spawned rather than after all
+      workers exited, which crashed with --jobs > 1.
+    * Fix: skipped tests with an expected .signal or .exit_code are no
+      longer reported as failed.
+    * Fix: criterion::allocator no longer uses std::allocator<void>, which
+      is deprecated in C++17 and removed in C++20.
+    * Misc: the build system now detects a system-wide klib installation
+      instead of always falling back to the wrap.
+    * Misc: replaced the discontinued Cirrus CI; FreeBSD, macOS (x86-64) and
+      Windows are tested on GitHub Actions again.
+    * Misc: fixed the extraction of translatable messages and updated the
+      German and French translations.
+    * Misc: various documentation fixes.
+    * Misc: various build system fixes.
+    * Misc: various updates to dependencies.
+
+    The full git changelog may be accessed with `git log v2.4.3..v2.5.0`.
+
 2025-10-05  Franklin "Snaipe" Mathieu  <franklinmathieu@gmail.com>
 
     * criterion: version 2.4.3

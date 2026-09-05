@@ -26,6 +26,7 @@
 
 #include "criterion/internal/parameterized.h"
 #include "criterion/redirect.h"
+#include "io/redirect.h"
 #include "compat/alloc.h"
 #include "compat/time.h"
 #include "compat/posix.h"
@@ -69,7 +70,7 @@ ccrBeginDefineContextType(run_next_context);
     struct criterion_test_stats *test_stats;
     struct criterion_test_set *set;
     struct criterion_global_stats *stats;
-    struct criterion_test_params params;
+    struct criterion_test_params *params;
 
     struct criterion_ordered_set_node *ns;
     struct criterion_ordered_set_node *nt;
@@ -229,6 +230,8 @@ static int run_test_child(void)
     if (test.test)
         test.test();
 
+    cri_redirect_release();
+
 #ifndef ENABLE_VALGRIND_ERRORS
     VALGRIND_DISABLE_ERROR_REPORTING;
 #endif
@@ -240,6 +243,32 @@ static int run_test_child(void)
     VALGRIND_ENABLE_ERROR_REPORTING;
 #endif
     return 0;
+}
+
+static void destroy_params(void *ptr, CR_UNUSED void *meta)
+{
+    struct criterion_test_params *params = ptr;
+
+    if (params->cleanup)
+        params->cleanup(params);
+}
+
+static struct criterion_test_params *params_init(
+        struct criterion_test_params params)
+{
+    struct criterion_test_params *p = smalloc(
+        .size = sizeof (*p),
+        .kind = SHARED,
+        .dtor = destroy_params
+        );
+
+    *p = params;
+    return p;
+}
+
+static void release_params(CR_UNUSED bxf_instance *instance, void *params)
+{
+    sfree(params);
 }
 
 static void death_callback(bxf_instance *instance)
@@ -285,10 +314,10 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         rc = bxf_context_addobject(inst_ctx, "criterion.url", ctx->url, len);
     }
 
-    if (!rc && ctx->params.params) {
-        void *param = (char *) ctx->params.params + ctx->i * ctx->params.size;
+    if (!rc && ctx->params) {
+        void *param = (char *) ctx->params->params + ctx->i * ctx->params->size;
         rc = bxf_context_addobject(inst_ctx, "criterion.param",
-                        param, ctx->params.size);
+                        param, ctx->params->size);
     }
 
     if (!rc)
@@ -306,6 +335,11 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         .callback        = death_callback,
         .inherit.context = inst_ctx,
     };
+
+    if (ctx->params) {
+        sp.user = sref(ctx->params);
+        sp.user_dtor = release_params;
+    }
 
     if (criterion_options.debug == CR_DBG_IDLE) {
         sp.suspended = 1;
@@ -344,6 +378,8 @@ static bxf_instance *run_test(struct run_next_context *ctx,
         timeout = ctx->test->data->timeout;
     if (criterion_options.timeout > 0 && timeout > criterion_options.timeout)
         timeout = criterion_options.timeout;
+    if (timeout <= 0 && criterion_options.default_timeout > 0)
+        timeout = criterion_options.default_timeout;
 
     sp.iquotas.runtime = timeout;
 
@@ -428,7 +464,7 @@ bxf_instance *cri_run_next_test(struct criterion_test_set *p_set,
         ctx->set = p_set;
         ctx->stats = p_stats;
         ctx->url = url;
-        memset(&ctx->params, 0, sizeof (ctx->params));
+        ctx->params = NULL;
         ccrReturn(NULL);
     } while (ctx->set == NULL && ctx->stats == NULL);
 
@@ -453,13 +489,12 @@ bxf_instance *cri_run_next_test(struct criterion_test_set *p_set,
 
             if (ctx->test->data->kind_ == CR_TEST_PARAMETERIZED
                     && ctx->test->data->param_) {
-                ctx->params = ctx->test->data->param_();
-                for (ctx->i = 0; ctx->i < ctx->params.length; ++ctx->i)
+                ctx->params = params_init(ctx->test->data->param_());
+                for (ctx->i = 0; ctx->i < ctx->params->length; ++ctx->i)
                     ccrReturn(run_test(ctx, client));
 
-                if (ctx->params.cleanup)
-                    ctx->params.cleanup(&ctx->params);
-                ctx->params.params = NULL;
+                sfree(ctx->params);
+                ctx->params = NULL;
             } else {
                 ccrReturn(run_test(ctx, client));
             }

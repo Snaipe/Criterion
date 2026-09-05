@@ -27,20 +27,31 @@
 #include "csptr/smalloc.h"
 #include "pipe-internal.h"
 
+/* The descriptor now belongs to the FILE handed to the caller. */
+static void disown(s_pipe_handle *p, enum pipe_end end)
+{
+#ifdef VANILLA_WIN32
+    p->fhs[end] = INVALID_HANDLE_VALUE;
+#else
+    p->fds[end] = -1;
+#endif
+}
+
+#ifdef VANILLA_WIN32
+static HANDLE win_dup(HANDLE h);
+#endif
+
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 {
 #ifdef VANILLA_WIN32
-    if (opts & PIPE_CLOSE)
-        CloseHandle(p->fhs[1]);
-    int fd = _open_osfhandle((intptr_t) p->fhs[0], _O_RDONLY);
+    HANDLE fh = p->fhs[0];
+    if (opts & PIPE_DUP)
+        fh = win_dup(fh);
+    int fd = _open_osfhandle((intptr_t) fh, _O_RDONLY);
     if (fd == -1)
         return NULL;
-    if (opts & PIPE_DUP)
-        fd = _dup(fd);
     FILE *in = _fdopen(fd, "r");
 #else
-    if (opts & PIPE_CLOSE)
-        close(p->fds[1]);
     int fd = p->fds[0];
     if (opts & PIPE_DUP)
         fd = dup(fd);
@@ -48,6 +59,8 @@ FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 #endif
     if (!in)
         return NULL;
+    if (!(opts & PIPE_DUP))
+        disown(p, PIPE_READ);
 
     setvbuf(in, NULL, _IONBF, 0);
     return in;
@@ -56,17 +69,14 @@ FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts)
 {
 #ifdef VANILLA_WIN32
-    if (opts & PIPE_CLOSE)
-        CloseHandle(p->fhs[0]);
-    int fd = _open_osfhandle((intptr_t) p->fhs[1], _O_WRONLY);
+    HANDLE fh = p->fhs[1];
+    if (opts & PIPE_DUP)
+        fh = win_dup(fh);
+    int fd = _open_osfhandle((intptr_t) fh, _O_WRONLY);
     if (fd == -1)
         return NULL;
-    if (opts & PIPE_DUP)
-        fd = _dup(fd);
     FILE *out = _fdopen(fd, "w");
 #else
-    if (opts & PIPE_CLOSE)
-        close(p->fds[0]);
     int fd = p->fds[1];
     if (opts & PIPE_DUP)
         fd = dup(fd);
@@ -74,38 +84,11 @@ FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts)
 #endif
     if (!out)
         return NULL;
+    if (!(opts & PIPE_DUP))
+        disown(p, PIPE_WRITE);
 
     setvbuf(out, NULL, _IONBF, 0);
     return out;
-}
-
-int stdpipe_stack(s_pipe_handle *out)
-{
-#ifdef VANILLA_WIN32
-    HANDLE fhs[2];
-    SECURITY_ATTRIBUTES attr = {
-        .nLength        = sizeof (SECURITY_ATTRIBUTES),
-        .bInheritHandle = TRUE
-    };
-    if (!CreatePipe(fhs, fhs + 1, &attr, 0))
-        return -1;
-    *out = (s_pipe_handle) { { fhs[0], fhs[1] } };
-#else
-    int fds[2] = { -1, -1 };
-    if (pipe(fds) == -1)
-        return -1;
-    *out = (s_pipe_handle) { { fds[0], fds[1] } };
-#endif
-    return 0;
-}
-
-s_pipe_handle *stdpipe()
-{
-    s_pipe_handle *handle = smalloc(sizeof (s_pipe_handle));
-
-    if (stdpipe_stack(handle) < 0)
-        return NULL;
-    return handle;
 }
 
 int stdpipe_options(s_pipe_handle *handle, int id, int noblock)
@@ -162,6 +145,26 @@ int stdpipe_options(s_pipe_handle *handle, int id, int noblock)
     return 1;
 }
 
+int stdpipe_is_initialized(s_pipe_handle *handle)
+{
+#ifdef VANILLA_WIN32
+    return handle->fhs[0] != handle->fhs[1];
+#else
+    return handle->fds[0] != handle->fds[1];
+#endif
+}
+
+void stdpipe_close(s_pipe_handle *handle, enum pipe_end end)
+{
+#ifdef VANILLA_WIN32
+    if (handle->fhs[end] != INVALID_HANDLE_VALUE)
+        CloseHandle(handle->fhs[end]);
+#else
+    if (handle->fds[end] >= 0)
+        close(handle->fds[end]);
+#endif
+}
+
 void file_std_redirect(s_pipe_file_handle *to, enum criterion_std_fd fd)
 {
 #ifdef VANILLA_WIN32
@@ -202,17 +205,6 @@ void pipe_std_redirect(s_pipe_handle *pipe, enum criterion_std_fd fd)
     file_std_redirect(&from, fd);
 }
 
-void close_pipe_file_handle(void *ptr, CR_UNUSED void *meta)
-{
-    s_pipe_file_handle *h = ptr;
-
-#ifdef VANILLA_WIN32
-    CloseHandle(h->fh);
-#else
-    close(h->fd);
-#endif
-}
-
 #ifdef VANILLA_WIN32
 static HANDLE win_dup(HANDLE h)
 {
@@ -228,116 +220,6 @@ static HANDLE win_dup(HANDLE h)
     return dup;
 }
 #endif
-
-s_pipe_file_handle *pipe_out_handle(s_pipe_handle *p, enum pipe_opt opts)
-{
-#ifdef VANILLA_WIN32
-    if (opts & PIPE_CLOSE)
-        CloseHandle(p->fhs[0]);
-    HANDLE fh = p->fhs[1];
-    if (opts & PIPE_DUP)
-        fh = win_dup(fh);
-
-    s_pipe_file_handle *h = smalloc(
-        .size = sizeof (s_pipe_file_handle),
-        .dtor = close_pipe_file_handle);
-
-    h->fh = fh;
-    return h;
-#else
-    if (opts & PIPE_CLOSE)
-        close(p->fds[0]);
-    int fd = p->fds[1];
-    if (opts & PIPE_DUP)
-        fd = dup(fd);
-
-    s_pipe_file_handle *h = smalloc(
-        .size = sizeof (s_pipe_file_handle),
-        .dtor = close_pipe_file_handle);
-
-    h->fd = fd;
-    return h;
-#endif
-}
-
-s_pipe_file_handle *pipe_in_handle(s_pipe_handle *p, enum pipe_opt opts)
-{
-#ifdef VANILLA_WIN32
-    if (opts & PIPE_CLOSE)
-        CloseHandle(p->fhs[1]);
-    HANDLE fh = p->fhs[0];
-    if (opts & PIPE_DUP)
-        fh = win_dup(fh);
-
-    s_pipe_file_handle *h = smalloc(
-        .size = sizeof (s_pipe_file_handle),
-        .dtor = close_pipe_file_handle);
-
-    h->fh = fh;
-    return h;
-#else
-    if (opts & PIPE_CLOSE)
-        close(p->fds[1]);
-    int fd = p->fds[0];
-    if (opts & PIPE_DUP)
-        fd = dup(fd);
-
-    s_pipe_file_handle *h = smalloc(
-        .size = sizeof (s_pipe_file_handle),
-        .dtor = close_pipe_file_handle);
-
-    h->fd = fd;
-    return h;
-#endif
-}
-
-int pipe_write(const void *buf, size_t size, s_pipe_file_handle *pipe)
-{
-#ifdef VANILLA_WIN32
-    DWORD written = 0;
-    size_t off = 0;
-    while (size > 0) {
-        if (!WriteFile(pipe->fh, (const char *) buf + off, size, &written, NULL))
-            return -1;
-        size -= written;
-        off += written;
-    }
-    if (off > 0)
-        return 1;
-    return 0;
-#else
-    ssize_t res = write(pipe->fd, buf, size);
-    if (res < 0)
-        return -1;
-    if (res > 0)
-        return 1;
-    return 0;
-#endif
-}
-
-int pipe_read(void *buf, size_t size, s_pipe_file_handle *pipe)
-{
-#ifdef VANILLA_WIN32
-    DWORD read = 0;
-    size_t off = 0;
-    while (size > 0) {
-        if (!ReadFile(pipe->fh, (char *) buf + off, size, &read, NULL))
-            return -1;
-        size -= read;
-        off += read;
-    }
-    if (off > 0)
-        return 1;
-    return 0;
-#else
-    ssize_t res = read(pipe->fd, buf, size);
-    if (res < 0)
-        return -1;
-    if (res > 0)
-        return 1;
-    return 0;
-#endif
-}
 
 static s_pipe_handle stdout_redir_;
 static s_pipe_handle stderr_redir_;
@@ -366,16 +248,6 @@ static void file_open(s_pipe_file_handle *h, const char *path)
 #endif
 }
 
-s_pipe_file_handle *pipe_file_open(const char *path)
-{
-    s_pipe_file_handle *h = smalloc(
-        .size = sizeof (s_pipe_file_handle),
-        .dtor = close_pipe_file_handle);
-
-    file_open(h, path);
-    return h;
-}
-
 static int orig_stdout_fd = -1;
 static int orig_stderr_fd = -1;
 
@@ -397,12 +269,15 @@ void cri_silence_outputs(void)
     orig_stderr_fd = dup(2);
 #endif
 
+    cri_std_redirect_to_null(CR_STDOUT);
+    cri_std_redirect_to_null(CR_STDERR);
+}
+
+void cri_std_redirect_to_null(enum criterion_std_fd fd)
+{
     s_pipe_file_handle fh;
     file_open(&fh, NULL);
-    file_std_redirect(&fh, CR_STDOUT);
-
-    file_open(&fh, NULL);
-    file_std_redirect(&fh, CR_STDERR);
+    file_std_redirect(&fh, fd);
 }
 
 void cri_restore_outputs(void)

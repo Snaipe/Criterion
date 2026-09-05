@@ -76,6 +76,15 @@
 # define CR_SECTION_SUFFIX_
 #endif
 
+#if defined (__ELF__) && !defined (CRITERION_NO_RETAIN) && defined (__has_attribute)
+# if __has_attribute(retain)
+#  define CR_RETAIN    CR_ATTRIBUTE(retain)
+# endif
+#endif
+#ifndef CR_RETAIN
+# define CR_RETAIN
+#endif
+
 #define CR_MAKE_IDENTIFIER_(Prefix, Id)     CR_MAKE_IDENTIFIER__(Prefix, Id)
 #define CR_MAKE_IDENTIFIER__(Prefix, Id)    Prefix ## _ ## Id
 

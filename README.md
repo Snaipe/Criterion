@@ -1,6 +1,6 @@
 <h1><img src="doc/criterion-title.png" height="96" alt="Criterion Logo" /></h1>
 
-[![Build Status](https://api.cirrus-ci.com/github/Snaipe/Criterion.svg)](https://cirrus-ci.com/github/Snaipe/Criterion)
+[![CI](https://github.com/Snaipe/Criterion/actions/workflows/ci.yml/badge.svg)](https://github.com/Snaipe/Criterion/actions/workflows/ci.yml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Snaipe/Criterion/bleeding.svg)](https://codecov.io/github/Snaipe/Criterion?branch=bleeding)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Snaipe/Criterion/blob/master/LICENSE)
 [![Version](https://img.shields.io/github/release/Snaipe/Criterion.svg?label=version)](https://github.com/Snaipe/Criterion/releases/latest)
@@ -42,7 +42,7 @@ the user would have with other frameworks:
 
 | Platform | Command |
 | --- | --- |
-**Ubuntu** (>=21.04) / **Debian** (>=11) | `apt-get install libcriterion-dev`
+**Ubuntu** / **Debian** | `apt-get install libcriterion-dev`
 **Gentoo** | `emerge -a dev-libs/criterion`
 **Arch Linux** | `pacman -S criterion`
 **macOS** | `brew install criterion`

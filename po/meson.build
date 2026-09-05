@@ -6,7 +6,14 @@ if not do_i18n.disabled()
 	if gettext.found()
 		add_project_arguments('-DGETTEXT_PACKAGE="criterion"', language: 'c')
 		i18n.gettext(meson.project_name(),
-			args: '--directory=' + meson.source_root()
+			args: [
+				'--directory=' + meson.source_root(),
+				'--msgid-bugs-address=franklinmathieu+criterion@gmail.com',
+				'--keyword=_',
+				'--keyword=N_',
+				'--keyword=N_s:1,2',
+				'--keyword=_s:1,2',
+			]
 		)
 	endif
 endif

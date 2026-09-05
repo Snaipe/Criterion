@@ -57,6 +57,8 @@ CR_API void cr_redirect_stdin(void);
 /**
  *  Get a file handle representing the read-end of the redirected stdout.
  *
+ *  The handle belongs to the caller, who is responsible for closing it.
+ *
  *  @returns the file handle.
  */
 CR_API CR_STDN FILE *cr_get_redirected_stdout(void);
@@ -64,12 +66,16 @@ CR_API CR_STDN FILE *cr_get_redirected_stdout(void);
 /**
  *  Get a file handle representing the read-end of the redirected stderr.
  *
+ *  The handle belongs to the caller, who is responsible for closing it.
+ *
  *  @returns the file handle.
  */
 CR_API CR_STDN FILE *cr_get_redirected_stderr(void);
 
 /**
  *  Get a file handle representing the write-end of the redirected stdin.
+ *
+ *  The handle belongs to the caller, who is responsible for closing it.
  *
  *  @returns the file handle.
  */
@@ -254,6 +260,10 @@ CR_END_C_API
 
 /**
  * @defgroup StreamAsserts Standard stream assertions
+ *
+ * The standard stream is flushed before its contents are compared, and each
+ * assertion consumes the output written since the previous one.
+ *
  * @{
  */
 

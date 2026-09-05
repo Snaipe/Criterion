@@ -22,14 +22,35 @@ Testing all assert messages
 
   $ failmessages.c.bin
   [----] failmessages.c:216: Assertion Failed
+  [----]   all(eq(i32, 1, 1), eq(i32, 1, 1), eq(i32, 1, 0)): 
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
   [----] failmessages.c:217: Assertion Failed
+  [----]   any(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 0)): 
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
   [----] failmessages.c:218: Assertion Failed
-  [----]   eq(i32, 1, 1): 
-  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
+  [----]   none(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 1)): 
+  [----]   eq(i32, 1, 1): passed, but was expected to fail
+  [----]     actual: 1
+  [----]     expected: 1
   [FAIL] message::compo
+  [----] failmessages.c:234: Assertion Failed
+  [----]   eq(i64[len], actual, expected): 
+  [----]     @@ -1,5 +1,5 @@
+  [----]      (int64_t[3]) {
+  [----]      \t[0] = 1, (esc)
+  [----]      \t[1] = 2, (esc)
+  [----]     -\t[2] = 3, (esc)
+  [----]     +\t[2] = 9, (esc)
+  [----]      }
+  [FAIL] messages::array_runtime_length
   [----] failmessages.c:168: Assertion Failed
+  [----]   all(lt(i8, 1, 0), le(i8, 1, 0), gt(i8, 0, 1), ge(i8, 0, 1)): 
   [----]   lt(i8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -43,6 +64,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:169: Assertion Failed
+  [----]   all(lt(i16, 1, 0), le(i16, 1, 0), gt(i16, 0, 1), ge(i16, 0, 1)): 
   [----]   lt(i16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -56,6 +78,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:170: Assertion Failed
+  [----]   all(lt(i32, 1, 0), le(i32, 1, 0), gt(i32, 0, 1), ge(i32, 0, 1)): 
   [----]   lt(i32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -69,6 +92,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:171: Assertion Failed
+  [----]   all(lt(i64, 1, 0), le(i64, 1, 0), gt(i64, 0, 1), ge(i64, 0, 1)): 
   [----]   lt(i64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -82,6 +106,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:172: Assertion Failed
+  [----]   all(lt(u8, 1, 0), le(u8, 1, 0), gt(u8, 0, 1), ge(u8, 0, 1)): 
   [----]   lt(u8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -95,6 +120,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:173: Assertion Failed
+  [----]   all(lt(u16, 1, 0), le(u16, 1, 0), gt(u16, 0, 1), ge(u16, 0, 1)): 
   [----]   lt(u16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -108,6 +134,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:174: Assertion Failed
+  [----]   all(lt(u32, 1, 0), le(u32, 1, 0), gt(u32, 0, 1), ge(u32, 0, 1)): 
   [----]   lt(u32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -121,6 +148,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:175: Assertion Failed
+  [----]   all(lt(u64, 1, 0), le(u64, 1, 0), gt(u64, 0, 1), ge(u64, 0, 1)): 
   [----]   lt(u64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -134,6 +162,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.c:176: Assertion Failed
+  [----]   all(lt(iptr, 1, 0), le(iptr, 1, 0), gt(iptr, 0, 1), ge(iptr, 0, 1)): 
   [----]   lt(iptr, 1, 0): 
   [----]     actual: 0x1
   [----]     reference: 0x0
@@ -147,6 +176,7 @@ Testing all assert messages
   [----]     actual: 0x0
   [----]     reference: 0x1
   [----] failmessages.c:177: Assertion Failed
+  [----]   all(lt(uptr, 1, 0), le(uptr, 1, 0), gt(uptr, 0, 1), ge(uptr, 0, 1)): 
   [----]   lt(uptr, 1, 0): 
   [----]     actual: 0x1
   [----]     reference: 0x0
@@ -160,6 +190,7 @@ Testing all assert messages
   [----]     actual: 0x0
   [----]     reference: 0x1
   [----] failmessages.c:178: Assertion Failed
+  [----]   all(lt(flt, 1 / 3.f, 0), le(flt, 1 / 3.f, 0), gt(flt, 0, 1 / 3.f), ge(flt, 0, 1 / 3.f)): 
   [----]   lt(flt, 1 / 3.f, 0): 
   [----]     actual: 0.333333343
   [----]     reference: 0
@@ -173,6 +204,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 0.333333343
   [----] failmessages.c:179: Assertion Failed
+  [----]   all(lt(dbl, 1 / 3., 0), le(dbl, 1 / 3., 0), gt(dbl, 0, 1 / 3.), ge(dbl, 0, 1 / 3.)): 
   [----]   lt(dbl, 1 / 3., 0): 
   [----]     actual: 0.33333333333333331
   [----]     reference: 0
@@ -186,6 +218,7 @@ Testing all assert messages
   [----]     actual: 0
   [----]     reference: 0.33333333333333331
   [----] failmessages.c:180: Assertion Failed
+  [----]   all(lt(ldbl, 1 / 3.l, 0), le(ldbl, 1 / 3.l, 0), gt(ldbl, 0, 1 / 3.l), ge(ldbl, 0, 1 / 3.l)): 
   [----]   lt(ldbl, 1 / 3.l, 0): 
   \[----\]     actual: 0\.3.* (re)
   [----]     reference: 0
@@ -199,6 +232,7 @@ Testing all assert messages
   [----]     actual: 0
   \[----\]     reference: 0\.3.* (re)
   [----] failmessages.c:183: Assertion Failed
+  [----]   all(lt(ptr, (void *) 1, (void *) 0), le(ptr, (void *) 1, (void *) 0), gt(ptr, (void *) 0, (void *) 1), ge(ptr, (void *) 0, (void *) 1)): 
   [----]   lt(ptr, (void *) 1, (void *) 0): 
   [----]     actual: 0x1
   [----]     reference: 0x0
@@ -212,6 +246,7 @@ Testing all assert messages
   [----]     actual: 0x0
   [----]     reference: 0x1
   [----] failmessages.c:185: Assertion Failed
+  [----]   all(lt(str, "cba", "abc"), le(str, "cba", "abc"), gt(str, "abc", "cba"), ge(str, "abc", "cba")): 
   [----]   lt(str, "cba", "abc"): 
   [----]     actual: "cba"
   [----]     reference: "abc"
@@ -225,6 +260,7 @@ Testing all assert messages
   [----]     actual: "abc"
   [----]     reference: "cba"
   [----] failmessages.c:186: Assertion Failed
+  [----]   all(lt(str, "cba\ncba", "abc\nabc"), le(str, "cba\ncba", "abc\nabc"), gt(str, "abc\nabc", "cba\ncba"), ge(str, "abc\nabc", "cba\ncba")): 
   [----]   lt(str, "cba\ncba", "abc\nabc"): 
   [----]     actual: "cba\n"
   [----]       "cba"
@@ -246,6 +282,7 @@ Testing all assert messages
   [----]     reference: "cba\n"
   [----]       "cba"
   [----] failmessages.c:188: Assertion Failed
+  [----]   all(lt(wcs, L"cba", L"abc"), le(wcs, L"cba", L"abc"), gt(wcs, L"abc", L"cba"), ge(wcs, L"abc", L"cba")): 
   [----]   lt(wcs, L"cba", L"abc"): 
   [----]     actual: L"cba"
   [----]     reference: L"abc"
@@ -259,6 +296,7 @@ Testing all assert messages
   [----]     actual: L"abc"
   [----]     reference: L"cba"
   [----] failmessages.c:189: Assertion Failed
+  [----]   all(lt(wcs, L"cba\ncba", L"abc\nabc"), le(wcs, L"cba\ncba", L"abc\nabc"), gt(wcs, L"abc\nabc", L"cba\ncba"), ge(wcs, L"abc\nabc", L"cba\ncba")): 
   [----]   lt(wcs, L"cba\ncba", L"abc\nabc"): 
   [----]     actual: L"cba\n"
   [----]       L"cba"
@@ -280,6 +318,7 @@ Testing all assert messages
   [----]     reference: L"cba\n"
   [----]       L"cba"
   [----] failmessages.c:209: Assertion Failed
+  [----]   all(lt(stream, shi, slo), le(stream, shi, slo), gt(stream, slo, shi), ge(stream, slo, shi)): 
   [----]   lt(stream, shi, slo): 
   [----]     actual: 00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]       
@@ -446,61 +485,78 @@ Testing all assert messages
   [----]   
   [FAIL] messages::report_escape
   [----] failmessages.c:53: Assertion Failed
-  [----]   zero(i8, 0): 
+  [----]   not(zero(i8, 0)): 
+  [----]   zero(i8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:54: Assertion Failed
-  [----]   zero(i16, 0): 
+  [----]   not(zero(i16, 0)): 
+  [----]   zero(i16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:55: Assertion Failed
-  [----]   zero(i32, 0): 
+  [----]   not(zero(i32, 0)): 
+  [----]   zero(i32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:56: Assertion Failed
-  [----]   zero(i64, 0): 
+  [----]   not(zero(i64, 0)): 
+  [----]   zero(i64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:57: Assertion Failed
-  [----]   zero(u8, 0): 
+  [----]   not(zero(u8, 0)): 
+  [----]   zero(u8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:58: Assertion Failed
-  [----]   zero(u16, 0): 
+  [----]   not(zero(u16, 0)): 
+  [----]   zero(u16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:59: Assertion Failed
-  [----]   zero(u32, 0): 
+  [----]   not(zero(u32, 0)): 
+  [----]   zero(u32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:60: Assertion Failed
-  [----]   zero(u64, 0): 
+  [----]   not(zero(u64, 0)): 
+  [----]   zero(u64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:61: Assertion Failed
-  [----]   zero(iptr, 0): 
+  [----]   not(zero(iptr, 0)): 
+  [----]   zero(iptr, 0): passed, but was expected to fail
   [----]     value: 0x0
   [----] failmessages.c:62: Assertion Failed
-  [----]   zero(uptr, 0): 
+  [----]   not(zero(uptr, 0)): 
+  [----]   zero(uptr, 0): passed, but was expected to fail
   [----]     value: 0x0
   [----] failmessages.c:63: Assertion Failed
-  [----]   zero(flt, 0): 
+  [----]   not(zero(flt, 0)): 
+  [----]   zero(flt, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:64: Assertion Failed
-  [----]   zero(dbl, 0): 
+  [----]   not(zero(dbl, 0)): 
+  [----]   zero(dbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:65: Assertion Failed
-  [----]   zero(ldbl, 0): 
+  [----]   not(zero(ldbl, 0)): 
+  [----]   zero(ldbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.c:68: Assertion Failed
-  [----]   zero(ptr, 0): 
+  [----]   not(zero(ptr, 0)): 
+  [----]   zero(ptr, 0): passed, but was expected to fail
   [----]     value: 0x0
   [----] failmessages.c:69: Assertion Failed
-  [----]   zero(str, ""): 
+  [----]   not(zero(str, "")): 
+  [----]   zero(str, ""): passed, but was expected to fail
   [----]     value: ""
   [----] failmessages.c:70: Assertion Failed
-  [----]   zero(wcs, L""): 
+  [----]   not(zero(wcs, L"")): 
+  [----]   zero(wcs, L""): passed, but was expected to fail
   [----]     value: L""
   [----] failmessages.c:75: Assertion Failed
-  [----]   zero(type(struct dummy_struct), dummy1): 
+  [----]   not(zero(type(struct dummy_struct), dummy1)): 
+  [----]   zero(type(struct dummy_struct), dummy1): passed, but was expected to fail
   [----]     value: (struct dummy_struct) {
   [----]       \t.a = 0, (esc)
   [----]       \t.b = 0 (esc)
   [----]       }
   [FAIL] messages::zero
-  [====] Synthesis: Tested: 6 | Passing: 0 | Failing: 6 | Crashing: 0 
+  [====] Synthesis: Tested: 7 | Passing: 0 | Failing: 7 | Crashing: 0 
 
 Long assert messages should wrap
 
@@ -518,14 +574,14 @@ Long assert messages should wrap
 Using redirections
 
   $ redirect.c.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+  [====] Synthesis: Tested: 5 | Passing: 5 | Failing: 0 | Crashing: 0 
 
 C++ equivalents
 
   $ [ "$CXX_SUPPORT" = 1 ] || exit 80
 
   $ redirect.cc.bin
-  [====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+  [====] Synthesis: Tested: 5 | Passing: 5 | Failing: 0 | Crashing: 0 
 
   $ long-messages.cc.bin
   [----] long-messages.cc:4: Assertion Failed
@@ -540,23 +596,46 @@ C++ equivalents
 
   $ failmessages.cc.bin
   [----] failmessages.cc:216: Assertion Failed
+  [----]   all(eq(i32, 1, 1), eq(i32, 1, 1), eq(i32, 1, 0)): 
   [----]   eq(i32, 1, 0): 
   [----]     diff: [-1-]{+0+}
   [----] failmessages.cc:217: Assertion Failed
+  [----]   any(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 0)): 
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
+  [----]   eq(i32, 1, 0): 
+  [----]     diff: [-1-]{+0+}
   [----] failmessages.cc:218: Assertion Failed
-  [----]   eq(i32, 1, 1): 
-  [----]     @@@ <no difference -- this is a user bug in the object stringifier>
+  [----]   none(eq(i32, 1, 0), eq(i32, 1, 0), eq(i32, 1, 1)): 
+  [----]   eq(i32, 1, 1): passed, but was expected to fail
+  [----]     actual: 1
+  [----]     expected: 1
   [FAIL] message::compo
   [----] failmessages.cc:222: Assertion Failed
   [----]   throw(std::bad_alloc, throw std::invalid_argument("exception message")): 
   [----]     message: "exception message"
   [----] failmessages.cc:223: Assertion Failed
+  [----]   not(throw(std::invalid_argument, throw std::invalid_argument("exception message"))): 
+  [----]   throw(std::invalid_argument, throw std::invalid_argument("exception message")): passed, but was expected to fail
   [----] failmessages.cc:224: Assertion Failed
   [----]   nothrow(throw std::invalid_argument("exception message")): 
   [----]     message: "exception message"
   [----] failmessages.cc:225: Assertion Failed
   [FAIL] message::exception
+  [----] failmessages.cc:241: Assertion Failed
+  [----]   eq(i64[len], actual, expected): 
+  [----]     @@ -1,5 +1,5 @@
+  [----]      (int64_t[3]) {
+  [----]      \t[0] = 1, (esc)
+  [----]      \t[1] = 2, (esc)
+  [----]     -\t[2] = 3, (esc)
+  [----]     +\t[2] = 9, (esc)
+  [----]      }
+  [FAIL] messages::array_runtime_length
   [----] failmessages.cc:174: Assertion Failed
+  [----]   all(lt(i8, 1, 0), le(i8, 1, 0), gt(i8, 0, 1), ge(i8, 0, 1)): 
   [----]   lt(i8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -570,6 +649,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:175: Assertion Failed
+  [----]   all(lt(i16, 1, 0), le(i16, 1, 0), gt(i16, 0, 1), ge(i16, 0, 1)): 
   [----]   lt(i16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -583,6 +663,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:176: Assertion Failed
+  [----]   all(lt(i32, 1, 0), le(i32, 1, 0), gt(i32, 0, 1), ge(i32, 0, 1)): 
   [----]   lt(i32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -596,6 +677,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:177: Assertion Failed
+  [----]   all(lt(i64, 1, 0), le(i64, 1, 0), gt(i64, 0, 1), ge(i64, 0, 1)): 
   [----]   lt(i64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -609,6 +691,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:178: Assertion Failed
+  [----]   all(lt(u8, 1, 0), le(u8, 1, 0), gt(u8, 0, 1), ge(u8, 0, 1)): 
   [----]   lt(u8, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -622,6 +705,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:179: Assertion Failed
+  [----]   all(lt(u16, 1, 0), le(u16, 1, 0), gt(u16, 0, 1), ge(u16, 0, 1)): 
   [----]   lt(u16, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -635,6 +719,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:180: Assertion Failed
+  [----]   all(lt(u32, 1, 0), le(u32, 1, 0), gt(u32, 0, 1), ge(u32, 0, 1)): 
   [----]   lt(u32, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -648,6 +733,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:181: Assertion Failed
+  [----]   all(lt(u64, 1, 0), le(u64, 1, 0), gt(u64, 0, 1), ge(u64, 0, 1)): 
   [----]   lt(u64, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -661,6 +747,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:182: Assertion Failed
+  [----]   all(lt(iptr, 1, 0), le(iptr, 1, 0), gt(iptr, 0, 1), ge(iptr, 0, 1)): 
   [----]   lt(iptr, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -674,6 +761,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:183: Assertion Failed
+  [----]   all(lt(uptr, 1, 0), le(uptr, 1, 0), gt(uptr, 0, 1), ge(uptr, 0, 1)): 
   [----]   lt(uptr, 1, 0): 
   [----]     actual: 1
   [----]     reference: 0
@@ -687,6 +775,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 1
   [----] failmessages.cc:184: Assertion Failed
+  [----]   all(lt(flt, 1 / 3.f, 0), le(flt, 1 / 3.f, 0), gt(flt, 0, 1 / 3.f), ge(flt, 0, 1 / 3.f)): 
   [----]   lt(flt, 1 / 3.f, 0): 
   [----]     actual: 0.333333
   [----]     reference: 0
@@ -700,6 +789,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 0.333333
   [----] failmessages.cc:185: Assertion Failed
+  [----]   all(lt(dbl, 1 / 3., 0), le(dbl, 1 / 3., 0), gt(dbl, 0, 1 / 3.), ge(dbl, 0, 1 / 3.)): 
   [----]   lt(dbl, 1 / 3., 0): 
   [----]     actual: 0.333333
   [----]     reference: 0
@@ -713,6 +803,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 0.333333
   [----] failmessages.cc:186: Assertion Failed
+  [----]   all(lt(ldbl, 1 / 3.l, 0), le(ldbl, 1 / 3.l, 0), gt(ldbl, 0, 1 / 3.l), ge(ldbl, 0, 1 / 3.l)): 
   [----]   lt(ldbl, 1 / 3.l, 0): 
   [----]     actual: 0.333333
   [----]     reference: 0
@@ -726,6 +817,7 @@ C++ equivalents
   [----]     actual: 0
   [----]     reference: 0.333333
   [----] failmessages.cc:189: Assertion Failed
+  [----]   all(lt(ptr, (void *) 1, (void *) 0), le(ptr, (void *) 1, (void *) 0), gt(ptr, (void *) 0, (void *) 1), ge(ptr, (void *) 0, (void *) 1)): 
   [----]   lt(ptr, (void *) 1, (void *) 0): 
   [----]     actual: @1
   [----]     reference: nullptr
@@ -739,6 +831,7 @@ C++ equivalents
   [----]     actual: nullptr
   [----]     reference: @1
   [----] failmessages.cc:191: Assertion Failed
+  [----]   all(lt(str, "cba", "abc"), le(str, "cba", "abc"), gt(str, "abc", "cba"), ge(str, "abc", "cba")): 
   [----]   lt(str, "cba", "abc"): 
   [----]     actual: "cba"
   [----]     reference: "abc"
@@ -752,6 +845,7 @@ C++ equivalents
   [----]     actual: "abc"
   [----]     reference: "cba"
   [----] failmessages.cc:192: Assertion Failed
+  [----]   all(lt(str, "cba\ncba", "abc\nabc"), le(str, "cba\ncba", "abc\nabc"), gt(str, "abc\nabc", "cba\ncba"), ge(str, "abc\nabc", "cba\ncba")): 
   [----]   lt(str, "cba\ncba", "abc\nabc"): 
   [----]     actual: "cba\n"
   [----]       "cba"
@@ -773,6 +867,7 @@ C++ equivalents
   [----]     reference: "cba\n"
   [----]       "cba"
   [----] failmessages.cc:194: Assertion Failed
+  [----]   all(lt(wcs, L"cba", L"abc"), le(wcs, L"cba", L"abc"), gt(wcs, L"abc", L"cba"), ge(wcs, L"abc", L"cba")): 
   [----]   lt(wcs, L"cba", L"abc"): 
   [----]     actual: L"cba"
   [----]     reference: L"abc"
@@ -786,6 +881,7 @@ C++ equivalents
   [----]     actual: L"abc"
   [----]     reference: L"cba"
   [----] failmessages.cc:195: Assertion Failed
+  [----]   all(lt(wcs, L"cba\ncba", L"abc\nabc"), le(wcs, L"cba\ncba", L"abc\nabc"), gt(wcs, L"abc\nabc", L"cba\ncba"), ge(wcs, L"abc\nabc", L"cba\ncba")): 
   [----]   lt(wcs, L"cba\ncba", L"abc\nabc"): 
   [----]     actual: L"cba\n"
   [----]       L"cba"
@@ -807,6 +903,7 @@ C++ equivalents
   [----]     reference: L"cba\n"
   [----]       L"cba"
   [----] failmessages.cc:212: Assertion Failed
+  [----]   all(lt(stream, shi, slo), le(stream, shi, slo), gt(stream, slo, shi), ge(stream, slo, shi)): 
   [----]   lt(stream, shi, slo): 
   [----]     actual: 00: 68656c6c 6f20776f 726c6400           hello world.    
   [----]       
@@ -990,67 +1087,86 @@ C++ equivalents
   [----]   
   [FAIL] messages::report_escape
   [----] failmessages.cc:50: Assertion Failed
-  [----]   zero(i8, 0): 
+  [----]   not(zero(i8, 0)): 
+  [----]   zero(i8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:51: Assertion Failed
-  [----]   zero(i16, 0): 
+  [----]   not(zero(i16, 0)): 
+  [----]   zero(i16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:52: Assertion Failed
-  [----]   zero(i32, 0): 
+  [----]   not(zero(i32, 0)): 
+  [----]   zero(i32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:53: Assertion Failed
-  [----]   zero(i64, 0): 
+  [----]   not(zero(i64, 0)): 
+  [----]   zero(i64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:54: Assertion Failed
-  [----]   zero(u8, 0): 
+  [----]   not(zero(u8, 0)): 
+  [----]   zero(u8, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:55: Assertion Failed
-  [----]   zero(u16, 0): 
+  [----]   not(zero(u16, 0)): 
+  [----]   zero(u16, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:56: Assertion Failed
-  [----]   zero(u32, 0): 
+  [----]   not(zero(u32, 0)): 
+  [----]   zero(u32, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:57: Assertion Failed
-  [----]   zero(u64, 0): 
+  [----]   not(zero(u64, 0)): 
+  [----]   zero(u64, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:58: Assertion Failed
-  [----]   zero(iptr, 0): 
+  [----]   not(zero(iptr, 0)): 
+  [----]   zero(iptr, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:59: Assertion Failed
-  [----]   zero(uptr, 0): 
+  [----]   not(zero(uptr, 0)): 
+  [----]   zero(uptr, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:60: Assertion Failed
-  [----]   zero(flt, 0): 
+  [----]   not(zero(flt, 0)): 
+  [----]   zero(flt, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:61: Assertion Failed
-  [----]   zero(dbl, 0): 
+  [----]   not(zero(dbl, 0)): 
+  [----]   zero(dbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:62: Assertion Failed
-  [----]   zero(ldbl, 0): 
+  [----]   not(zero(ldbl, 0)): 
+  [----]   zero(ldbl, 0): passed, but was expected to fail
   [----]     value: 0
   [----] failmessages.cc:65: Assertion Failed
-  [----]   zero(ptr, 0): 
+  [----]   not(zero(ptr, 0)): 
+  [----]   zero(ptr, 0): passed, but was expected to fail
   [----]     value: nullptr
   [----] failmessages.cc:66: Assertion Failed
-  [----]   zero(str, ""): 
+  [----]   not(zero(str, "")): 
+  [----]   zero(str, ""): passed, but was expected to fail
   [----]     value: ""
   [----] failmessages.cc:67: Assertion Failed
-  [----]   zero(wcs, L""): 
+  [----]   not(zero(wcs, L"")): 
+  [----]   zero(wcs, L""): passed, but was expected to fail
   [----]     value: L""
   [----] failmessages.cc:69: Assertion Failed
-  [----]   zero(type(dummy_struct), dummy_struct{}): 
+  [----]   not(zero(type(dummy_struct), dummy_struct{})): 
+  [----]   zero(type(dummy_struct), dummy_struct{}): passed, but was expected to fail
   [----]     value: (struct dummy_struct) {
   [----]       \t.a = 0, (esc)
   [----]       \t.b = 0 (esc)
   [----]       }
   [----] failmessages.cc:73: Assertion Failed
-  [----]   zero(type(int_vect), int_vect{}): 
+  [----]   not(zero(type(int_vect), int_vect{})): 
+  [----]   zero(type(int_vect), int_vect{}): passed, but was expected to fail
   [----]     value: {}
   [----] failmessages.cc:76: Assertion Failed
-  [----]   zero(type(string_int_map), string_int_map{}): 
+  [----]   not(zero(type(string_int_map), string_int_map{})): 
+  [----]   zero(type(string_int_map), string_int_map{}): passed, but was expected to fail
   [----]     value: {}
   [FAIL] messages::zero
-  [====] Synthesis: Tested: 7 | Passing: 0 | Failing: 7 | Crashing: 0 
+  [====] Synthesis: Tested: 8 | Passing: 0 | Failing: 8 | Crashing: 0 
 
 Test C++ assertions:
 

@@ -184,6 +184,15 @@ struct criterion_options {
     double timeout;
 
     /**
+     *  A default timeout applied to each test that has no timeout set, in seconds.
+     *
+     *  If the value is non-positive, no default is applied.
+     *
+     *  default: 0
+     */
+    double default_timeout;
+
+    /**
      * Fully report statistics from test workers, including those that are
      * not reported by default (like passing assertions).
      *
@@ -220,6 +229,14 @@ struct criterion_options {
     bool ignore_warnings;
 
     const char *executable_name;
+
+    /**
+     *  Show the number of skipped tests in the synthesis line of the normal
+     *  logger.
+     *
+     *  default: false
+     */
+    bool show_skipped;
 };
 
 CR_BEGIN_C_API

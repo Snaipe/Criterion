@@ -16,7 +16,8 @@ Display the help message
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
       --filter [PATTERN]: run tests matching the given pattern
-      --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
+      --timeout [TIMEOUT]: cap the timeout (in seconds) for all tests, overriding any per-test value that exceeds it
+      --default-timeout [TIMEOUT]: set a fallback timeout (in seconds) applied only to tests with no timeout set
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)
@@ -27,6 +28,7 @@ Display the help message
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
+      --show-skipped: Show the number of skipped tests in the synthesis line.
       -OPROVIDER:PATH or --output=PROVIDER=PATH: write test report to PATH using the specified provider. If PATH is an existing directory, the report will be created in that directory and will be named after the binary.
 
 C++ equivalents
@@ -49,7 +51,8 @@ C++ equivalents
       --ascii: don't use fancy unicode symbols or colors in the output
       -S or --short-filename: only display the base name of the source file on a failure
       --filter [PATTERN]: run tests matching the given pattern
-      --timeout [TIMEOUT]: set a timeout (in seconds) for all tests
+      --timeout [TIMEOUT]: cap the timeout (in seconds) for all tests, overriding any per-test value that exceeds it
+      --default-timeout [TIMEOUT]: set a fallback timeout (in seconds) applied only to tests with no timeout set
       --tap[=FILE]: writes TAP report in FILE (no file or "-" means stderr)
       --xml[=FILE]: writes XML report in FILE (no file or "-" means stderr)
       --json[=FILE]: writes JSON report in FILE (no file or "-" means stderr)
@@ -60,6 +63,7 @@ C++ equivalents
       --debug-transport=VAL: the transport to use by the debugging server. `tcp:1234` by default
       --full-stats: Tests must fully report statistics (causes massive slowdown for large number of assertions but is more accurate).
       --ignore-warnings: Ignore warnings, do not exit with a non-zero exit status.
+      --show-skipped: Show the number of skipped tests in the synthesis line.
       -OPROVIDER:PATH or --output=PROVIDER=PATH: write test report to PATH using the specified provider. If PATH is an existing directory, the report will be created in that directory and will be named after the binary.
 
 
