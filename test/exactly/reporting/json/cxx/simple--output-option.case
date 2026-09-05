@@ -1,0 +1,9 @@
+[act]
+
+% simple.cc.bin --output=json:-
+
+[assert]
+
+stdout
+  -transformed-by ( replace_version | replace_simple_source_file )
+  equals -contents-of expected/simple.txt

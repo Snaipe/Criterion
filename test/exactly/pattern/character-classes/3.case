@@ -1,0 +1,16 @@
+[act]
+
+% simple.c.bin --filter='misc/[!f]ailing' --verbose
+
+[assert]
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] Criterion <VERSION>
+[====] Running 2 tests from misc:
+[SKIP] misc::failing: Test is disabled
+[SKIP] misc::passing: Test is disabled
+[====] Synthesis: Tested: 0 | Passing: 0 | Failing: 0 | Crashing: 0 
+EOF

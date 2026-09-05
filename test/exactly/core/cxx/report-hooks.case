@@ -1,0 +1,27 @@
+[act]
+
+% report.cc.bin
+
+[assert]
+
+exit-code == 0
+
+stdout equals
+<<EOF
+criterion_init
+testing test in category sample
+Asserts: [1 passed, 1 failed, 2 total]
+criterion_fini
+EOF
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] report.cc:5: Assertion Failed
+[----]   
+[----]   The expression 0 is false.
+[----]   
+[FAIL] sample::test
+[====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
+EOF

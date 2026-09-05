@@ -1,0 +1,11 @@
+# Testing --output=tap
+
+[act]
+
+% simple.c.bin --output=tap:-
+
+[assert]
+
+stdout
+  -transformed-by replace_version
+  equals -contents-of expected/simple.txt

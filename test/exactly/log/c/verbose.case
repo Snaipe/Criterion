@@ -1,0 +1,9 @@
+[act]
+
+% log.c.bin --verbose
+
+[assert]
+
+stderr
+  -transformed-by replace_version
+  equals -contents-of expected/verbose.txt

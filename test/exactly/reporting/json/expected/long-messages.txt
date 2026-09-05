@@ -1,0 +1,29 @@
+{
+  "id": "Criterion <VERSION>",
+  "passed": 0,
+  "failed": 1,
+  "errored": 0,
+  "skipped": 0,
+  "test_suites": [
+    {
+      "name": "sample",
+      "passed": 0,
+      "failed": 1,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "long_msg",
+          "assertions": 1,
+          "status": "FAILED",
+          "messages": [
+            "<SOURCE-FILE>:4: This is",
+            "  A long message",
+            "  Spawning multiple lines.",
+            "  Formatting is respected."
+          ]
+        }
+      ]
+    }
+  ]
+}

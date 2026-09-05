@@ -1,0 +1,9 @@
+[act]
+
+% skip.cc.bin --tap
+
+[assert]
+
+stdout
+  -transformed-by replace_version
+  equals -contents-of expected/skip.txt

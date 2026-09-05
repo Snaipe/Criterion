@@ -1,0 +1,9 @@
+[act]
+
+% simple.cc.bin --output=xml:-
+
+[assert]
+
+stdout
+  -transformed-by ( replace_version | replace_times )
+  equals -contents-of expected/simple.txt

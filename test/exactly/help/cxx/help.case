@@ -1,0 +1,7 @@
+[act]
+
+% simple.cc.bin --help
+
+[assert]
+
+stderr is_help_text

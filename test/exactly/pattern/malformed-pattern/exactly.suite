@@ -1,0 +1,11 @@
+[cases]
+
+*.case
+
+[setup]
+
+including ../common.xly
+
+[assert]
+
+exit-code == 3

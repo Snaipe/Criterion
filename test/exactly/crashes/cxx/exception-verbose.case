@@ -1,0 +1,32 @@
+[act]
+
+% exception.cc.bin --verbose
+
+[assert]
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] Criterion <VERSION>
+[====] Running 6 tests from exception:
+[RUN ] exception::raise_any
+[----] exception::raise_any: Caught some unexpected exception during the test execution.
+[FAIL] exception::raise_any
+[RUN ] exception::raise_any_fini
+[PASS] exception::raise_any_fini
+[----] exception::raise_any_fini: Caught some unexpected exception during the test finalization.
+[RUN ] exception::raise_any_init
+[----] exception::raise_any_init: Caught some unexpected exception during the test initialization.
+[FAIL] exception::raise_any_init
+[RUN ] exception::raise_std
+[----] exception::raise_std: Caught an unexpected exception during the test execution: Some exception message.
+[FAIL] exception::raise_std
+[RUN ] exception::raise_std_fini
+[PASS] exception::raise_std_fini
+[----] exception::raise_std_fini: Caught an unexpected exception during the test finalization: Some exception message.
+[RUN ] exception::raise_std_init
+[----] exception::raise_std_init: Caught an unexpected exception during the test initialization: Some exception message.
+[FAIL] exception::raise_std_init
+[====] Synthesis: Tested: 6 | Passing: 2 | Failing: 4 | Crashing: 0 
+EOF

@@ -1,0 +1,9 @@
+[act]
+
+% more-suites.c.bin --xml
+
+[assert]
+
+stdout
+  -transformed-by ( replace_version | replace_times )
+  equals -contents-of expected/more-suites.txt

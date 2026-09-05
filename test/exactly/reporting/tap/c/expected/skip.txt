@@ -1,0 +1,7 @@
+TAP version 13
+1..2
+# Criterion <VERSION>
+#
+# Running 2 tests from misc
+ok - misc::skipping  # SKIP test was skipped
+ok - misc::message  # SKIP Skips may take printf-like messages

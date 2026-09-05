@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tests compiled with Criterion <VERSION> -->
+<testsuites name="Criterion Tests" tests="2" failures="0" errors="0" disabled="2">
+  <testsuite name="misc" tests="2" failures="0" errors="0" disabled="2" skipped="2" time="<TIME>">
+    <testcase name="skipping" assertions="0" status="SKIPPED" time="<TIME>">
+      <skipped/>
+    </testcase>
+    <testcase name="message" assertions="0" status="SKIPPED" time="<TIME>">
+      <skipped/>
+    </testcase>
+  </testsuite>
+</testsuites>

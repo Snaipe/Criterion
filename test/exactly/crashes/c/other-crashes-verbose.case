@@ -1,0 +1,21 @@
+[act]
+
+% other-crashes.c.bin --verbose
+
+[assert]
+
+`Crashes outside of the test (verbose)`
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] Criterion <VERSION>
+[====] Running 2 tests from misc:
+[RUN ] misc::setup_crash
+[----] Warning! The test `misc::setup_crash` crashed during its setup or teardown.
+[RUN ] misc::teardown_crash
+[PASS] misc::teardown_crash
+[----] Warning! The test `misc::teardown_crash` crashed during its setup or teardown.
+[====] Synthesis: Tested: 2 | Passing: 1 | Failing: 1 | Crashing: 1 
+EOF
