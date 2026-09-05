@@ -37,14 +37,19 @@ static void disown(s_pipe_handle *p, enum pipe_end end)
 #endif
 }
 
+#ifdef VANILLA_WIN32
+static HANDLE win_dup(HANDLE h);
+#endif
+
 FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 {
 #ifdef VANILLA_WIN32
-    int fd = _open_osfhandle((intptr_t) p->fhs[0], _O_RDONLY);
+    HANDLE fh = p->fhs[0];
+    if (opts & PIPE_DUP)
+        fh = win_dup(fh);
+    int fd = _open_osfhandle((intptr_t) fh, _O_RDONLY);
     if (fd == -1)
         return NULL;
-    if (opts & PIPE_DUP)
-        fd = _dup(fd);
     FILE *in = _fdopen(fd, "r");
 #else
     int fd = p->fds[0];
@@ -64,11 +69,12 @@ FILE *pipe_in(s_pipe_handle *p, enum pipe_opt opts)
 FILE *pipe_out(s_pipe_handle *p, enum pipe_opt opts)
 {
 #ifdef VANILLA_WIN32
-    int fd = _open_osfhandle((intptr_t) p->fhs[1], _O_WRONLY);
+    HANDLE fh = p->fhs[1];
+    if (opts & PIPE_DUP)
+        fh = win_dup(fh);
+    int fd = _open_osfhandle((intptr_t) fh, _O_WRONLY);
     if (fd == -1)
         return NULL;
-    if (opts & PIPE_DUP)
-        fd = _dup(fd);
     FILE *out = _fdopen(fd, "w");
 #else
     int fd = p->fds[1];
