@@ -9,6 +9,7 @@ full_tests = [
 
 	# bug-specific programs
 	'bug463.c',
+	'bug521.c',
 	'bug550.c',
 	'bug594.c',
 	'bug342.c',

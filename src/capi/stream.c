@@ -27,7 +27,8 @@
 #include "criterion/new/stream.h"
 #include "string/xxd.h"
 
-static int streams_eval_cmp(struct cr_stream *m1, struct cr_stream *m2)
+static int streams_eval_cmp(const struct cr_stream *m1,
+                            const struct cr_stream *m2)
 {
     /* It doesn't make sense to compare consumed streams, but it still
        happens in some case within an assertion. It's best to provide
@@ -80,12 +81,12 @@ static int streams_eval_cmp(struct cr_stream *m1, struct cr_stream *m2)
     return cmp;
 }
 
-int cr_user_stream_eq(struct cr_stream *m1, struct cr_stream *m2)
+int cr_user_stream_eq(const struct cr_stream *m1, const struct cr_stream *m2)
 {
     return !streams_eval_cmp(m1, m2);
 }
 
-int cr_user_stream_lt(struct cr_stream *m1, struct cr_stream *m2)
+int cr_user_stream_lt(const struct cr_stream *m1, const struct cr_stream *m2)
 {
     return streams_eval_cmp(m1, m2) < 0;
 }

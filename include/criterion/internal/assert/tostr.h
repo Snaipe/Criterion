@@ -115,7 +115,7 @@ inline ostream &operator<<(ostream &s, const std::nullptr_t &ptr)
     return s;
 }
 
-inline ostream &operator<<(ostream &s, void *const &ptr)
+inline ostream &operator<<(ostream &s, const void *const &ptr)
 {
     if (!ptr)
         return ::criterion::internal::stream_override::operator<<(s, nullptr);
