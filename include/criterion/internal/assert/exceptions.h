@@ -28,7 +28,7 @@
 
 #define CRI_ASSERT_TEST_SPECIFIER_throw(...) ,
 #define CRI_ASSERT_SPECIFIER_throw(Ex, Stmt)                        \
-    cri_cond_def; do {                                              \
+    1; do {                                              \
         cri_assert_node_init(&cri_tmpn);                            \
         cri_tmpn.repr = "throw(" #Ex ", " #Stmt ")";                \
         try {                                                       \
@@ -63,7 +63,7 @@
 
 #define CRI_ASSERT_TEST_SPECIFIER_nothrow(...) ,
 #define CRI_ASSERT_SPECIFIER_nothrow(Stmt)                          \
-    cri_cond_def; do {                                              \
+    1; do {                                              \
         cri_assert_node_init(&cri_tmpn);                            \
         cri_tmpn.repr = "nothrow(" #Stmt ")";                       \
         try {                                                       \
@@ -91,7 +91,7 @@
 
 #define CRI_ASSERT_TEST_SPECIFIER_anythrow(...) ,
 #define CRI_ASSERT_SPECIFIER_anythrow(Stmt)                         \
-    cri_cond_def; do {                                              \
+    1; do {                                              \
         cri_assert_node_init(&cri_tmpn);                            \
         cri_tmpn.repr = "anythrow(" #Stmt ")";                      \
         try {                                                       \

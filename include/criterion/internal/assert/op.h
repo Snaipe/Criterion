@@ -135,19 +135,40 @@
 #define CRI_BINOP_GE(Actual, Ref)     CRI_BINOP(>=, Actual, Ref)
 #define CRI_BINOP_GT(Actual, Ref)     CRI_BINOP(>, Actual, Ref)
 
+#define CRI_EXACT_EQ(A, B)      ((A) == (B))
+#define CRI_EXACT_ZERO(X)       (!(X))
+
+/* Exact IEEE equality spelled without ==, which -Wfloat-equal flags: the two
+   ordered comparisons agree with == for every value, including NaN, signed
+   zeros and infinities, and compile to the same instructions. */
+#define CRI_FLT_EQ(A, B)        ((A) <= (B) && (A) >= (B))
+#define CRI_FLT_ZERO(X)         ((X) <= 0 && (X) >= 0)
+
 #ifdef __cplusplus
 
 # include "op.hxx"
 
-# define CRI_BINOP_T_EQ(Tag, Actual, Ref)    CRI_BINOP_EQ(Actual, Ref)
-# define CRI_BINOP_T_NE(Tag, Actual, Ref)    CRI_BINOP_NE(Actual, Ref)
+/* Float tags compare with CRI_FLT_EQ, every other tag with the native
+   operator, selected on the tag like the C helpers are. */
+# define CRI_ASSERT_TEST_FLOAT_flt     ,
+# define CRI_ASSERT_TEST_FLOAT_dbl     ,
+# define CRI_ASSERT_TEST_FLOAT_ldbl    ,
+# define CRI_ASSERT_PASS(...)          __VA_ARGS__
+# define CRI_ASSERT_IF_FLOAT(Tag, Then, Else)                          \
+    CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_FLOAT_ ## Tag, CRI_ASSERT_PASS, Then, CRI_ASSERT_PASS, Else)
+
+# define CRI_BINOP_T_EQ(Tag, Actual, Ref)                              \
+    CRI_ASSERT_IF_FLOAT(Tag, (CRI_FLT_EQ(Actual, Ref)), (CRI_BINOP_EQ(Actual, Ref)))
+# define CRI_BINOP_T_NE(Tag, Actual, Ref)                              \
+    CRI_ASSERT_IF_FLOAT(Tag, (!CRI_FLT_EQ(Actual, Ref)), (CRI_BINOP_NE(Actual, Ref)))
 # define CRI_BINOP_T_LE(Tag, Actual, Ref)    CRI_BINOP_LE(Actual, Ref)
 # define CRI_BINOP_T_LT(Tag, Actual, Ref)    CRI_BINOP_LT(Actual, Ref)
 # define CRI_BINOP_T_GE(Tag, Actual, Ref)    CRI_BINOP_GE(Actual, Ref)
 # define CRI_BINOP_T_GT(Tag, Actual, Ref)    CRI_BINOP_GT(Actual, Ref)
 
 # define CRI_UNOP_ZERO(X)        ::criterion::internal::operators::zero(X)
-# define CRI_UNOP_T_ZERO(Tag, X) ::criterion::internal::operators::zero(X)
+# define CRI_UNOP_T_ZERO(Tag, X)                                       \
+    CRI_ASSERT_IF_FLOAT(Tag, (CRI_FLT_ZERO(X)), (::criterion::internal::operators::zero(X)))
 
 #else /* !__cplusplus */
 
@@ -208,6 +229,21 @@
 #define CRI_ASSERT_OP_ARRTYPE_TAGGED(Type, Var, Name, MkNode, Val)      Type *
 #define CRI_ASSERT_OP_ARRTYPE_SINGLE(Type, Var, Name, MkNode, Val)      Type
 
+#define CRI_ASSERT_OP_DECL_TAGGED(Type, Var, Name, MkNode, Val)         CRI_ASSERT_UNCONST
+#define CRI_ASSERT_OP_DECL_SINGLE(Type, Var, Name, MkNode, Val)         CRI_ASSERT_DECL_UNTAGGED
+#define CRI_ASSERT_OP_DECL_ARR_TAGGED(Type, Var, Name, MkNode, Val)     CRI_ASSERT_DECL_UNCONST_ARR
+#define CRI_ASSERT_OP_DECL_ARR_SINGLE(Type, Var, Name, MkNode, Val)     CRI_ASSERT_DECL_VAR
+
+#define CRI_ASSERT_DECL_UNTAGGED(Tag)                                   CRI_ASSERT_DECL_VAR
+#define CRI_ASSERT_DECL_VAR(Type, Var, Val)                             Type Var = Val;
+#define CRI_ASSERT_DECL_UNCONST_ARR(Type, Var, Val)                     \
+    CRI_ASSERT_DECL_UNCONST(Type const *, Type *, Var, Val)
+#define CRI_ASSERT_DECL_UNCONST(CType, Type, Var, Val)                  \
+    CType CR_CONCAT(cri_c_, Var) = Val;                                 \
+    Type Var = ((union { CType cri_c; Type cri_m; }) {                  \
+        CR_CONCAT(cri_c_, Var)                                          \
+    }).cri_m;
+
 #define CRI_ASSERT_OPKIND(Kind, Type, Var, Name, MkNode, Val)           Kind
 #define CRI_ASSERT_OPKIND_STRIP(Kind, Type, Var, Name, MkNode, Val)     (Type, Var, Name, MkNode, Val)
 
@@ -216,6 +252,23 @@
     CRI_ASSERT_OPGET(VAR, Var) = CRI_VALUE_ESCAPE(                          \
         decltype (CRI_ASSERT_OPGET(VAR, Var)), CRI_ASSERT_OPGET(VAL, Var)   \
     );
+
+#ifdef __cplusplus
+# define CRI_ASSERT_IT_VAR_UNCONST(Tag, Var)        CRI_ASSERT_IT_VAR(TYPE, Var)
+# define CRI_ASSERT_IT_VAR_UNCONST_ARR(Tag, Var)    CRI_ASSERT_IT_VAR(ARRTYPE, Var)
+#else
+# define CRI_ASSERT_DECL_EXPAND(...) __VA_ARGS__
+# define CRI_ASSERT_IT_VAR_UNCONST(Tag, Var)                                    \
+    CRI_ASSERT_DECL_EXPAND(CRI_ASSERT_OPGET(DECL, Var)(Tag)(                    \
+        CR_CHECKERROR(CRI_ASSERT_OPGET(TYPE, Var)),                             \
+        CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(VAL, Var)                  \
+    ))
+# define CRI_ASSERT_IT_VAR_UNCONST_ARR(Tag, Var)                                \
+    CRI_ASSERT_OPGET(DECL_ARR, Var)(                                            \
+        CR_CHECKERROR(CRI_ASSERT_OPGET(TYPE, Var)),                             \
+        CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(VAL, Var)                  \
+    )
+#endif
 
 #define CRI_ASSERT_IT_VAR_AUTO(_, Var)                                      \
     CRI_AUTOTYPE CRI_ASSERT_OPGET(VAR, Var) = CRI_VALUE_ESCAPE(             \
@@ -339,7 +392,7 @@
 #define CRI_ASSERT_SPECIFIER_OPTAG_SCALAR(Op, Name, Tag, ...)               \
     1; do {                                                                 \
         CRI_ASSERT_NAMESPACES;                                              \
-        CRITERION_APPLY(CRI_ASSERT_IT_VAR, TYPE, __VA_ARGS__)               \
+        CRITERION_APPLY(CRI_ASSERT_IT_VAR_UNCONST, Tag, __VA_ARGS__)        \
         cri_cond_un = CRI_ASSERT_OP_APPLY(Op, Tag                           \
                 CRITERION_APPLY(CRI_ASSERT_IT_UNPACK,, __VA_ARGS__));       \
         if (cri_cond_un != cri_cond_expect) {                               \
@@ -358,7 +411,7 @@
 #define CRI_ASSERT_SPECIFIER_OPTAG_ARRAY(Op, Name, Tag, ...)                        \
     1; do {                                                                         \
         CRI_ASSERT_NAMESPACES;                                                      \
-        CRITERION_APPLY(CRI_ASSERT_IT_VAR, ARRTYPE, __VA_ARGS__)                    \
+        CRITERION_APPLY(CRI_ASSERT_IT_VAR_UNCONST_ARR, Tag, __VA_ARGS__)            \
         size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag,                           \
                 CRI_ASSERT_OPGET(VAR, CR_VA_HEAD(__VA_ARGS__)));                    \
         cri_assert_node_init(&cri_tmpn);                                            \
@@ -370,8 +423,7 @@
         cri_tmpn.negated = !cri_cond_expect;                                        \
         size_t cri_paramidx = 0;                                                    \
         CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_ARR, Tag, __VA_ARGS__)                 \
-        struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn); \
-        struct cri_assert_node *cri_node = cri_tmp;                                 \
+        cri_node = cri_assert_node_add(cri_node, &cri_tmpn);                        \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                         \
             cri_assert_node_init(&cri_tmpn);                                        \
             cr_asprintf((char **) &cri_tmpn.repr, "%s [%" CRI_PRIuSIZE "]",         \
@@ -386,6 +438,7 @@
             cri_node->pass = cri_node->pass && cri_tmpn.pass;                       \
         }                                                                           \
         cri_cond_un = cri_node->pass;                                               \
+        cri_node = cri_node->parent;                                                \
     } while (0)
 
 #define CRI_ASSERT_SPECIFIER_OP_HELPER(Op, N, ...)  \

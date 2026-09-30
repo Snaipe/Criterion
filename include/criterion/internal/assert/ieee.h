@@ -42,7 +42,7 @@ bool ieee_eq(Float &a, Float &b, size_t ulp)
 
     /* Not the most efficient but the most portable */
     a = std::nextafter(a, b);
-    return a == b ? true : ieee_eq(a, b, ulp - 1);
+    return CRI_FLT_EQ(a, b) ? true : ieee_eq(a, b, ulp - 1);
 }
 
 }}} /* criterion::internal::operators */
@@ -74,9 +74,9 @@ bool ieee_eq(Float &a, Float &b, size_t ulp)
         CRI_ASSERT_TYPE_TAG(Tag) b, size_t ulp)                               \
     {                                                                         \
         if (ulp == 0)                                                         \
-            return a == b;                                                    \
+            return CRI_FLT_EQ(a, b);                                          \
         a = nextafter ## Suffix(a, b);                                        \
-        return a == b ? 1 : CRI_USER_TAG_ID(ieee_ulp_eq, Tag)(a, b, ulp - 1); \
+        return CRI_FLT_EQ(a, b) ? 1 : CRI_USER_TAG_ID(ieee_ulp_eq, Tag)(a, b, ulp - 1); \
     }
 
 CRI_DEFINE_IEEE_ULP_EQ(flt, f)
@@ -111,7 +111,7 @@ CRI_DEFINE_IEEE_ULP_EQ(ldbl, l)
 /* Epsilon specifiers */
 
 #define CRI_EPSILON_EQ(Lhs, Rhs, Eps) \
-    (((Rhs) == (Lhs)) || ((Rhs) - (Lhs) <= (Eps) && (Lhs) - (Rhs) <= (Eps)))
+    (CRI_FLT_EQ(Rhs, Lhs) || ((Rhs) - (Lhs) <= (Eps) && (Lhs) - (Rhs) <= (Eps)))
 
 #define CRI_EPSILON_NE(Lhs, Rhs, Eps) !CRI_EPSILON_EQ(Lhs, Rhs, Eps)
 

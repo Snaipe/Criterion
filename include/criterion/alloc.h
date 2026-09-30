@@ -291,7 +291,7 @@ struct allocator {
 };
 
 template<typename T, typename U>
-bool operator==(allocator<T> const& lhs, allocator<U> const& rhs)
+bool operator==(allocator<T> const&, allocator<U> const&)
 {
    return false;
 }

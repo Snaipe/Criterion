@@ -34,37 +34,37 @@ struct criterion_test_params {
     void (*cleanup)(struct criterion_test_params *);
 
 #ifdef __cplusplus
-    constexpr criterion_test_params(size_t size, void *params, size_t length)
-        : size(size),
-        params(params),
-        length(length),
+    constexpr criterion_test_params(size_t size_, void *params_, size_t length_)
+        : size(size_),
+        params(params_),
+        length(length_),
         cleanup(nullptr)
     {}
 
-    constexpr criterion_test_params(size_t size, void *params, size_t length,
-            void(*cleanup)(struct criterion_test_params *))
-        : size(size),
-        params(params),
-        length(length),
-        cleanup(cleanup)
+    constexpr criterion_test_params(size_t size_, void *params_, size_t length_,
+            void(*cleanup_)(struct criterion_test_params *))
+        : size(size_),
+        params(params_),
+        length(length_),
+        cleanup(cleanup_)
     {}
 
     template <typename T>
     constexpr criterion_test_params(std::vector<T, criterion::allocator<T> > &vec,
-            void(*cleanup)(criterion_test_params *) = nullptr)
+            void(*cleanup_)(criterion_test_params *) = nullptr)
         : size(sizeof (T)),
         params(&vec[0]),
         length(vec.size()),
-        cleanup(cleanup)
+        cleanup(cleanup_)
     {}
 
     template <typename T, unsigned int N>
     constexpr criterion_test_params(T (&arr)[N],
-            void(*cleanup)(criterion_test_params *) = nullptr)
+            void(*cleanup_)(criterion_test_params *) = nullptr)
         : size(sizeof (arr[0])),
         params(static_cast<void *>(&arr)),
         length(N),
-        cleanup(cleanup)
+        cleanup(cleanup_)
     {}
 #endif
 };

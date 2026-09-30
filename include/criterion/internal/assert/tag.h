@@ -149,6 +149,19 @@
 #endif
 #define CRI_ASSERT_TYPE_TAG_ID_wcs      wcs,
 
+#ifndef __cplusplus
+# define CRI_ASSERT_TEST_UNCONST_str    ,
+# define CRI_ASSERT_UNCONST_str(Type, Var, Val) CRI_ASSERT_DECL_UNCONST(const char *, Type, Var, Val)
+# define CRI_ASSERT_TEST_UNCONST_wcs    ,
+# define CRI_ASSERT_UNCONST_wcs(Type, Var, Val) CRI_ASSERT_DECL_UNCONST(const wchar_t *, Type, Var, Val)
+# define CRI_ASSERT_TEST_UNCONST_ptr    ,
+# define CRI_ASSERT_UNCONST_ptr(Type, Var, Val) CRI_ASSERT_DECL_UNCONST(const void *, Type, Var, Val)
+
+# define CRI_ASSERT_UNCONST(Tag)        CRI_ASSERT_UNCONST_LOOKUP(CRI_ASSERT_TYPE_TAG_ID(Tag))
+# define CRI_ASSERT_UNCONST_LOOKUP(Id)  CRI_ASSERT_UNCONST_LOOKUP_(Id)
+# define CRI_ASSERT_UNCONST_LOOKUP_(Id) CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_UNCONST_ ## Id, CRI_ASSERT_UNCONST_ ## Id, , CRI_ASSERT_DECL_VAR, )
+#endif
+
 #define CRI_ASSERT_TEST_TAG_tcs         ,
 #define CRI_ASSERT_TEST_TAGC_tcs()      ,
 #define CRI_ASSERT_TYPE_TAG_tcs         _TCHAR *,
@@ -194,7 +207,7 @@
 #define CRI_ASSERT_TYPE_TAG_type(T)     T,
 #define CRI_ASSERT_TYPE_TAG_ID_type(T)  CRI_ASSERT_SWALLOW_KEYWORD(T),
 
-#define CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)     \
+#define CRI_ASSERT_DECLARE_CMP_FN(Tag, Eq, Zero)  \
     static inline int CRI_USER_TAG_ID(lt, Tag)(   \
         CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
         CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
@@ -205,16 +218,15 @@
         CRI_ASSERT_TYPE_TAG(Tag) *actual,         \
         CRI_ASSERT_TYPE_TAG(Tag) *expected)       \
     {                                             \
-        return *actual == *expected;              \
+        return Eq(*actual, *expected);            \
     }                                             \
     static inline int CRI_USER_TAG_ID(zero, Tag)( \
         CRI_ASSERT_TYPE_TAG(Tag) *val)            \
     {                                             \
-        return !*val;                             \
+        return Zero(*val);                        \
     }
 
-#define CRI_ASSERT_DECLARE_NATIVE_FN(Tag, Fmt)       \
-    CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)            \
+#define CRI_ASSERT_DECLARE_TOSTR_FN(Tag, Fmt)        \
     static inline char *CRI_USER_TAG_ID(tostr, Tag)( \
         CRI_ASSERT_TYPE_TAG(Tag) *e)                 \
     {                                                \
@@ -222,6 +234,17 @@
         cr_asprintf(&str, "%" Fmt, *e);              \
         return str;                                  \
     }
+
+#define CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)         \
+    CRI_ASSERT_DECLARE_CMP_FN(Tag, CRI_EXACT_EQ, CRI_EXACT_ZERO)
+
+#define CRI_ASSERT_DECLARE_NATIVE_FN(Tag, Fmt)        \
+    CRI_ASSERT_DECLARE_NATIVE_CMP_FN(Tag)             \
+    CRI_ASSERT_DECLARE_TOSTR_FN(Tag, Fmt)
+
+#define CRI_ASSERT_DECLARE_FLOAT_FN(Tag, Fmt)         \
+    CRI_ASSERT_DECLARE_CMP_FN(Tag, CRI_FLT_EQ, CRI_FLT_ZERO) \
+    CRI_ASSERT_DECLARE_TOSTR_FN(Tag, Fmt)
 
 #define CRI_ASSERT_DECLARE_STR_FN(Tag, Prefix, Fmt)                         \
     CR_API int CRI_USER_TAG_ID(lt, Tag)(                                    \
@@ -345,13 +368,13 @@ static inline char *CRI_USER_TAG_ID(tostr, ptr)(void **e)
 # define CRI_LDBL_DIG "21"
 #endif
 
-CRI_ASSERT_DECLARE_NATIVE_FN(flt, "." CRI_FLT_DIG "g")
-CRI_ASSERT_DECLARE_NATIVE_FN(dbl, "." CRI_DBL_DIG "g")
+CRI_ASSERT_DECLARE_FLOAT_FN(flt, "." CRI_FLT_DIG "g")
+CRI_ASSERT_DECLARE_FLOAT_FN(dbl, "." CRI_DBL_DIG "g")
 
 #if defined (CRI_CAPS_LDBL_IS_DBL)
-CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_DBL_DIG "g")
+CRI_ASSERT_DECLARE_FLOAT_FN(ldbl, "." CRI_DBL_DIG "g")
 #else
-CRI_ASSERT_DECLARE_NATIVE_FN(ldbl, "." CRI_LDBL_DIG "Lg")
+CRI_ASSERT_DECLARE_FLOAT_FN(ldbl, "." CRI_LDBL_DIG "Lg")
 #endif
 
 CRI_ASSERT_DECLARE_NATIVE_FN(sz, CRI_PRIuSIZE)
