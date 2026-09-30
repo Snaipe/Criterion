@@ -206,6 +206,15 @@ constexpr T cri_val_escape(T v)
     return v;
 }
 
+/* accept a pointer to const where the tag type is a pointer to non-const */
+template <typename T, typename U,
+    typename = typename std::enable_if<std::is_pointer<T>::value>::type>
+constexpr T cri_val_escape(U *v)
+{
+    return const_cast<T>(static_cast<
+        typename std::add_const<typename std::remove_pointer<T>::type>::type *>(v));
+}
+
 /* We need these specializations to convert seemingly between string literals
    and STL string types */
 

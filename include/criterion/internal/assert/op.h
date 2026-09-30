@@ -208,6 +208,21 @@
 #define CRI_ASSERT_OP_ARRTYPE_TAGGED(Type, Var, Name, MkNode, Val)      Type *
 #define CRI_ASSERT_OP_ARRTYPE_SINGLE(Type, Var, Name, MkNode, Val)      Type
 
+#define CRI_ASSERT_OP_DECL_TAGGED(Type, Var, Name, MkNode, Val)         CRI_ASSERT_UNCONST
+#define CRI_ASSERT_OP_DECL_SINGLE(Type, Var, Name, MkNode, Val)         CRI_ASSERT_DECL_UNTAGGED
+#define CRI_ASSERT_OP_DECL_ARR_TAGGED(Type, Var, Name, MkNode, Val)     CRI_ASSERT_DECL_UNCONST_ARR
+#define CRI_ASSERT_OP_DECL_ARR_SINGLE(Type, Var, Name, MkNode, Val)     CRI_ASSERT_DECL_VAR
+
+#define CRI_ASSERT_DECL_UNTAGGED(Tag)                                   CRI_ASSERT_DECL_VAR
+#define CRI_ASSERT_DECL_VAR(Type, Var, Val)                             Type Var = Val;
+#define CRI_ASSERT_DECL_UNCONST_ARR(Type, Var, Val)                     \
+    CRI_ASSERT_DECL_UNCONST(Type const *, Type *, Var, Val)
+#define CRI_ASSERT_DECL_UNCONST(CType, Type, Var, Val)                  \
+    CType CR_CONCAT(cri_c_, Var) = Val;                                 \
+    Type Var = ((union { CType cri_c; Type cri_m; }) {                  \
+        CR_CONCAT(cri_c_, Var)                                          \
+    }).cri_m;
+
 #define CRI_ASSERT_OPKIND(Kind, Type, Var, Name, MkNode, Val)           Kind
 #define CRI_ASSERT_OPKIND_STRIP(Kind, Type, Var, Name, MkNode, Val)     (Type, Var, Name, MkNode, Val)
 
@@ -216,6 +231,23 @@
     CRI_ASSERT_OPGET(VAR, Var) = CRI_VALUE_ESCAPE(                          \
         decltype (CRI_ASSERT_OPGET(VAR, Var)), CRI_ASSERT_OPGET(VAL, Var)   \
     );
+
+#ifdef __cplusplus
+# define CRI_ASSERT_IT_VAR_UNCONST(Tag, Var)        CRI_ASSERT_IT_VAR(TYPE, Var)
+# define CRI_ASSERT_IT_VAR_UNCONST_ARR(Tag, Var)    CRI_ASSERT_IT_VAR(ARRTYPE, Var)
+#else
+# define CRI_ASSERT_DECL_EXPAND(...) __VA_ARGS__
+# define CRI_ASSERT_IT_VAR_UNCONST(Tag, Var)                                    \
+    CRI_ASSERT_DECL_EXPAND(CRI_ASSERT_OPGET(DECL, Var)(Tag)(                    \
+        CR_CHECKERROR(CRI_ASSERT_OPGET(TYPE, Var)),                             \
+        CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(VAL, Var)                  \
+    ))
+# define CRI_ASSERT_IT_VAR_UNCONST_ARR(Tag, Var)                                \
+    CRI_ASSERT_OPGET(DECL_ARR, Var)(                                            \
+        CR_CHECKERROR(CRI_ASSERT_OPGET(TYPE, Var)),                             \
+        CRI_ASSERT_OPGET(VAR, Var), CRI_ASSERT_OPGET(VAL, Var)                  \
+    )
+#endif
 
 #define CRI_ASSERT_IT_VAR_AUTO(_, Var)                                      \
     CRI_AUTOTYPE CRI_ASSERT_OPGET(VAR, Var) = CRI_VALUE_ESCAPE(             \
@@ -339,7 +371,7 @@
 #define CRI_ASSERT_SPECIFIER_OPTAG_SCALAR(Op, Name, Tag, ...)               \
     1; do {                                                                 \
         CRI_ASSERT_NAMESPACES;                                              \
-        CRITERION_APPLY(CRI_ASSERT_IT_VAR, TYPE, __VA_ARGS__)               \
+        CRITERION_APPLY(CRI_ASSERT_IT_VAR_UNCONST, Tag, __VA_ARGS__)        \
         cri_cond_un = CRI_ASSERT_OP_APPLY(Op, Tag                           \
                 CRITERION_APPLY(CRI_ASSERT_IT_UNPACK,, __VA_ARGS__));       \
         if (cri_cond_un != cri_cond_expect) {                               \
@@ -358,7 +390,7 @@
 #define CRI_ASSERT_SPECIFIER_OPTAG_ARRAY(Op, Name, Tag, ...)                        \
     1; do {                                                                         \
         CRI_ASSERT_NAMESPACES;                                                      \
-        CRITERION_APPLY(CRI_ASSERT_IT_VAR, ARRTYPE, __VA_ARGS__)                    \
+        CRITERION_APPLY(CRI_ASSERT_IT_VAR_UNCONST_ARR, Tag, __VA_ARGS__)            \
         size_t cri_size = CRI_ASSERT_TYPE_TAG_ARRLEN(Tag,                           \
                 CRI_ASSERT_OPGET(VAR, CR_VA_HEAD(__VA_ARGS__)));                    \
         cri_assert_node_init(&cri_tmpn);                                            \

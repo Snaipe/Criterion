@@ -149,6 +149,19 @@
 #endif
 #define CRI_ASSERT_TYPE_TAG_ID_wcs      wcs,
 
+#ifndef __cplusplus
+# define CRI_ASSERT_TEST_UNCONST_str    ,
+# define CRI_ASSERT_UNCONST_str(Type, Var, Val) CRI_ASSERT_DECL_UNCONST(const char *, Type, Var, Val)
+# define CRI_ASSERT_TEST_UNCONST_wcs    ,
+# define CRI_ASSERT_UNCONST_wcs(Type, Var, Val) CRI_ASSERT_DECL_UNCONST(const wchar_t *, Type, Var, Val)
+# define CRI_ASSERT_TEST_UNCONST_ptr    ,
+# define CRI_ASSERT_UNCONST_ptr(Type, Var, Val) CRI_ASSERT_DECL_UNCONST(const void *, Type, Var, Val)
+
+# define CRI_ASSERT_UNCONST(Tag)        CRI_ASSERT_UNCONST_LOOKUP(CRI_ASSERT_TYPE_TAG_ID(Tag))
+# define CRI_ASSERT_UNCONST_LOOKUP(Id)  CRI_ASSERT_UNCONST_LOOKUP_(Id)
+# define CRI_ASSERT_UNCONST_LOOKUP_(Id) CRI_IF_DEFINED_NODEFER(CRI_ASSERT_TEST_UNCONST_ ## Id, CRI_ASSERT_UNCONST_ ## Id, , CRI_ASSERT_DECL_VAR, )
+#endif
+
 #define CRI_ASSERT_TEST_TAG_tcs         ,
 #define CRI_ASSERT_TEST_TAGC_tcs()      ,
 #define CRI_ASSERT_TYPE_TAG_tcs         _TCHAR *,
