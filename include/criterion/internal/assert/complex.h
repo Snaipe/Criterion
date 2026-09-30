@@ -69,7 +69,8 @@
         CRI_ASSERT_TYPE_TAG(Tag) *actual,                                       \
         CRI_ASSERT_TYPE_TAG(Tag) *expected)                                     \
     {                                                                           \
-        return *actual == *expected;                                            \
+        return CRI_FLT_EQ(creal ## S(*actual), creal ## S(*expected))           \
+            && CRI_FLT_EQ(cimag ## S(*actual), cimag ## S(*expected));          \
     }                                                                           \
     static inline char *CRI_USER_TAG_ID(tostr, Tag)(                            \
         CRI_ASSERT_TYPE_TAG(Tag) *e)                                            \
