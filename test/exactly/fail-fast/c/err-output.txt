@@ -1,0 +1,9 @@
+[----] Criterion <VERSION>
+[====] Running 2 tests from misc:
+[RUN ] misc::failing
+[----] simple.c:4: Assertion Failed
+[----]   
+[----]   The expression 0 is false.
+[----]   
+[FAIL] misc::failing
+[====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 

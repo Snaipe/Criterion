@@ -1,0 +1,7 @@
+[act]
+
+% log.c.bin
+
+[assert]
+
+stderr equals -contents-of expected/severity.txt

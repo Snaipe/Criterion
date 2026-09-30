@@ -1,0 +1,13 @@
+[act]
+
+% simple.cc.bin --fail-fast --verbose
+
+[assert]
+
+exit-code == 1
+
+stdout is-empty
+
+stderr
+ -transformed-by replace_version
+ equals -contents-of err-output.txt

@@ -1,0 +1,29 @@
+TAP version 13
+1..8
+# Criterion <VERSION>
+#
+# Running 8 tests from asserts
+ok - asserts::wstring 
+ok - asserts::string 
+ok - asserts::stream 
+not ok - asserts::old_school 
+  ---
+  assertions: 2
+  failures:
+  - asserts.c:19: |+
+      Assertion failed: (null)
+  - asserts.c:18: |+
+      Assertion failed: You can fail an assertion with a message from anywhere
+  ...
+ok - asserts::native 
+ok - asserts::float 
+not ok - asserts::base 
+  ---
+  assertions: 2
+  failures:
+  - asserts.c:13: |+
+      Assertion failed: This assert runs
+  - asserts.c:12: |+
+      Assertion failed: assert is fatal, expect isn't
+  ...
+ok - asserts::array 

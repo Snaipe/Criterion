@@ -1,0 +1,17 @@
+[act]
+
+% long-messages.cc.bin
+
+[assert]
+
+stderr equals <<EOF
+[----] long-messages.cc:4: Assertion Failed
+[----]   
+[----]   This is
+[----]   A long message
+[----]   Spawning multiple lines.
+[----]   Formatting is respected.
+[----]   
+[FAIL] sample::long_msg
+[====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
+EOF

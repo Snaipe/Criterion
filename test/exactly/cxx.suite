@@ -1,0 +1,14 @@
+[suites]
+
+asserts/cxx.suite
+core/cxx.suite
+crashes/cxx.suite
+exit/cxx.suite
+fail-fast/cxx.suite
+help/cxx.suite
+log/cxx.suite
+parametrized/cxx.suite
+redirect/cxx.suite
+theories/cxx.suite
+suites/cxx.suite
+reporting/cxx.suite

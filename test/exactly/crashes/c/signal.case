@@ -1,0 +1,12 @@
+[act]
+
+% signal.c.bin
+
+[assert]
+
+stderr equals <<EOF
+[----] signal.c:14: Unexpected signal caught below this line!
+[FAIL] simple::uncaught: CRASH!
+[FAIL] simple::wrong_signal
+[====] Synthesis: Tested: 3 | Passing: 1 | Failing: 2 | Crashing: 1 
+EOF
