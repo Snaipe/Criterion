@@ -49,9 +49,18 @@ CR_API struct cri_assert_node *cri_assert_node_add(struct cri_assert_node *tree,
         tree->children = realloc(tree->children, tree->maxchild * sizeof (*tree->children));
         if (!tree->children)
             criterion_test_die("Could not realloc assert result tree: %s", strerror(errno));
+
+        /* the children moved: their own children still point at the old addresses */
+        for (size_t i = 0; i < tree->nchild; ++i) {
+            struct cri_assert_node *child = &tree->children[i];
+            for (size_t j = 0; j < child->nchild; ++j)
+                child->children[j].parent = child;
+        }
     }
-    tree->children[tree->nchild++] = *node;
-    return &tree->children[tree->nchild - 1];
+    struct cri_assert_node *child = &tree->children[tree->nchild++];
+    *child = *node;
+    child->parent = tree;
+    return child;
 }
 
 CR_API void cri_assert_node_term(struct cri_assert_node *tree)

@@ -48,6 +48,7 @@ struct cri_assert_node {
     uint32_t nchild : 29;
     uint32_t maxchild;
     struct cri_assert_node *children;
+    struct cri_assert_node *parent;
 };
 
 CR_BEGIN_C_API

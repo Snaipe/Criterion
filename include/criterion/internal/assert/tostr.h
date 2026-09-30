@@ -268,9 +268,9 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
              << "]) {\n";                                                           \
                                                                                     \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                         \
-            char *cri_repr      = CRI_USER_TOSTR(Tag, (Arr)[cri_i]);                \
+            char *cri_elem      = CRI_USER_TOSTR(Tag, (Arr)[cri_i]);                \
             char *cri_saveptr   = NULL;                                             \
-            char *cri_line      = cri_strtok_r(cri_repr, "\n", &cri_saveptr);       \
+            char *cri_line      = cri_strtok_r(cri_elem, "\n", &cri_saveptr);       \
                                                                                     \
             if (cri_line) {                                                         \
                 cri_sstr << "\t[" << cri_i << "] = " << cri_line;                   \
@@ -280,7 +280,7 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
                 }                                                                   \
                 cri_sstr << ",\n";                                                  \
             }                                                                       \
-            cr_asprintf_free(cri_repr);                                             \
+            cr_asprintf_free(cri_elem);                                             \
         }                                                                           \
         cri_sstr << "}";                                                            \
                                                                                     \
@@ -306,9 +306,9 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
                     cri_size);                                                          \
                                                                                         \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                             \
-            char *cri_repr      = CRI_USER_TAG_ID(tostr, Tag)(&(Arr)[cri_i]);           \
+            char *cri_elem      = CRI_USER_TAG_ID(tostr, Tag)(&(Arr)[cri_i]);           \
             char *cri_saveptr   = NULL;                                                 \
-            char *cri_line      = cri_strtok_r(cri_repr, "\n", &cri_saveptr);           \
+            char *cri_line      = cri_strtok_r(cri_elem, "\n", &cri_saveptr);           \
                                                                                         \
             if (cri_line) {                                                             \
                 cri_fmt_bprintf(&(Str), &cri_off, &cri_sz,                              \
@@ -319,7 +319,7 @@ std::wstring cri_val_escape(const wchar_t (&s)[N])
                 }                                                                       \
                 cri_fmt_bprintf(&(Str), &cri_off, &cri_sz, ",\n");                      \
             }                                                                           \
-            cr_asprintf_free(cri_repr);                                                 \
+            cr_asprintf_free(cri_elem);                                                 \
         }                                                                               \
         cri_fmt_bprintf(&(Str), &cri_off, &cri_sz, "}");                                \
     } while (0)

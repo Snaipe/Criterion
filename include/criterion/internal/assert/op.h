@@ -402,8 +402,7 @@
         cri_tmpn.negated = !cri_cond_expect;                                        \
         size_t cri_paramidx = 0;                                                    \
         CRITERION_APPLY(CRI_ASSERT_IT_MKNODE_ARR, Tag, __VA_ARGS__)                 \
-        struct cri_assert_node *cri_tmp = cri_assert_node_add(cri_node, &cri_tmpn); \
-        struct cri_assert_node *cri_node = cri_tmp;                                 \
+        cri_node = cri_assert_node_add(cri_node, &cri_tmpn);                        \
         for (size_t cri_i = 0; cri_i < cri_size; ++cri_i) {                         \
             cri_assert_node_init(&cri_tmpn);                                        \
             cr_asprintf((char **) &cri_tmpn.repr, "%s [%" CRI_PRIuSIZE "]",         \
@@ -418,6 +417,7 @@
             cri_node->pass = cri_node->pass && cri_tmpn.pass;                       \
         }                                                                           \
         cri_cond_un = cri_node->pass;                                               \
+        cri_node = cri_node->parent;                                                \
     } while (0)
 
 #define CRI_ASSERT_SPECIFIER_OP_HELPER(Op, N, ...)  \
