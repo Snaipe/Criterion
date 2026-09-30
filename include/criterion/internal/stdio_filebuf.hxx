@@ -39,8 +39,8 @@ public:
     typedef typename Traits::pos_type pos_type;
     typedef typename Traits::off_type off_type;
 
-    stdio_sync_filebuf(std::FILE *file)
-        : file(file),
+    stdio_sync_filebuf(std::FILE *file_)
+        : file(file_),
         lastchar(Traits::eof())
     {}
 

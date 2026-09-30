@@ -51,8 +51,8 @@ struct criterion_assert_args {
     int sentinel_;
 
 #ifdef __cplusplus
-    constexpr criterion_assert_args(const char *msg) : msg(msg), sentinel_(0) {}
-    constexpr criterion_assert_args(const char *msg, int sentinel_) : msg(msg), sentinel_(sentinel_) {}
+    constexpr criterion_assert_args(const char *msg_) : msg(msg_), sentinel_(0) {}
+    constexpr criterion_assert_args(const char *msg_, int sentinel__) : msg(msg_), sentinel_(sentinel__) {}
 #endif
 };
 

@@ -149,12 +149,12 @@ CR_END_C_API
 namespace criterion
 { namespace logging
   {
-  static void(*const log)(enum criterion_severity, const char *, ...) = cr_log;
+  static void(*const log)(enum criterion_severity, const char *, ...) CR_FORMAT(printf, 2, 3) = cr_log;
 
   class streambuf : public std::stringbuf {
   public:
-      streambuf(enum criterion_severity severity__)
-          : std::stringbuf(), severity__(severity__)
+      streambuf(enum criterion_severity severity)
+          : std::stringbuf(), severity__(severity)
       {}
 
       virtual int sync() override

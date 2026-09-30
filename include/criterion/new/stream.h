@@ -90,12 +90,12 @@ inline bool operator<(criterion::stream &s1, criterion::stream &s2);
 inline std::ostream &operator<<(std::ostream &os, const criterion::stream &s);
 
 template <typename T>
-cr_stream::cr_stream(T *cookie,
-        int (*read)(void *cookie, void *buf, size_t *size),
-        void (*close)(void *cookie))
-    : cookie(static_cast<void *>(cookie))
-    , read(read)
-    , close(close)
+cr_stream::cr_stream(T *cookie_,
+        int (*read_)(void *cookie, void *buf, size_t *size),
+        void (*close_)(void *cookie))
+    : cookie(static_cast<void *>(cookie_))
+    , read(read_)
+    , close(close_)
     , cri_data(nullptr)
 {
     cr_stream_init(this);
