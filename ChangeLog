@@ -7,6 +7,7 @@
       (Matéo LE FLEM).
     * Addition: added --show-skipped CLI switch to show the number of skipped
       tests in the synthesis line.
+    * Addition: Georgian translation (Ekaterine Papava)
     * Breaking: ABI incompatibility with prior versions of criterion. You
       **must** recompile your tests.
     * Change: cr_get_redirected_stdout(), cr_get_redirected_stderr() and
@@ -58,6 +59,10 @@
       longer reported as failed.
     * Fix: criterion::allocator no longer uses std::allocator<void>, which
       is deprecated in C++17 and removed in C++20.
+    * Fix: fixed SIGILL crashes on riscv64 (Felix Yan)
+    * Fix: support LoongArch architecture (Alexey Sheplyakov, Felix Yan)
+    * Fix: support 39-bit address space (CHEN Xuan, Felix Yan)
+    * Fix: fixed various compiler warnings
     * Misc: the build system now detects a system-wide klib installation
       instead of always falling back to the wrap.
     * Misc: replaced the discontinued Cirrus CI; FreeBSD, macOS (x86-64) and
