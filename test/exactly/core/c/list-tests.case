@@ -1,0 +1,16 @@
+[act]
+
+% simple.c.bin --list
+
+[assert]
+
+exit-code == 0
+
+stdout equals
+<<EOF
+misc: 2 tests
+|-- failing
+`-- passing
+EOF
+
+stderr is-empty

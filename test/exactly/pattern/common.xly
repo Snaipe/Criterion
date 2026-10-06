@@ -1,0 +1,7 @@
+[setup]
+
+including ../common.xly
+
+[assert]
+
+stdout is-empty

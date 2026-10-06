@@ -1,0 +1,9 @@
+[act]
+
+% long-messages.cc.bin --xml
+
+[assert]
+
+stdout
+  -transformed-by ( replace_version | replace_times )
+  equals -contents-of expected/long-messages.txt

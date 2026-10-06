@@ -1,0 +1,37 @@
+{
+  "id": "Criterion <VERSION>",
+  "passed": 1,
+  "failed": 2,
+  "errored": 1,
+  "skipped": 0,
+  "test_suites": [
+    {
+      "name": "simple",
+      "passed": 1,
+      "failed": 2,
+      "errored": 1,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "wrong_signal",
+          "assertions": 0,
+          "status": "FAILED",
+          "messages": [
+
+          ]
+        },
+        {
+          "name": "uncaught",
+          "assertions": 0,
+          "status": "ERRORED",
+          "messages": ["The test crashed."]
+        },
+        {
+          "name": "caught",
+          "assertions": 0,
+          "status": "PASSED"
+        }
+      ]
+    }
+  ]
+}

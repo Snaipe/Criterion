@@ -1,0 +1,9 @@
+[act]
+
+% parameterized.cc.bin
+
+[assert]
+
+stdout is-empty
+
+stderr equals -contents-of expected/plain.txt

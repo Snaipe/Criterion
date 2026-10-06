@@ -1,0 +1,16 @@
+[suites]
+
+asserts/c.suite
+core/c.suite
+crashes/c.suite
+exit/c.suite
+fail-fast/c.suite
+help/c.suite
+log/c.suite
+parametrized/c.suite
+pattern
+redirect/c.suite
+skip
+theories/c.suite
+suites/c.suite
+reporting/c.suite

@@ -1,0 +1,31 @@
+{
+  "id": "Criterion <VERSION>",
+  "passed": 1,
+  "failed": 1,
+  "errored": 0,
+  "skipped": 0,
+  "test_suites": [
+    {
+      "name": "misc",
+      "passed": 1,
+      "failed": 1,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "passing",
+          "assertions": 1,
+          "status": "PASSED"
+        },
+        {
+          "name": "failing",
+          "assertions": 1,
+          "status": "FAILED",
+          "messages": [
+            "<SOURCE-FILE>:4: The expression 0 is false."
+          ]
+        }
+      ]
+    }
+  ]
+}
