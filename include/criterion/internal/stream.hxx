@@ -46,28 +46,40 @@ public:
         std::ios::rdbuf(&*fbuf);
     }
 
-#if __cplusplus > 199711L
     stream_mixin(const stream_mixin &other) = delete;
     stream_mixin &operator=(const stream_mixin &other) = delete;
-#endif
 
     stream_mixin(stream_mixin &&other) :
+        Super(std::move(other)),
         fbuf(std::move(other.fbuf)),
-        file(std::move(other.file))
-    {}
+        file(other.file)
+    {
+        this->set_rdbuf(fbuf.get());
+        other.set_rdbuf(other.Super::rdbuf());
+        other.file = nullptr;
+    }
 
     stream_mixin &operator=(stream_mixin &&other)
     {
-        fbuf = std::move(other.fbuf);
-        file = std::move(other.file);
+        if (this != &other) {
+            Super::operator=(std::move(other));
+            fbuf = std::move(other.fbuf);
+            file = other.file;
+            this->set_rdbuf(fbuf.get());
+            other.set_rdbuf(other.Super::rdbuf());
+            other.file = nullptr;
+        }
         return *this;
     }
 
     void close(void)
     {
+        if (!file)
+            return;
         flush_output(std::is_base_of<std::basic_ostream<CharT>, Super>());
         Super::close();
         std::fclose(file);
+        file = nullptr;
     }
 
 private:
@@ -90,6 +102,12 @@ public:
     basic_ofstream(basic_ofstream &&other)
         : super(std::move(other))
     {}
+
+    basic_ofstream &operator=(basic_ofstream &&other)
+    {
+        super::operator=(std::move(other));
+        return *this;
+    }
 };
 
 template <typename CharT>
@@ -103,6 +121,12 @@ public:
     basic_ifstream(basic_ifstream &&other)
         : super(std::move(other))
     {}
+
+    basic_ifstream &operator=(basic_ifstream &&other)
+    {
+        super::operator=(std::move(other));
+        return *this;
+    }
 };
 
 template <typename CharT>
@@ -116,6 +140,12 @@ public:
     basic_fstream(basic_fstream &&other)
         : super(std::move(other))
     {}
+
+    basic_fstream &operator=(basic_fstream &&other)
+    {
+        super::operator=(std::move(other));
+        return *this;
+    }
 };
 
 struct get_redirected_out_stream_ {
