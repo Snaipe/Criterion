@@ -60,6 +60,7 @@ public:
     {
         fbuf = std::move(other.fbuf);
         file = std::move(other.file);
+        return *this;
     }
 
     void close(void)
