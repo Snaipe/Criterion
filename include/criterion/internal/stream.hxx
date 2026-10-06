@@ -52,9 +52,14 @@ public:
 #endif
 
     stream_mixin(stream_mixin &&other) :
+        Super(std::move(other)),
         fbuf(std::move(other.fbuf)),
-        file(std::move(other.file))
-    {}
+        file(other.file)
+    {
+        this->set_rdbuf(fbuf.get());
+        other.set_rdbuf(other.Super::rdbuf());
+        other.file = nullptr;
+    }
 
     stream_mixin &operator=(stream_mixin &&other)
     {
