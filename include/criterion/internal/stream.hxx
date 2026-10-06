@@ -65,9 +65,12 @@ public:
 
     void close(void)
     {
+        if (!file)
+            return;
         flush_output(std::is_base_of<std::basic_ostream<CharT>, Super>());
         Super::close();
         std::fclose(file);
+        file = nullptr;
     }
 
 private:
