@@ -2,6 +2,7 @@ samples = [
 	'asserts.c',
 	'description.c',
 	'fixtures.c',
+	'include-order.c',
 	'log.c',
 	'more-suites.c',
 	'parameterized.c',
