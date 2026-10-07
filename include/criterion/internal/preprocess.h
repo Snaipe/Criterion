@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+// IWYU pragma: private, include "criterion/criterion.h"
 #ifndef CRITERION_PREPROCESS_H_
 #define CRITERION_PREPROCESS_H_
 

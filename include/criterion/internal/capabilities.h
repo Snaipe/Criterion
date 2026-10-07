@@ -23,6 +23,7 @@
  */
 #ifndef CRITERION_INTERNAL_DETECT_H_
 #define CRITERION_INTERNAL_DETECT_H_
+// IWYU pragma: private, include "criterion/criterion.h"
 
 /* Standard version checks */
 #if !defined (CR_NO_COMPILER_CHECK)
