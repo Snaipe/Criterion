@@ -60,7 +60,7 @@ On top of those, more ``assume`` macro functions are available for common operat
 Configuring theories
 --------------------
 
-Theories can optionally recieve configuration parameters to alter the behaviour
+Theories can optionally receive configuration parameters to alter the behaviour
 of the underlying test; as such, those parameters are the same ones as the ones
 of the ``Test`` macro function (c.f. :ref:`test-config-ref`).
 
