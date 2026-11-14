@@ -168,7 +168,7 @@ C++ users can use a more convenient approach:
 Configuring parameterized tests
 -------------------------------
 
-Parameterized tests can optionally recieve configuration parameters to alter
+Parameterized tests can optionally receive configuration parameters to alter
 their own behaviour, and are applied to each iteration of the parameterized
 test individually (this means that the initialization and finalization runs once
 per iteration).
