@@ -1,0 +1,5 @@
+params: 4 tests
+|-- cleanup
+|-- multiple
+|-- simple
+`-- string

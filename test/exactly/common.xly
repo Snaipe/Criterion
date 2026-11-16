@@ -1,0 +1,31 @@
+[setup]
+
+###############################################################################
+# FOR EXECUTION WITHOUT BUILD SYSTEM
+#
+# For running exactly directly.
+#
+# Change build_dir to the current Meson build dir (and uncomment):
+#
+# def path prj_dir   = -rel-here    ../..
+# def path build_dir = -rel prj_dir build
+#
+# env -of act PATH = @[build_dir]@/samples:@[build_dir]@/test/full:${PATH}
+###############################################################################
+
+env -of act CRITERION_ALWAYS_SUCCEED = 1
+env -of act CRITERION_DISABLE_TIME_MEASUREMENTS = 1
+env -of act CRITERION_JOBS = 1
+env -of act CRITERION_SHORT_FILENAME = 1
+
+env -of act LC_ALL = en_US.utf8
+env -of act MSYS2_ARG_CONV_EXCL = --filter=
+env -of act TERM = dumb
+
+
+[before-assert]
+
+
+def text-transformer replace_version =
+
+     replace 'Criterion v[^)]*\)' 'Criterion <VERSION>'

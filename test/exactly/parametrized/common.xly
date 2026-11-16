@@ -1,0 +1,7 @@
+[setup]
+
+including ../common.xly
+
+[assert]
+
+exit-code == 0

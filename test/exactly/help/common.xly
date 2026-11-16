@@ -1,0 +1,24 @@
+[conf]
+
+including ../common.xly
+
+home = .
+
+[before-assert]
+
+def text-transformer replace_executable =
+
+  replace -at ( contents matches 'usage:' )
+          '[^ ]*simple\.cc?\.bin(\.exe)?'
+	  <EXECUTABLE>
+
+def text-matcher is_help_text =
+
+    -transformed-by ( replace_version | replace_executable )
+    equals -contents-of expected/help-text.txt
+
+[assert]
+
+exit-code == 0
+
+stdout is-empty

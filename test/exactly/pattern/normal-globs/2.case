@@ -1,0 +1,17 @@
+[act]
+
+% simple.c.bin --filter='*/pa?sing' --verbose
+
+[assert]
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] Criterion <VERSION>
+[====] Running 2 tests from misc:
+[SKIP] misc::failing: Test is disabled
+[RUN ] misc::passing
+[PASS] misc::passing
+[====] Synthesis: Tested: 1 | Passing: 1 | Failing: 0 | Crashing: 0 
+EOF

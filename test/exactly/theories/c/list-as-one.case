@@ -1,0 +1,13 @@
+[act]
+
+% theories_regression.c.bin --list
+
+[assert]
+
+stdout equals
+<<EOF
+theory: 1 test
+`-- misc
+EOF
+
+stderr is-empty

@@ -1,0 +1,32 @@
+###############################################################################
+# Drawback - false positives
+#
+# This impl of the test is not able to distinguish between
+#  (a) (contant) 0.33333333333333331
+# and
+#  (b) (reg-ex)  0\.3333333333333333(33342|1)
+# since (b) matches (a), and both are replaced with '<REF>'.
+#
+# This means that the test will not detect if an expected occurence of (a):
+#   0.33333333333333331
+# happens to be
+#   0.333333333333333333342
+# since both strings matches (b) and thus are replaced with '<REF>'.
+# In this situation the test will give a false positive - the test will pass.
+###############################################################################
+
+[act]
+
+% failmessages.c.bin
+
+[before-assert]
+
+def text-transformer replace_tabs_and_refs =
+  replace '\t' '<TAB>' |
+  replace '0\.3333333333333333(33342|1)' '<REF>'
+
+[assert]
+
+stderr
+  -transformed-by replace_tabs_and_refs
+  equals -contents-of fail-messages.txt

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tests compiled with Criterion <VERSION> -->
+<testsuites name="Criterion Tests" tests="2" failures="1" errors="0" disabled="1">
+  <testsuite name="misc" tests="2" failures="1" errors="0" disabled="1" skipped="1" time="<TIME>">
+    <testcase name="skipped" assertions="0" status="SKIPPED" time="<TIME>">
+      <skipped/>
+    </testcase>
+    <testcase name="failing" assertions="1" status="FAILED" time="<TIME>">
+      <failure type="assert" message="1 assertion(s) failed."><![CDATA[description.c:4: The expression 0 is false.]]>&#10;</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

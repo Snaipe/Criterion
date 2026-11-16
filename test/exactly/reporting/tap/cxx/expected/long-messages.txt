@@ -1,0 +1,15 @@
+TAP version 13
+1..1
+# Criterion <VERSION>
+#
+# Running 1 tests from sample
+not ok - sample::long_msg 
+  ---
+  assertions: 1
+  failures:
+  - long-messages.cc:4: |+
+      Assertion failed: This is
+      A long message
+      Spawning multiple lines.
+      Formatting is respected.
+  ...

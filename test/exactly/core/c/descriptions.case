@@ -1,0 +1,27 @@
+[act]
+
+% description.c.bin --verbose
+
+[assert]
+
+exit-code == 0
+
+stdout is-empty
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] Criterion <VERSION>
+[====] Running 2 tests from misc:
+[RUN ] misc::failing
+[----]   Just a failing test
+[----] description.c:4: Assertion Failed
+[----]   
+[----]   The expression 0 is false.
+[----]   
+[FAIL] misc::failing
+[SKIP] misc::skipped: Test is disabled
+[----]   This one is skipped
+[====] Synthesis: Tested: 1 | Passing: 0 | Failing: 1 | Crashing: 0 
+EOF

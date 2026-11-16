@@ -1,0 +1,23 @@
+[act]
+
+% more-suites.c.bin --verbose
+
+[assert]
+
+stdout is-empty
+
+stderr
+  -transformed-by replace_version
+  equals
+<<EOF
+[----] Criterion <VERSION>
+[====] Running 1 test from disabled:
+[SKIP] disabled::test: Test is disabled
+[====] Running 1 test from suite1:
+[RUN ] suite1::test
+[PASS] suite1::test
+[====] Running 1 test from suite2:
+[RUN ] suite2::test
+[PASS] suite2::test
+[====] Synthesis: Tested: 2 | Passing: 2 | Failing: 0 | Crashing: 0 
+EOF

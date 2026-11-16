@@ -1,0 +1,17 @@
+[act]
+
+% suites.c.bin --list
+
+[assert]
+
+`Listing tests in multiple suites`
+
+stdout equals
+<<EOF
+first_suite: 1 test
+`-- test
+second_suite: 1 test
+`-- test
+EOF
+
+stderr is-empty
